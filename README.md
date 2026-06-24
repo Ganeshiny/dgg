@@ -2,6 +2,8 @@
 
 A multilabel protein function prediction model for Viridiplantae (green plants) using Graph Neural Networks with ProtBERT embeddings.
 
+<img width="2100" height="1500" alt="Methodology" src="https://github.com/user-attachments/assets/47f64b6c-4ca7-4d0c-9ff2-e730ab4f4128" />
+
 ---
 
 ## Environment Setup
