@@ -5,3 +5,45 @@ examples/structure_files/
 *.png 
 examples/*.csv
 examples/*.fasta
+reviwer_comments .txt
+reviewed-Deeopgogreen_Pasan.docx
+reviewed-Deeopgogreen_Pasan.docx:Zone.Identifier
+Miniconda3-latest-Linux-x86_64.sh
+
+# Temporary debugging and execution scripts
+check_len.py
+check_plddt.py
+extract_comments.py
+read_docx.py
+regen.py
+list_ftp.py
+fetch_data.py
+fetch_data.sh
+comments.txt
+
+# Visualization and output directories
+visualize_cmap/
+
+# Common large data files
+*.npz
+*.gz
+*.cif
+*.pkl
+*.pt
+*.pth
+*.cif.gz
+
+# Python environments and caches
+__pycache__/
+*.pyc
+*.pyo
+venv/
+env/
+.env
+.venv/
+
+# IDE and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

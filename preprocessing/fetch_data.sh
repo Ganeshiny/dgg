@@ -29,7 +29,6 @@ printf "\n\n  CREATING DATA DIRECTORY \n" $DATA_DIR
 cd $DATA_DIR
 mkdir "structure_files"
 cd ../
-chmod +x batch_download.sh
-./batch_download.sh -f preprocessing/data/arabidopsis_pdb_ids_2024-06-25.txt -o $DATA_DIR/structure_files/ -c 
-gunzip $DATA_DIR/*.gz
+python3 preprocessing/parallel_download.py preprocessing/viridiplantae_pdb_ids_2024-06-25.csv $DATA_DIR/structure_files/
+# gunzip is not needed because we download .cif.gz and keep them as .cif.gz
 

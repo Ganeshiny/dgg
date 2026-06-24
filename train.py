@@ -1,123 +1,209 @@
 import torch
-from preprocessing.create_batch_dataset import PDB_Dataset
+import torch.nn as nn
 from torch_geometric.loader import DataLoader
-from model import GCN, RareLabelGNN
-from sklearn.model_selection import train_test_split
 import numpy as np
-from focal_loss import FocalLoss
-from utils import calculate_class_weights, save_alpha_weights, load_alpha_weights
+import argparse
 import pickle
 import json
+import os
+import sys
+import platform
+import csv
 
+from model import get_model
+from evals import evaluate_all, compute_ic
+from focal_loss import FocalLoss
+from utils import load_alpha_weights
 
-THRESHOLD = 0.5
-BATCH_SIZE = 32
-EPOCHS = 500
-LEARNING_RATE = 0.000001 
-BEST_MODEL_PATH = f'model_and_weight_files/model_weights_{EPOCHS}_epochs_{BATCH_SIZE}_2_layers_cross.pth'
-PATH = "model_and_weight_files/model.pth"
-CLASS_WEIGHT_PATH = "model_and_weight_files/alpha_weights.pkl"
-MODEL_INFO_PATH = "model_and_weight_files/model_info_2_layers.json"  # Path to save model info
+def parse_args():
+    parser = argparse.ArgumentParser(description="DeepGreenGO Training Script")
+    parser.add_argument('--model', type=str, default='Hybrid', choices=['GCN', 'GAT', 'Hybrid', 'MLP'], help='Model architecture to use.')
+    parser.add_argument('--loss', type=str, default='Focal', choices=['BCE', 'Focal'], help='Loss function to use.')
+    parser.add_argument('--epochs', type=int, default=200, help='Number of training epochs.')
+    parser.add_argument('--batch_size', type=int, default=32, help='Batch size.')
+    parser.add_argument('--lr', type=float, default=1e-5, help='Learning rate.')
+    parser.add_argument('--seed', type=int, default=12345, help='Random seed.')
+    parser.add_argument('--dropout', type=float, default=0.3, help='Dropout probability.')
+    parser.add_argument('--accumulation_steps', type=int, default=4, help='Gradient accumulation steps.')
+    parser.add_argument('--patience', type=int, default=15, help='Early stopping patience.')
+    parser.add_argument('--dataset_path', type=str, default='preprocessing/data/split_files/datasets.pkl', help='Path to pre-split datasets.')
+    parser.add_argument('--ontology', type=str, default='biological_process', choices=['molecular_function', 'biological_process', 'cellular_component'], help='GO ontology to train on.')
+    parser.add_argument('--output_dir', type=str, default='runs/', help='Directory to save logs and models.')
+    return parser.parse_args()
 
+def set_seed(seed):
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+    np.random.seed(seed)
+    torch.backends.cudnn.deterministic = True
 
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-print('Using device:', device)
+def load_datasets(path, ontology):
+    print(f"Loading datasets from {path} for {ontology}...")
+    with open(path, 'rb') as f:
+        datasets = pickle.load(f)
+        
+    # Set the selected ontology for all datasets so num_classes is correct
+    datasets['train'].selected_ontology = ontology
+    datasets['valid'].selected_ontology = ontology
+    datasets['test'].selected_ontology = ontology
+    datasets['train'].y_labels = datasets['train'].goterms[ontology]
+    datasets['valid'].y_labels = datasets['valid'].goterms[ontology]
+    datasets['test'].y_labels = datasets['test'].goterms[ontology]
 
-root = 'preprocessing/data/structure_files/tmp_cmap_files'
-annot_file = 'preprocessing/data/pdb2go.tsv'
-num_shards = 20
+    return datasets['train'], datasets['valid'], datasets['test']
 
-torch.manual_seed(12345)
-pdb_protBERT_dataset = PDB_Dataset(root, annot_file, num_shards=num_shards, selected_ontology="biological_process", model="protBERT")
-dataset = pdb_protBERT_dataset.shuffle()
+def main():
+    args = parse_args()
+    set_seed(args.seed)
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    print('Using device:', device)
 
-train_dataset, test_dataset = train_test_split(dataset, test_size=0.2, random_state=12345)
+    # Gather hardware info
+    hardware_info = {
+        'platform': platform.system(),
+        'python_version': platform.python_version(),
+        'gpu_available': torch.cuda.is_available(),
+    }
+    if torch.cuda.is_available():
+        hardware_info['gpu_name'] = torch.cuda.get_device_name(0)
 
-print(f'Number of training graphs: {len(train_dataset)}')
-print(f'Number of test graphs: {len(test_dataset)}')
+    # Ensure output dir exists
+    os.makedirs(args.output_dir, exist_ok=True)
+    
+    # Abbrev ontology
+    ont_short = {'molecular_function': 'mf', 'biological_process': 'bp', 'cellular_component': 'cc'}[args.ontology]
+    
+    run_name = f"{ont_short}_{args.model}_{args.loss}_s{args.seed}"
+    run_dir = os.path.join(args.output_dir, run_name)
+    os.makedirs(run_dir, exist_ok=True)
 
-train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
-test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=False)
+    # Log hyperparameters
+    config = vars(args)
+    config['hardware'] = hardware_info
+    with open(os.path.join(run_dir, 'config.json'), 'w') as f:
+        json.dump(config, f, indent=4)
 
-# Calculate alpha
-#alpha = calculate_class_weights(dataset, device)
-#save_alpha_weights(alpha, CLASS_WEIGHT_PATH)
-alpha = load_alpha_weights(CLASS_WEIGHT_PATH)
-print(f"Alpha weights:{alpha}")
+    # Load data
+    train_dataset, valid_dataset, test_dataset = load_datasets(args.dataset_path, args.ontology)
+    train_loader = DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True)
+    valid_loader = DataLoader(valid_dataset, batch_size=args.batch_size, shuffle=False)
+    test_loader = DataLoader(test_dataset, batch_size=args.batch_size, shuffle=False)
 
-# Model Setup
-input_size = len(pdb_protBERT_dataset[0].x[0])
-hidden_sizes = [1024, 912]#[1024, 512]
-output_size = pdb_protBERT_dataset.num_classes
-model = RareLabelGNN(input_size, hidden_sizes, output_size)
-model.to(device)
+    # Compute IC based on Train Set
+    all_train_labels = []
+    for data in train_dataset:
+        all_train_labels.append(data.y.numpy())
+    all_train_labels = np.vstack(all_train_labels)
+    ic = compute_ic(all_train_labels)
 
-model_info = {
-    "input_size": input_size,
-    "hidden_sizes": hidden_sizes,
-    "output_size": output_size
-}
+    # Model Setup
+    input_size = len(train_dataset[0].x[0])
+    hidden_sizes = [1024, 912]
+    output_size = train_dataset.num_classes
 
-with open(MODEL_INFO_PATH, 'w') as f:
-    json.dump(model_info, f)
+    model = get_model(args.model, input_size, hidden_sizes, output_size)
+    model.to(device)
 
-torch.save(model.state_dict(), PATH)
+    # Loss Setup
+    if args.loss == 'Focal':
+        CLASS_WEIGHT_PATH = "model_and_weight_files/alpha_weights.pkl"
+        try:
+            alpha = load_alpha_weights(CLASS_WEIGHT_PATH)
+            criterion = FocalLoss(alpha=alpha)
+        except FileNotFoundError:
+            print("Alpha weights not found. Using default FocalLoss (alpha=0.25).")
+            criterion = FocalLoss(alpha=0.25)
+    else:
+        criterion = nn.BCEWithLogitsLoss()
 
-# Criterion and Optimizer
-criterion = FocalLoss(alpha=alpha)
-optimizer = torch.optim.AdamW(model.parameters(), lr=LEARNING_RATE, weight_decay=0.01)
-scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=10)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=0.01)
+    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='max', factor=0.5, patience=5)
 
-# Accumulate gradients over multiple smaller batches
-accumulation_steps = 4  # Accumulate over 4 smaller batches
+    best_valid_fmax = 0
+    epochs_no_improve = 0
 
-def train():
-    model.train()
-    optimizer.zero_grad()  # Reset gradients
-    for i, data in enumerate(train_loader):
-        data = data.to(device)
-        out = model(data.x, data.edge_index, data.batch)
-        loss = criterion(out, data.y.float())
-        loss = loss / accumulation_steps  # Scale loss
-        loss.backward()
+    def evaluate(loader):
+        model.eval()
+        all_preds = []
+        all_labels = []
+        with torch.no_grad():
+            for data in loader:
+                data = data.to(device)
+                out = model(data.x, data.edge_index, data.batch)
+                pred_probs = torch.sigmoid(out)
+                all_preds.append(pred_probs.cpu().numpy())
+                all_labels.append(data.y.cpu().numpy())
+        
+        y_true = np.vstack(all_labels)
+        y_pred = np.vstack(all_preds)
+        metrics = evaluate_all(y_true, y_pred, ic)
+        return metrics
 
-        # Perform optimizer step every accumulation_steps batches
-        if (i + 1) % accumulation_steps == 0:
-            optimizer.step()
-            optimizer.zero_grad()
+    log_file = open(os.path.join(run_dir, 'training_log.csv'), 'w', newline='')
+    log_writer = csv.writer(log_file)
+    log_writer.writerow(['Epoch', 'Train_Loss', 'Valid_Micro_Fmax', 'Valid_Macro_Fmax', 'Valid_Smin', 'Valid_Macro_AUROC'])
 
-
-def test(loader):
-    model.eval()
-    total = 0
-    correct = 0
-    with torch.no_grad():
-        for data in loader:
+    for epoch in range(1, args.epochs + 1):
+        model.train()
+        optimizer.zero_grad()
+        total_loss = 0
+        
+        for i, data in enumerate(train_loader):
             data = data.to(device)
             out = model(data.x, data.edge_index, data.batch)
-            pred = torch.sigmoid(out) > THRESHOLD  # Convert to probabilities and threshold
-            correct += (pred == data.y).sum().item()  # Count correct predictions
-            total += np.prod(data.y.shape)  # Total number of labels
-    return correct / total  # Accuracy across all labels
+            loss = criterion(out, data.y.float())
+            loss = loss / args.accumulation_steps
+            loss.backward()
 
-# Tracking best accuracy
-best_test_acc = 0
+            if (i + 1) % args.accumulation_steps == 0:
+                optimizer.step()
+                optimizer.zero_grad()
+            total_loss += loss.item() * args.accumulation_steps
 
-for epoch in range(1, EPOCHS + 1):
-    train()
+        train_loss = total_loss / len(train_loader)
+
+        # Evaluate
+        valid_metrics = evaluate(valid_loader)
+        micro_fmax = valid_metrics['Micro_Fmax']
+        macro_fmax = valid_metrics['Macro_Fmax']
+        smin = valid_metrics['Smin']
+        macro_auroc = valid_metrics['Macro_AUROC']
+        
+        print(f"Epoch {epoch:03d} | Loss: {train_loss:.4f} | Val MiFmax: {micro_fmax:.4f} | Val MaFmax: {macro_fmax:.4f} | Val Smin: {smin:.4f}")
+        log_writer.writerow([epoch, train_loss, micro_fmax, macro_fmax, smin, macro_auroc])
+        log_file.flush()
+
+        scheduler.step(macro_fmax)
+
+        if macro_fmax > best_valid_fmax:
+            best_valid_fmax = macro_fmax
+            epochs_no_improve = 0
+            torch.save(model.state_dict(), os.path.join(run_dir, 'best_model.pth'))
+            
+            with open(os.path.join(run_dir, 'valid_metrics.json'), 'w') as f:
+                json.dump(valid_metrics, f, indent=4)
+            print("  --> New best model saved!")
+        else:
+            epochs_no_improve += 1
+            
+        if epochs_no_improve >= args.patience:
+            print(f"Early stopping triggered after {epoch} epochs.")
+            break
+
+    log_file.close()
+
+    print("Training finished. Evaluating on Test Set...")
+    model.load_state_dict(torch.load(os.path.join(run_dir, 'best_model.pth'),
+                                     map_location=device, weights_only=False))
+    test_metrics = evaluate(test_loader)
     
+    print("\n--- TEST METRICS ---")
+    for k, v in test_metrics.items():
+        print(f"{k}: {v:.4f}")
 
-    train_acc = test(train_loader)
-    test_acc = test(test_loader)
-    
+    with open(os.path.join(run_dir, 'test_metrics.json'), 'w') as f:
+        json.dump(test_metrics, f, indent=4)
 
-    scheduler.step(1 - test_acc)  # For accuracy, pass `1 - test_acc` (higher is better)
-    # If monitoring test loss instead, pass the actual test loss
-
-    if test_acc > best_test_acc:
-        best_test_acc = test_acc
-        torch.save(model.state_dict(), BEST_MODEL_PATH)
-        print(f"Best model saved with Test Acc: {test_acc:.4f}")
-    
-    print(f'Epoch: {epoch:03d}, Train Acc: {train_acc:.4f}, Test Acc: {test_acc:.4f}')
-
+if __name__ == "__main__":
+    main()

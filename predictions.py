@@ -7,7 +7,7 @@ import glob
 import csv
 from transformers import BertTokenizer, BertModel
 import scipy.sparse as sp
-from model import GCN, RareLabelGNN
+from model import get_model
 from utils import write_seqs_from_cifdir, read_seqs_file, write_annot_npz
 import gc
 import json
@@ -65,10 +65,17 @@ def seq2protbert(seq):
         outputs = protbert_model(**inputs)
     return outputs.last_hidden_state.detach().cpu().numpy()
 
-def get_adjacency_info(distance_matrix, threshold=8.0):
-    """Convert distance matrix to adjacency matrix."""
-    adjacency_matrix = (distance_matrix <= threshold).astype(int)
+def get_adjacency_info(distance_matrix, plddt_array=None, threshold=8.0, plddt_threshold=70.0):
+    """Convert distance matrix to adjacency matrix with pLDDT filtering."""
+    with np.errstate(invalid='ignore'):
+        adjacency_matrix = (distance_matrix <= threshold).astype(int)
     np.fill_diagonal(adjacency_matrix, 0)
+    
+    if plddt_array is not None:
+        confident_residues = (plddt_array >= plddt_threshold)
+        confident_mask = np.outer(confident_residues, confident_residues)
+        adjacency_matrix = adjacency_matrix * confident_mask
+        
     edge_indices = np.nonzero(adjacency_matrix)
     return torch.tensor([edge_indices[0], edge_indices[1]], dtype=torch.long)
 
@@ -79,38 +86,28 @@ def process_structures(struct_dir, sequence_file):
     """
     tmp_cmap_dir = os.path.join(struct_dir, 'tmp_cmap_files')
     
-    # Check if the tmp_cmap_files directory exists and contains .npz files
     if os.path.exists(tmp_cmap_dir) and glob.glob(os.path.join(tmp_cmap_dir, '*.npz')):
         print("tmp_cmap_files directory already exists and contains .npz files. Skipping processing.")
-        return True  # Indicate that processing is not needed
+        return True
 
-    # Create the tmp_cmap_files directory if it doesn't exist
     os.makedirs(tmp_cmap_dir, exist_ok=True)
-
     print("Extracting sequences... This might take a while...")
     write_seqs_from_cifdir(struct_dir, sequence_file)
     
-    # Load sequence data in a memory-efficient way
     pdb2seq = read_seqs_file(sequence_file)
-
-    # Gather already processed chains to avoid redundant processing
     npz_pdb_chains = {Path(chain).stem for chain in glob.glob(os.path.join(tmp_cmap_dir, '*.npz'))}
-
-    # Identify structures that still need to be processed
     to_be_processed = set(pdb2seq.keys()).difference(npz_pdb_chains)
     print(f"Number of PDBs to be processed = {len(to_be_processed)}")
 
-    # Process sequentially without multiprocessing
     print("Processing sequentially to reduce memory usage.")
     for prot in to_be_processed:
         write_annot_npz(prot, pdb2seq, struct_dir)
         gc.collect()
 
-    # Explicitly release memory after processing
     del pdb2seq, npz_pdb_chains, to_be_processed
     gc.collect()
+    return True
 
-    return True  # Indicate successful processing
 def run_predictions(struct_dir, model, output_file, gonames, goids, batch_size=8):
     """Run predictions on protein structures and save results to CSV."""
     npz_pdb_chains = [Path(chain).stem for chain in glob.glob(os.path.join(struct_dir, 'tmp_cmap_files', '*.npz'))]
@@ -124,6 +121,7 @@ def run_predictions(struct_dir, model, output_file, gonames, goids, batch_size=8
                     path = os.path.join(struct_dir, 'tmp_cmap_files', f'{id}.npz')
                     data = np.load(path)
                     ca_dist = data['C_alpha']
+                    plddt = data.get('plddt', None)
                     seq = data['seqres'].item()
 
                     # Extract features
@@ -131,7 +129,7 @@ def run_predictions(struct_dir, model, output_file, gonames, goids, batch_size=8
                     protbert_features = torch.tensor(seq2protbert(seq), dtype=torch.float).to(device).squeeze(0)
                     additional_features = torch.tensor(np.stack(compute_residue_features(seq), axis=1), dtype=torch.float).to(device)
                     node_features = torch.cat([protbert_features, additional_features], dim=1)
-                    adjacency_info = get_adjacency_info(ca_dist).to(device)
+                    adjacency_info = get_adjacency_info(ca_dist, plddt).to(device)
 
                     # Run model inference
                     with torch.no_grad():
@@ -146,7 +144,6 @@ def run_predictions(struct_dir, model, output_file, gonames, goids, batch_size=8
                         go_terms = [goids[i] for i in class_indices.tolist()]
                         writer.writerow([id, go_terms, go_names])
 
-                    # Cleanup
                     del onehot_features, protbert_features, adjacency_info, out, pred
                     torch.cuda.empty_cache()
                     gc.collect()
@@ -157,38 +154,39 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('-struc_dir', type=str, default='examples/structure_files', help='Directory containing cif files')
     parser.add_argument('-seqs', type=str, default='examples/predictions_seqs.fasta', help='FASTA file containing sequences')
-    parser.add_argument('-model_path', type=str, default="model_and_weight_files/hpc.pth", help='Path to the trained model weights')
-    parser.add_argument('-output', type=str, default='examples/predictionshpc.csv', help='Output CSV file for predictions')
-    parser.add_argument('-annot_dict', type=str, default='preprocessing/data/annot_dict_hpc.pkl', help='Path to the annotation dictionary')
+    parser.add_argument('-model', type=str, default='Hybrid', help='Model architecture to use (Hybrid, GCN, GAT, MLP)')
+    parser.add_argument('-model_path', type=str, default="runs/bp_Hybrid_Focal_s42/best_model.pth", help='Path to the trained model weights')
+    parser.add_argument('-config', type=str, default="runs/bp_Hybrid_Focal_s42/config.json", help='Path to the run config')
+    parser.add_argument('-output', type=str, default='examples/predictions_output.csv', help='Output CSV file for predictions')
+    parser.add_argument('-annot_dict', type=str, default='preprocessing/data/split_files/datasets.pkl', help='Path to datasets.pkl for labels')
     args = parser.parse_args()
-    annot_dict = args.annot_dict
 
     struct_dir = args.struc_dir
     sequence_file = args.seqs
 
-    # Process structure files to generate sequence and contact map data
     process_structures(struct_dir, sequence_file)
 
-    # Load GCN model
-    with open("model_and_weight_files/model_info_2_layers_hpc.json", 'r') as f:
-        model_info = json.load(f)
+    input_size = 1027
+    hidden_sizes = [1024, 912]
+    
+    # We load num_classes from the dataset used in training
+    with open(args.annot_dict, 'rb') as f:
+        datasets = pickle.load(f)
+    
+    ontology = 'biological_process'
+    if os.path.exists(args.config):
+        with open(args.config, 'r') as f:
+            c = json.load(f)
+            ontology = c.get('ontology', 'biological_process')
+            
+    datasets['train'].selected_ontology = ontology
+    output_size = len(datasets['train'].goterms[ontology])
 
-    # Initialize the model with the correct parameters
-    model = RareLabelGNN(
-        input_size=model_info['input_size'],
-        hidden_sizes=model_info['hidden_sizes'],
-        output_size=model_info['output_size']
-    )
-
-    # Load the state dictionary
-    model.load_state_dict(torch.load(args.model_path, map_location=device))
+    model = get_model(args.model, input_size, hidden_sizes, output_size)
+    model.load_state_dict(torch.load(args.model_path, map_location=device, weights_only=False))
     model.to(device).eval()
 
-    # Load GO annotations
-    with open(args.annot_dict, 'rb') as f:
-        data = pickle.load(f)
-    goterms = data['goterms']['biological_process']
-    gonames = data['gonames']['biological_process']
+    goterms = datasets['train'].goterms[ontology]
+    gonames = datasets['train'].gonames[ontology]
 
-    # Run predictions
     run_predictions(struct_dir, model, args.output, gonames, goterms)

@@ -1,18 +1,32 @@
 import os
 import csv
 import numpy as np
-import scipy.sparse as sp
 import torch
 from torch_geometric.data import Data, Dataset
 from tqdm import tqdm
-from transformers import BertTokenizer, BertModel
 import pickle
 
-#Inializing here
-tokenizer = BertTokenizer.from_pretrained('Rostlab/prot_bert_bfd', do_lower_case=False )
-model = BertModel.from_pretrained('Rostlab/prot_bert_bfd')
-device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
-model.to(device).eval()
+# ── Lazy ProtBERT singleton ──────────────────────────────────────────────────
+# Loading ProtBERT at module-import time crashes any script that merely imports
+# this module (e.g. train.py). We instantiate it once on first use instead.
+_tokenizer = None
+_bert_model = None
+_bert_device = None
+
+def _get_protbert():
+    """Return (tokenizer, model, device), loading once on first call."""
+    global _tokenizer, _bert_model, _bert_device
+    if _bert_model is None:
+        from transformers import BertTokenizer, BertModel
+        _bert_device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        print("Loading ProtBERT tokenizer…")
+        _tokenizer = BertTokenizer.from_pretrained('Rostlab/prot_bert_bfd', do_lower_case=False)
+        print("Loading ProtBERT model…")
+        _bert_model = BertModel.from_pretrained('Rostlab/prot_bert_bfd')
+        _bert_model.gradient_checkpointing_enable()
+        _bert_model.to(_bert_device).eval()
+        print(f"ProtBERT loaded on {_bert_device}")
+    return _tokenizer, _bert_model, _bert_device
 
 # Dictionaries for residue properties
 HYDROPHOBICITY = {
@@ -43,27 +57,31 @@ def compute_residue_features(sequence):
     )
 
 def seq2onehot(seq):
-    """Convert sequence to one-hot encoding."""
+    """Convert sequence to one-hot encoding. Unknown residues map to 'X'."""
     chars = ['-', 'D', 'G', 'U', 'L', 'N', 'T', 'K', 'H', 'Y', 'W', 'C', 'P',
              'V', 'S', 'O', 'I', 'E', 'F', 'X', 'Q', 'A', 'B', 'Z', 'R', 'M']
     vocab_embed = {char: idx for idx, char in enumerate(chars)}
+    x_idx = vocab_embed['X']
     vocab_one_hot = np.eye(len(chars), dtype=int)
-    return np.array([vocab_one_hot[vocab_embed[v]] for v in seq])
+    return np.array([vocab_one_hot[vocab_embed.get(v, x_idx)] for v in seq])
 
 def seq2protbert(seq):
     """Get ProtBERT embeddings for a protein sequence."""
-    seq = ' '.join(seq)  # Add spaces between amino acids
-    inputs = tokenizer(seq, return_tensors='pt', add_special_tokens=True, padding=True, truncation=True)
-    input_ids = inputs['input_ids'].to(device)
-    attention_mask = inputs['attention_mask'].to(device)
+    tokenizer, bert_model, bert_device = _get_protbert()
+    spaced = ' '.join(seq)  # ProtBERT expects space-separated amino acids
+    inputs = tokenizer(spaced, return_tensors='pt', add_special_tokens=True,
+                       padding=True, truncation=True, max_length=1024)
+    input_ids = inputs['input_ids'].to(bert_device)
+    attention_mask = inputs['attention_mask'].to(bert_device)
 
     with torch.no_grad():
-        embeddings = model(input_ids=input_ids, attention_mask=attention_mask).last_hidden_state
+        embeddings = bert_model(input_ids=input_ids,
+                                attention_mask=attention_mask).last_hidden_state
 
     embeddings = embeddings.detach().cpu().numpy()
     mask = attention_mask.detach().cpu().numpy()
 
-    # Extract embeddings, removing CLS and SEP tokens
+    # Strip [CLS] and [SEP] tokens → shape (seq_len, 1024)
     return np.array([embeddings[i][1:np.sum(mask[i]) - 1] for i in range(len(embeddings))])
 
 def read_list_file(filename):
@@ -161,7 +179,7 @@ class PDB_Dataset(Dataset):
 
         node_features = torch.cat([protbert_features, additional_features], dim=1) if self.model == "protBERT" else torch.cat([onehot_features, additional_features], dim=1)
 
-        edge_index = self._get_adjacency_info(cmap['C_alpha'])
+        edge_index = self._get_adjacency_info(cmap['C_alpha'], cmap.get('plddt', None), prot_id)
         labels = self._get_labels(prot_id)
         length = torch.tensor(len(sequence), dtype=torch.long)
 
@@ -176,9 +194,18 @@ class PDB_Dataset(Dataset):
         
         return labels.get(self.selected_ontology, torch.zeros(len(self.y_labels), dtype=torch.long))
 
-    def _get_adjacency_info(self, distance_matrix, threshold=8.0):
-        adjacency_matrix = (distance_matrix <= threshold).astype(int)
+    def _get_adjacency_info(self, distance_matrix, plddt_array=None, prot_id="", threshold=8.0, plddt_threshold=70.0):
+        # Ignore NaNs from create_cmaps filter
+        with np.errstate(invalid='ignore'):
+            adjacency_matrix = (distance_matrix <= threshold).astype(int)
         np.fill_diagonal(adjacency_matrix, 0)
+        
+        # Apply strict confidence filter to ALL structures (not just AF) if plddt is available
+        if plddt_array is not None:
+            confident_residues = (plddt_array >= plddt_threshold)
+            confident_mask = np.outer(confident_residues, confident_residues)
+            adjacency_matrix = adjacency_matrix * confident_mask
+            
         edge_indices = np.nonzero(adjacency_matrix)
         return torch.tensor([edge_indices[0], edge_indices[1]], dtype=torch.long)
 
@@ -189,34 +216,35 @@ class PDB_Dataset(Dataset):
         return self._load_data(self.pdb_split_list[idx])
 
 
-# Device
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-print('Using device:', device)
+if __name__ == '__main__':
+    # Device
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    print('Using device:', device)
 
-root = 'preprocessing/data/structure_files/tmp_cmap_files'
-annot_file = "preprocessing/data/pdb2go.tsv"
-num_shards = 20
+    root = 'preprocessing/data/structure_files/tmp_cmap_files'
+    annot_file = "preprocessing/data/pdb2go.tsv"
+    num_shards = 20
 
-test_file = "preprocessing/data/split_files/_test.txt"
-train_file = "preprocessing/data/split_files/_train.txt"
-valid_file = "preprocessing/data/split_files/_valid.txt"
+    test_file = "preprocessing/data/split_files/_test.txt"
+    train_file = "preprocessing/data/split_files/_train.txt"
+    valid_file = "preprocessing/data/split_files/_valid.txt"
 
-torch.manual_seed(12345)
-pdb_protBERT_dataset_test = PDB_Dataset(root=root, annot_file=annot_file, num_shards=num_shards, selected_ontology="biological_process", transform=None, pre_transform=None, model="protBERT", pdb_split_set_file=test_file, dataset_type = "test")
-pdb_protBERT_dataset_train = PDB_Dataset(root=root, annot_file=annot_file, num_shards=num_shards, selected_ontology="biological_process", transform=None, pre_transform=None, model ="protBERT", pdb_split_set_file=train_file, dataset_type = "train")
-pdb_protBERT_dataset_valid = PDB_Dataset(root=root, annot_file=annot_file, num_shards=num_shards, selected_ontology="biological_process", transform=None, pre_transform=None, model="protBERT",  pdb_split_set_file=valid_file, dataset_type = "valid")
+    torch.manual_seed(12345)
+    pdb_protBERT_dataset_test = PDB_Dataset(root=root, annot_file=annot_file, num_shards=num_shards, selected_ontology="biological_process", transform=None, pre_transform=None, model="protBERT", pdb_split_set_file=test_file, dataset_type = "test")
+    pdb_protBERT_dataset_train = PDB_Dataset(root=root, annot_file=annot_file, num_shards=num_shards, selected_ontology="biological_process", transform=None, pre_transform=None, model ="protBERT", pdb_split_set_file=train_file, dataset_type = "train")
+    pdb_protBERT_dataset_valid = PDB_Dataset(root=root, annot_file=annot_file, num_shards=num_shards, selected_ontology="biological_process", transform=None, pre_transform=None, model="protBERT",  pdb_split_set_file=valid_file, dataset_type = "valid")
 
-print(f"Train: {len(pdb_protBERT_dataset_train)}, Test: {len(pdb_protBERT_dataset_test)}, Valid: {len(pdb_protBERT_dataset_valid)}")
-print(len(pdb_protBERT_dataset_train), len(pdb_protBERT_dataset_valid[0].x[0]), pdb_protBERT_dataset_train.num_classes, pdb_protBERT_dataset_valid.num_classes)
-# Paths to save the datasets
-dataset_save_path = "preprocessing/data/split_files/datasets.pkl"
+    print(f"Train: {len(pdb_protBERT_dataset_train)}, Test: {len(pdb_protBERT_dataset_test)}, Valid: {len(pdb_protBERT_dataset_valid)}")
+    print(len(pdb_protBERT_dataset_train), len(pdb_protBERT_dataset_train[0].x[0]), pdb_protBERT_dataset_train.num_classes, pdb_protBERT_dataset_valid.num_classes)
+    # Paths to save the datasets
+    dataset_save_path = "preprocessing/data/split_files/datasets.pkl"
 
-# Save datasets to a pickle file
-with open(dataset_save_path, 'wb') as f:
-    pickle.dump({
-        'train': pdb_protBERT_dataset_train,
-        'test': pdb_protBERT_dataset_test,
-        'valid': pdb_protBERT_dataset_valid
-    }, f)
+    # Save datasets to a pickle file
+    with open(dataset_save_path, 'wb') as f:
+        pickle.dump({
+            'train': pdb_protBERT_dataset_train,
+            'test': pdb_protBERT_dataset_test,
+            'valid': pdb_protBERT_dataset_valid
+        }, f)
 
-print(f"Datasets saved to {dataset_save_path}")
+    print(f"Datasets saved to {dataset_save_path}")

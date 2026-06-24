@@ -1,0 +1,55 @@
+name: deepgreengo
+channels:
+  - pytorch
+  - nvidia
+  - pyg
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  # Python
+  - python=3.10
+
+  # PyTorch with CUDA 12.1 — change cudatoolkit version to match your GPU driver
+  - pytorch>=2.1.0
+  - torchvision
+  - torchaudio
+  - pytorch-cuda=12.1   # Change to =11.8 if you have older drivers; remove for CPU-only
+
+  # PyTorch Geometric (must match torch version)
+  - pyg
+
+  # Scientific computing
+  - numpy
+  - scipy
+  - scikit-learn
+  - pandas
+
+  # Bioinformatics
+  - biopython>=1.81
+  - obonet
+  - mmseqs2      # Homology clustering (MMseqs2 easy-cluster)
+
+  # Structure / contact-map tools
+  - tqdm
+
+  # Visualisation
+  - matplotlib
+  - seaborn
+
+  # Hugging Face (ProtBERT)
+  - pip
+
+  - pip:
+    # HuggingFace transformers (ProtBERT tokeniser + model)
+    - transformers>=4.30.0
+    - sentencepiece
+
+    # PyTorch Geometric dependencies (installed via pip to guarantee version match)
+    - torch-scatter
+    - torch-sparse
+    - torch-cluster
+    - torch-spline-conv
+
+    # Optional: baseline tools
+    - biopython   # already in conda, pin here for safety

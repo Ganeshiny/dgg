@@ -203,57 +203,16 @@ def write_output_files(fname, pdb2go, go2info, pdb2seq):
                     bp_goterms = goterms.intersection(set(selected_goterms_list[onts[1]]))
                     cc_goterms = goterms.intersection(set(selected_goterms_list[onts[2]]))
                     if len(mf_goterms) > 0 or len(bp_goterms) > 0 or len(cc_goterms) > 0:
-                        sequences_list.append(SeqRecord(Seq(pdb2seq[chain], protein_letters_3to1), id=chain, description="nrPDB"))
+                        sequences_list.append(SeqRecord(Seq(pdb2seq[chain]), id=chain, description="nrPDB"))
                         protein_list.append(chain)
                         tsv_writer.writerow([chain, ','.join(mf_goterms), ','.join(bp_goterms), ','.join(cc_goterms)])
                     else:
                         print(f"Chain {chain} not found in pdb2seq.")
 
-    np.random.seed(1234)
-    np.random.shuffle(protein_list)
-    print ("Total number PDB Chains annotated =%d" % (len(protein_list)))
-
-    # select test set based in 30% sequence identity
-    test_list = set()
-    test_sequences_list = []
-    i = 0
-    while len(test_list) < 5000 and i < len(protein_list):
-        goterms = pdb2go[protein_list[i]]['goterms']
-        evidence = pdb2go[protein_list[i]]['evidence']
-        goterm2evidence = {goterms[i]: evidence[i] for i in range(len(goterms))}
-
-        # selected goterms
-        mf_goterms = set(goterms).intersection(set(selected_goterms_list[onts[0]]))
-        bp_goterms = set(goterms).intersection(set(selected_goterms_list[onts[1]]))
-        cc_goterms = set(goterms).intersection(set(selected_goterms_list[onts[2]]))
-
-        mf_evidence = [goterm2evidence[goterm] for goterm in mf_goterms]
-        mf_evidence = [1 if evid in exp_evidence_codes else 0 for evid in mf_evidence]
-
-        bp_evidence = [goterm2evidence[goterm] for goterm in bp_goterms]
-        bp_evidence = [1 if evid in exp_evidence_codes else 0 for evid in bp_evidence]
-
-        cc_evidence = [goterm2evidence[goterm] for goterm in cc_goterms]
-        cc_evidence = [1 if evid in exp_evidence_codes else 0 for evid in cc_evidence]
-
-        if len(mf_goterms) > 0 and len(bp_goterms) > 0 and len(cc_goterms) > 0:
-            if sum(mf_evidence) > 0 and sum(bp_evidence) > 0 and sum(cc_evidence) > 0:
-                test_list.add(protein_list[i])
-                test_sequences_list.append(SeqRecord(Seq(pdb2seq[protein_list[i]]), id=protein_list[i], description="nrPDB_test"))
-        i += 1
-
-    print ("Total number of test PDB=%d" % (len(test_list)))
-
-    protein_list = list(set(protein_list).difference(test_list))
-    np.random.shuffle(protein_list)
-
-    idx = int(0.8*len(protein_list))
-    write_prot_list(test_list, fname + '_test.txt')
-    write_prot_list(protein_list[:idx], fname + '_train.txt')
-    write_prot_list(protein_list[idx:], fname + '_valid.txt')
-    write_fasta(fname + '_sequences.fasta', sequences_list)
-    write_fasta(fname + '_test_sequences.fasta', test_sequences_list)
-    #print(f"Sample protein chain : {protein_list[0]}")
+    # Write all valid sequences to FASTA
+    fasta_out = fname + 'all_sequences.fasta'
+    write_fasta(fasta_out, sequences_list)
+    print(f"Wrote {len(sequences_list)} sequences to {fasta_out}")
 
 
 #"/home/hpc_users/2019s17273@stu.cmb.ac.lk/ganeshiny/protein-go-predictor/preprocessing/data/seqs_from_structure_dir.fasta"
@@ -267,7 +226,11 @@ if __name__ == "__main__":
     parser.add_argument('-out', type=str, default='preprocessing/data/', help="output files")    
     args = parser.parse_args()
 
-    write_seqs_from_cifdir(args.struc_dir, args.seqs)
+    if not os.path.exists(args.seqs):
+        print(f"Extracting sequences to {args.seqs}...")
+        write_seqs_from_cifdir(args.struc_dir, args.seqs)
+    else:
+        print(f"Sequence file {args.seqs} already exists. Skipping extraction.")
     #repr = load_cluster_file(args.clu)
 
     #pdb2seq = pdb_2_seq(args.seqs)
