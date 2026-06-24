@@ -37,6 +37,7 @@ def set_seed(seed):
     torch.cuda.manual_seed_all(seed)
     np.random.seed(seed)
     torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False  # Required alongside deterministic=True
 
 def load_datasets(path, ontology):
     print(f"Loading datasets from {path} for {ontology}...")

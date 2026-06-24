@@ -166,7 +166,9 @@ class PDB_Dataset(Dataset):
             return None
 
         cmap = np.load(pdb_file)
-        sequence = str(cmap['seqres'])
+        # Safely deserialise seqres: np.savez stores strings as 0-d arrays.
+        raw_seqres = cmap['seqres']
+        sequence = str(raw_seqres.item()) if raw_seqres.ndim == 0 else str(raw_seqres)
 
         onehot_features = torch.tensor(seq2onehot(sequence), dtype=torch.float).squeeze(0)
         protbert_features = torch.tensor(seq2protbert(sequence), dtype=torch.float).squeeze(0)
@@ -174,14 +176,26 @@ class PDB_Dataset(Dataset):
         hydrophobicity, polarity, charge = compute_residue_features(sequence)
         additional_features = torch.tensor(np.stack([hydrophobicity, polarity, charge], axis=1), dtype=torch.float)
 
-        residue_count = min(protbert_features.shape[0], onehot_features.shape[0])
+        # ProtBERT truncates at 1022 residues (1024 − CLS − SEP tokens).
+        # Clamp all feature tensors and the distance matrix to the same length
+        # to prevent shape mismatches on long proteins.
+        MAX_LEN = 1022
+        if protbert_features.shape[0] > MAX_LEN:
+            protbert_features = protbert_features[:MAX_LEN]
+        residue_count = min(protbert_features.shape[0], onehot_features.shape[0], MAX_LEN)
+        onehot_features    = onehot_features[:residue_count]
         additional_features = additional_features[:residue_count]
+
+        ca_dist = cmap['C_alpha'][:residue_count, :residue_count]
+        plddt   = cmap.get('plddt', None)
+        if plddt is not None:
+            plddt = plddt[:residue_count]
 
         node_features = torch.cat([protbert_features, additional_features], dim=1) if self.model == "protBERT" else torch.cat([onehot_features, additional_features], dim=1)
 
-        edge_index = self._get_adjacency_info(cmap['C_alpha'], cmap.get('plddt', None), prot_id)
+        edge_index = self._get_adjacency_info(ca_dist, plddt, prot_id)
         labels = self._get_labels(prot_id)
-        length = torch.tensor(len(sequence), dtype=torch.long)
+        length = torch.tensor(residue_count, dtype=torch.long)
 
         return Data(x=node_features, edge_index=edge_index, u=prot_id, y=labels, length=length)
 
@@ -194,8 +208,8 @@ class PDB_Dataset(Dataset):
         
         return labels.get(self.selected_ontology, torch.zeros(len(self.y_labels), dtype=torch.long))
 
-    def _get_adjacency_info(self, distance_matrix, plddt_array=None, prot_id="", threshold=8.0, plddt_threshold=70.0):
-        # Ignore NaNs from create_cmaps filter
+    def _get_adjacency_info(self, distance_matrix, plddt_array=None, prot_id="", threshold=10.0, plddt_threshold=70.0):
+        # 10 Å Cα threshold as per DeepFRI protocol and the manuscript
         with np.errstate(invalid='ignore'):
             adjacency_matrix = (distance_matrix <= threshold).astype(int)
         np.fill_diagonal(adjacency_matrix, 0)

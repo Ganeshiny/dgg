@@ -32,7 +32,6 @@ import multiprocessing
 from pathlib import Path
 
 import numpy as np
-from Bio.PDB import MMCIFParser
 
 # ── need read_seqs_file from same package dir ─────────────────────────────────
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -57,17 +56,18 @@ def _pairwise_dist_float32(coords: np.ndarray) -> np.ndarray:
     return np.sqrt(dist_sq, out=dist_sq)
 
 
-def make_distance_maps(file_path: str) -> dict:
+def make_distance_maps(file_path: str, is_alphafold: bool = False) -> dict:
     """
-    Parse a .cif.gz file quickly and return per-chain distance maps + pLDDT arrays.
+    Parse a .cif.gz file quickly and return per-chain distance maps + B-factor arrays.
     Returns {chain_id: {'C_alpha': ndarray, 'C_beta': ndarray, 'plddt': ndarray}}
     All arrays are float32. Uses a fast custom parser instead of Bio.PDB to avoid OOM.
+
+    For experimental PDB structures:  B-factor column = crystallographic temperature
+      factor (lower is more rigid/better quality — do NOT apply pLDDT thresholding).
+    For AlphaFold structures:         B-factor column = pLDDT confidence score
+      (< 50 indicates disordered/unreliable residues — mask those residues out).
+    Set is_alphafold=True when processing AlphaFold-predicted CIF files.
     """
-    distance_matrices = {}
-    
-    # Store temporary lists per chain:
-    # ca_dict[chain] = [(res_seq, coord, plddt), ...]
-    # cb_dict[chain] = [(res_seq, coord), ...]
     ca_dict = {}
     cb_dict = {}
 
@@ -75,92 +75,97 @@ def make_distance_maps(file_path: str) -> dict:
         in_atoms = False
         columns = {}
         col_idx = 0
-        
+
         for line in f:
+            # ── New loop block: reset ALL parser state ──────────────────────
             if line.startswith('loop_'):
+                in_atoms = False
+                columns = {}
+                col_idx = 0
                 continue
-            
+
             if line.startswith('_atom_site.'):
                 in_atoms = True
                 col_name = line.strip()
                 columns[col_name] = col_idx
                 col_idx += 1
                 continue
-            
+
             if in_atoms:
-                if line.startswith('#'):
+                if line.startswith('#') or line.startswith('_'):
                     in_atoms = False
+                    columns = {}
+                    col_idx = 0
                     continue
-                
+
                 parts = line.split()
                 if len(parts) < len(columns):
                     continue
-                
+
                 if parts[0] not in ('ATOM', 'HETATM'):
                     continue
-                
-                # We need label_atom_id (CA, CB), label_asym_id (chain), Cartn_x/y/z, B_iso_or_equiv, label_seq_id
+
                 try:
                     atom_name = parts[columns['_atom_site.label_atom_id']]
                     chain_id  = parts[columns['_atom_site.label_asym_id']]
                     res_seq   = parts[columns['_atom_site.label_seq_id']]
-                    
-                    if res_seq == '.' or res_seq == '?':
-                        continue # Skip residues without sequence ID
+
+                    if res_seq in ('.', '?'):
+                        continue
                     res_seq = int(res_seq)
-                    
+
                     if atom_name not in ('CA', 'CB'):
                         continue
-                        
+
                     x = float(parts[columns['_atom_site.Cartn_x']])
                     y = float(parts[columns['_atom_site.Cartn_y']])
                     z = float(parts[columns['_atom_site.Cartn_z']])
                     coord = (x, y, z)
-                    
+
                     if atom_name == 'CA':
-                        plddt = float(parts[columns['_atom_site.B_iso_or_equiv']])
-                        if chain_id not in ca_dict:
-                            ca_dict[chain_id] = {}
-                        ca_dict[chain_id][res_seq] = (coord, plddt)
-                    
+                        bfactor = float(parts[columns['_atom_site.B_iso_or_equiv']])
+                        ca_dict.setdefault(chain_id, {})[res_seq] = (coord, bfactor)
+
                     elif atom_name == 'CB':
-                        if chain_id not in cb_dict:
-                            cb_dict[chain_id] = {}
-                        cb_dict[chain_id][res_seq] = coord
-                        
+                        cb_dict.setdefault(chain_id, {})[res_seq] = coord
+
                 except (IndexError, ValueError, KeyError):
                     continue
+
+    distance_matrices = {}
 
     for chain_id, ca_res in ca_dict.items():
         if not ca_res:
             continue
-            
-        # Sort by residue sequence
+
         seq_nums = sorted(ca_res.keys())
-        ca_coords = []
-        cb_coords = []
-        plddts = []
-        
+        ca_coords, cb_coords, bfactors = [], [], []
+
         for seq in seq_nums:
-            ca_coord, plddt = ca_res[seq]
+            ca_coord, bfactor = ca_res[seq]
             ca_coords.append(ca_coord)
-            plddts.append(plddt)
-            
-            if chain_id in cb_dict and seq in cb_dict[chain_id]:
-                cb_coords.append(cb_dict[chain_id][seq])
-            else:
-                cb_coords.append(ca_coord) # Fallback to CA
-                
-        ca = np.array(ca_coords, dtype=np.float32)
-        cb = np.array(cb_coords, dtype=np.float32)
-        plddt = np.array(plddts, dtype=np.float32)
+            bfactors.append(bfactor)
+            cb_coords.append(cb_dict.get(chain_id, {}).get(seq, ca_coord))  # CA fallback
+
+        ca     = np.array(ca_coords, dtype=np.float32)
+        cb     = np.array(cb_coords, dtype=np.float32)
+        plddt  = np.array(bfactors,  dtype=np.float32)
 
         ca_dist = _pairwise_dist_float32(ca)
         cb_dist = _pairwise_dist_float32(cb)
 
-        # For experimental PDB files, the B-factor column is temperature factor,
-        # so values < 50 are actually HIGH quality (rigid).
-        # We should NOT mask them out like we would for AlphaFold pLDDT.
+        # ── Apply pLDDT confidence masking ONLY for AlphaFold structures ────
+        # For PDB structures the B-factor is a crystallographic temperature
+        # factor: low B-factor = high quality (rigid) — do NOT mask.
+        # For AlphaFold structures pLDDT < 50 signals unreliable IDRs
+        # that should not contribute edges to the contact graph.
+        if is_alphafold:
+            low_conf = plddt < 50.0
+            if low_conf.any():
+                ca_dist[low_conf, :] = np.nan
+                ca_dist[:, low_conf] = np.nan
+                cb_dist[low_conf, :] = np.nan
+                cb_dist[:, low_conf] = np.nan
 
         distance_matrices[chain_id] = {
             "C_alpha": ca_dist,
