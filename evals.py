@@ -23,8 +23,15 @@ def get_macro_fmax(y_true, y_pred_probs):
 
 def get_auroc(y_true, y_pred_probs, average="macro"):
     """Compute AUROC."""
+    import warnings
     try:
-        return roc_auc_score(y_true, y_pred_probs, average=average)
+        if average == "macro":
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                scores = roc_auc_score(y_true, y_pred_probs, average=None)
+            return np.nanmean(scores)
+        else:
+            return roc_auc_score(y_true, y_pred_probs, average=average)
     except ValueError:
         return 0.0
 
