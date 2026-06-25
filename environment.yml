@@ -28,7 +28,10 @@ dependencies:
   # Bioinformatics
   - biopython>=1.81
   - obonet
+  - networkx
   - mmseqs2      # Homology clustering (MMseqs2 easy-cluster)
+  - blast
+  - diamond
 
   # Structure / contact-map tools
   - tqdm
