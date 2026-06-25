@@ -14,6 +14,9 @@ import gc
 import json
 import pickle
 import transformers.utils.import_utils
+import __main__
+from preprocessing.create_batch_dataset import PDB_Dataset
+__main__.PDB_Dataset = PDB_Dataset
 
 # Monkey-patch to bypass torch.load restriction in recent transformers
 transformers.utils.import_utils.check_torch_load_is_safe = lambda: None
@@ -189,9 +192,6 @@ if __name__ == '__main__':
     print(f"Using ontology: {ontology}")
 
     # Load dataset — support both new nested format and old flat format
-    import __main__
-    from preprocessing.create_batch_dataset import PDB_Dataset
-    __main__.PDB_Dataset = PDB_Dataset
     with open(args.annot_dict, 'rb') as f:
         datasets = pickle.load(f)
 

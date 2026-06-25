@@ -12,6 +12,9 @@ import csv
 
 from model import get_model, HybridGNN
 from evals import evaluate_all, compute_ic
+import __main__
+from preprocessing.create_batch_dataset import PDB_Dataset
+__main__.PDB_Dataset = PDB_Dataset
 from focal_loss import FocalLoss
 from utils import load_alpha_weights
 
@@ -44,10 +47,6 @@ def set_seed(seed):
 
 def load_datasets(path, ontology):
     print(f"Loading datasets from {path} for {ontology}...")
-    import __main__
-    from preprocessing.create_batch_dataset import PDB_Dataset
-    __main__.PDB_Dataset = PDB_Dataset
-    
     with open(path, 'rb') as f:
         datasets = pickle.load(f)
 

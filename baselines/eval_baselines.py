@@ -5,6 +5,9 @@ import math
 import pickle
 import numpy as np
 from tqdm import tqdm
+import __main__
+from preprocessing.create_batch_dataset import PDB_Dataset
+__main__.PDB_Dataset = PDB_Dataset
 from sklearn.metrics import precision_recall_curve, auc, roc_auc_score
 from collections import defaultdict
 
@@ -132,12 +135,6 @@ def main():
     proj_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
     data_pkl = os.path.join(proj_dir, 'preprocessing', 'data', 'split_files', 'datasets.pkl')
     out_csv = os.path.join(proj_dir, 'baselines', 'baseline_metrics.csv')
-    
-    import __main__
-    import sys
-    sys.path.append(proj_dir)
-    from preprocessing.create_batch_dataset import PDB_Dataset
-    __main__.PDB_Dataset = PDB_Dataset
     
     with open(data_pkl, 'rb') as f:
         datasets = pickle.load(f)
