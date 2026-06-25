@@ -10,7 +10,7 @@ import sys
 import platform
 import csv
 
-from model import get_model
+from model import get_model, HybridGNN
 from evals import evaluate_all, compute_ic
 from focal_loss import FocalLoss
 from utils import load_alpha_weights
@@ -24,6 +24,9 @@ def parse_args():
     parser.add_argument('--lr', type=float, default=1e-5, help='Learning rate.')
     parser.add_argument('--seed', type=int, default=12345, help='Random seed.')
     parser.add_argument('--dropout', type=float, default=0.3, help='Dropout probability.')
+    parser.add_argument('--focal_gamma', type=float, default=4.0, help='Gamma for Focal Loss.')
+    parser.add_argument('--hidden_sizes', type=str, default='1024,912', help='Comma-separated hidden sizes.')
+    parser.add_argument('--num_heads', type=int, default=4, help='Number of attention heads (for GAT/Hybrid).')
     parser.add_argument('--accumulation_steps', type=int, default=4, help='Gradient accumulation steps.')
     parser.add_argument('--patience', type=int, default=15, help='Early stopping patience.')
     parser.add_argument('--dataset_path', type=str, default='preprocessing/data/split_files/datasets.pkl', help='Path to pre-split datasets.')
@@ -113,10 +116,17 @@ def main():
 
     # Model Setup
     input_size = len(train_dataset[0].x[0])
-    hidden_sizes = [1024, 912]
+    hidden_sizes = [int(h) for h in args.hidden_sizes.split(',')]
     output_size = train_dataset.num_classes
 
-    model = get_model(args.model, input_size, hidden_sizes, output_size)
+    # Handle model kwargs gracefully (only pass num_heads and dropout to Hybrid and GAT if supported)
+    if args.model.lower() in ["hybrid", "deepgreengo", "rarelabelgnn"]:
+        model = HybridGNN(input_size, hidden_sizes, output_size, num_attention_heads=args.num_heads, dropout=args.dropout)
+    elif args.model.lower() == "gat":
+        # Our current GATModel doesn't accept dropout in its constructor in model.py, but we could pass num_heads
+        model = get_model(args.model, input_size, hidden_sizes, output_size)
+    else:
+        model = get_model(args.model, input_size, hidden_sizes, output_size)
     model.to(device)
 
     # Loss Setup
@@ -124,10 +134,10 @@ def main():
         CLASS_WEIGHT_PATH = "model_and_weight_files/alpha_weights.pkl"
         try:
             alpha = load_alpha_weights(CLASS_WEIGHT_PATH)
-            criterion = FocalLoss(alpha=alpha)
+            criterion = FocalLoss(alpha=alpha, gamma=args.focal_gamma)
         except FileNotFoundError:
-            print("Alpha weights not found. Using default FocalLoss (alpha=0.25).")
-            criterion = FocalLoss(alpha=0.25)
+            print(f"Alpha weights not found. Using default FocalLoss (alpha=0.25, gamma={args.focal_gamma}).")
+            criterion = FocalLoss(alpha=0.25, gamma=args.focal_gamma)
     else:
         criterion = nn.BCEWithLogitsLoss()
 
@@ -152,7 +162,7 @@ def main():
         y_true = np.vstack(all_labels)
         y_pred = np.vstack(all_preds)
         metrics = evaluate_all(y_true, y_pred, ic)
-        return metrics
+        return metrics, y_true, y_pred
 
     log_file = open(os.path.join(run_dir, 'training_log.csv'), 'w', newline='')
     log_writer = csv.writer(log_file)
@@ -178,7 +188,7 @@ def main():
         train_loss = total_loss / len(train_loader)
 
         # Evaluate
-        valid_metrics = evaluate(valid_loader)
+        valid_metrics, val_y_true, val_y_pred = evaluate(valid_loader)
         micro_fmax = valid_metrics['Micro_Fmax']
         macro_fmax = valid_metrics['Macro_Fmax']
         smin = valid_metrics['Smin']
@@ -210,7 +220,7 @@ def main():
     print("Training finished. Evaluating on Test Set...")
     model.load_state_dict(torch.load(os.path.join(run_dir, 'best_model.pth'),
                                      map_location=device, weights_only=False))
-    test_metrics = evaluate(test_loader)
+    test_metrics, test_y_true, test_y_pred = evaluate(test_loader)
     
     print("\n--- TEST METRICS ---")
     for k, v in test_metrics.items():
@@ -218,6 +228,10 @@ def main():
 
     with open(os.path.join(run_dir, 'test_metrics.json'), 'w') as f:
         json.dump(test_metrics, f, indent=4)
+        
+    # Save raw predictions for post-hoc plotting (PR/ROC curves)
+    np.save(os.path.join(run_dir, 'test_y_true.npy'), test_y_true)
+    np.save(os.path.join(run_dir, 'test_y_pred.npy'), test_y_pred)
 
 if __name__ == "__main__":
     main()

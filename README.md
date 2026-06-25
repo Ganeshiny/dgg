@@ -60,6 +60,11 @@ You also need the SIFTS annotation file and GO OBO file in `preprocessing/data/`
 
 ## Run the Full Pipeline
 
+Before running, set your HuggingFace token as an environment variable to prevent rate limits and unauthenticated download errors for ProtBERT:
+```bash
+export HF_TOKEN="your_hf_token_here"
+```
+
 ```bash
 bash run_all.sh
 ```
@@ -85,6 +90,12 @@ bash run_all.sh --skip-plots        # Skip figure generation
 
 ```bash
 EPOCHS=50 BATCH_SIZE=16 MAIN_MODEL=GAT MAIN_LOSS=BCE bash run_all.sh
+```
+
+### Hyperparameter Ablations
+To run the automated hyperparameter sensitivity sweeps for the Hybrid model:
+```bash
+bash run_hyperparam_ablations.sh
 ```
 
 ---
@@ -137,6 +148,8 @@ deep-green-GO/
 ├── predictions.py                # Inference on new structures
 ├── run_all.sh                    # ONE-CLICK full pipeline
 ├── run_ablations.sh              # Ablation sweep helper
+├── run_hyperparam_ablations.sh   # Hyperparameter sensitivity helper
+├── generate_supp_tables.py       # LaTeX config table generator
 ├── environment.yml               # Conda environment
 └── requirements.txt              # pip requirements
 ```

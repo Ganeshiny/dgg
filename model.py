@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from torch_geometric.nn import GCNConv, GATv2Conv, global_mean_pool, AttentionalAggregation
+from torch_geometric.nn import GCNConv, GATConv, GATv2Conv, global_mean_pool, AttentionalAggregation
 
 class GCNModel(nn.Module):
     def __init__(self, input_size, hidden_sizes, output_size):
@@ -53,7 +53,7 @@ class HybridGNN(nn.Module):
     - GATv2 layer (more expressive attention than GAT v1)
     - AttentionalAggregation pooling → prediction head
     """
-    def __init__(self, input_size, hidden_sizes, output_size, num_attention_heads=4):
+    def __init__(self, input_size, hidden_sizes, output_size, num_attention_heads=4, dropout=0.3):
         super(HybridGNN, self).__init__()
         self.input_linear = nn.Linear(input_size, hidden_sizes[0])
         self.input_bn     = nn.BatchNorm1d(hidden_sizes[0])
@@ -75,10 +75,10 @@ class HybridGNN(nn.Module):
         # Prediction head: Linear → LeakyReLU → BatchNorm → Dropout → Linear
         self.head_linear1 = nn.Linear(gat_out_dim, gat_out_dim)
         self.head_bn      = nn.BatchNorm1d(gat_out_dim)
-        self.head_dropout = nn.Dropout(0.3)
+        self.head_dropout = nn.Dropout(dropout)
         self.output_layer = nn.Linear(gat_out_dim, output_size)
         
-        self.dropout = nn.Dropout(0.3)
+        self.dropout = nn.Dropout(dropout)
 
     def forward(self, x, edge_index, batch):
         # Input transformation

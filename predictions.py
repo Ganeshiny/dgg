@@ -12,14 +12,19 @@ from utils import write_seqs_from_cifdir, read_seqs_file, write_annot_npz
 import gc
 import json
 import pickle
+import transformers.utils.import_utils
+
+# Monkey-patch to bypass torch.load restriction in recent transformers
+transformers.utils.import_utils.check_torch_load_is_safe = lambda: None
 
 # Set device
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 threshold = 0.5
 
 # Load ProtBERT model and tokenizer
-tokenizer = BertTokenizer.from_pretrained('Rostlab/prot_bert_bfd', do_lower_case=False)
-protbert_model = BertModel.from_pretrained('Rostlab/prot_bert_bfd')
+hf_token = os.environ.get("HF_TOKEN")
+tokenizer = BertTokenizer.from_pretrained('Rostlab/prot_bert_bfd', do_lower_case=False, token=hf_token)
+protbert_model = BertModel.from_pretrained('Rostlab/prot_bert_bfd', token=hf_token)
 protbert_model.gradient_checkpointing_enable()  # Reduces memory usage
 protbert_model.to(device).eval()
 

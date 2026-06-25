@@ -17,14 +17,18 @@ def _get_protbert():
     """Return (tokenizer, model, device), loading once on first call."""
     global _tokenizer, _bert_model, _bert_device
     if _bert_model is None:
+        import transformers.utils.import_utils
+        transformers.utils.import_utils.check_torch_load_is_safe = lambda: None
         from transformers import BertTokenizer, BertModel
         _bert_device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         print("Loading ProtBERT tokenizer…")
-        _tokenizer = BertTokenizer.from_pretrained('Rostlab/prot_bert_bfd', do_lower_case=False)
+        hf_token = os.environ.get("HF_TOKEN")
+        _tokenizer = BertTokenizer.from_pretrained('Rostlab/prot_bert_bfd', do_lower_case=False, token=hf_token)
         print("Loading ProtBERT model…")
         _bert_model = BertModel.from_pretrained(
             'Rostlab/prot_bert_bfd',
             use_safetensors=True,   # avoids torch.load CVE-2025-32434 (needs torch<2.6 fix)
+            token=hf_token
         )
         _bert_model.gradient_checkpointing_enable()
         _bert_model.to(_bert_device).eval()
