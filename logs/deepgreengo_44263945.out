@@ -59,3 +59,35 @@ ProtBERT loaded on cuda
 ============================================================
  Loaded dataset with 12889 proteins for biological_process
  Loaded dataset with 1606 proteins for biological_process
+ Loaded dataset with 1722 proteins for biological_process
+  Train: 12889  |  Valid: 1606  |  Test: 1722
+  GO classes: 727
+
+============================================================
+  Building datasets for ontology: cellular_component
+============================================================
+ Loaded dataset with 12889 proteins for cellular_component
+ Loaded dataset with 1606 proteins for cellular_component
+ Loaded dataset with 1722 proteins for cellular_component
+  Train: 12889  |  Valid: 1606  |  Test: 1722
+  GO classes: 161
+
+✓ Datasets for all 3 ontologies saved to preprocessing/data/split_files/datasets.pkl
+  Keys in pickle: biological_process, molecular_function, cellular_component
+  Each key contains: 'train', 'valid', 'test'
+  [32m✔[0m Datasets pickled to preprocessing/data/split_files/datasets.pkl
+
+[1m[32m══════════════════════════════════════════[0m
+[1m[32m  Step 2: Baseline Models[0m
+[1m[32m══════════════════════════════════════════[0m
+  [33m▸[0m 2a. BLAST baseline...
+[BLAST] Building database from preprocessing/data/split_files/_train_sequences.fasta…
+  [33m⚠[0m  BLAST baseline failed (is BLAST+ installed?)
+  [33m▸[0m 2b. DIAMOND baseline...
+[DIAMOND] Building database from preprocessing/data/split_files/_train_sequences.fasta…
+  [33m⚠[0m  DIAMOND baseline failed (is DIAMOND installed?)
+  [33m▸[0m 2c. Naive frequency baseline...
+Computing GO term frequencies from training set...
+========================================================
+Job finished  : Thu Jun 25 13:34:58 MDT 2026
+========================================================
