@@ -64,7 +64,7 @@ echo "========================================================"
 # the pipeline to move to the dataset building step with what we have.
 cd "${PROJECT_DIR}"
 # HF_TOKEN should be exported in your ~/.bashrc or a secure .env file, NOT hardcoded here.
-bash run_all.sh --skip-cmaps
+bash run_all.sh --skip-preprocess
 
 echo "========================================================"
 echo "Job finished  : $(date)"
