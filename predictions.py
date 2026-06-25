@@ -8,7 +8,8 @@ import csv
 from transformers import BertTokenizer, BertModel
 import scipy.sparse as sp
 from model import get_model
-from utils import write_seqs_from_cifdir, read_seqs_file, write_annot_npz
+from utils import write_seqs_from_cifdir, read_seqs_file
+from preprocessing.create_cmaps import write_annot_npz
 import gc
 import json
 import pickle
