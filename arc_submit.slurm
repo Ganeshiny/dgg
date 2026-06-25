@@ -16,18 +16,21 @@
 #SBATCH --mem=128000
 #SBATCH --partition=gpu-v100
 #SBATCH --gres=gpu:1
-#SBATCH --output=deepgreengo_%j.out
-#SBATCH --error=deepgreengo_%j.err
-#SBATCH --mail-type=BEGIN,END,FAIL
-#SBATCH --mail-user=ganeshiny.sridharan@ucalgary.ca
+#SBATCH --output=/home/%u/deep-green-GO/logs/deepgreengo_%j.out
+#SBATCH --error=/home/%u/deep-green-GO/logs/deepgreengo_%j.err
 
 ####### Diagnostics ###########################################################
+# Make sure the logs directory exists before anything else runs
+mkdir -p /home/$USER/deep-green-GO/logs
+
 echo "========================================================"
 echo "Job ID        : $SLURM_JOB_ID"
 echo "Node          : $SLURM_NODELIST"
 echo "CPUs          : $SLURM_CPUS_PER_TASK"
 echo "Start time    : $(date)"
 echo "Working dir   : $(pwd)"
+echo "Log .out      : /home/$USER/deep-green-GO/logs/deepgreengo_${SLURM_JOB_ID}.out"
+echo "Log .err      : /home/$USER/deep-green-GO/logs/deepgreengo_${SLURM_JOB_ID}.err"
 echo "========================================================"
 
 ####### Load Software #########################################################
