@@ -287,6 +287,70 @@ def plot_radar_summary(agg_csv: str, out_dir: str):
         plt.savefig(os.path.join(out_dir, f'radar_plot_{ont}.pdf'))
         plt.close()
 
+# ─────────────────────────────────────────────────────────────────────────────
+# 7.  Baseline Comparison Plot
+# ─────────────────────────────────────────────────────────────────────────────
+def plot_baseline_comparison(dgg_csv: str, baseline_csv: str, out_dir: str):
+    if not os.path.exists(dgg_csv) or not os.path.exists(baseline_csv):
+        print(f"[skip] Missing {dgg_csv} or {baseline_csv}")
+        return
+        
+    df_dgg = pd.read_csv(dgg_csv)
+    df_base = pd.read_csv(baseline_csv)
+    
+    # We want to compare DeepGreenGO vs DeepFRI vs BLAST vs DIAMOND vs Naive
+    for ont in df_base['Ontology'].unique():
+        sub_dgg = df_dgg[(df_dgg['Ontology'] == ont) & (df_dgg['Model'] == 'Hybrid')] # DeepGreenGO Hybrid
+        sub_base = df_base[df_base['Ontology'] == ont]
+        
+        fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+        fig.suptitle(f'DeepGreenGO vs Baselines — {ont}', fontsize=15)
+        
+        metrics = [('Micro_Fmax', 'Fmax ↑'), ('Smin', 'Smin ↓')]
+        
+        for ax, (metric, label) in zip(axes, metrics):
+            models = []
+            means = []
+            stds = []
+            
+            # DeepGreenGO
+            if not sub_dgg.empty:
+                dgg_row = sub_dgg.iloc[0]
+                if f"{metric}_mean" in dgg_row:
+                    models.append("DeepGreenGO")
+                    means.append(dgg_row[f"{metric}_mean"])
+                    stds.append(dgg_row[f"{metric}_std"])
+                    
+            # Baselines
+            for _, row in sub_base.iterrows():
+                m_mean = f"{metric}_Mean" if metric == "Micro_Fmax" else "Smin_Mean"
+                m_std = f"{metric}_Std" if metric == "Micro_Fmax" else "Smin_Std"
+                
+                if m_mean in row and not pd.isna(row[m_mean]):
+                    models.append(row['Model'])
+                    means.append(row[m_mean])
+                    stds.append(row[m_std])
+                    
+            x_pos = np.arange(len(models))
+            
+            colors = ['#1f77b4' if 'DeepGreenGO' in m else '#ff7f0e' if 'DeepFRI' in m else '#2ca02c' for m in models]
+            
+            bars = ax.bar(x_pos, means, align='center', alpha=0.8, color=colors, edgecolor='black', linewidth=1.2)
+            ax.errorbar(x_pos, means, yerr=stds, fmt='none', ecolor='black', capsize=5, linewidth=1.5)
+            
+            ax.set_xticks(x_pos)
+            ax.set_xticklabels(models, rotation=45, ha="right")
+            ax.set_ylabel(label)
+            ax.set_title(metric)
+            ax.grid(axis='y', linestyle='--', alpha=0.5)
+            ax.spines[['top', 'right']].set_visible(False)
+            
+        plt.tight_layout()
+        plt.savefig(os.path.join(out_dir, f'baseline_comparison_{ont}.png'))
+        plt.savefig(os.path.join(out_dir, f'baseline_comparison_{ont}.pdf'))
+        plt.close()
+
+
 if __name__ == "__main__":
     out_dir = "plots/"
     os.makedirs(out_dir, exist_ok=True)
@@ -298,4 +362,5 @@ if __name__ == "__main__":
     plot_metric_heatmap("runs/aggregated_results.csv", out_dir)
     plot_pr_roc_curves("runs/", out_dir)
     plot_radar_summary("runs/aggregated_results.csv", out_dir)
+    plot_baseline_comparison("runs/aggregated_results.csv", "baselines/baseline_metrics.csv", out_dir)
     print(f"\nAll figures saved to {out_dir}")

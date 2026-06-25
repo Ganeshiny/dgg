@@ -112,33 +112,7 @@ else
     warn "Skipping preprocessing (--skip-preprocess)"
 fi
 
-# ─── Step 2: Baselines ────────────────────────────────────────────────────────
-if [ "$SKIP_BASELINES" = false ]; then
-    section "Step 2: Baseline Models"
-
-    # Auto-install BLAST+ and DIAMOND if missing
-    if ! command -v blastp &>/dev/null; then
-        info "BLAST+ not found — installing via conda..."
-        conda install -y -c bioconda blast || warn "Could not install BLAST+, skipping BLAST baseline"
-    fi
-    if ! command -v diamond &>/dev/null; then
-        info "DIAMOND not found — installing via conda..."
-        conda install -y -c bioconda diamond || warn "Could not install DIAMOND, skipping DIAMOND baseline"
-    fi
-
-    info "2a. BLAST baseline..."
-    python3 baselines/blast/run_blast_baseline.py || warn "BLAST baseline failed (is BLAST+ installed?)"
-
-    info "2b. DIAMOND baseline..."
-    python3 baselines/diamond/run_diamond_baseline.py || warn "DIAMOND baseline failed (is DIAMOND installed?)"
-
-    info "2c. Naive frequency baseline..."
-    python3 baselines/naive_frequency/run_naive_baseline.py
-    success "Naive baseline done"
-else
-    warn "Skipping baselines (--skip-baselines)"
-fi
-
+# (Baselines moved to Step 5)
 
 # ─── Step 3: Ablation sweep ───────────────────────────────────────────────────
 if [ "$SKIP_ABLATIONS" = false ]; then
@@ -181,9 +155,47 @@ else
     warn "Skipping per-cluster evaluation (--skip-eval)"
 fi
 
-# ─── Step 5: Aggregation & Plotting ──────────────────────────────────────────
+# ─── Step 5: Baselines ────────────────────────────────────────────────────────
+if [ "$SKIP_BASELINES" = false ]; then
+    section "Step 5: Baseline Models & Evaluation"
+
+    # Auto-install BLAST+ and DIAMOND if missing
+    if ! command -v blastp &>/dev/null; then
+        info "BLAST+ not found — installing via conda..."
+        conda install -y -c bioconda blast || warn "Could not install BLAST+, skipping BLAST baseline"
+    fi
+    if ! command -v diamond &>/dev/null; then
+        info "DIAMOND not found — installing via conda..."
+        conda install -y -c bioconda diamond || warn "Could not install DIAMOND, skipping DIAMOND baseline"
+    fi
+
+    info "5a. BLAST baseline..."
+    python3 baselines/blast/run_blast_baseline.py || warn "BLAST baseline failed (is BLAST+ installed?)"
+
+    info "5b. DIAMOND baseline..."
+    python3 baselines/diamond/run_diamond_baseline.py || warn "DIAMOND baseline failed (is DIAMOND installed?)"
+
+    info "5c. Naive frequency baseline..."
+    python3 baselines/naive_frequency/run_naive_baseline.py
+    
+    info "5d. DeepFRI baseline..."
+    if conda env list | grep -q "deepfri"; then
+        python3 baselines/deepfri/run_deepfri_baseline.py || warn "DeepFRI baseline failed"
+    else
+        warn "Conda environment 'deepfri' not found. Please create it first. Skipping DeepFRI."
+    fi
+    
+    info "5e. Evaluating all baselines (bootstrapping CAFA metrics)..."
+    python3 baselines/eval_baselines.py
+    
+    success "Baselines completed"
+else
+    warn "Skipping baselines (--skip-baselines)"
+fi
+
+# ─── Step 6: Aggregation & Plotting ──────────────────────────────────────────
 if [ "$SKIP_PLOTS" = false ]; then
-    section "Step 5: Aggregate Results and Generate Plots"
+    section "Step 6: Aggregate Results and Generate Plots"
 
     python3 aggregate_results.py
     python3 plot_results.py
