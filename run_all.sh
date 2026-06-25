@@ -116,6 +116,16 @@ fi
 if [ "$SKIP_BASELINES" = false ]; then
     section "Step 2: Baseline Models"
 
+    # Auto-install BLAST+ and DIAMOND if missing
+    if ! command -v blastp &>/dev/null; then
+        info "BLAST+ not found — installing via conda..."
+        conda install -y -c bioconda blast || warn "Could not install BLAST+, skipping BLAST baseline"
+    fi
+    if ! command -v diamond &>/dev/null; then
+        info "DIAMOND not found — installing via conda..."
+        conda install -y -c bioconda diamond || warn "Could not install DIAMOND, skipping DIAMOND baseline"
+    fi
+
     info "2a. BLAST baseline..."
     python3 baselines/blast/run_blast_baseline.py || warn "BLAST baseline failed (is BLAST+ installed?)"
 
@@ -128,6 +138,7 @@ if [ "$SKIP_BASELINES" = false ]; then
 else
     warn "Skipping baselines (--skip-baselines)"
 fi
+
 
 # ─── Step 3: Ablation sweep ───────────────────────────────────────────────────
 if [ "$SKIP_ABLATIONS" = false ]; then
