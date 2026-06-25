@@ -37,9 +37,6 @@ echo "Log .err      : ${LOG_DIR}/deepgreengo_${SLURM_JOB_ID}.err"
 echo "========================================================"
 
 ####### Load Software #########################################################
-# Since Conda is installed system-wide (or in your home directory) on ARC and
-# already available in your (base) environment, we don't need to load a module.
-# We just need to initialize it for the Slurm batch shell.
 source "$(conda info --base)/etc/profile.d/conda.sh"
 conda activate deepgreengo \
   || { echo "ERROR: 'deepgreengo' conda env not found. Aborting."; \
@@ -51,8 +48,6 @@ echo "PyTorch: $(python -c 'import torch; print(torch.__version__)')"
 echo "CUDA   : $(python -c 'import torch; print(torch.cuda.get_device_name(0) if torch.cuda.is_available() else "NOT AVAILABLE")')"
 
 ####### Job Execution #########################################################
-# ARC allocates a per-job scratch directory at /scratch/$SLURM_JOB_ID.
-# Use it for large intermediate files (cmaps) to avoid filling /home (500GB limit).
 SCRATCH_DIR="/scratch/${SLURM_JOB_ID}"
 mkdir -p "${SCRATCH_DIR}"
 
