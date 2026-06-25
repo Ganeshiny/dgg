@@ -133,6 +133,12 @@ def main():
     data_pkl = os.path.join(proj_dir, 'preprocessing', 'data', 'split_files', 'datasets.pkl')
     out_csv = os.path.join(proj_dir, 'baselines', 'baseline_metrics.csv')
     
+    import __main__
+    import sys
+    sys.path.append(proj_dir)
+    from preprocessing.create_batch_dataset import PDB_Dataset
+    __main__.PDB_Dataset = PDB_Dataset
+    
     with open(data_pkl, 'rb') as f:
         datasets = pickle.load(f)
         

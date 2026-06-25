@@ -189,6 +189,9 @@ if __name__ == '__main__':
     print(f"Using ontology: {ontology}")
 
     # Load dataset — support both new nested format and old flat format
+    import __main__
+    from preprocessing.create_batch_dataset import PDB_Dataset
+    __main__.PDB_Dataset = PDB_Dataset
     with open(args.annot_dict, 'rb') as f:
         datasets = pickle.load(f)
 

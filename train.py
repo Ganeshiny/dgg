@@ -44,6 +44,10 @@ def set_seed(seed):
 
 def load_datasets(path, ontology):
     print(f"Loading datasets from {path} for {ontology}...")
+    import __main__
+    from preprocessing.create_batch_dataset import PDB_Dataset
+    __main__.PDB_Dataset = PDB_Dataset
+    
     with open(path, 'rb') as f:
         datasets = pickle.load(f)
 

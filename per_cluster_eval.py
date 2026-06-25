@@ -94,6 +94,9 @@ def main():
     print('Using device:', device)
 
     print("Loading datasets...")
+    import __main__
+    from preprocessing.create_batch_dataset import PDB_Dataset
+    __main__.PDB_Dataset = PDB_Dataset
     with open(args.dataset_path, 'rb') as f:
         datasets = pickle.load(f)
 
