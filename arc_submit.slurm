@@ -26,6 +26,7 @@ PROJECT_DIR="${SLURM_SUBMIT_DIR}"
 LOG_DIR="${PROJECT_DIR}/logs"
 mkdir -p "${LOG_DIR}"
 
+
 echo "========================================================"
 echo "Job ID        : $SLURM_JOB_ID"
 echo "Node          : $SLURM_NODELIST"
@@ -62,6 +63,7 @@ echo "========================================================"
 # --skip-cmaps is added because we already have ~16,000 cmaps and want to force
 # the pipeline to move to the dataset building step with what we have.
 cd "${PROJECT_DIR}"
+# HF_TOKEN should be exported in your ~/.bashrc or a secure .env file, NOT hardcoded here.
 bash run_all.sh --skip-cmaps
 
 echo "========================================================"
