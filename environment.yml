@@ -24,6 +24,8 @@ dependencies:
   - scipy
   - scikit-learn
   - pandas
+  - requests
+  - python-docx
 
   # Bioinformatics
   - biopython>=1.81
