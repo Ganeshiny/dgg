@@ -60,10 +60,15 @@ You also need the SIFTS annotation file and GO OBO file in `preprocessing/data/`
 
 ## Run the Full Pipeline
 
-Before running, set your HuggingFace token as an environment variable to prevent rate limits and unauthenticated download errors for ProtBERT:
+Before running, set your Hugging Face token as an environment variable to prevent rate limits and unauthenticated download errors for ProtBERT. 
+
+If you are running on an HPC cluster (like SLURM), **do not hardcode your token into job scripts**. Instead, add it to your user profile:
 ```bash
-export HF_TOKEN="your_hf_token_here"
+echo 'export HF_TOKEN="your_hf_token_here"' >> ~/.bashrc
+source ~/.bashrc
 ```
+
+Then you can run the pipeline:
 
 ```bash
 bash run_all.sh
@@ -72,7 +77,7 @@ bash run_all.sh
 The script will:
 1. Extract sequences and build GO annotations from CIF files
 2. Cluster sequences at 30% identity (MMseqs2) and split into Train/Valid/Test
-3. Compute pLDDT-filtered contact maps and build PyG graph datasets
+3. Compute pLDDT-filtered contact maps and build PyG graph datasets *(Note: you can verify these using `python3 plot_random_cmap.py`)*
 4. Run BLAST / DIAMOND / Naive baselines
 5. Train all model ablations (MLP / GCN / GAT / Hybrid × BCE / Focal, 3 seeds, 3 ontologies)
 6. Run per-cluster generalisation evaluation
@@ -145,6 +150,7 @@ deep-green-GO/
 ├── per_cluster_eval.py           # Per homology-cluster generalisation eval
 ├── aggregate_results.py          # Aggregate runs into mean±std tables
 ├── plot_results.py               # Publication-quality figure generation
+├── plot_random_cmap.py           # Utility to visualize contact maps & pLDDT
 ├── predictions.py                # Inference on new structures
 ├── run_all.sh                    # ONE-CLICK full pipeline
 ├── run_ablations.sh              # Ablation sweep helper
