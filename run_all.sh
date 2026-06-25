@@ -142,30 +142,30 @@ fi
 
 # ─── Step 4: Per-cluster evaluation ──────────────────────────────────────────
 if [ "$SKIP_EVAL" = false ]; then
-    section "Step 4: Per-Cluster Evaluation"
+    section "Step 4: Per-Cluster Evaluation (all 3 ontologies)"
 
-    BEST_MODEL_PATH="runs/${MAIN_ONT:0:2}_${MAIN_MODEL}_${MAIN_LOSS}_s${MAIN_SEED}/best_model.pth"
-    # Shorten ontology name to match the prefix used in train.py
-    ONT_SHORT="${MAIN_ONT}"
-    case "$MAIN_ONT" in
-        biological_process)  ONT_SHORT="bp" ;;
-        molecular_function)  ONT_SHORT="mf" ;;
-        cellular_component)  ONT_SHORT="cc" ;;
-    esac
-    BEST_MODEL_PATH="runs/${ONT_SHORT}_${MAIN_MODEL}_${MAIN_LOSS}_s${MAIN_SEED}/best_model.pth"
+    declare -A ONT_SHORT_MAP
+    ONT_SHORT_MAP[biological_process]="bp"
+    ONT_SHORT_MAP[molecular_function]="mf"
+    ONT_SHORT_MAP[cellular_component]="cc"
 
-    if [ -f "$BEST_MODEL_PATH" ]; then
-        python3 per_cluster_eval.py \
-            --model_path "$BEST_MODEL_PATH" \
-            --model      "$MAIN_MODEL" \
-            --ontology   "$MAIN_ONT" \
-            --dataset_path "$DATASET_PKL" \
-            --output     "runs/cluster_performance.csv"
-        success "Cluster performance saved to runs/cluster_performance.csv"
-    else
-        warn "Best model not found at $BEST_MODEL_PATH — skipping cluster eval"
-        info "  Run ablations first, or set MAIN_MODEL / MAIN_LOSS / MAIN_SEED / MAIN_ONT"
-    fi
+    for ONT in biological_process molecular_function cellular_component; do
+        ONT_SHORT="${ONT_SHORT_MAP[$ONT]}"
+        BEST_MODEL_PATH="runs/${ONT_SHORT}_${MAIN_MODEL}_${MAIN_LOSS}_s${MAIN_SEED}/best_model.pth"
+
+        if [ -f "$BEST_MODEL_PATH" ]; then
+            info "Per-cluster eval: $ONT"
+            python3 per_cluster_eval.py \
+                --model_path "$BEST_MODEL_PATH" \
+                --model      "$MAIN_MODEL" \
+                --ontology   "$ONT" \
+                --dataset_path "$DATASET_PKL" \
+                --output     "runs/cluster_performance_${ONT_SHORT}.csv"
+            success "Cluster performance saved → runs/cluster_performance_${ONT_SHORT}.csv"
+        else
+            warn "Best model not found at $BEST_MODEL_PATH — skipping $ONT cluster eval"
+        fi
+    done
 else
     warn "Skipping per-cluster evaluation (--skip-eval)"
 fi

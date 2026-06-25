@@ -58,9 +58,11 @@ echo "Scratch dir   : $SCRATCH_DIR"
 echo "CMAP_THREADS  : $CMAP_THREADS"
 echo "========================================================"
 
-# Run the full DeepGreenGO pipeline from the project directory
+# Run the full DeepGreenGO pipeline from the project directory.
+# --skip-cmaps is added because we already have ~16,000 cmaps and want to force
+# the pipeline to move to the dataset building step with what we have.
 cd "${PROJECT_DIR}"
-bash run_all.sh
+bash run_all.sh --skip-cmaps
 
 echo "========================================================"
 echo "Job finished  : $(date)"

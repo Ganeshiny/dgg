@@ -156,7 +156,10 @@ if __name__ == '__main__':
     parser.add_argument('-seqs', type=str, default='examples/predictions_seqs.fasta', help='FASTA file containing sequences')
     parser.add_argument('-model', type=str, default='Hybrid', help='Model architecture to use (Hybrid, GCN, GAT, MLP)')
     parser.add_argument('-model_path', type=str, default="runs/bp_Hybrid_Focal_s42/best_model.pth", help='Path to the trained model weights')
-    parser.add_argument('-config', type=str, default="runs/bp_Hybrid_Focal_s42/config.json", help='Path to the run config')
+    parser.add_argument('-config', type=str, default="runs/bp_Hybrid_Focal_s42/config.json", help='Path to the run config (auto-detects ontology)')
+    parser.add_argument('-ontology', type=str, default=None,
+                        choices=['molecular_function', 'biological_process', 'cellular_component'],
+                        help='GO ontology. Overrides value from config.json if set.')
     parser.add_argument('-output', type=str, default='examples/predictions_output.csv', help='Output CSV file for predictions')
     parser.add_argument('-annot_dict', type=str, default='preprocessing/data/split_files/datasets.pkl', help='Path to datasets.pkl for labels')
     args = parser.parse_args()
@@ -169,24 +172,35 @@ if __name__ == '__main__':
     input_size = 1027
     hidden_sizes = [1024, 912]
     
-    # We load num_classes from the dataset used in training
-    with open(args.annot_dict, 'rb') as f:
-        datasets = pickle.load(f)
-    
-    ontology = 'biological_process'
+    # Determine ontology: CLI flag overrides config, config overrides nothing
+    ontology = 'biological_process'  # safe fallback
     if os.path.exists(args.config):
         with open(args.config, 'r') as f:
             c = json.load(f)
             ontology = c.get('ontology', 'biological_process')
-            
-    datasets['train'].selected_ontology = ontology
-    output_size = len(datasets['train'].goterms[ontology])
+    if args.ontology is not None:  # explicit CLI flag wins over everything
+        ontology = args.ontology
+    print(f"Using ontology: {ontology}")
+
+    # Load dataset — support both new nested format and old flat format
+    with open(args.annot_dict, 'rb') as f:
+        datasets = pickle.load(f)
+
+    if ontology in datasets:
+        train_ds = datasets[ontology]['train']
+    elif 'train' in datasets:
+        train_ds = datasets['train']
+        train_ds.selected_ontology = ontology
+    else:
+        raise KeyError(f"Pickle does not contain ontology '{ontology}'. "
+                       f"Available keys: {list(datasets.keys())}")
+
+    output_size = len(train_ds.goterms[ontology])
+    goterms = train_ds.goterms[ontology]
+    gonames = train_ds.gonames[ontology]
 
     model = get_model(args.model, input_size, hidden_sizes, output_size)
     model.load_state_dict(torch.load(args.model_path, map_location=device, weights_only=False))
     model.to(device).eval()
-
-    goterms = datasets['train'].goterms[ontology]
-    gonames = datasets['train'].gonames[ontology]
 
     run_predictions(struct_dir, model, args.output, gonames, goterms)

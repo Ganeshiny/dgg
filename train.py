@@ -43,16 +43,29 @@ def load_datasets(path, ontology):
     print(f"Loading datasets from {path} for {ontology}...")
     with open(path, 'rb') as f:
         datasets = pickle.load(f)
-        
-    # Set the selected ontology for all datasets so num_classes is correct
-    datasets['train'].selected_ontology = ontology
-    datasets['valid'].selected_ontology = ontology
-    datasets['test'].selected_ontology = ontology
-    datasets['train'].y_labels = datasets['train'].goterms[ontology]
-    datasets['valid'].y_labels = datasets['valid'].goterms[ontology]
-    datasets['test'].y_labels = datasets['test'].goterms[ontology]
 
-    return datasets['train'], datasets['valid'], datasets['test']
+    # New format: datasets[ontology]['train'/'valid'/'test']
+    # Support both the new nested format and the old flat format for backwards compatibility.
+    if ontology in datasets:
+        # New nested format — each ontology has its own pre-built dataset objects
+        ont_datasets = datasets[ontology]
+        return ont_datasets['train'], ont_datasets['valid'], ont_datasets['test']
+    elif 'train' in datasets:
+        # Old flat format (biological_process only) — patch ontology labels at runtime
+        print(f"  [warn] Pickle uses old flat format; patching ontology to '{ontology}'.")
+        datasets['train'].selected_ontology = ontology
+        datasets['valid'].selected_ontology = ontology
+        datasets['test'].selected_ontology  = ontology
+        datasets['train'].y_labels = datasets['train'].goterms[ontology]
+        datasets['valid'].y_labels = datasets['valid'].goterms[ontology]
+        datasets['test'].y_labels  = datasets['test'].goterms[ontology]
+        return datasets['train'], datasets['valid'], datasets['test']
+    else:
+        raise KeyError(
+            f"Pickle at '{path}' does not contain ontology '{ontology}' "
+            f"and is not in the expected flat format. "
+            f"Available keys: {list(datasets.keys())}"
+        )
 
 def main():
     args = parse_args()

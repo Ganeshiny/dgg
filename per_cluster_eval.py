@@ -97,13 +97,21 @@ def main():
     with open(args.dataset_path, 'rb') as f:
         datasets = pickle.load(f)
 
-    train_dataset = datasets['train']
-    test_dataset  = datasets['test']
-
-    # Switch ontology if needed
-    for ds in (train_dataset, test_dataset):
-        ds.selected_ontology = args.ontology
-        ds.y_labels = ds.goterms[args.ontology]
+    # Support new nested format {ontology: {train/valid/test}}
+    # and old flat format {train/valid/test} for backwards compatibility
+    if args.ontology in datasets:
+        train_dataset = datasets[args.ontology]['train']
+        test_dataset  = datasets[args.ontology]['test']
+    elif 'train' in datasets:
+        print(f"  [warn] Pickle is old flat format; patching ontology to '{args.ontology}'.")
+        train_dataset = datasets['train']
+        test_dataset  = datasets['test']
+        for ds in (train_dataset, test_dataset):
+            ds.selected_ontology = args.ontology
+            ds.y_labels = ds.goterms[args.ontology]
+    else:
+        raise KeyError(f"Pickle does not contain ontology '{args.ontology}'. "
+                       f"Available keys: {list(datasets.keys())}")
 
     # Compute IC from training labels
     print("Computing IC from training set...")

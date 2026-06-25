@@ -22,7 +22,10 @@ def _get_protbert():
         print("Loading ProtBERT tokenizer…")
         _tokenizer = BertTokenizer.from_pretrained('Rostlab/prot_bert_bfd', do_lower_case=False)
         print("Loading ProtBERT model…")
-        _bert_model = BertModel.from_pretrained('Rostlab/prot_bert_bfd')
+        _bert_model = BertModel.from_pretrained(
+            'Rostlab/prot_bert_bfd',
+            use_safetensors=True,   # avoids torch.load CVE-2025-32434 (needs torch<2.6 fix)
+        )
         _bert_model.gradient_checkpointing_enable()
         _bert_model.to(_bert_device).eval()
         print(f"ProtBERT loaded on {_bert_device}")
@@ -235,30 +238,56 @@ if __name__ == '__main__':
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print('Using device:', device)
 
-    root = 'preprocessing/data/structure_files/tmp_cmap_files'
-    annot_file = "preprocessing/data/pdb2go.tsv"
+    root       = 'preprocessing/data/structure_files/tmp_cmap_files'
+    annot_file = 'preprocessing/data/pdb2go.tsv'
     num_shards = 20
 
-    test_file = "preprocessing/data/split_files/_test.txt"
-    train_file = "preprocessing/data/split_files/_train.txt"
-    valid_file = "preprocessing/data/split_files/_valid.txt"
+    test_file  = 'preprocessing/data/split_files/_test.txt'
+    train_file = 'preprocessing/data/split_files/_train.txt'
+    valid_file = 'preprocessing/data/split_files/_valid.txt'
+
+    # All three Gene Ontology namespaces
+    ONTOLOGIES = ['molecular_function', 'biological_process', 'cellular_component']
 
     torch.manual_seed(12345)
-    pdb_protBERT_dataset_test = PDB_Dataset(root=root, annot_file=annot_file, num_shards=num_shards, selected_ontology="biological_process", transform=None, pre_transform=None, model="protBERT", pdb_split_set_file=test_file, dataset_type = "test")
-    pdb_protBERT_dataset_train = PDB_Dataset(root=root, annot_file=annot_file, num_shards=num_shards, selected_ontology="biological_process", transform=None, pre_transform=None, model ="protBERT", pdb_split_set_file=train_file, dataset_type = "train")
-    pdb_protBERT_dataset_valid = PDB_Dataset(root=root, annot_file=annot_file, num_shards=num_shards, selected_ontology="biological_process", transform=None, pre_transform=None, model="protBERT",  pdb_split_set_file=valid_file, dataset_type = "valid")
 
-    print(f"Train: {len(pdb_protBERT_dataset_train)}, Test: {len(pdb_protBERT_dataset_test)}, Valid: {len(pdb_protBERT_dataset_valid)}")
-    print(len(pdb_protBERT_dataset_train), len(pdb_protBERT_dataset_train[0].x[0]), pdb_protBERT_dataset_train.num_classes, pdb_protBERT_dataset_valid.num_classes)
-    # Paths to save the datasets
-    dataset_save_path = "preprocessing/data/split_files/datasets.pkl"
+    all_datasets = {}   # { 'biological_process': {'train': ..., 'test': ..., 'valid': ...}, ... }
 
-    # Save datasets to a pickle file
+    for ont in ONTOLOGIES:
+        print(f"\n{'='*60}")
+        print(f"  Building datasets for ontology: {ont}")
+        print(f"{'='*60}")
+
+        ds_train = PDB_Dataset(
+            root=root, annot_file=annot_file, num_shards=num_shards,
+            selected_ontology=ont, transform=None, pre_transform=None,
+            model='protBERT', pdb_split_set_file=train_file, dataset_type='train'
+        )
+        ds_valid = PDB_Dataset(
+            root=root, annot_file=annot_file, num_shards=num_shards,
+            selected_ontology=ont, transform=None, pre_transform=None,
+            model='protBERT', pdb_split_set_file=valid_file, dataset_type='valid'
+        )
+        ds_test = PDB_Dataset(
+            root=root, annot_file=annot_file, num_shards=num_shards,
+            selected_ontology=ont, transform=None, pre_transform=None,
+            model='protBERT', pdb_split_set_file=test_file, dataset_type='test'
+        )
+
+        print(f"  Train: {len(ds_train)}  |  Valid: {len(ds_valid)}  |  Test: {len(ds_test)}")
+        print(f"  GO classes: {ds_train.num_classes}")
+
+        all_datasets[ont] = {
+            'train': ds_train,
+            'valid': ds_valid,
+            'test':  ds_test,
+        }
+
+    # Save all three ontologies to a single pickle so train.py can load any of them
+    dataset_save_path = 'preprocessing/data/split_files/datasets.pkl'
     with open(dataset_save_path, 'wb') as f:
-        pickle.dump({
-            'train': pdb_protBERT_dataset_train,
-            'test': pdb_protBERT_dataset_test,
-            'valid': pdb_protBERT_dataset_valid
-        }, f)
+        pickle.dump(all_datasets, f)
 
-    print(f"Datasets saved to {dataset_save_path}")
+    print(f"\n✓ Datasets for all 3 ontologies saved to {dataset_save_path}")
+    print("  Keys in pickle: biological_process, molecular_function, cellular_component")
+    print("  Each key contains: 'train', 'valid', 'test'")
