@@ -20,9 +20,9 @@
 #SBATCH --error=/home/%u/dgg/deep-green-GO/logs/deepgreengo_%j.err
 
 ####### Diagnostics ###########################################################
-# PROJECT_DIR is the directory containing this script — always correct
-# regardless of where sbatch was called from.
-PROJECT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+# PROJECT_DIR is the directory where you ran 'sbatch' from.
+# Slurm automatically provides this as SLURM_SUBMIT_DIR.
+PROJECT_DIR="${SLURM_SUBMIT_DIR}"
 LOG_DIR="${PROJECT_DIR}/logs"
 mkdir -p "${LOG_DIR}"
 
