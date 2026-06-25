@@ -1,0 +1,28 @@
+Processing...
+  0%|          | 0/1722 [00:00<?, ?it/s]Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+  0%|          | 0/1722 [1:42:03<?, ?it/s]
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/create_batch_dataset.py", line 247, in <module>
+    valid_file = 'preprocessing/data/split_files/_valid.txt'
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/create_batch_dataset.py", line 112, in __init__
+  File "/home/ganeshiny.sridharan/miniconda3/envs/deepgreengo/lib/python3.10/site-packages/torch_geometric/data/dataset.py", line 115, in __init__
+    self._process()
+  File "/home/ganeshiny.sridharan/miniconda3/envs/deepgreengo/lib/python3.10/site-packages/torch_geometric/data/dataset.py", line 262, in _process
+    self.process()
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/create_batch_dataset.py", line 156, in process
+    def process(self):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/create_batch_dataset.py", line 174, in _load_data
+    sequence = str(raw_seqres.item()) if raw_seqres.ndim == 0 else str(raw_seqres)
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/create_batch_dataset.py", line 70, in seq2protbert
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/create_batch_dataset.py", line 25, in _get_protbert
+    _bert_model = BertModel.from_pretrained(
+  File "/home/ganeshiny.sridharan/miniconda3/envs/deepgreengo/lib/python3.10/site-packages/transformers/modeling_utils.py", line 4244, in from_pretrained
+    config, dtype = _get_dtype(
+  File "/home/ganeshiny.sridharan/miniconda3/envs/deepgreengo/lib/python3.10/site-packages/transformers/modeling_utils.py", line 848, in _get_dtype
+    state_dict = load_state_dict(
+  File "/home/ganeshiny.sridharan/miniconda3/envs/deepgreengo/lib/python3.10/site-packages/transformers/modeling_utils.py", line 374, in load_state_dict
+    check_torch_load_is_safe()
+  File "/home/ganeshiny.sridharan/miniconda3/envs/deepgreengo/lib/python3.10/site-packages/transformers/utils/import_utils.py", line 1397, in check_torch_load_is_safe
+    raise ValueError(
+ValueError: Due to a serious vulnerability issue in `torch.load`, even with `weights_only=True`, we now require users to upgrade torch to at least v2.6 in order to use the function. This version restriction does not apply when loading files with safetensors.
+See the vulnerability report here https://nvd.nist.gov/vuln/detail/CVE-2025-32434

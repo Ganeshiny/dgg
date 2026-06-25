@@ -1,2 +1,0 @@
-mkdir: cannot create directory ‘/var/spool/slurmd/job44258727/logs’: Permission denied
-bash: run_all.sh: No such file or directory

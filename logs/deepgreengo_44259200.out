@@ -415,3 +415,2764 @@ Wrote 21007 sequences to preprocessing/data/all_sequences.fasta
 [skip] 8BPX_BE: chain 'BE' not found in structure
 
 [2600/20984  12.4%] Processing batch of 50 proteins…
+[skip] 7N6G_Dd: chain 'Dd' not found in structure
+[skip] 7KZO_B1: chain 'B1' not found in structure
+[skip] 6U42_6J: chain '6J' not found in structure
+[skip] 7N61_6c: chain '6c' not found in structure
+[skip] 6U42_Y6: chain 'Y6' not found in structure
+[skip] 8GLV_N7: chain 'N7' not found in structure
+
+[2650/20984  12.6%] Processing batch of 50 proteins…
+
+[2700/20984  12.9%] Processing batch of 50 proteins…
+[skip] 7SOM_KK: chain 'KK' not found in structure
+[skip] 8APN_Bg: chain 'Bg' not found in structure
+[skip] 7N6G_1D: chain '1D' not found in structure
+[skip] 7N61_Ba: chain 'Ba' not found in structure
+[skip] 8GLV_J1: chain 'J1' not found in structure
+
+[2750/20984  13.1%] Processing batch of 50 proteins…
+[skip] 8GLV_0X: chain '0X' not found in structure
+[skip] 4V61_BR: chain 'BR' not found in structure
+[skip] 7XQP_3: chain '3' not found in structure
+[skip] 5MMJ_i: chain 'i' not found in structure
+
+[2800/20984  13.3%] Processing batch of 50 proteins…
+[skip] 8GLV_Fd: chain 'Fd' not found in structure
+[skip] 7WG5_B1: chain 'B1' not found in structure
+[skip] 8A22_Bq: chain 'Bq' not found in structure
+[skip] 6U42_C5: chain 'C5' not found in structure
+[skip] 7WFF_f: chain 'f' not found in structure
+[skip] 8IPA_la: chain 'la' not found in structure
+[skip] 6DWU_BD: chain 'BD' not found in structure
+[skip] 8GLV_3Y: chain '3Y' not found in structure
+[skip] 7UW9_o: chain 'o' not found in structure
+[skip] 6U42_Q8: chain 'Q8' not found in structure
+[skip] 6DWU_AU: chain 'AU' not found in structure
+[skip] 6TC7_AAA: chain 'AAA' not found in structure
+[skip] 7SQC_H1: chain 'H1' not found in structure
+[skip] 6RDS_U: chain 'U' not found in structure
+[skip] 8GLV_E0: chain 'E0' not found in structure
+
+[2850/20984  13.6%] Processing batch of 50 proteins…
+[skip] 6U42_6N: chain '6N' not found in structure
+[skip] 8IPB_ga: chain 'ga' not found in structure
+[skip] 8E73_1M: chain '1M' not found in structure
+[skip] 5X8P_q: chain 'q' not found in structure
+[skip] 6U42_0O: chain '0O' not found in structure
+[skip] 8IP8_xa: chain 'xa' not found in structure
+[skip] 8GLV_Az: chain 'Az' not found in structure
+
+[2900/20984  13.8%] Processing batch of 50 proteins…
+[skip] 4V61_AD: chain 'AD' not found in structure
+[skip] 4TUE_YU: chain 'YU' not found in structure
+[skip] 7O01_d: chain 'd' not found in structure
+
+[2950/20984  14.1%] Processing batch of 50 proteins…
+[skip] 5XNL_h: chain 'h' not found in structure
+
+[3000/20984  14.3%] Processing batch of 50 proteins…
+[skip] 4V3P_SL: chain 'SL' not found in structure
+[skip] 6RDG_V: chain 'V' not found in structure
+[skip] 7AQQ_Z: chain 'Z' not found in structure
+[skip] 7N6G_4d: chain '4d' not found in structure
+[skip] 7JRP_b: chain 'b' not found in structure
+[skip] 7WFE_B5: chain 'B5' not found in structure
+[skip] 8HTU_6: chain '6' not found in structure
+[skip] 7WG5_g: chain 'g' not found in structure
+[skip] 8GLV_Dy: chain 'Dy' not found in structure
+[skip] 8GLV_3N: chain '3N' not found in structure
+[skip] 5MMM_v: chain 'v' not found in structure
+
+[3050/20984  14.5%] Processing batch of 50 proteins…
+[skip] 8GLV_Kx: chain 'Kx' not found in structure
+[skip] 7N6G_4D: chain '4D' not found in structure
+[skip] 6XYW_By: chain 'By' not found in structure
+
+[3100/20984  14.8%] Processing batch of 50 proteins…
+[skip] 8IP8_hb: chain 'hb' not found in structure
+[skip] 6RE7_Z: chain 'Z' not found in structure
+[skip] 7N6G_5e: chain '5e' not found in structure
+[skip] 6U42_U7: chain 'U7' not found in structure
+[skip] 6U42_H9: chain 'H9' not found in structure
+[skip] 7SQC_D5: chain 'D5' not found in structure
+[skip] 8BQ5_BH: chain 'BH' not found in structure
+[skip] 6HD0_U: chain 'U' not found in structure
+[skip] 7SQC_L2: chain 'L2' not found in structure
+[skip] 4V3P_SU: chain 'SU' not found in structure
+[skip] 6U42_3J: chain '3J' not found in structure
+[skip] 6U42_O1: chain 'O1' not found in structure
+[skip] 7R3K_6: chain '6' not found in structure
+[skip] 6DWU_DI: chain 'DI' not found in structure
+[skip] 7N6G_Ah: chain 'Ah' not found in structure
+
+[3150/20984  15.0%] Processing batch of 50 proteins…
+[skip] 4V3P_LN: chain 'LN' not found in structure
+[skip] 8JIV_Cd: chain 'Cd' not found in structure
+[skip] 7N6G_2f: chain '2f' not found in structure
+[skip] 7SQC_D7: chain 'D7' not found in structure
+[skip] 7D0J_a: chain 'a' not found in structure
+[skip] 6DWU_AK: chain 'AK' not found in structure
+[skip] 7N61_4b: chain '4b' not found in structure
+[skip] 8HTU_9: chain '9' not found in structure
+[skip] 5MMM_d: chain 'd' not found in structure
+[skip] 7BGI_Z: chain 'Z' not found in structure
+[skip] 6U42_7U: chain '7U' not found in structure
+
+[3200/20984  15.2%] Processing batch of 50 proteins…
+[skip] 7N61_0X: chain '0X' not found in structure
+
+[3250/20984  15.5%] Processing batch of 50 proteins…
+[skip] 8GLV_Df: chain 'Df' not found in structure
+[skip] 7QVE_t: chain 't' not found in structure
+
+[3300/20984  15.7%] Processing batch of 50 proteins…
+
+[3350/20984  16.0%] Processing batch of 50 proteins…
+[skip] 7N6G_3I: chain '3I' not found in structure
+[skip] 7A23_f: chain 'f' not found in structure
+[skip] 7N61_4a: chain '4a' not found in structure
+
+[3400/20984  16.2%] Processing batch of 50 proteins…
+[skip] 7WFD_AL: chain 'AL' not found in structure
+[skip] 8GLV_C5: chain 'C5' not found in structure
+
+[3450/20984  16.4%] Processing batch of 50 proteins…
+[skip] 8GLV_W5: chain 'W5' not found in structure
+
+[3500/20984  16.7%] Processing batch of 50 proteins…
+[skip] 8GLV_El: chain 'El' not found in structure
+[skip] 7AR7_q: chain 'q' not found in structure
+[skip] 6YEZ_1: chain '1' not found in structure
+[skip] 8JIV_CS: chain 'CS' not found in structure
+[skip] 6U42_3Q: chain '3Q' not found in structure
+[skip] 1N3F_H: chain 'H' not found in structure
+[skip] 6EKC_I5: chain 'I5' not found in structure
+
+[3550/20984  16.9%] Processing batch of 50 proteins…
+[skip] 7PIW_p: chain 'p' not found in structure
+[skip] 4TUE_XO: chain 'XO' not found in structure
+[skip] 7DOX_D: chain 'D' not found in structure
+[skip] 6U42_6T: chain '6T' not found in structure
+[skip] 7ARB_o: chain 'o' not found in structure
+[skip] 8GLV_J5: chain 'J5' not found in structure
+[skip] 4V61_B1: chain 'B1' not found in structure
+[skip] 8GLV_I7: chain 'I7' not found in structure
+[skip] 8Q0R_BBB: chain 'BBB' not found in structure
+[skip] 7SQC_V1: chain 'V1' not found in structure
+[skip] 8GLV_Jh: chain 'Jh' not found in structure
+
+[3600/20984  17.2%] Processing batch of 50 proteins…
+[skip] 8GLV_Cr: chain 'Cr' not found in structure
+[skip] 8APN_Ar: chain 'Ar' not found in structure
+[skip] 8GLV_M8: chain 'M8' not found in structure
+[skip] 6U42_7X: chain '7X' not found in structure
+[skip] 8GLV_Ac: chain 'Ac' not found in structure
+[skip] 6U42_N0: chain 'N0' not found in structure
+[skip] 7SQC_6A: chain '6A' not found in structure
+
+[3650/20984  17.4%] Processing batch of 50 proteins…
+
+[3700/20984  17.6%] Processing batch of 50 proteins…
+[skip] 8GLV_Iv: chain 'Iv' not found in structure
+[skip] 8GLV_Gz: chain 'Gz' not found in structure
+[skip] 8A22_Br: chain 'Br' not found in structure
+[skip] 5MMM_k: chain 'k' not found in structure
+[skip] 6EKC_M8: chain 'M8' not found in structure
+[skip] 8GLV_U5: chain 'U5' not found in structure
+[skip] 5ZJI_Z: chain 'Z' not found in structure
+[skip] 6XYW_Am: chain 'Am' not found in structure
+[skip] 7N6G_8e: chain '8e' not found in structure
+
+[3750/20984  17.9%] Processing batch of 50 proteins…
+[skip] 2PKR_M: chain 'M' not found in structure
+[skip] 7AR8_q: chain 'q' not found in structure
+
+[3800/20984  18.1%] Processing batch of 50 proteins…
+[skip] 6U42_E8: chain 'E8' not found in structure
+[skip] 7R3K_8: chain '8' not found in structure
+[skip] 6YXR_3: chain '3' not found in structure
+[skip] 7JU4_m: chain 'm' not found in structure
+
+[3850/20984  18.3%] Processing batch of 50 proteins…
+[skip] 6VE7_w: chain 'w' not found in structure
+[skip] 2PKQ_T: chain 'T' not found in structure
+[skip] 7JU4_0: chain '0' not found in structure
+[skip] 7JU4_9: chain '9' not found in structure
+[skip] 7N61_5b: chain '5b' not found in structure
+[skip] 7UWC_e: chain 'e' not found in structure
+[skip] 4V61_B3: chain 'B3' not found in structure
+[skip] 8GLV_Z8: chain 'Z8' not found in structure
+
+[3900/20984  18.6%] Processing batch of 50 proteins…
+[skip] 7PIW_b: chain 'b' not found in structure
+
+[3950/20984  18.8%] Processing batch of 50 proteins…
+[skip] 6ERI_BF: chain 'BF' not found in structure
+[skip] 1YVE_I: chain 'I' not found in structure
+[skip] 7UWA_h: chain 'h' not found in structure
+[skip] 8BD3_n: chain 'n' not found in structure
+[skip] 8APO_At: chain 'At' not found in structure
+[skip] 8JIW_BV: chain 'BV' not found in structure
+[skip] 1STF_I: chain 'I' not found in structure
+[skip] 7SOM_MH: chain 'MH' not found in structure
+
+[4000/20984  19.1%] Processing batch of 50 proteins…
+[skip] 8GLV_Dk: chain 'Dk' not found in structure
+[skip] 6U42_2H: chain '2H' not found in structure
+[skip] 7WFE_BB: chain 'BB' not found in structure
+[skip] 5E37_C: chain 'C' not found in structure
+[skip] 7D0J_8: chain '8' not found in structure
+[skip] 7BZW_8: chain '8' not found in structure
+[skip] 6U42_U5: chain 'U5' not found in structure
+
+[4050/20984  19.3%] Processing batch of 50 proteins…
+[skip] 7N61_8a: chain '8a' not found in structure
+
+[4100/20984  19.5%] Processing batch of 50 proteins…
+[skip] 6VOM_e: chain 'e' not found in structure
+[skip] 8GLV_1B: chain '1B' not found in structure
+[skip] 7XZI_7: chain '7' not found in structure
+[skip] 8IPA_ja: chain 'ja' not found in structure
+[skip] 6SJJ_j: chain 'j' not found in structure
+[skip] 4QRX_C: chain 'C' not found in structure
+[skip] 7WG5_BE: chain 'BE' not found in structure
+[skip] 4XK8_1: chain '1' not found in structure
+[skip] 7AQW_n: chain 'n' not found in structure
+[skip] 3DXS_X: chain 'X' not found in structure
+
+[4150/20984  19.8%] Processing batch of 50 proteins…
+[skip] 7JU4_a: chain 'a' not found in structure
+[skip] 8AUV_c: chain 'c' not found in structure
+[skip] 8WA0_c: chain 'c' not found in structure
+[skip] 8BD3_e: chain 'e' not found in structure
+[skip] 6U42_3V: chain '3V' not found in structure
+
+[4200/20984  20.0%] Processing batch of 50 proteins…
+[skip] 6YS1_AAA: chain 'AAA' not found in structure
+[skip] 7N61_0M: chain '0M' not found in structure
+[skip] 6U42_0Z: chain '0Z' not found in structure
+[skip] 7A4P_8: chain '8' not found in structure
+[skip] 6U42_T5: chain 'T5' not found in structure
+[skip] 8GLV_T6: chain 'T6' not found in structure
+
+[4250/20984  20.3%] Processing batch of 50 proteins…
+[skip] 5X8R_n: chain 'n' not found in structure
+[skip] 8GLV_Cb: chain 'Cb' not found in structure
+
+[4300/20984  20.5%] Processing batch of 50 proteins…
+[skip] 8AZW_n: chain 'n' not found in structure
+[skip] 7ZQ9_7: chain '7' not found in structure
+[skip] 8BPX_BF: chain 'BF' not found in structure
+[skip] 8J7A_1: chain '1' not found in structure
+[skip] 8JIW_BK: chain 'BK' not found in structure
+[skip] 2STA_E: chain 'E' not found in structure
+[skip] 4V3P_Lr: chain 'Lr' not found in structure
+[skip] 8APN_Ac: chain 'Ac' not found in structure
+[skip] 8AZW_g: chain 'g' not found in structure
+[skip] 7WG5_j: chain 'j' not found in structure
+
+[4350/20984  20.7%] Processing batch of 50 proteins…
+[skip] 8GLV_3H: chain '3H' not found in structure
+[skip] 1TO2_I: chain 'I' not found in structure
+[skip] 8CI9_C: chain 'C' not found in structure
+[skip] 7AQQ_X: chain 'X' not found in structure
+[skip] 7PKQ_l: chain 'l' not found in structure
+[skip] 6U42_K0: chain 'K0' not found in structure
+[skip] 8GLV_Od: chain 'Od' not found in structure
+[skip] 8GLV_V4: chain 'V4' not found in structure
+[skip] 7WZN_4: chain '4' not found in structure
+[skip] 6U42_J8: chain 'J8' not found in structure
+
+[4400/20984  21.0%] Processing batch of 50 proteins…
+[skip] 7UWD_m: chain 'm' not found in structure
+[skip] 8GLV_5T: chain '5T' not found in structure
+[skip] 6XYW_AO: chain 'AO' not found in structure
+[skip] 5MMM_f: chain 'f' not found in structure
+[skip] 8QS0_DDD: chain 'DDD' not found in structure
+[skip] 6U42_E6: chain 'E6' not found in structure
+[skip] 7N6G_1Q: chain '1Q' not found in structure
+[skip] 7KZM_A3: chain 'A3' not found in structure
+[skip] 1GCC_A: chain 'A' not found in structure
+
+[4450/20984  21.2%] Processing batch of 50 proteins…
+[skip] 5XNM_z: chain 'z' not found in structure
+[skip] 6V8H_M: chain 'M' not found in structure
+[skip] 4TUE_RQ: chain 'RQ' not found in structure
+[skip] 8P1Y_AAA: chain 'AAA' not found in structure
+[skip] 8AZW_m: chain 'm' not found in structure
+[skip] 8IPB_ba: chain 'ba' not found in structure
+[skip] 7SQC_Y2: chain 'Y2' not found in structure
+
+[4500/20984  21.4%] Processing batch of 50 proteins…
+[skip] 6KAF_q: chain 'q' not found in structure
+[skip] 7DZ8_1: chain '1' not found in structure
+[skip] 6U42_S5: chain 'S5' not found in structure
+[skip] 6U42_X8: chain 'X8' not found in structure
+[skip] 5XNM_d: chain 'd' not found in structure
+
+[4550/20984  21.7%] Processing batch of 50 proteins…
+[skip] 7SQC_U1: chain 'U1' not found in structure
+[skip] 7F9O_h: chain 'h' not found in structure
+[skip] 7UWD_n: chain 'n' not found in structure
+[skip] 6EKC_G2: chain 'G2' not found in structure
+[skip] 6KAC_n: chain 'n' not found in structure
+[skip] 6U42_H5: chain 'H5' not found in structure
+[skip] 8IP8_ba: chain 'ba' not found in structure
+[skip] 8GLV_2S: chain '2S' not found in structure
+[skip] 7F9O_9: chain '9' not found in structure
+[skip] 6JBP_B: chain 'B' not found in structure
+[skip] 8GLV_1D: chain '1D' not found in structure
+[skip] 6RDM_Y: chain 'Y' not found in structure
+[skip] 8GLV_Dp: chain 'Dp' not found in structure
+
+[4600/20984  21.9%] Processing batch of 50 proteins…
+[skip] 7PIW_e1: chain 'e1' not found in structure
+[skip] 7JTK_y: chain 'y' not found in structure
+[skip] 7N61_Aa: chain 'Aa' not found in structure
+[skip] 7XOZ_E: chain 'E' not found in structure
+[skip] 8GLV_Y8: chain 'Y8' not found in structure
+
+[4650/20984  22.2%] Processing batch of 50 proteins…
+[skip] 6KAD_5: chain '5' not found in structure
+[skip] 7JK9_OA: chain 'OA' not found in structure
+[skip] 7JRO_g: chain 'g' not found in structure
+[skip] 7N61_Bb: chain 'Bb' not found in structure
+[skip] 8APO_Bf: chain 'Bf' not found in structure
+[skip] 7ZQ9_9: chain '9' not found in structure
+[skip] 1UZD_V: chain 'V' not found in structure
+[skip] 7UW9_e: chain 'e' not found in structure
+[skip] 8GLV_G2: chain 'G2' not found in structure
+[skip] 6XYW_Bl: chain 'Bl' not found in structure
+
+[4700/20984  22.4%] Processing batch of 50 proteins…
+[skip] 7R3K_Z: chain 'Z' not found in structure
+[skip] 7N6G_6G: chain '6G' not found in structure
+[skip] 4XK8_9: chain '9' not found in structure
+[skip] 3LW5_4: chain '4' not found in structure
+[skip] 8A22_Bi: chain 'Bi' not found in structure
+[skip] 6EKC_M7: chain 'M7' not found in structure
+[skip] 8GLV_F8: chain 'F8' not found in structure
+[skip] 8IP8_ca: chain 'ca' not found in structure
+[skip] 6U42_O8: chain 'O8' not found in structure
+
+[4750/20984  22.6%] Processing batch of 50 proteins…
+[skip] 4V3P_SK: chain 'SK' not found in structure
+[skip] 7PIN_Y1: chain 'Y1' not found in structure
+[skip] 6EKC_E4: chain 'E4' not found in structure
+[skip] 6IJJ_6: chain '6' not found in structure
+
+[4800/20984  22.9%] Processing batch of 50 proteins…
+[skip] 6XYW_Az: chain 'Az' not found in structure
+[skip] 7AR9_y: chain 'y' not found in structure
+[skip] 7F9O_2: chain '2' not found in structure
+[skip] 6REA_U: chain 'U' not found in structure
+[skip] 7OJ5_Y: chain 'Y' not found in structure
+[skip] 5X8P_c: chain 'c' not found in structure
+[skip] 6VMG_d: chain 'd' not found in structure
+[skip] 8GLV_Ko: chain 'Ko' not found in structure
+
+[4850/20984  23.1%] Processing batch of 50 proteins…
+[skip] 7N6G_0H: chain '0H' not found in structure
+
+[4900/20984  23.4%] Processing batch of 50 proteins…
+[skip] 7JU4_h: chain 'h' not found in structure
+[skip] 7KZO_B7: chain 'B7' not found in structure
+[skip] 6RDV_Z: chain 'Z' not found in structure
+[skip] 7EWK_1: chain '1' not found in structure
+[skip] 6U42_J3: chain 'J3' not found in structure
+[skip] 5ZJI_1: chain '1' not found in structure
+[skip] 7SOM_KI: chain 'KI' not found in structure
+
+[4950/20984  23.6%] Processing batch of 50 proteins…
+[skip] 2I3Q_A: chain 'A' not found in structure
+[skip] 1M5X_A: chain 'A' not found in structure
+[skip] 8BQ6_BC: chain 'BC' not found in structure
+[skip] 4Y28_3: chain '3' not found in structure
+
+[5000/20984  23.8%] Processing batch of 50 proteins…
+
+[5050/20984  24.1%] Processing batch of 50 proteins…
+
+[5100/20984  24.3%] Processing batch of 50 proteins…
+
+[5150/20984  24.5%] Processing batch of 50 proteins…
+[skip] 7WFG_L: chain 'L' not found in structure
+[skip] 7SQC_6C: chain '6C' not found in structure
+[skip] 6IU6_I: chain 'I' not found in structure
+[skip] 4V3P_LI: chain 'LI' not found in structure
+[skip] 8GLV_4I: chain '4I' not found in structure
+[skip] 1OYV_I: chain 'I' not found in structure
+
+[5200/20984  24.8%] Processing batch of 50 proteins…
+[skip] 4V3P_LU: chain 'LU' not found in structure
+[skip] 7ZQD_9: chain '9' not found in structure
+
+[5250/20984  25.0%] Processing batch of 50 proteins…
+
+[5300/20984  25.3%] Processing batch of 50 proteins…
+[skip] 6X89_S4: chain 'S4' not found in structure
+[skip] 8GLV_Fs: chain 'Fs' not found in structure
+[skip] 6EKC_K3: chain 'K3' not found in structure
+[skip] 7N61_Ch: chain 'Ch' not found in structure
+[skip] 4TUE_YI: chain 'YI' not found in structure
+[skip] 8GLV_zp: chain 'zp' not found in structure
+[skip] 8BEE_P: chain 'P' not found in structure
+[skip] 6U42_P9: chain 'P9' not found in structure
+[skip] 6U42_L6: chain 'L6' not found in structure
+[skip] 7ZQD_B2: chain 'B2' not found in structure
+[skip] 8G27_D: chain 'D' not found in structure
+
+[5350/20984  25.5%] Processing batch of 50 proteins…
+[skip] 8IPB_la: chain 'la' not found in structure
+[skip] 8IPB_ka: chain 'ka' not found in structure
+[skip] 6RED_V: chain 'V' not found in structure
+[skip] 8JIV_Ce: chain 'Ce' not found in structure
+[skip] 1GEC_E: chain 'E' not found in structure
+[skip] 6U42_2P: chain '2P' not found in structure
+
+[5400/20984  25.7%] Processing batch of 50 proteins…
+[skip] 8GLV_M9: chain 'M9' not found in structure
+[skip] 6XYW_As: chain 'As' not found in structure
+[skip] 7N61_Af: chain 'Af' not found in structure
+[skip] 7PKQ_b: chain 'b' not found in structure
+[skip] 8GLV_Ky: chain 'Ky' not found in structure
+[skip] 7WG5_BK: chain 'BK' not found in structure
+
+[5450/20984  26.0%] Processing batch of 50 proteins…
+
+[5500/20984  26.2%] Processing batch of 50 proteins…
+
+[5550/20984  26.4%] Processing batch of 50 proteins…
+[skip] 5X8P_g: chain 'g' not found in structure
+[skip] 6DWU_CJ: chain 'CJ' not found in structure
+[skip] 7PI5_n: chain 'n' not found in structure
+[skip] 5XNM_7: chain '7' not found in structure
+[skip] 7BLX_7: chain '7' not found in structure
+[skip] 8AZW_c: chain 'c' not found in structure
+
+[5600/20984  26.7%] Processing batch of 50 proteins…
+[skip] 7AR9_o: chain 'o' not found in structure
+[skip] 7F9O_j: chain 'j' not found in structure
+[skip] 6U42_3W: chain '3W' not found in structure
+[skip] 6U42_R8: chain 'R8' not found in structure
+[skip] 6U42_1B: chain '1B' not found in structure
+
+[5650/20984  26.9%] Processing batch of 50 proteins…
+[skip] 6KAD_h: chain 'h' not found in structure
+[skip] 6YRU_AAA: chain 'AAA' not found in structure
+[skip] 7SOM_IJ: chain 'IJ' not found in structure
+
+[5700/20984  27.2%] Processing batch of 50 proteins…
+[skip] 6IGZ_5: chain '5' not found in structure
+[skip] 1AUS_M: chain 'M' not found in structure
+[skip] 8IP8_sa: chain 'sa' not found in structure
+[skip] 6L35_5: chain '5' not found in structure
+[skip] 1TM3_E: chain 'E' not found in structure
+[skip] 6ERI_Az: chain 'Az' not found in structure
+[skip] 8A22_Ao: chain 'Ao' not found in structure
+[skip] 5ZD4_C: chain 'C' not found in structure
+[skip] 6U42_2L: chain '2L' not found in structure
+[skip] 7SQC_C1: chain 'C1' not found in structure
+[skip] 8GLV_1E: chain '1E' not found in structure
+
+[5750/20984  27.4%] Processing batch of 50 proteins…
+[skip] 7SQC_D3: chain 'D3' not found in structure
+[skip] 6U42_Z2: chain 'Z2' not found in structure
+[skip] 7ARB_n: chain 'n' not found in structure
+[skip] 5XNN_3: chain '3' not found in structure
+[skip] 8GLV_Ls: chain 'Ls' not found in structure
+[skip] 7SQC_R1: chain 'R1' not found in structure
+[skip] 6RDS_X: chain 'X' not found in structure
+[skip] 7AR8_p: chain 'p' not found in structure
+[skip] 7JU4_k: chain 'k' not found in structure
+[skip] 7E0H_X: chain 'X' not found in structure
+[skip] 8GLV_Al: chain 'Al' not found in structure
+[skip] 8GLV_Lc: chain 'Lc' not found in structure
+[skip] 8AZW_s: chain 's' not found in structure
+[skip] 8GLV_J7: chain 'J7' not found in structure
+
+[5800/20984  27.6%] Processing batch of 50 proteins…
+[skip] 6RDF_P: chain 'P' not found in structure
+[skip] 1E73_M: chain 'M' not found in structure
+[skip] 6U42_0E: chain '0E' not found in structure
+
+[5850/20984  27.9%] Processing batch of 50 proteins…
+[skip] 8GLV_1G: chain '1G' not found in structure
+
+[5900/20984  28.1%] Processing batch of 50 proteins…
+[skip] 7JU4_q: chain 'q' not found in structure
+[skip] 5XNM_h: chain 'h' not found in structure
+[skip] 5XNM_s: chain 's' not found in structure
+[skip] 2IJG_X: chain 'X' not found in structure
+[skip] 7WYI_8: chain '8' not found in structure
+[skip] 7FHN_C: chain 'C' not found in structure
+[skip] 7SQC_RP: chain 'RP' not found in structure
+
+[5950/20984  28.4%] Processing batch of 50 proteins…
+[skip] 7ZQD_7: chain '7' not found in structure
+[skip] 7KZO_Z: chain 'Z' not found in structure
+[skip] 7N6G_3H: chain '3H' not found in structure
+[skip] 7PIW_B1: chain 'B1' not found in structure
+[skip] 7N61_2g: chain '2g' not found in structure
+[skip] 8GLV_M1: chain 'M1' not found in structure
+[skip] 6ZZX_9: chain '9' not found in structure
+
+[6000/20984  28.6%] Processing batch of 50 proteins…
+
+[6050/20984  28.8%] Processing batch of 50 proteins…
+[skip] 1MOW_A: chain 'A' not found in structure
+[skip] 5X8P_w: chain 'w' not found in structure
+[skip] 7UWD_l: chain 'l' not found in structure
+[skip] 6U42_I9: chain 'I9' not found in structure
+[skip] 8APN_Bq: chain 'Bq' not found in structure
+[skip] 4V7E_Cr: chain 'Cr' not found in structure
+[skip] 1RCO_R: chain 'R' not found in structure
+[skip] 8BPX_BC: chain 'BC' not found in structure
+
+[6100/20984  29.1%] Processing batch of 50 proteins…
+[skip] 6VOO_d: chain 'd' not found in structure
+[skip] 6U42_V1: chain 'V1' not found in structure
+[skip] 8IP8_la: chain 'la' not found in structure
+[skip] 7ULI_AAA: chain 'AAA' not found in structure
+[skip] 6ERI_AE: chain 'AE' not found in structure
+[skip] 4V3P_Lb: chain 'Lb' not found in structure
+[skip] 5XNM_6: chain '6' not found in structure
+[skip] 7KUX_4: chain '4' not found in structure
+[skip] 8IP9_fb: chain 'fb' not found in structure
+[skip] 6IJO_6: chain '6' not found in structure
+[skip] 6TBY_AAA: chain 'AAA' not found in structure
+[skip] 7SOM_DH: chain 'DH' not found in structure
+
+[6150/20984  29.3%] Processing batch of 50 proteins…
+[skip] 5L8R_2: chain '2' not found in structure
+[skip] 8GLV_0M: chain '0M' not found in structure
+[skip] 6EKC_A8: chain 'A8' not found in structure
+[skip] 6X89_2M: chain '2M' not found in structure
+[skip] 8A22_Ak: chain 'Ak' not found in structure
+[skip] 7JU4_u: chain 'u' not found in structure
+[skip] 1BP7_D: chain 'D' not found in structure
+
+[6200/20984  29.5%] Processing batch of 50 proteins…
+[skip] 8GLV_Ax: chain 'Ax' not found in structure
+[skip] 7XZJ_7: chain '7' not found in structure
+
+[6250/20984  29.8%] Processing batch of 50 proteins…
+
+[6300/20984  30.0%] Processing batch of 50 proteins…
+[skip] 6EKC_C7: chain 'C7' not found in structure
+[skip] 6VE7_t: chain 't' not found in structure
+[skip] 7SQC_L0: chain 'L0' not found in structure
+[skip] 6U42_2X: chain '2X' not found in structure
+[skip] 8GLV_N3: chain 'N3' not found in structure
+
+[6350/20984  30.3%] Processing batch of 50 proteins…
+[skip] 6U42_K1: chain 'K1' not found in structure
+[skip] 6VOF_g: chain 'g' not found in structure
+[skip] 6KAF_r: chain 'r' not found in structure
+[skip] 7E0J_Z: chain 'Z' not found in structure
+[skip] 8GLV_S4: chain 'S4' not found in structure
+
+[6400/20984  30.5%] Processing batch of 50 proteins…
+[skip] 8GLV_U9: chain 'U9' not found in structure
+[skip] 7BP4_H: chain 'H' not found in structure
+[skip] 6U42_N5: chain 'N5' not found in structure
+[skip] 7ZQD_1: chain '1' not found in structure
+[skip] 7WFE_BL: chain 'BL' not found in structure
+[skip] 8JIW_BU: chain 'BU' not found in structure
+[skip] 8APO_Bc: chain 'Bc' not found in structure
+[skip] 6DWU_CR: chain 'CR' not found in structure
+[skip] 6ERI_AN: chain 'AN' not found in structure
+[skip] 7X5K_A: chain 'A' not found in structure
+
+[6450/20984  30.7%] Processing batch of 50 proteins…
+
+[6500/20984  31.0%] Processing batch of 50 proteins…
+[skip] 8IP8_ma: chain 'ma' not found in structure
+[skip] 7WG5_e: chain 'e' not found in structure
+[skip] 7PIW_h1: chain 'h1' not found in structure
+[skip] 7JU4_1: chain '1' not found in structure
+[skip] 6U42_J6: chain 'J6' not found in structure
+[skip] 8GLV_2Y: chain '2Y' not found in structure
+[skip] 6VE7_4: chain '4' not found in structure
+
+[6550/20984  31.2%] Processing batch of 50 proteins…
+[skip] 6VE7_7: chain '7' not found in structure
+[skip] 7O01_7: chain '7' not found in structure
+[skip] 5XNL_q: chain 'q' not found in structure
+[skip] 8AUV_f: chain 'f' not found in structure
+[skip] 2WSE_4: chain '4' not found in structure
+
+[6600/20984  31.5%] Processing batch of 50 proteins…
+[skip] 6EKC_K7: chain 'K7' not found in structure
+[skip] 7PIW_y: chain 'y' not found in structure
+[skip] 7WG5_A4: chain 'A4' not found in structure
+
+[6650/20984  31.7%] Processing batch of 50 proteins…
+
+[6700/20984  31.9%] Processing batch of 50 proteins…
+[skip] 6KAD_r: chain 'r' not found in structure
+[skip] 7ZQ4_O: chain 'O' not found in structure
+
+[6750/20984  32.2%] Processing batch of 50 proteins…
+[skip] 8GLV_Ln: chain 'Ln' not found in structure
+
+[6800/20984  32.4%] Processing batch of 50 proteins…
+[skip] 4TUE_YT: chain 'YT' not found in structure
+[skip] 6U42_V3: chain 'V3' not found in structure
+[skip] 7UWC_j: chain 'j' not found in structure
+[skip] 7SQC_UO: chain 'UO' not found in structure
+[skip] 6XYW_Bi: chain 'Bi' not found in structure
+
+[6850/20984  32.6%] Processing batch of 50 proteins…
+
+[6900/20984  32.9%] Processing batch of 50 proteins…
+[skip] 1Y1K_E: chain 'E' not found in structure
+[skip] 7N6G_Ce: chain 'Ce' not found in structure
+[skip] 7WYI_6: chain '6' not found in structure
+[skip] 7WFE_BD: chain 'BD' not found in structure
+[skip] 6U42_C9: chain 'C9' not found in structure
+[skip] 6DWU_DT: chain 'DT' not found in structure
+[skip] 8IX1_N: chain 'N' not found in structure
+[skip] 8GLV_3D: chain '3D' not found in structure
+
+[6950/20984  33.1%] Processing batch of 50 proteins…
+[skip] 4V7E_Ba: chain 'Ba' not found in structure
+[skip] 8GLV_J8: chain 'J8' not found in structure
+[skip] 6U42_3F: chain '3F' not found in structure
+[skip] 6IJO_8: chain '8' not found in structure
+[skip] 8GLV_Y5: chain 'Y5' not found in structure
+[skip] 8GLV_Im: chain 'Im' not found in structure
+[skip] 6DWU_CN: chain 'CN' not found in structure
+[skip] 7KSQ_4: chain '4' not found in structure
+[skip] 8R2I_2: chain '2' not found in structure
+[skip] 7Q54_P: chain 'P' not found in structure
+
+[7000/20984  33.4%] Processing batch of 50 proteins…
+[skip] 7N61_7c: chain '7c' not found in structure
+[skip] 2VNZ_X: chain 'X' not found in structure
+[skip] 4TUE_R1: chain 'R1' not found in structure
+[skip] 6U42_C7: chain 'C7' not found in structure
+[skip] 8GLV_A5: chain 'A5' not found in structure
+
+[7050/20984  33.6%] Processing batch of 50 proteins…
+[skip] 6U42_3R: chain '3R' not found in structure
+[skip] 5X8R_l: chain 'l' not found in structure
+[skip] 6EKC_G7: chain 'G7' not found in structure
+[skip] 8BD3_m: chain 'm' not found in structure
+[skip] 7F9O_4: chain '4' not found in structure
+
+[7100/20984  33.8%] Processing batch of 50 proteins…
+[skip] 7WYI_1: chain '1' not found in structure
+[skip] 7JTK_c: chain 'c' not found in structure
+[skip] 1D6R_I: chain 'I' not found in structure
+[skip] 5XNL_n: chain 'n' not found in structure
+[skip] 6VOH_e: chain 'e' not found in structure
+[skip] 4V61_BY: chain 'BY' not found in structure
+[skip] 8IPA_da: chain 'da' not found in structure
+[skip] 7SQC_C0: chain 'C0' not found in structure
+
+[7150/20984  34.1%] Processing batch of 50 proteins…
+[skip] 6U42_3O: chain '3O' not found in structure
+[skip] 8BEP_L: chain 'L' not found in structure
+[skip] 7SQC_0F: chain '0F' not found in structure
+[skip] 6EKC_Q3: chain 'Q3' not found in structure
+[skip] 6SJJ_i: chain 'i' not found in structure
+[skip] 7N6G_2c: chain '2c' not found in structure
+[skip] 4DP6_X: chain 'X' not found in structure
+[skip] 4TUE_QF: chain 'QF' not found in structure
+[skip] 8GLV_Ff: chain 'Ff' not found in structure
+[skip] 8APN_Ah: chain 'Ah' not found in structure
+[skip] 8IPB_xa: chain 'xa' not found in structure
+
+[7200/20984  34.3%] Processing batch of 50 proteins…
+[skip] 8GLV_Gy: chain 'Gy' not found in structure
+[skip] 7DKZ_4: chain '4' not found in structure
+[skip] 5XNL_z: chain 'z' not found in structure
+[skip] 7O01_9: chain '9' not found in structure
+[skip] 5MMM_j: chain 'j' not found in structure
+
+[7250/20984  34.6%] Processing batch of 50 proteins…
+[skip] 4TUE_QG: chain 'QG' not found in structure
+[skip] 7O4F_G: chain 'G' not found in structure
+[skip] 6JO5_9: chain '9' not found in structure
+[skip] 7SQC_6D: chain '6D' not found in structure
+[skip] 6ZOO_2: chain '2' not found in structure
+
+[7300/20984  34.8%] Processing batch of 50 proteins…
+[skip] 8GLV_R4: chain 'R4' not found in structure
+[skip] 6EKC_M3: chain 'M3' not found in structure
+[skip] 8GLV_I0: chain 'I0' not found in structure
+[skip] 8QS0_BBB: chain 'BBB' not found in structure
+[skip] 7OUI_c: chain 'c' not found in structure
+[skip] 7SQC_X0: chain 'X0' not found in structure
+[skip] 6JO5_3: chain '3' not found in structure
+[skip] 7WG5_AE: chain 'AE' not found in structure
+[skip] 6U42_2V: chain '2V' not found in structure
+[skip] 8APN_Br: chain 'Br' not found in structure
+[skip] 6VOL_a: chain 'a' not found in structure
+[skip] 1N3F_B: chain 'B' not found in structure
+[skip] 8GLV_Ed: chain 'Ed' not found in structure
+
+[7350/20984  35.0%] Processing batch of 50 proteins…
+[skip] 6XYW_At: chain 'At' not found in structure
+[skip] 7F9O_q: chain 'q' not found in structure
+[skip] 7WZN_7: chain '7' not found in structure
+[skip] 7N6G_4C: chain '4C' not found in structure
+
+[7400/20984  35.3%] Processing batch of 50 proteins…
+[skip] 7F9O_1: chain '1' not found in structure
+[skip] 8GLV_Bi: chain 'Bi' not found in structure
+[skip] 8JIV_CW: chain 'CW' not found in structure
+[skip] 8GLV_zc: chain 'zc' not found in structure
+[skip] 8RUC_L: chain 'L' not found in structure
+[skip] 7OUI_n: chain 'n' not found in structure
+[skip] 6U42_3N: chain '3N' not found in structure
+[skip] 7SQC_SP: chain 'SP' not found in structure
+[skip] 6U42_0Q: chain '0Q' not found in structure
+[skip] 8BQ6_AD: chain 'AD' not found in structure
+[skip] 7OUI_d: chain 'd' not found in structure
+[skip] 7SQC_N1: chain 'N1' not found in structure
+
+[7450/20984  35.5%] Processing batch of 50 proteins…
+
+[7500/20984  35.7%] Processing batch of 50 proteins…
+[skip] 8APN_Ap: chain 'Ap' not found in structure
+[skip] 7PIN_y1: chain 'y1' not found in structure
+[skip] 4TUE_YR: chain 'YR' not found in structure
+[skip] 7PIN_A1: chain 'A1' not found in structure
+[skip] 7ARB_q: chain 'q' not found in structure
+[skip] 7SQC_2H: chain '2H' not found in structure
+[skip] 6XYW_Aq: chain 'Aq' not found in structure
+
+[7550/20984  36.0%] Processing batch of 50 proteins…
+[skip] 8BCV_2: chain '2' not found in structure
+[skip] 8JIV_CC: chain 'CC' not found in structure
+[skip] 6U42_X3: chain 'X3' not found in structure
+[skip] 7N6G_0F: chain '0F' not found in structure
+[skip] 6KPB_C: chain 'C' not found in structure
+[skip] 2EX5_B: chain 'B' not found in structure
+[skip] 8P8K_BBB: chain 'BBB' not found in structure
+[skip] 6RE4_X: chain 'X' not found in structure
+[skip] 8GLV_zf: chain 'zf' not found in structure
+[skip] 4TUE_YO: chain 'YO' not found in structure
+[skip] 3JCU_c: chain 'c' not found in structure
+[skip] 7KZM_A1: chain 'A1' not found in structure
+[skip] 2WSE_2: chain '2' not found in structure
+[skip] 7N61_8e: chain '8e' not found in structure
+
+[7600/20984  36.2%] Processing batch of 50 proteins…
+[skip] 8BEE_q: chain 'q' not found in structure
+[skip] 8BPX_AH: chain 'AH' not found in structure
+[skip] 6EKC_C3: chain 'C3' not found in structure
+[skip] 5HXQ_C: chain 'C' not found in structure
+[skip] 8JIV_Ch: chain 'Ch' not found in structure
+[skip] 8BPX_o: chain 'o' not found in structure
+[skip] 7O01_a: chain 'a' not found in structure
+[skip] 7DZ7_3: chain '3' not found in structure
+
+[7650/20984  36.5%] Processing batch of 50 proteins…
+[skip] 8GLV_1A: chain '1A' not found in structure
+[skip] 5X8P_b: chain 'b' not found in structure
+[skip] 7XX2_I: chain 'I' not found in structure
+[skip] 5MMM_q: chain 'q' not found in structure
+[skip] 7JOE_I: chain 'I' not found in structure
+[skip] 6U42_X6: chain 'X6' not found in structure
+
+[7700/20984  36.7%] Processing batch of 50 proteins…
+[skip] 8HG5_P: chain 'P' not found in structure
+[skip] 7N6G_5a: chain '5a' not found in structure
+[skip] 8APN_Bn: chain 'Bn' not found in structure
+[skip] 7AQQ_x: chain 'x' not found in structure
+[skip] 7F08_P: chain 'P' not found in structure
+[skip] 7SOM_i: chain 'i' not found in structure
+[skip] 7AR8_n: chain 'n' not found in structure
+[skip] 5MDX_6: chain '6' not found in structure
+[skip] 8GLV_zj: chain 'zj' not found in structure
+
+[7750/20984  36.9%] Processing batch of 50 proteins…
+[skip] 7N61_4g: chain '4g' not found in structure
+[skip] 7N6G_6e: chain '6e' not found in structure
+[skip] 7OUI_y: chain 'y' not found in structure
+[skip] 6U42_5U: chain '5U' not found in structure
+[skip] 6U42_D5: chain 'D5' not found in structure
+
+[7800/20984  37.2%] Processing batch of 50 proteins…
+
+[7850/20984  37.4%] Processing batch of 50 proteins…
+[skip] 8APN_Ae: chain 'Ae' not found in structure
+[skip] 7JU4_x: chain 'x' not found in structure
+[skip] 7ARB_e: chain 'e' not found in structure
+[skip] 8IPA_sa: chain 'sa' not found in structure
+[skip] 6U42_U9: chain 'U9' not found in structure
+[skip] 6U42_2G: chain '2G' not found in structure
+
+[7900/20984  37.6%] Processing batch of 50 proteins…
+[skip] 6U42_5F: chain '5F' not found in structure
+[skip] 7SQC_F0: chain 'F0' not found in structure
+[skip] 7N61_Bd: chain 'Bd' not found in structure
+[skip] 7KCH_G: chain 'G' not found in structure
+[skip] 8IPA_gb: chain 'gb' not found in structure
+[skip] 8GLV_O3: chain 'O3' not found in structure
+
+[7950/20984  37.9%] Processing batch of 50 proteins…
+[skip] 7QVE_h: chain 'h' not found in structure
+[skip] 7WFF_d: chain 'd' not found in structure
+[skip] 1N3E_B: chain 'B' not found in structure
+
+[8000/20984  38.1%] Processing batch of 50 proteins…
+[skip] 7A4P_5: chain '5' not found in structure
+[skip] 6EKC_M5: chain 'M5' not found in structure
+[skip] 7A23_k: chain 'k' not found in structure
+[skip] 8IPA_oa: chain 'oa' not found in structure
+[skip] 6U42_3P: chain '3P' not found in structure
+
+[8050/20984  38.4%] Processing batch of 50 proteins…
+[skip] 8IPB_ta: chain 'ta' not found in structure
+[skip] 8GLV_4H: chain '4H' not found in structure
+[skip] 6J4J_H: chain 'H' not found in structure
+[skip] 1YPB_I: chain 'I' not found in structure
+
+[8100/20984  38.6%] Processing batch of 50 proteins…
+[skip] 6U42_N2: chain 'N2' not found in structure
+[skip] 7N6G_5Q: chain '5Q' not found in structure
+[skip] 6U42_F2: chain 'F2' not found in structure
+[skip] 7AQQ_z: chain 'z' not found in structure
+[skip] 8IPA_ta: chain 'ta' not found in structure
+[skip] 6U42_T2: chain 'T2' not found in structure
+[skip] 4V61_AK: chain 'AK' not found in structure
+[skip] 4V7E_CS: chain 'CS' not found in structure
+[skip] 7N61_Bf: chain 'Bf' not found in structure
+[skip] 7PIN_p1: chain 'p1' not found in structure
+[skip] 6RNG_G: chain 'G' not found in structure
+[skip] 6FKF_b: chain 'b' not found in structure
+[skip] 6XYW_Bx: chain 'Bx' not found in structure
+[skip] 8GLV_D4: chain 'D4' not found in structure
+
+[8150/20984  38.8%] Processing batch of 50 proteins…
+
+[8200/20984  39.1%] Processing batch of 50 proteins…
+[skip] 7PI0_p: chain 'p' not found in structure
+[skip] 7PI5_p: chain 'p' not found in structure
+[skip] 8QRT_CCC: chain 'CCC' not found in structure
+
+[8250/20984  39.3%] Processing batch of 50 proteins…
+[skip] 5X8P_i: chain 'i' not found in structure
+[skip] 6VE7_q: chain 'q' not found in structure
+[skip] 7WG5_c: chain 'c' not found in structure
+[skip] 7N6G_4O: chain '4O' not found in structure
+[skip] 2A7I_X: chain 'X' not found in structure
+[skip] 7DZ7_5: chain '5' not found in structure
+[skip] 7N6G_1F: chain '1F' not found in structure
+[skip] 8APO_Bn: chain 'Bn' not found in structure
+[skip] 4V61_BH: chain 'BH' not found in structure
+[skip] 8BQ5_BC: chain 'BC' not found in structure
+[skip] 1UW9_V: chain 'V' not found in structure
+[skip] 6U42_Z9: chain 'Z9' not found in structure
+
+[8300/20984  39.6%] Processing batch of 50 proteins…
+[skip] 8BQ5_AH: chain 'AH' not found in structure
+[skip] 5Z00_K: chain 'K' not found in structure
+[skip] 8J7B_2: chain '2' not found in structure
+[skip] 6RDY_U: chain 'U' not found in structure
+[skip] 5MMJ_q: chain 'q' not found in structure
+[skip] 8AMZ_V: chain 'V' not found in structure
+[skip] 6EKC_S1: chain 'S1' not found in structure
+[skip] 7UWA_o: chain 'o' not found in structure
+[skip] 8GLV_Iz: chain 'Iz' not found in structure
+
+[8350/20984  39.8%] Processing batch of 50 proteins…
+[skip] 6REA_Z: chain 'Z' not found in structure
+[skip] 6VOJ_g: chain 'g' not found in structure
+[skip] 6EKC_M4: chain 'M4' not found in structure
+[skip] 7PKT_i: chain 'i' not found in structure
+[skip] 6U42_2T: chain '2T' not found in structure
+[skip] 8BQ5_l: chain 'l' not found in structure
+[skip] 6DWU_DV: chain 'DV' not found in structure
+[skip] 8W9Z_c: chain 'c' not found in structure
+[skip] 6NJQ_B: chain 'B' not found in structure
+[skip] 6KYJ_S: chain 'S' not found in structure
+[skip] 6U42_D6: chain 'D6' not found in structure
+
+[8400/20984  40.0%] Processing batch of 50 proteins…
+[skip] 8GLV_An: chain 'An' not found in structure
+[skip] 7N61_9c: chain '9c' not found in structure
+
+[8450/20984  40.3%] Processing batch of 50 proteins…
+[skip] 6U42_2Y: chain '2Y' not found in structure
+
+[8500/20984  40.5%] Processing batch of 50 proteins…
+[skip] 1TM1_E: chain 'E' not found in structure
+[skip] 7PIN_r1: chain 'r1' not found in structure
+[skip] 4V7E_Cc: chain 'Cc' not found in structure
+
+[8550/20984  40.7%] Processing batch of 50 proteins…
+[skip] 8GLV_M4: chain 'M4' not found in structure
+[skip] 7N61_Ad: chain 'Ad' not found in structure
+[skip] 6RDP_V: chain 'V' not found in structure
+[skip] 4XK8_e: chain 'e' not found in structure
+[skip] 8GLV_Af: chain 'Af' not found in structure
+
+[8600/20984  41.0%] Processing batch of 50 proteins…
+[skip] 4V61_BP: chain 'BP' not found in structure
+[skip] 7JQV_E: chain 'E' not found in structure
+[skip] 5TTE_F: chain 'F' not found in structure
+[skip] 6U42_T8: chain 'T8' not found in structure
+[skip] 7UWC_i: chain 'i' not found in structure
+[skip] 7SQC_K0: chain 'K0' not found in structure
+[skip] 5XNL_p: chain 'p' not found in structure
+[skip] 4TUE_YF: chain 'YF' not found in structure
+[skip] 8GLV_Cj: chain 'Cj' not found in structure
+[skip] 6KAF_b: chain 'b' not found in structure
+[skip] 8GLV_1V: chain '1V' not found in structure
+
+[8650/20984  41.2%] Processing batch of 50 proteins…
+[skip] 4V7E_CZ: chain 'CZ' not found in structure
+[skip] 7SQC_O2: chain 'O2' not found in structure
+
+[8700/20984  41.5%] Processing batch of 50 proteins…
+
+[8750/20984  41.7%] Processing batch of 50 proteins…
+
+[8800/20984  41.9%] Processing batch of 50 proteins…
+[skip] 6U42_4J: chain '4J' not found in structure
+[skip] 5X8P_d: chain 'd' not found in structure
+[skip] 1Y4A_E: chain 'E' not found in structure
+[skip] 4V7E_Ce: chain 'Ce' not found in structure
+[skip] 8APO_Bq: chain 'Bq' not found in structure
+[skip] 8BD3_2: chain '2' not found in structure
+[skip] 4V7E_Bf: chain 'Bf' not found in structure
+[skip] 8JIV_CJ: chain 'CJ' not found in structure
+[skip] 8RUC_J: chain 'J' not found in structure
+[skip] 7WFF_g: chain 'g' not found in structure
+[skip] 8GLV_Ku: chain 'Ku' not found in structure
+[skip] 8GLV_G4: chain 'G4' not found in structure
+
+[8850/20984  42.2%] Processing batch of 50 proteins…
+[skip] 4DPN_D: chain 'D' not found in structure
+[skip] 8GLV_4A: chain '4A' not found in structure
+[skip] 7N6G_Df: chain 'Df' not found in structure
+[skip] 8BQ5_AC: chain 'AC' not found in structure
+[skip] 8C29_c: chain 'c' not found in structure
+[skip] 6XYW_Bz: chain 'Bz' not found in structure
+[skip] 7AQR_W: chain 'W' not found in structure
+[skip] 7WG5_d: chain 'd' not found in structure
+[skip] 1TM1_I: chain 'I' not found in structure
+[skip] 7A8W_DDD: chain 'DDD' not found in structure
+[skip] 7DZ8_9: chain '9' not found in structure
+[skip] 7PKQ_e: chain 'e' not found in structure
+[skip] 7QVE_k: chain 'k' not found in structure
+[skip] 7KZM_B4: chain 'B4' not found in structure
+
+[8900/20984  42.4%] Processing batch of 50 proteins…
+[skip] 8BQ5_y: chain 'y' not found in structure
+[skip] 6U42_C2: chain 'C2' not found in structure
+[skip] 7PKQ_q: chain 'q' not found in structure
+[skip] 8GLV_Fk: chain 'Fk' not found in structure
+[skip] 2UVO_E: chain 'E' not found in structure
+
+[8950/20984  42.7%] Processing batch of 50 proteins…
+[skip] 8IPB_fb: chain 'fb' not found in structure
+[skip] 8APO_Bz: chain 'Bz' not found in structure
+[skip] 8E73_S3: chain 'S3' not found in structure
+[skip] 5MDX_b: chain 'b' not found in structure
+
+[9000/20984  42.9%] Processing batch of 50 proteins…
+[skip] 8IPA_xa: chain 'xa' not found in structure
+[skip] 6U42_Q5: chain 'Q5' not found in structure
+[skip] 7ARB_x: chain 'x' not found in structure
+[skip] 4XK8_c: chain 'c' not found in structure
+[skip] 6DWU_BL: chain 'BL' not found in structure
+[skip] 7N6G_1e: chain '1e' not found in structure
+
+[9050/20984  43.1%] Processing batch of 50 proteins…
+
+[9100/20984  43.4%] Processing batch of 50 proteins…
+[skip] 8KDE_Z: chain 'Z' not found in structure
+[skip] 7O01_b: chain 'b' not found in structure
+[skip] 8APO_Ax: chain 'Ax' not found in structure
+[skip] 4TUE_RY: chain 'RY' not found in structure
+[skip] 4TUE_R8: chain 'R8' not found in structure
+[skip] 4V3P_Sa: chain 'Sa' not found in structure
+[skip] 7SOM_AH: chain 'AH' not found in structure
+
+[9150/20984  43.6%] Processing batch of 50 proteins…
+[skip] 8A22_Al: chain 'Al' not found in structure
+[skip] 7KZM_B5: chain 'B5' not found in structure
+[skip] 7N6G_0Q: chain '0Q' not found in structure
+[skip] 7JRX_i: chain 'i' not found in structure
+[skip] 8BEH_o: chain 'o' not found in structure
+[skip] 7SQC_QQ: chain 'QQ' not found in structure
+
+[9200/20984  43.8%] Processing batch of 50 proteins…
+[skip] 5Z00_G: chain 'G' not found in structure
+[skip] 7OUI_6: chain '6' not found in structure
+[skip] 8GLV_3T: chain '3T' not found in structure
+[skip] 7QVE_n: chain 'n' not found in structure
+[skip] 8QRT_DDD: chain 'DDD' not found in structure
+[skip] 7O01_f: chain 'f' not found in structure
+[skip] 7N61_1e: chain '1e' not found in structure
+[skip] 8GLV_Bc: chain 'Bc' not found in structure
+
+[9250/20984  44.1%] Processing batch of 50 proteins…
+[skip] 4TUE_YQ: chain 'YQ' not found in structure
+[skip] 7O01_l: chain 'l' not found in structure
+[skip] 6DWU_CI: chain 'CI' not found in structure
+[skip] 4V7E_BQ: chain 'BQ' not found in structure
+[skip] 7N61_8f: chain '8f' not found in structure
+[skip] 8GLV_0G: chain '0G' not found in structure
+
+[9300/20984  44.3%] Processing batch of 50 proteins…
+[skip] 8IPB_ra: chain 'ra' not found in structure
+[skip] 4MX5_X: chain 'X' not found in structure
+[skip] 6FKH_d: chain 'd' not found in structure
+[skip] 6ERI_BN: chain 'BN' not found in structure
+
+[9350/20984  44.6%] Processing batch of 50 proteins…
+[skip] 6KAF_h: chain 'h' not found in structure
+[skip] 6XYW_Bw: chain 'Bw' not found in structure
+[skip] 6EKC_K8: chain 'K8' not found in structure
+[skip] 8BD3_F1: chain 'F1' not found in structure
+[skip] 7PI5_y: chain 'y' not found in structure
+[skip] 7SQC_O1: chain 'O1' not found in structure
+
+[9400/20984  44.8%] Processing batch of 50 proteins…
+[skip] 1RCO_T: chain 'T' not found in structure
+[skip] 8JIV_CE: chain 'CE' not found in structure
+[skip] 6JJ7_E: chain 'E' not found in structure
+[skip] 5X8P_o: chain 'o' not found in structure
+[skip] 4V7E_BU: chain 'BU' not found in structure
+
+[9450/20984  45.0%] Processing batch of 50 proteins…
+[skip] 6RDV_U: chain 'U' not found in structure
+[skip] 8GLV_R6: chain 'R6' not found in structure
+
+[9500/20984  45.3%] Processing batch of 50 proteins…
+[skip] 4V7E_CE: chain 'CE' not found in structure
+[skip] 7AL8_T: chain 'T' not found in structure
+[skip] 7UWB_k: chain 'k' not found in structure
+[skip] 8T2I_J: chain 'J' not found in structure
+
+[9550/20984  45.5%] Processing batch of 50 proteins…
+[skip] 7N61_Dh: chain 'Dh' not found in structure
+[skip] 7N6G_7f: chain '7f' not found in structure
+[skip] 7SOM_DJ: chain 'DJ' not found in structure
+[skip] 7ZQ4_R: chain 'R' not found in structure
+
+[9600/20984  45.7%] Processing batch of 50 proteins…
+[skip] 1JN0_O: chain 'O' not found in structure
+[skip] 7JTK_z: chain 'z' not found in structure
+[skip] 8C29_y: chain 'y' not found in structure
+[skip] 8E73_A9: chain 'A9' not found in structure
+[skip] 8IP9_bb: chain 'bb' not found in structure
+
+[9650/20984  46.0%] Processing batch of 50 proteins…
+[skip] 7ZQ9_B2: chain 'B2' not found in structure
+[skip] 8AZW_d: chain 'd' not found in structure
+[skip] 7PKQ_n: chain 'n' not found in structure
+[skip] 8BQ5_x: chain 'x' not found in structure
+[skip] 6YRX_AAA: chain 'AAA' not found in structure
+[skip] 6RDP_Z: chain 'Z' not found in structure
+[skip] 3PX8_X: chain 'X' not found in structure
+[skip] 6RDV_Y: chain 'Y' not found in structure
+[skip] 6DWU_BQ: chain 'BQ' not found in structure
+[skip] 8BQ5_BD: chain 'BD' not found in structure
+[skip] 7N6G_Ab: chain 'Ab' not found in structure
+[skip] 8A22_Bs: chain 'Bs' not found in structure
+
+[9700/20984  46.2%] Processing batch of 50 proteins…
+
+[9750/20984  46.5%] Processing batch of 50 proteins…
+[skip] 7N61_Dd: chain 'Dd' not found in structure
+[skip] 8GLV_Ee: chain 'Ee' not found in structure
+[skip] 6U42_L5: chain 'L5' not found in structure
+
+[9800/20984  46.7%] Processing batch of 50 proteins…
+[skip] 7PIN_b: chain 'b' not found in structure
+[skip] 6U42_7H: chain '7H' not found in structure
+
+[9850/20984  46.9%] Processing batch of 50 proteins…
+[skip] 7PIW_c: chain 'c' not found in structure
+[skip] 7N6G_0I: chain '0I' not found in structure
+[skip] 6KAC_o: chain 'o' not found in structure
+[skip] 8HTU_2: chain '2' not found in structure
+[skip] 6KAF_v: chain 'v' not found in structure
+
+[9900/20984  47.2%] Processing batch of 50 proteins…
+[skip] 7XQP_4: chain '4' not found in structure
+[skip] 6EKC_A6: chain 'A6' not found in structure
+[skip] 2BTC_E: chain 'E' not found in structure
+[skip] 6VVH_AAA: chain 'AAA' not found in structure
+[skip] 7XQP_9: chain '9' not found in structure
+[skip] 8GLV_6L: chain '6L' not found in structure
+[skip] 6JO5_4: chain '4' not found in structure
+[skip] 1TM3_I: chain 'I' not found in structure
+[skip] 6IJO_1: chain '1' not found in structure
+[skip] 2PKQ_P: chain 'P' not found in structure
+[skip] 7ZQC_9: chain '9' not found in structure
+[skip] 7D0J_5: chain '5' not found in structure
+[skip] 8GLV_A0: chain 'A0' not found in structure
+[skip] 6XYW_Bb: chain 'Bb' not found in structure
+
+[9950/20984  47.4%] Processing batch of 50 proteins…
+[skip] 7EU3_0: chain '0' not found in structure
+[skip] 8IPB_va: chain 'va' not found in structure
+[skip] 7EU1_M: chain 'M' not found in structure
+
+[10000/20984  47.7%] Processing batch of 50 proteins…
+[skip] 8JIV_CQ: chain 'CQ' not found in structure
+[skip] 6U42_G7: chain 'G7' not found in structure
+[skip] 7Q54_R: chain 'R' not found in structure
+
+[10050/20984  47.9%] Processing batch of 50 proteins…
+[skip] 7WZN_6: chain '6' not found in structure
+[skip] 6IU9_I: chain 'I' not found in structure
+[skip] 7SOM_LI: chain 'LI' not found in structure
+[skip] 6YP7_d: chain 'd' not found in structure
+[skip] 1Y4D_I: chain 'I' not found in structure
+[skip] 8J7B_4: chain '4' not found in structure
+[skip] 6DWU_DJ: chain 'DJ' not found in structure
+[skip] 7PIN_g: chain 'g' not found in structure
+[skip] 7OUI_o: chain 'o' not found in structure
+[skip] 6KYJ_Y: chain 'Y' not found in structure
+[skip] 7PIW_Y1: chain 'Y1' not found in structure
+[skip] 8GLV_T0: chain 'T0' not found in structure
+
+[10100/20984  48.1%] Processing batch of 50 proteins…
+[skip] 7F9O_g: chain 'g' not found in structure
+[skip] 7AQW_l: chain 'l' not found in structure
+[skip] 4TUE_Y8: chain 'Y8' not found in structure
+[skip] 6IJO_7: chain '7' not found in structure
+[skip] 4V61_BU: chain 'BU' not found in structure
+[skip] 7F08_L: chain 'L' not found in structure
+[skip] 7E0H_Y: chain 'Y' not found in structure
+[skip] 7PIN_B1: chain 'B1' not found in structure
+[skip] 6ZZX_8: chain '8' not found in structure
+
+[10150/20984  48.4%] Processing batch of 50 proteins…
+[skip] 8GLV_Ja: chain 'Ja' not found in structure
+[skip] 8GLV_0A: chain '0A' not found in structure
+[skip] 6RED_Y: chain 'Y' not found in structure
+[skip] 7SQC_H0: chain 'H0' not found in structure
+
+[10200/20984  48.6%] Processing batch of 50 proteins…
+[skip] 6U42_I2: chain 'I2' not found in structure
+[skip] 6U42_W3: chain 'W3' not found in structure
+
+[10250/20984  48.8%] Processing batch of 50 proteins…
+
+[10300/20984  49.1%] Processing batch of 50 proteins…
+[skip] 8GLV_M6: chain 'M6' not found in structure
+[skip] 7N6G_Ae: chain 'Ae' not found in structure
+[skip] 6YAC_4: chain '4' not found in structure
+[skip] 3HBE_X: chain 'X' not found in structure
+[skip] 2GO5_1: chain '1' not found in structure
+[skip] 7UWB_n: chain 'n' not found in structure
+[skip] 7KZO_A6: chain 'A6' not found in structure
+[skip] 7PIW_H1: chain 'H1' not found in structure
+
+[10350/20984  49.3%] Processing batch of 50 proteins…
+[skip] 8GLV_O5: chain 'O5' not found in structure
+
+[10400/20984  49.6%] Processing batch of 50 proteins…
+[skip] 6U42_D1: chain 'D1' not found in structure
+[skip] 7SOM_DK: chain 'DK' not found in structure
+[skip] 8GLV_K9: chain 'K9' not found in structure
+[skip] 7N6G_4N: chain '4N' not found in structure
+[skip] 8GLV_Aw: chain 'Aw' not found in structure
+
+[10450/20984  49.8%] Processing batch of 50 proteins…
+[skip] 8A22_Bf: chain 'Bf' not found in structure
+[skip] 6KAD_o: chain 'o' not found in structure
+[skip] 5L8R_3: chain '3' not found in structure
+[skip] 6U42_1Z: chain '1Z' not found in structure
+[skip] 7UWA_e: chain 'e' not found in structure
+[skip] 7PIN_H1: chain 'H1' not found in structure
+[skip] 7N6G_Dh: chain 'Dh' not found in structure
+[skip] 7N61_3g: chain '3g' not found in structure
+[skip] 7ZQD_F2: chain 'F2' not found in structure
+[skip] 4V7E_CI: chain 'CI' not found in structure
+[skip] 6FKI_p: chain 'p' not found in structure
+[skip] 8GLV_2C: chain '2C' not found in structure
+[skip] 8IP8_ib: chain 'ib' not found in structure
+
+[10500/20984  50.0%] Processing batch of 50 proteins…
+[skip] 6IGZ_7: chain '7' not found in structure
+[skip] 6U42_3I: chain '3I' not found in structure
+[skip] 8BPX_AI: chain 'AI' not found in structure
+
+[10550/20984  50.3%] Processing batch of 50 proteins…
+
+[10600/20984  50.5%] Processing batch of 50 proteins…
+[skip] 7N6G_9g: chain '9g' not found in structure
+[skip] 6U42_5: chain '5' not found in structure
+[skip] 2CL4_X: chain 'X' not found in structure
+[skip] 7UWA_g: chain 'g' not found in structure
+
+[10650/20984  50.8%] Processing batch of 50 proteins…
+[skip] 2C29_F: chain 'F' not found in structure
+[skip] 4V7E_Ci: chain 'Ci' not found in structure
+[skip] 8IPB_sa: chain 'sa' not found in structure
+[skip] 6VOI_g: chain 'g' not found in structure
+[skip] 6KAF_2: chain '2' not found in structure
+[skip] 8GLV_Lk: chain 'Lk' not found in structure
+[skip] 7AQW_p: chain 'p' not found in structure
+[skip] 6DWU_DP: chain 'DP' not found in structure
+[skip] 8GLV_R5: chain 'R5' not found in structure
+[skip] 6U42_G1: chain 'G1' not found in structure
+
+[10700/20984  51.0%] Processing batch of 50 proteins…
+[skip] 6EKC_C2: chain 'C2' not found in structure
+[skip] 8GLV_B4: chain 'B4' not found in structure
+[skip] 6DWU_DH: chain 'DH' not found in structure
+[skip] 7UWD_d: chain 'd' not found in structure
+[skip] 7SQC_UP: chain 'UP' not found in structure
+[skip] 4V3P_LX: chain 'LX' not found in structure
+[skip] 7N6G_0D: chain '0D' not found in structure
+[skip] 6J6I_O: chain 'O' not found in structure
+[skip] 8HG6_X: chain 'X' not found in structure
+[skip] 6ERI_AL: chain 'AL' not found in structure
+[skip] 7SQC_H2: chain 'H2' not found in structure
+[skip] 8GLV_3X: chain '3X' not found in structure
+[skip] 6QUN_O: chain 'O' not found in structure
+[skip] 6U42_4F: chain '4F' not found in structure
+[skip] 8GLV_Ij: chain 'Ij' not found in structure
+
+[10750/20984  51.2%] Processing batch of 50 proteins…
+[skip] 7F9O_d: chain 'd' not found in structure
+[skip] 8BCW_L: chain 'L' not found in structure
+[skip] 8GLV_Lf: chain 'Lf' not found in structure
+[skip] 8APO_Bb: chain 'Bb' not found in structure
+[skip] 6U42_I3: chain 'I3' not found in structure
+[skip] 6ERI_BP: chain 'BP' not found in structure
+[skip] 8GLV_Lw: chain 'Lw' not found in structure
+[skip] 1TM5_E: chain 'E' not found in structure
+[skip] 7PKT_x: chain 'x' not found in structure
+[skip] 7OUI_h: chain 'h' not found in structure
+[skip] 6RDG_X: chain 'X' not found in structure
+[skip] 8BQ5_AF: chain 'AF' not found in structure
+[skip] 8GLV_Jv: chain 'Jv' not found in structure
+
+[10800/20984  51.5%] Processing batch of 50 proteins…
+[skip] 1T9I_A: chain 'A' not found in structure
+[skip] 7PIW_E1: chain 'E1' not found in structure
+[skip] 7BZY_13: chain '13' not found in structure
+[skip] 8IP9_qa: chain 'qa' not found in structure
+[skip] 8IPA_qa: chain 'qa' not found in structure
+[skip] 8IPB_ia: chain 'ia' not found in structure
+[skip] 6U42_O2: chain 'O2' not found in structure
+[skip] 1TMG_I: chain 'I' not found in structure
+[skip] 6RDM_U: chain 'U' not found in structure
+[skip] 8GLV_B9: chain 'B9' not found in structure
+
+[10850/20984  51.7%] Processing batch of 50 proteins…
+[skip] 6FKH_g: chain 'g' not found in structure
+[skip] 8GLV_B2: chain 'B2' not found in structure
+[skip] 6X89_A2: chain 'A2' not found in structure
+
+[10900/20984  51.9%] Processing batch of 50 proteins…
+[skip] 6U42_5N: chain '5N' not found in structure
+[skip] 6U42_Y2: chain 'Y2' not found in structure
+[skip] 6ZZX_7: chain '7' not found in structure
+[skip] 2PKQ_S: chain 'S' not found in structure
+[skip] 8AZW_o: chain 'o' not found in structure
+
+[10950/20984  52.2%] Processing batch of 50 proteins…
+[skip] 7UWC_n: chain 'n' not found in structure
+[skip] 8BWY_d: chain 'd' not found in structure
+[skip] 7SQC_9C: chain '9C' not found in structure
+[skip] 7N61_6g: chain '6g' not found in structure
+[skip] 7CVQ_L: chain 'L' not found in structure
+[skip] 2GO5_5: chain '5' not found in structure
+[skip] 8GLV_G0: chain 'G0' not found in structure
+[skip] 8IPB_qa: chain 'qa' not found in structure
+[skip] 6U42_0R: chain '0R' not found in structure
+[skip] 6U42_J7: chain 'J7' not found in structure
+[skip] 4V7E_BI: chain 'BI' not found in structure
+[skip] 7O01_e: chain 'e' not found in structure
+
+[11000/20984  52.4%] Processing batch of 50 proteins…
+[skip] 8A22_Aw: chain 'Aw' not found in structure
+[skip] 8JIV_Cf: chain 'Cf' not found in structure
+[skip] 6ERI_BL: chain 'BL' not found in structure
+[skip] 8IX1_G: chain 'G' not found in structure
+[skip] 6UEP_B: chain 'B' not found in structure
+
+[11050/20984  52.7%] Processing batch of 50 proteins…
+[skip] 7SQC_Y6: chain 'Y6' not found in structure
+[skip] 7UW9_a: chain 'a' not found in structure
+[skip] 4V3P_Le: chain 'Le' not found in structure
+[skip] 6SJJ_b: chain 'b' not found in structure
+
+[11100/20984  52.9%] Processing batch of 50 proteins…
+[skip] 6EKC_K5: chain 'K5' not found in structure
+[skip] 7N6G_7d: chain '7d' not found in structure
+[skip] 6V1Y_M: chain 'M' not found in structure
+[skip] 7SQC_TP: chain 'TP' not found in structure
+[skip] 4V3P_SZ: chain 'SZ' not found in structure
+[skip] 7N6G_5c: chain '5c' not found in structure
+
+[11150/20984  53.1%] Processing batch of 50 proteins…
+[skip] 7N61_2a: chain '2a' not found in structure
+[skip] 7ZQ3_O: chain 'O' not found in structure
+[skip] 7SQC_XO: chain 'XO' not found in structure
+[skip] 6U42_V6: chain 'V6' not found in structure
+[skip] 8BPX_AD: chain 'AD' not found in structure
+[skip] 7DZ7_4: chain '4' not found in structure
+[skip] 6U42_V9: chain 'V9' not found in structure
+
+[11200/20984  53.4%] Processing batch of 50 proteins…
+
+[11250/20984  53.6%] Processing batch of 50 proteins…
+[skip] 4TUE_RF: chain 'RF' not found in structure
+[skip] 4TUE_RP: chain 'RP' not found in structure
+[skip] 8GLV_D8: chain 'D8' not found in structure
+[skip] 4V61_BN: chain 'BN' not found in structure
+[skip] 8ZEE_Z: chain 'Z' not found in structure
+[skip] 7PKT_r: chain 'r' not found in structure
+
+[11300/20984  53.9%] Processing batch of 50 proteins…
+[skip] 6J6I_L: chain 'L' not found in structure
+[skip] 8BPX_a: chain 'a' not found in structure
+[skip] 5X8P_h: chain 'h' not found in structure
+[skip] 1UZD_R: chain 'R' not found in structure
+[skip] 2FLD_B: chain 'B' not found in structure
+[skip] 8APO_Bo: chain 'Bo' not found in structure
+[skip] 8GLV_O7: chain 'O7' not found in structure
+[skip] 7JTS_m: chain 'm' not found in structure
+[skip] 6EKC_I7: chain 'I7' not found in structure
+[skip] 6U42_B8: chain 'B8' not found in structure
+[skip] 1E72_M: chain 'M' not found in structure
+[skip] 6U42_T4: chain 'T4' not found in structure
+
+[11350/20984  54.1%] Processing batch of 50 proteins…
+
+[11400/20984  54.3%] Processing batch of 50 proteins…
+[skip] 8GLV_Oc: chain 'Oc' not found in structure
+[skip] 7N6G_1b: chain '1b' not found in structure
+[skip] 1U0D_A: chain 'A' not found in structure
+[skip] 4TUE_Y0: chain 'Y0' not found in structure
+[skip] 2PUK_G: chain 'G' not found in structure
+[skip] 1DWA_M: chain 'M' not found in structure
+[skip] 6RNG_F: chain 'F' not found in structure
+[skip] 7DZ8_3: chain '3' not found in structure
+[skip] 8JIV_Cc: chain 'Cc' not found in structure
+[skip] 7WYI_4: chain '4' not found in structure
+
+[11450/20984  54.6%] Processing batch of 50 proteins…
+[skip] 8BEF_Z: chain 'Z' not found in structure
+[skip] 8AUV_b: chain 'b' not found in structure
+
+[11500/20984  54.8%] Processing batch of 50 proteins…
+[skip] 7ARB_l: chain 'l' not found in structure
+[skip] 6YXR_2: chain '2' not found in structure
+[skip] 7UWB_a: chain 'a' not found in structure
+[skip] 8HTU_7: chain '7' not found in structure
+[skip] 8GLV_Kf: chain 'Kf' not found in structure
+[skip] 8E73_4L: chain '4L' not found in structure
+[skip] 6U42_C6: chain 'C6' not found in structure
+[skip] 1YVE_J: chain 'J' not found in structure
+[skip] 6RE1_X: chain 'X' not found in structure
+
+[11550/20984  55.0%] Processing batch of 50 proteins…
+[skip] 6V1Y_N: chain 'N' not found in structure
+[skip] 8IP8_va: chain 'va' not found in structure
+[skip] 1E6Q_M: chain 'M' not found in structure
+[skip] 8JIW_BB: chain 'BB' not found in structure
+[skip] 7WFF_j: chain 'j' not found in structure
+[skip] 6U42_N1: chain 'N1' not found in structure
+
+[11600/20984  55.3%] Processing batch of 50 proteins…
+
+[11650/20984  55.5%] Processing batch of 50 proteins…
+[skip] 4RKU_3: chain '3' not found in structure
+[skip] 7VN5_D: chain 'D' not found in structure
+[skip] 7N6G_6F: chain '6F' not found in structure
+
+[11700/20984  55.8%] Processing batch of 50 proteins…
+[skip] 8BQ6_z: chain 'z' not found in structure
+[skip] 7EWK_4: chain '4' not found in structure
+[skip] 1RBO_I: chain 'I' not found in structure
+[skip] 7QVE_m: chain 'm' not found in structure
+[skip] 4XK8_3: chain '3' not found in structure
+[skip] 6U42_O3: chain 'O3' not found in structure
+[skip] 8JIW_BD: chain 'BD' not found in structure
+[skip] 6DWU_AN: chain 'AN' not found in structure
+[skip] 8GLV_Ej: chain 'Ej' not found in structure
+[skip] 5MMJ_d: chain 'd' not found in structure
+[skip] 8GLV_Jx: chain 'Jx' not found in structure
+
+[11750/20984  56.0%] Processing batch of 50 proteins…
+
+[11800/20984  56.2%] Processing batch of 50 proteins…
+[skip] 6DWU_AO: chain 'AO' not found in structure
+[skip] 3PX9_X: chain 'X' not found in structure
+
+[11850/20984  56.5%] Processing batch of 50 proteins…
+
+[11900/20984  56.7%] Processing batch of 50 proteins…
+[skip] 4V3P_LS: chain 'LS' not found in structure
+[skip] 1TM5_I: chain 'I' not found in structure
+[skip] 8BQ6_e: chain 'e' not found in structure
+[skip] 3R0Q_G: chain 'G' not found in structure
+[skip] 7ARC_W: chain 'W' not found in structure
+[skip] 5X8P_j: chain 'j' not found in structure
+
+[11950/20984  56.9%] Processing batch of 50 proteins…
+[skip] 6U42_O5: chain 'O5' not found in structure
+[skip] 8GLV_Z4: chain 'Z4' not found in structure
+[skip] 1LW6_I: chain 'I' not found in structure
+[skip] 8H2U_0: chain '0' not found in structure
+[skip] 5MDX_e: chain 'e' not found in structure
+[skip] 6U42_0H: chain '0H' not found in structure
+
+[12000/20984  57.2%] Processing batch of 50 proteins…
+
+[12050/20984  57.4%] Processing batch of 50 proteins…
+[skip] 8H2U_5: chain '5' not found in structure
+[skip] 6KAC_d: chain 'd' not found in structure
+[skip] 7DPK_D: chain 'D' not found in structure
+[skip] 7ODM_AAA: chain 'AAA' not found in structure
+[skip] 6U42_5T: chain '5T' not found in structure
+[skip] 4V7E_BT: chain 'BT' not found in structure
+[skip] 8J6Z_2: chain '2' not found in structure
+[skip] 8E73_AM: chain 'AM' not found in structure
+[skip] 7N6G_3J: chain '3J' not found in structure
+[skip] 7JU4_t: chain 't' not found in structure
+
+[12100/20984  57.7%] Processing batch of 50 proteins…
+
+[12150/20984  57.9%] Processing batch of 50 proteins…
+[skip] 8JIW_BX: chain 'BX' not found in structure
+[skip] 6U42_J1: chain 'J1' not found in structure
+[skip] 7QIW_r: chain 'r' not found in structure
+[skip] 8GLV_6T: chain '6T' not found in structure
+
+[12200/20984  58.1%] Processing batch of 50 proteins…
+[skip] 8IPA_ia: chain 'ia' not found in structure
+[skip] 8E73_A2: chain 'A2' not found in structure
+[skip] 8IPA_va: chain 'va' not found in structure
+[skip] 7N61_Ae: chain 'Ae' not found in structure
+[skip] 6V8H_L: chain 'L' not found in structure
+[skip] 7N6G_Cb: chain 'Cb' not found in structure
+[skip] 3V1Y_O: chain 'O' not found in structure
+[skip] 7N6G_0E: chain '0E' not found in structure
+[skip] 6FKH_e: chain 'e' not found in structure
+[skip] 7PI0_a: chain 'a' not found in structure
+[skip] 2O01_1: chain '1' not found in structure
+[skip] 7SOM_EK: chain 'EK' not found in structure
+[skip] 8BD3_4: chain '4' not found in structure
+
+[12250/20984  58.4%] Processing batch of 50 proteins…
+
+[12300/20984  58.6%] Processing batch of 50 proteins…
+[skip] 8GLV_2D: chain '2D' not found in structure
+[skip] 7SOM_EJ: chain 'EJ' not found in structure
+
+[12350/20984  58.9%] Processing batch of 50 proteins…
+[skip] 7PIN_E1: chain 'E1' not found in structure
+[skip] 8BD3_r: chain 'r' not found in structure
+[skip] 8H2U_3: chain '3' not found in structure
+[skip] 6YP7_o: chain 'o' not found in structure
+[skip] 6U42_G3: chain 'G3' not found in structure
+
+[12400/20984  59.1%] Processing batch of 50 proteins…
+[skip] 7AR8_x: chain 'x' not found in structure
+[skip] 6HD3_C: chain 'C' not found in structure
+[skip] 7KZM_B1: chain 'B1' not found in structure
+[skip] 7ZQK_R: chain 'R' not found in structure
+[skip] 4V7E_CG: chain 'CG' not found in structure
+[skip] 8APN_Bt: chain 'Bt' not found in structure
+[skip] 7PIN_G1: chain 'G1' not found in structure
+[skip] 6EKC_I2: chain 'I2' not found in structure
+[skip] 6KAF_g: chain 'g' not found in structure
+[skip] 7DBF_D: chain 'D' not found in structure
+[skip] 3K2B_Q: chain 'Q' not found in structure
+
+[12450/20984  59.3%] Processing batch of 50 proteins…
+[skip] 7DZ7_8: chain '8' not found in structure
+[skip] 8GLV_Mj: chain 'Mj' not found in structure
+[skip] 7PNK_o: chain 'o' not found in structure
+
+[12500/20984  59.6%] Processing batch of 50 proteins…
+[skip] 5XNM_8: chain '8' not found in structure
+[skip] 8IP9_la: chain 'la' not found in structure
+[skip] 6U42_2S: chain '2S' not found in structure
+[skip] 7DZ8_5: chain '5' not found in structure
+[skip] 7SOM_LL: chain 'LL' not found in structure
+[skip] 7QIW_l: chain 'l' not found in structure
+[skip] 2CI2_I: chain 'I' not found in structure
+[skip] 6VE7_k: chain 'k' not found in structure
+[skip] 8IP8_db: chain 'db' not found in structure
+
+[12550/20984  59.8%] Processing batch of 50 proteins…
+[skip] 8APO_As: chain 'As' not found in structure
+
+[12600/20984  60.0%] Processing batch of 50 proteins…
+[skip] 2HCZ_X: chain 'X' not found in structure
+[skip] 7JRP_a: chain 'a' not found in structure
+[skip] 8GLV_Dg: chain 'Dg' not found in structure
+[skip] 8A22_Bo: chain 'Bo' not found in structure
+[skip] 7PKT_w: chain 'w' not found in structure
+[skip] 6IGZ_4: chain '4' not found in structure
+[skip] 1RCO_V: chain 'V' not found in structure
+[skip] 8JIW_BG: chain 'BG' not found in structure
+[skip] 7UW9_c: chain 'c' not found in structure
+[skip] 6X89_S8: chain 'S8' not found in structure
+[skip] 4V3P_LC: chain 'LC' not found in structure
+
+[12650/20984  60.3%] Processing batch of 50 proteins…
+
+[12700/20984  60.5%] Processing batch of 50 proteins…
+[skip] 7N6G_8h: chain '8h' not found in structure
+[skip] 6ERI_Ad: chain 'Ad' not found in structure
+[skip] 8BEF_a: chain 'a' not found in structure
+[skip] 6RDD_P: chain 'P' not found in structure
+[skip] 8GLV_R3: chain 'R3' not found in structure
+[skip] 7SQC_YO: chain 'YO' not found in structure
+
+[12750/20984  60.8%] Processing batch of 50 proteins…
+[skip] 6VZ8_R: chain 'R' not found in structure
+[skip] 7PKT_m: chain 'm' not found in structure
+[skip] 8GLV_Jc: chain 'Jc' not found in structure
+[skip] 8GLV_Db: chain 'Db' not found in structure
+[skip] 7SQC_U0: chain 'U0' not found in structure
+[skip] 8JIV_CM: chain 'CM' not found in structure
+
+[12800/20984  61.0%] Processing batch of 50 proteins…
+[skip] 7JTS_f: chain 'f' not found in structure
+[skip] 6U42_1K: chain '1K' not found in structure
+[skip] 7N6G_6B: chain '6B' not found in structure
+[skip] 7N61_3f: chain '3f' not found in structure
+
+[12850/20984  61.2%] Processing batch of 50 proteins…
+
+[12900/20984  61.5%] Processing batch of 50 proteins…
+[skip] 7KZO_B6: chain 'B6' not found in structure
+[skip] 8GLV_W0: chain 'W0' not found in structure
+
+[12950/20984  61.7%] Processing batch of 50 proteins…
+[skip] 6U42_1A: chain '1A' not found in structure
+[skip] 4TUE_RT: chain 'RT' not found in structure
+[skip] 4V7E_CM: chain 'CM' not found in structure
+[skip] 8GLV_0C: chain '0C' not found in structure
+
+[13000/20984  62.0%] Processing batch of 50 proteins…
+[skip] 8GLV_U1: chain 'U1' not found in structure
+[skip] 7QIW_k: chain 'k' not found in structure
+[skip] 4TUE_RD: chain 'RD' not found in structure
+[skip] 7AQR_U: chain 'U' not found in structure
+[skip] 7Z66_AAAA: chain 'AAAA' not found in structure
+[skip] 4V7E_BJ: chain 'BJ' not found in structure
+[skip] 6RE7_U: chain 'U' not found in structure
+[skip] 7SOM_MI: chain 'MI' not found in structure
+[skip] 7N61_2f: chain '2f' not found in structure
+[skip] 7ZQC_3: chain '3' not found in structure
+[skip] 5MDX_g: chain 'g' not found in structure
+[skip] 7N61_6b: chain '6b' not found in structure
+[skip] 7N61_4c: chain '4c' not found in structure
+[skip] 8GLV_X3: chain 'X3' not found in structure
+
+[13050/20984  62.2%] Processing batch of 50 proteins…
+[skip] 1UWA_V: chain 'V' not found in structure
+[skip] 7PKT_a: chain 'a' not found in structure
+[skip] 1UPM_R: chain 'R' not found in structure
+[skip] 7A4P_6: chain '6' not found in structure
+
+[13100/20984  62.4%] Processing batch of 50 proteins…
+[skip] 7N61_Da: chain 'Da' not found in structure
+[skip] 4V7E_Cd: chain 'Cd' not found in structure
+[skip] 7BZW_5: chain '5' not found in structure
+[skip] 4V61_BK: chain 'BK' not found in structure
+[skip] 8GLV_4D: chain '4D' not found in structure
+[skip] 7N6G_0W: chain '0W' not found in structure
+[skip] 6VOH_d: chain 'd' not found in structure
+[skip] 3JCU_g: chain 'g' not found in structure
+[skip] 5XNL_6: chain '6' not found in structure
+[skip] 6RDM_V: chain 'V' not found in structure
+[skip] 8GLV_Lh: chain 'Lh' not found in structure
+[skip] 7QIW_c: chain 'c' not found in structure
+
+[13150/20984  62.7%] Processing batch of 50 proteins…
+[skip] 7DZ8_4: chain '4' not found in structure
+[skip] 8XUQ_G: chain 'G' not found in structure
+[skip] 5MMM_s: chain 's' not found in structure
+[skip] 1TO2_E: chain 'E' not found in structure
+[skip] 1UWA_R: chain 'R' not found in structure
+
+[13200/20984  62.9%] Processing batch of 50 proteins…
+[skip] 6VON_a: chain 'a' not found in structure
+[skip] 2GHK_X: chain 'X' not found in structure
+[skip] 4DPA_X: chain 'X' not found in structure
+[skip] 5MMM_0: chain '0' not found in structure
+[skip] 6XYW_Be: chain 'Be' not found in structure
+[skip] 8BQ6_o: chain 'o' not found in structure
+[skip] 1RXO_I: chain 'I' not found in structure
+[skip] 7SOM_FJ: chain 'FJ' not found in structure
+[skip] 8A22_Ai: chain 'Ai' not found in structure
+
+[13250/20984  63.1%] Processing batch of 50 proteins…
+[skip] 7N61_9e: chain '9e' not found in structure
+[skip] 6XYW_Af: chain 'Af' not found in structure
+[skip] 7ZQ9_L2: chain 'L2' not found in structure
+[skip] 7OUI_7: chain '7' not found in structure
+[skip] 7WG5_B2: chain 'B2' not found in structure
+[skip] 6U42_M1: chain 'M1' not found in structure
+[skip] 8QJ0_L: chain 'L' not found in structure
+[skip] 8GLV_2M: chain '2M' not found in structure
+
+[13300/20984  63.4%] Processing batch of 50 proteins…
+[skip] 1WDD_E: chain 'E' not found in structure
+[skip] 7N6G_5P: chain '5P' not found in structure
+[skip] 8A22_Bt: chain 'Bt' not found in structure
+
+[13350/20984  63.6%] Processing batch of 50 proteins…
+[skip] 7SQC_0D: chain '0D' not found in structure
+[skip] 8APN_Aq: chain 'Aq' not found in structure
+
+[13400/20984  63.9%] Processing batch of 50 proteins…
+[skip] 8GLV_L7: chain 'L7' not found in structure
+[skip] 6U42_T1: chain 'T1' not found in structure
+[skip] 6U42_B1: chain 'B1' not found in structure
+[skip] 7UWB_g: chain 'g' not found in structure
+[skip] 7N6G_6J: chain '6J' not found in structure
+[skip] 8GLV_3M: chain '3M' not found in structure
+
+[13450/20984  64.1%] Processing batch of 50 proteins…
+[skip] 6XYW_Br: chain 'Br' not found in structure
+[skip] 8A22_Bm: chain 'Bm' not found in structure
+[skip] 6U42_J4: chain 'J4' not found in structure
+
+[13500/20984  64.3%] Processing batch of 50 proteins…
+[skip] 6EKC_S4: chain 'S4' not found in structure
+[skip] 8GLV_Kq: chain 'Kq' not found in structure
+
+[13550/20984  64.6%] Processing batch of 50 proteins…
+[skip] 6DWU_BG: chain 'BG' not found in structure
+[skip] 8IPA_ga: chain 'ga' not found in structure
+[skip] 7KZM_B3: chain 'B3' not found in structure
+[skip] 7N61_Ca: chain 'Ca' not found in structure
+[skip] 7O01_3: chain '3' not found in structure
+[skip] 6DWU_DS: chain 'DS' not found in structure
+[skip] 6DWU_DK: chain 'DK' not found in structure
+[skip] 7SQC_Y5: chain 'Y5' not found in structure
+[skip] 7SQC_I1: chain 'I1' not found in structure
+[skip] 6VE7_r: chain 'r' not found in structure
+
+[13600/20984  64.8%] Processing batch of 50 proteins…
+[skip] 7SQC_T2: chain 'T2' not found in structure
+[skip] 8BQ6_AG: chain 'AG' not found in structure
+[skip] 7SQC_H4: chain 'H4' not found in structure
+[skip] 7E0K_U: chain 'U' not found in structure
+[skip] 7PKQ_f: chain 'f' not found in structure
+[skip] 7SQC_Z0: chain 'Z0' not found in structure
+[skip] 7JTS_h: chain 'h' not found in structure
+[skip] 6RDB_X: chain 'X' not found in structure
+[skip] 8GLV_Ki: chain 'Ki' not found in structure
+[skip] 7A4P_3: chain '3' not found in structure
+[skip] 7N61_1F: chain '1F' not found in structure
+[skip] 7UWB_h: chain 'h' not found in structure
+[skip] 7PNK_b: chain 'b' not found in structure
+[skip] 6ERI_BJ: chain 'BJ' not found in structure
+[skip] 4XK8_a: chain 'a' not found in structure
+[skip] 6SL5_1: chain '1' not found in structure
+[skip] 8APN_Aj: chain 'Aj' not found in structure
+[skip] 8GLV_L2: chain 'L2' not found in structure
+[skip] 7PNK_z: chain 'z' not found in structure
+
+[13650/20984  65.0%] Processing batch of 50 proteins…
+[skip] 7YCA_4: chain '4' not found in structure
+[skip] 6IJJ_1: chain '1' not found in structure
+[skip] 8IPB_bb: chain 'bb' not found in structure
+[skip] 8JIV_Cp: chain 'Cp' not found in structure
+[skip] 6TC5_AAA: chain 'AAA' not found in structure
+[skip] 5ZJI_X: chain 'X' not found in structure
+[skip] 8BQ5_o: chain 'o' not found in structure
+[skip] 8GLV_6V: chain '6V' not found in structure
+
+[13700/20984  65.3%] Processing batch of 50 proteins…
+[skip] 8GLV_5Q: chain '5Q' not found in structure
+[skip] 4HUO_X: chain 'X' not found in structure
+[skip] 7WFD_AC: chain 'AC' not found in structure
+[skip] 8GLV_Ay: chain 'Ay' not found in structure
+
+[13750/20984  65.5%] Processing batch of 50 proteins…
+[skip] 7N6G_1a: chain '1a' not found in structure
+[skip] 7JU4_o: chain 'o' not found in structure
+[skip] 7N61_4e: chain '4e' not found in structure
+
+[13800/20984  65.8%] Processing batch of 50 proteins…
+[skip] 7N6G_Bh: chain 'Bh' not found in structure
+[skip] 6ERI_AU: chain 'AU' not found in structure
+[skip] 8C29_o: chain 'o' not found in structure
+[skip] 1DWH_M: chain 'M' not found in structure
+[skip] 7N6G_5R: chain '5R' not found in structure
+
+[13850/20984  66.0%] Processing batch of 50 proteins…
+
+[13900/20984  66.2%] Processing batch of 50 proteins…
+[skip] 7DM6_D: chain 'D' not found in structure
+[skip] 7JRX_c: chain 'c' not found in structure
+[skip] 6DWU_AQ: chain 'AQ' not found in structure
+[skip] 8XUQ_F: chain 'F' not found in structure
+[skip] 8APO_AG: chain 'AG' not found in structure
+[skip] 7SQC_2B: chain '2B' not found in structure
+
+[13950/20984  66.5%] Processing batch of 50 proteins…
+[skip] 7VN5_C: chain 'C' not found in structure
+[skip] 6U42_0F: chain '0F' not found in structure
+[skip] 6U42_2B: chain '2B' not found in structure
+[skip] 7UWD_g: chain 'g' not found in structure
+
+[14000/20984  66.7%] Processing batch of 50 proteins…
+[skip] 6U42_0W: chain '0W' not found in structure
+
+[14050/20984  67.0%] Processing batch of 50 proteins…
+[skip] 8E73_S4: chain 'S4' not found in structure
+[skip] 8BDA_G: chain 'G' not found in structure
+[skip] 7N6G_5V: chain '5V' not found in structure
+[skip] 5X8P_t: chain 't' not found in structure
+[skip] 4V61_AF: chain 'AF' not found in structure
+
+[14100/20984  67.2%] Processing batch of 50 proteins…
+[skip] 8J6Z_y: chain 'y' not found in structure
+[skip] 8GLV_Mc: chain 'Mc' not found in structure
+[skip] 7UWC_g: chain 'g' not found in structure
+[skip] 6VVI_AAA: chain 'AAA' not found in structure
+[skip] 7SOM_GH: chain 'GH' not found in structure
+[skip] 1MOW_D: chain 'D' not found in structure
+[skip] 5X8R_e: chain 'e' not found in structure
+
+[14150/20984  67.4%] Processing batch of 50 proteins…
+[skip] 8GLV_6I: chain '6I' not found in structure
+[skip] 7F9O_c: chain 'c' not found in structure
+[skip] 1RY1_B: chain 'B' not found in structure
+[skip] 4DP7_X: chain 'X' not found in structure
+[skip] 6RDS_Z: chain 'Z' not found in structure
+[skip] 7N61_1h: chain '1h' not found in structure
+[skip] 6X89_A1: chain 'A1' not found in structure
+[skip] 7KZO_A4: chain 'A4' not found in structure
+[skip] 6U42_F3: chain 'F3' not found in structure
+[skip] 7BGI_1: chain '1' not found in structure
+
+[14200/20984  67.7%] Processing batch of 50 proteins…
+[skip] 7AR8_y: chain 'y' not found in structure
+[skip] 8QJ0_N: chain 'N' not found in structure
+[skip] 8GLV_Jp: chain 'Jp' not found in structure
+[skip] 8J6Z_x: chain 'x' not found in structure
+[skip] 6IJJ_5: chain '5' not found in structure
+[skip] 7KSQ_2: chain '2' not found in structure
+
+[14250/20984  67.9%] Processing batch of 50 proteins…
+[skip] 3H7C_X: chain 'X' not found in structure
+[skip] 6U42_J2: chain 'J2' not found in structure
+[skip] 8GLV_Ix: chain 'Ix' not found in structure
+[skip] 7ZQD_4: chain '4' not found in structure
+[skip] 8GLV_Ov: chain 'Ov' not found in structure
+
+[14300/20984  68.1%] Processing batch of 50 proteins…
+[skip] 3LW5_3: chain '3' not found in structure
+[skip] 7SQC_J0: chain 'J0' not found in structure
+[skip] 6DWU_CH: chain 'CH' not found in structure
+
+[14350/20984  68.4%] Processing batch of 50 proteins…
+
+[14400/20984  68.6%] Processing batch of 50 proteins…
+[skip] 7PIN_c1: chain 'c1' not found in structure
+[skip] 7KZM_A6: chain 'A6' not found in structure
+[skip] 8GLV_Ba: chain 'Ba' not found in structure
+
+[14450/20984  68.9%] Processing batch of 50 proteins…
+
+[14500/20984  69.1%] Processing batch of 50 proteins…
+[skip] 8GLV_Bo: chain 'Bo' not found in structure
+[skip] 6U42_4O: chain '4O' not found in structure
+[skip] 6U42_A4: chain 'A4' not found in structure
+
+[14550/20984  69.3%] Processing batch of 50 proteins…
+[skip] 6U42_Y0: chain 'Y0' not found in structure
+[skip] 6X89_S6: chain 'S6' not found in structure
+[skip] 7A23_a: chain 'a' not found in structure
+[skip] 8IP8_bb: chain 'bb' not found in structure
+[skip] 6JO6_5: chain '5' not found in structure
+[skip] 8APN_Au: chain 'Au' not found in structure
+[skip] 7ZQC_6: chain '6' not found in structure
+[skip] 4DP8_X: chain 'X' not found in structure
+[skip] 6QEC_A: chain 'A' not found in structure
+[skip] 7SQC_Y1: chain 'Y1' not found in structure
+[skip] 7ZQD_92: chain '92' not found in structure
+[skip] 6U42_Z4: chain 'Z4' not found in structure
+[skip] 7A23_e: chain 'e' not found in structure
+[skip] 6JO5_8: chain '8' not found in structure
+[skip] 8GLV_I1: chain 'I1' not found in structure
+
+[14600/20984  69.6%] Processing batch of 50 proteins…
+[skip] 7N6G_7c: chain '7c' not found in structure
+[skip] 7OUI_2: chain '2' not found in structure
+[skip] 6KAD_b: chain 'b' not found in structure
+
+[14650/20984  69.8%] Processing batch of 50 proteins…
+
+[14700/20984  70.1%] Processing batch of 50 proteins…
+[skip] 1G9Z_B: chain 'B' not found in structure
+[skip] 7PIW_C1: chain 'C1' not found in structure
+[skip] 4TUE_QQ: chain 'QQ' not found in structure
+[skip] 7N61_7f: chain '7f' not found in structure
+
+[14750/20984  70.3%] Processing batch of 50 proteins…
+
+[14800/20984  70.5%] Processing batch of 50 proteins…
+[skip] 8GLV_I2: chain 'I2' not found in structure
+[skip] 5XNM_4: chain '4' not found in structure
+[skip] 7UW9_k: chain 'k' not found in structure
+[skip] 4V7E_BG: chain 'BG' not found in structure
+[skip] 8GLV_Do: chain 'Do' not found in structure
+[skip] 8GLV_E5: chain 'E5' not found in structure
+
+[14850/20984  70.8%] Processing batch of 50 proteins…
+[skip] 8GLV_0I: chain '0I' not found in structure
+[skip] 7PIW_Z1: chain 'Z1' not found in structure
+[skip] 7BZW_2: chain '2' not found in structure
+[skip] 8BD3_y: chain 'y' not found in structure
+[skip] 6U42_1S: chain '1S' not found in structure
+[skip] 8HG3_S: chain 'S' not found in structure
+[skip] 6U42_0I: chain '0I' not found in structure
+[skip] 7WFE_BE: chain 'BE' not found in structure
+[skip] 5ZJI_2: chain '2' not found in structure
+[skip] 7N6G_1f: chain '1f' not found in structure
+[skip] 6U42_F5: chain 'F5' not found in structure
+[skip] 7AQR_q: chain 'q' not found in structure
+
+[14900/20984  71.0%] Processing batch of 50 proteins…
+[skip] 5MDX_c: chain 'c' not found in structure
+[skip] 5GP0_E: chain 'E' not found in structure
+[skip] 6U42_H4: chain 'H4' not found in structure
+[skip] 8IPA_na: chain 'na' not found in structure
+[skip] 6EKC_A2: chain 'A2' not found in structure
+[skip] 6U42_P3: chain 'P3' not found in structure
+[skip] 5X8P_4: chain '4' not found in structure
+[skip] 2GO5_6: chain '6' not found in structure
+[skip] 7N6G_0K: chain '0K' not found in structure
+[skip] 4TUE_RZ: chain 'RZ' not found in structure
+[skip] 8BQ5_p: chain 'p' not found in structure
+[skip] 4TUE_R2: chain 'R2' not found in structure
+[skip] 6U42_7T: chain '7T' not found in structure
+[skip] 8IX2_N: chain 'N' not found in structure
+
+[14950/20984  71.2%] Processing batch of 50 proteins…
+
+[15000/20984  71.5%] Processing batch of 50 proteins…
+[skip] 2J37_6: chain '6' not found in structure
+[skip] 7PKT_o: chain 'o' not found in structure
+[skip] 3EJ5_X: chain 'X' not found in structure
+[skip] 6VMG_e: chain 'e' not found in structure
+[skip] 7N61_1C: chain '1C' not found in structure
+[skip] 4V3P_LE: chain 'LE' not found in structure
+[skip] 7WG5_BL: chain 'BL' not found in structure
+
+[15050/20984  71.7%] Processing batch of 50 proteins…
+[skip] 7WFG_K: chain 'K' not found in structure
+[skip] 6U42_X5: chain 'X5' not found in structure
+[skip] 7XQP_2: chain '2' not found in structure
+[skip] 8IX0_N: chain 'N' not found in structure
+[skip] 6U42_A7: chain 'A7' not found in structure
+[skip] 4V7E_Cp: chain 'Cp' not found in structure
+[skip] 8IPB_za: chain 'za' not found in structure
+[skip] 7JTS_a: chain 'a' not found in structure
+[skip] 6YP7_a: chain 'a' not found in structure
+[skip] 6RHZ_3: chain '3' not found in structure
+[skip] 8GLV_Cy: chain 'Cy' not found in structure
+[skip] 6U42_7A: chain '7A' not found in structure
+
+[15100/20984  72.0%] Processing batch of 50 proteins…
+[skip] 8GLV_Fn: chain 'Fn' not found in structure
+
+[15150/20984  72.2%] Processing batch of 50 proteins…
+[skip] 6U42_K4: chain 'K4' not found in structure
+
+[15200/20984  72.4%] Processing batch of 50 proteins…
+[skip] 8WA1_i: chain 'i' not found in structure
+[skip] 8GLV_N8: chain 'N8' not found in structure
+
+[15250/20984  72.7%] Processing batch of 50 proteins…
+
+[15300/20984  72.9%] Processing batch of 50 proteins…
+[skip] 8APO_Bl: chain 'Bl' not found in structure
+[skip] 7WG5_a: chain 'a' not found in structure
+[skip] 8GLV_W3: chain 'W3' not found in structure
+[skip] 7SOM_JM: chain 'JM' not found in structure
+[skip] 7DOY_D: chain 'D' not found in structure
+[skip] 7N6G_9f: chain '9f' not found in structure
+[skip] 7N6G_Ch: chain 'Ch' not found in structure
+
+[15350/20984  73.2%] Processing batch of 50 proteins…
+[skip] 5IU0_I: chain 'I' not found in structure
+[skip] 8GLV_2B: chain '2B' not found in structure
+[skip] 7N61_0Y: chain '0Y' not found in structure
+[skip] 8AMZ_U: chain 'U' not found in structure
+
+[15400/20984  73.4%] Processing batch of 50 proteins…
+[skip] 7N61_Cc: chain 'Cc' not found in structure
+[skip] 5TTE_E: chain 'E' not found in structure
+[skip] 7WFD_AD: chain 'AD' not found in structure
+[skip] 8APN_Bl: chain 'Bl' not found in structure
+[skip] 1Y3F_E: chain 'E' not found in structure
+[skip] 6FKF_p: chain 'p' not found in structure
+
+[15450/20984  73.6%] Processing batch of 50 proteins…
+
+[15500/20984  73.9%] Processing batch of 50 proteins…
+[skip] 7EWK_6: chain '6' not found in structure
+[skip] 2JKI_S: chain 'S' not found in structure
+[skip] 6EKC_C5: chain 'C5' not found in structure
+[skip] 4V7E_CU: chain 'CU' not found in structure
+[skip] 5XNM_y: chain 'y' not found in structure
+[skip] 4TUE_RO: chain 'RO' not found in structure
+
+[15550/20984  74.1%] Processing batch of 50 proteins…
+[skip] 8GLV_Q9: chain 'Q9' not found in structure
+[skip] 7CVO_G: chain 'G' not found in structure
+[skip] 6KAF_3: chain '3' not found in structure
+[skip] 6U42_X7: chain 'X7' not found in structure
+[skip] 7SQC_D2: chain 'D2' not found in structure
+
+[15600/20984  74.3%] Processing batch of 50 proteins…
+[skip] 8BD3_q: chain 'q' not found in structure
+[skip] 7UWD_h: chain 'h' not found in structure
+
+[15650/20984  74.6%] Processing batch of 50 proteins…
+[skip] 8AZW_e: chain 'e' not found in structure
+[skip] 6U42_M7: chain 'M7' not found in structure
+[skip] 6U42_6: chain '6' not found in structure
+[skip] 1WA6_X: chain 'X' not found in structure
+[skip] 4TUE_R4: chain 'R4' not found in structure
+[skip] 7N6G_0U: chain '0U' not found in structure
+
+[15700/20984  74.8%] Processing batch of 50 proteins…
+[skip] 7PI0_h: chain 'h' not found in structure
+[skip] 6ERI_AT: chain 'AT' not found in structure
+[skip] 6RED_U: chain 'U' not found in structure
+[skip] 5MLC_9: chain '9' not found in structure
+[skip] 7UWB_e: chain 'e' not found in structure
+[skip] 8APN_Bp: chain 'Bp' not found in structure
+
+[15750/20984  75.1%] Processing batch of 50 proteins…
+
+[15800/20984  75.3%] Processing batch of 50 proteins…
+[skip] 8GLV_A3: chain 'A3' not found in structure
+
+[15850/20984  75.5%] Processing batch of 50 proteins…
+[skip] 7JU4_r: chain 'r' not found in structure
+[skip] 6EKC_K6: chain 'K6' not found in structure
+[skip] 7N61_Dc: chain 'Dc' not found in structure
+[skip] 5MMM_y: chain 'y' not found in structure
+[skip] 6SL5_4: chain '4' not found in structure
+[skip] 7N6G_Db: chain 'Db' not found in structure
+
+[15900/20984  75.8%] Processing batch of 50 proteins…
+[skip] 8AZW_r: chain 'r' not found in structure
+[skip] 3JCU_d: chain 'd' not found in structure
+[skip] 6U42_P5: chain 'P5' not found in structure
+
+[15950/20984  76.0%] Processing batch of 50 proteins…
+[skip] 7N61_9d: chain '9d' not found in structure
+[skip] 5Y5D_B: chain 'B' not found in structure
+[skip] 6IR9_a: chain 'a' not found in structure
+[skip] 6YP7_b: chain 'b' not found in structure
+[skip] 6DWU_AH: chain 'AH' not found in structure
+[skip] 8GLV_6J: chain '6J' not found in structure
+[skip] 5X8R_j: chain 'j' not found in structure
+[skip] 4TUE_YG: chain 'YG' not found in structure
+[skip] 6XYW_Bf: chain 'Bf' not found in structure
+[skip] 7N61_Cf: chain 'Cf' not found in structure
+
+[16000/20984  76.2%] Processing batch of 50 proteins…
+[skip] 7DZ7_2: chain '2' not found in structure
+[skip] 6U42_2Q: chain '2Q' not found in structure
+[skip] 6RDY_Z: chain 'Z' not found in structure
+[skip] 7XOZ_F: chain 'F' not found in structure
+[skip] 6U42_L4: chain 'L4' not found in structure
+[skip] 8IP8_na: chain 'na' not found in structure
+[skip] 7UWB_i: chain 'i' not found in structure
+[skip] 7O01_g: chain 'g' not found in structure
+[skip] 8GLV_Hi: chain 'Hi' not found in structure
+
+[16050/20984  76.5%] Processing batch of 50 proteins…
+[skip] 6U42_4P: chain '4P' not found in structure
+[skip] 7SQC_C2: chain 'C2' not found in structure
+[skip] 7N61_8d: chain '8d' not found in structure
+
+[16100/20984  76.7%] Processing batch of 50 proteins…
+
+[16150/20984  77.0%] Processing batch of 50 proteins…
+
+[16200/20984  77.2%] Processing batch of 50 proteins…
+
+[16250/20984  77.4%] Processing batch of 50 proteins…
+[skip] 7BP6_D: chain 'D' not found in structure
+[skip] 7JU4_2: chain '2' not found in structure
+[skip] 8IPB_ca: chain 'ca' not found in structure
+[skip] 8CMO_7: chain '7' not found in structure
+[skip] 6EKC_O1: chain 'O1' not found in structure
+[skip] 7N6G_1g: chain '1g' not found in structure
+[skip] 8IP8_gb: chain 'gb' not found in structure
+[skip] 6VE7_v: chain 'v' not found in structure
+[skip] 7SQC_9F: chain '9F' not found in structure
+
+[16300/20984  77.7%] Processing batch of 50 proteins…
+
+[16350/20984  77.9%] Processing batch of 50 proteins…
+[skip] 6LCM_C: chain 'C' not found in structure
+[skip] 6U42_9: chain '9' not found in structure
+[skip] 8IPB_gb: chain 'gb' not found in structure
+[skip] 8APO_Ae: chain 'Ae' not found in structure
+[skip] 4JC6_J: chain 'J' not found in structure
+[skip] 8AZW_a: chain 'a' not found in structure
+[skip] 4DP2_X: chain 'X' not found in structure
+[skip] 7CVQ_K: chain 'K' not found in structure
+[skip] 7JU4_i: chain 'i' not found in structure
+[skip] 6U42_0C: chain '0C' not found in structure
+[skip] 8GLV_Dx: chain 'Dx' not found in structure
+[skip] 7E0H_Z: chain 'Z' not found in structure
+
+[16400/20984  78.2%] Processing batch of 50 proteins…
+[skip] 7WG5_AF: chain 'AF' not found in structure
+
+[16450/20984  78.4%] Processing batch of 50 proteins…
+[skip] 7JTS_e: chain 'e' not found in structure
+[skip] 7PI5_s: chain 's' not found in structure
+[skip] 8IWY_N: chain 'N' not found in structure
+[skip] 7PIW_z: chain 'z' not found in structure
+[skip] 7N61_Cb: chain 'Cb' not found in structure
+[skip] 7PIW_o1: chain 'o1' not found in structure
+
+[16500/20984  78.6%] Processing batch of 50 proteins…
+[skip] 8APN_Bi: chain 'Bi' not found in structure
+[skip] 5X8T_4: chain '4' not found in structure
+[skip] 7N6G_6A: chain '6A' not found in structure
+[skip] 6DWU_CU: chain 'CU' not found in structure
+[skip] 4V7E_CQ: chain 'CQ' not found in structure
+[skip] 6VOJ_e: chain 'e' not found in structure
+[skip] 8J6Z_4: chain '4' not found in structure
+[skip] 7UX9_P: chain 'P' not found in structure
+[skip] 8GLV_R7: chain 'R7' not found in structure
+[skip] 4HWD_D: chain 'D' not found in structure
+
+[16550/20984  78.9%] Processing batch of 50 proteins…
+[skip] 5X8R_i: chain 'i' not found in structure
+[skip] 6XYW_Bg: chain 'Bg' not found in structure
+
+[16600/20984  79.1%] Processing batch of 50 proteins…
+[skip] 8GLV_Fy: chain 'Fy' not found in structure
+[skip] 5X8P_n: chain 'n' not found in structure
+[skip] 8IP8_ua: chain 'ua' not found in structure
+[skip] 8GLV_Ld: chain 'Ld' not found in structure
+[skip] 7KZO_B5: chain 'B5' not found in structure
+[skip] 8QAV_Y: chain 'Y' not found in structure
+[skip] 8IPB_db: chain 'db' not found in structure
+
+[16650/20984  79.3%] Processing batch of 50 proteins…
+[skip] 6VOH_a: chain 'a' not found in structure
+[skip] 4V61_BW: chain 'BW' not found in structure
+[skip] 8GLV_Gs: chain 'Gs' not found in structure
+[skip] 6U42_W0: chain 'W0' not found in structure
+[skip] 7QIW_g: chain 'g' not found in structure
+
+[16700/20984  79.6%] Processing batch of 50 proteins…
+[skip] 7XZJ_9: chain '9' not found in structure
+[skip] 8HG3_T: chain 'T' not found in structure
+[skip] 6VOK_e: chain 'e' not found in structure
+[skip] 8P8K_AAA: chain 'AAA' not found in structure
+[skip] 8IPB_oa: chain 'oa' not found in structure
+
+[16750/20984  79.8%] Processing batch of 50 proteins…
+
+[16800/20984  80.1%] Processing batch of 50 proteins…
+[skip] 7KSQ_1: chain '1' not found in structure
+[skip] 6VOF_e: chain 'e' not found in structure
+[skip] 8IP9_ia: chain 'ia' not found in structure
+[skip] 8GLV_1Z: chain '1Z' not found in structure
+
+[16850/20984  80.3%] Processing batch of 50 proteins…
+[skip] 6TNL_EEE: chain 'EEE' not found in structure
+[skip] 7R3K_5: chain '5' not found in structure
+[skip] 8IP9_xa: chain 'xa' not found in structure
+[skip] 7KZM_A2: chain 'A2' not found in structure
+[skip] 7N61_9a: chain '9a' not found in structure
+[skip] 6VM1_d: chain 'd' not found in structure
+[skip] 7PIW_a: chain 'a' not found in structure
+[skip] 6U42_2F: chain '2F' not found in structure
+[skip] 7SQC_5C: chain '5C' not found in structure
+[skip] 6U42_Q1: chain 'Q1' not found in structure
+
+[16900/20984  80.5%] Processing batch of 50 proteins…
+[skip] 7ZQC_7: chain '7' not found in structure
+[skip] 4V7E_BL: chain 'BL' not found in structure
+[skip] 7BZW_1: chain '1' not found in structure
+[skip] 4V61_BI: chain 'BI' not found in structure
+[skip] 8JIV_Ca: chain 'Ca' not found in structure
+[skip] 7N6G_6h: chain '6h' not found in structure
+[skip] 5XNN_1: chain '1' not found in structure
+[skip] 7SQC_K3: chain 'K3' not found in structure
+[skip] 3BWD_D: chain 'D' not found in structure
+
+[16950/20984  80.8%] Processing batch of 50 proteins…
+[skip] 6U42_1H: chain '1H' not found in structure
+[skip] 6TNL_FFF: chain 'FFF' not found in structure
+
+[17000/20984  81.0%] Processing batch of 50 proteins…
+[skip] 4V7E_CK: chain 'CK' not found in structure
+[skip] 1BP7_C: chain 'C' not found in structure
+[skip] 4V3P_SS: chain 'SS' not found in structure
+[skip] 4TUE_XH: chain 'XH' not found in structure
+[skip] 4TUE_RR: chain 'RR' not found in structure
+[skip] 6U42_2: chain '2' not found in structure
+[skip] 5IU0_J: chain 'J' not found in structure
+[skip] 6ZZX_6: chain '6' not found in structure
+
+[17050/20984  81.3%] Processing batch of 50 proteins…
+[skip] 2WSC_4: chain '4' not found in structure
+[skip] 6S2P_N: chain 'N' not found in structure
+[skip] 6SL5_6: chain '6' not found in structure
+[skip] 6U42_F6: chain 'F6' not found in structure
+[skip] 7DZ8_2: chain '2' not found in structure
+
+[17100/20984  81.5%] Processing batch of 50 proteins…
+[skip] 8IPA_cb: chain 'cb' not found in structure
+[skip] 7SOM_KH: chain 'KH' not found in structure
+[skip] 2WSC_1: chain '1' not found in structure
+[skip] 7QVE_f: chain 'f' not found in structure
+[skip] 7O01_v: chain 'v' not found in structure
+[skip] 7JRP_i: chain 'i' not found in structure
+[skip] 7ZQK_O: chain 'O' not found in structure
+[skip] 7N6G_1C: chain '1C' not found in structure
+[skip] 6FB8_A: chain 'A' not found in structure
+
+[17150/20984  81.7%] Processing batch of 50 proteins…
+[skip] 7PNK_p: chain 'p' not found in structure
+[skip] 4TUE_RX: chain 'RX' not found in structure
+[skip] 5MMJ_g: chain 'g' not found in structure
+[skip] 7PI5_e: chain 'e' not found in structure
+[skip] 7N6G_8c: chain '8c' not found in structure
+[skip] 7PKT_l: chain 'l' not found in structure
+[skip] 7YCA_3: chain '3' not found in structure
+[skip] 8GLV_K6: chain 'K6' not found in structure
+
+[17200/20984  82.0%] Processing batch of 50 proteins…
+[skip] 6QUQ_O: chain 'O' not found in structure
+[skip] 7ARC_Q: chain 'Q' not found in structure
+[skip] 7N6G_4f: chain '4f' not found in structure
+[skip] 8GLV_Bm: chain 'Bm' not found in structure
+
+[17250/20984  82.2%] Processing batch of 50 proteins…
+[skip] 6U42_W8: chain 'W8' not found in structure
+[skip] 6VOJ_a: chain 'a' not found in structure
+[skip] 7JRO_c: chain 'c' not found in structure
+[skip] 8H2U_8: chain '8' not found in structure
+[skip] 2PKQ_O: chain 'O' not found in structure
+[skip] 1YLB_B: chain 'B' not found in structure
+[skip] 6U42_B0: chain 'B0' not found in structure
+
+[17300/20984  82.4%] Processing batch of 50 proteins…
+[skip] 8JIW_BC: chain 'BC' not found in structure
+[skip] 4V3P_SO: chain 'SO' not found in structure
+[skip] 4DP9_X: chain 'X' not found in structure
+[skip] 6KAC_a: chain 'a' not found in structure
+[skip] 7ZQ9_Z: chain 'Z' not found in structure
+
+[17350/20984  82.7%] Processing batch of 50 proteins…
+[skip] 6U42_1E: chain '1E' not found in structure
+[skip] 6DWU_BS: chain 'BS' not found in structure
+[skip] 8BEH_T: chain 'T' not found in structure
+[skip] 8GLV_B6: chain 'B6' not found in structure
+[skip] 4V7E_CP: chain 'CP' not found in structure
+[skip] 6U42_1U: chain '1U' not found in structure
+
+[17400/20984  82.9%] Processing batch of 50 proteins…
+[skip] 8JM5_B: chain 'B' not found in structure
+[skip] 8A22_Bg: chain 'Bg' not found in structure
+[skip] 7PKT_s: chain 's' not found in structure
+[skip] 6RER_X: chain 'X' not found in structure
+[skip] 7BLX_6: chain '6' not found in structure
+[skip] 5X8P_v: chain 'v' not found in structure
+[skip] 2CY6_D: chain 'D' not found in structure
+[skip] 6U42_3: chain '3' not found in structure
+[skip] 7N6G_4U: chain '4U' not found in structure
+
+[17450/20984  83.2%] Processing batch of 50 proteins…
+[skip] 7N6G_7a: chain '7a' not found in structure
+[skip] 7SQC_N3: chain 'N3' not found in structure
+[skip] 6VZ8_S: chain 'S' not found in structure
+[skip] 6U42_W7: chain 'W7' not found in structure
+[skip] 6U42_R2: chain 'R2' not found in structure
+[skip] 8A22_AG: chain 'AG' not found in structure
+[skip] 8APN_Ak: chain 'Ak' not found in structure
+[skip] 7N6G_0L: chain '0L' not found in structure
+[skip] 6U42_E2: chain 'E2' not found in structure
+
+[17500/20984  83.4%] Processing batch of 50 proteins…
+[skip] 8IPB_cb: chain 'cb' not found in structure
+[skip] 7UWD_j: chain 'j' not found in structure
+[skip] 8GLV_3L: chain '3L' not found in structure
+
+[17550/20984  83.6%] Processing batch of 50 proteins…
+
+[17600/20984  83.9%] Processing batch of 50 proteins…
+[skip] 7A23_b: chain 'b' not found in structure
+[skip] 8JIV_CY: chain 'CY' not found in structure
+[skip] 7N6G_5f: chain '5f' not found in structure
+[skip] 6IU8_I: chain 'I' not found in structure
+[skip] 6U42_1: chain '1' not found in structure
+[skip] 7ARB_p: chain 'p' not found in structure
+[skip] 7WFD_A6: chain 'A6' not found in structure
+[skip] 1M5X_B: chain 'B' not found in structure
+[skip] 8GLV_Fg: chain 'Fg' not found in structure
+[skip] 8BEL_Q: chain 'Q' not found in structure
+[skip] 7SQC_C4: chain 'C4' not found in structure
+[skip] 7PIN_c: chain 'c' not found in structure
+[skip] 8GLV_4G: chain '4G' not found in structure
+[skip] 6XYW_Bu: chain 'Bu' not found in structure
+
+[17650/20984  84.1%] Processing batch of 50 proteins…
+[skip] 7N61_7b: chain '7b' not found in structure
+[skip] 8A22_Ab: chain 'Ab' not found in structure
+[skip] 8BPX_BI: chain 'BI' not found in structure
+[skip] 8APO_Ai: chain 'Ai' not found in structure
+[skip] 6YP7_c: chain 'c' not found in structure
+[skip] 5MMM_u: chain 'u' not found in structure
+[skip] 7PKT_p: chain 'p' not found in structure
+[skip] 8BQ6_n: chain 'n' not found in structure
+[skip] 7SQC_4B: chain '4B' not found in structure
+[skip] 6U42_X4: chain 'X4' not found in structure
+
+[17700/20984  84.3%] Processing batch of 50 proteins…
+[skip] 7DLC_D: chain 'D' not found in structure
+
+[17750/20984  84.6%] Processing batch of 50 proteins…
+
+[17800/20984  84.8%] Processing batch of 50 proteins…
+[skip] 6X89_6M: chain '6M' not found in structure
+[skip] 7PKT_y: chain 'y' not found in structure
+[skip] 6U42_K3: chain 'K3' not found in structure
+[skip] 8BD3_z: chain 'z' not found in structure
+[skip] 6XYW_Bd: chain 'Bd' not found in structure
+[skip] 6U42_6P: chain '6P' not found in structure
+[skip] 6U42_4Q: chain '4Q' not found in structure
+
+[17850/20984  85.1%] Processing batch of 50 proteins…
+[skip] 5X8P_e: chain 'e' not found in structure
+
+[17900/20984  85.3%] Processing batch of 50 proteins…
+[skip] 7PIW_c1: chain 'c1' not found in structure
+[skip] 4TUE_QD: chain 'QD' not found in structure
+[skip] 4V3P_SD: chain 'SD' not found in structure
+[skip] 6U42_Y8: chain 'Y8' not found in structure
+[skip] 7PKQ_s: chain 's' not found in structure
+[skip] 7N5G_B: chain 'B' not found in structure
+[skip] 7A24_j: chain 'j' not found in structure
+[skip] 6U42_7: chain '7' not found in structure
+
+[17950/20984  85.5%] Processing batch of 50 proteins…
+[skip] 7N6G_Ca: chain 'Ca' not found in structure
+[skip] 7VN4_D: chain 'D' not found in structure
+
+[18000/20984  85.8%] Processing batch of 50 proteins…
+[skip] 4TUE_XK: chain 'XK' not found in structure
+
+[18050/20984  86.0%] Processing batch of 50 proteins…
+[skip] 6DXE_C: chain 'C' not found in structure
+[skip] 6KAF_o: chain 'o' not found in structure
+
+[18100/20984  86.3%] Processing batch of 50 proteins…
+[skip] 6RE1_V: chain 'V' not found in structure
+[skip] 7D0J_7: chain '7' not found in structure
+[skip] 4PKA_X: chain 'X' not found in structure
+[skip] 3MXB_S: chain 'S' not found in structure
+[skip] 7SOM_LJ: chain 'LJ' not found in structure
+[skip] 7N61_5h: chain '5h' not found in structure
+[skip] 6U42_U2: chain 'U2' not found in structure
+
+[18150/20984  86.5%] Processing batch of 50 proteins…
+[skip] 7SQC_9B: chain '9B' not found in structure
+[skip] 1UZH_V: chain 'V' not found in structure
+[skip] 7WG5_A1: chain 'A1' not found in structure
+[skip] 6U42_K9: chain 'K9' not found in structure
+[skip] 7N6G_4F: chain '4F' not found in structure
+[skip] 7PKQ_w: chain 'w' not found in structure
+[skip] 2WXD_M: chain 'M' not found in structure
+[skip] 6VOL_d: chain 'd' not found in structure
+[skip] 8GLV_G1: chain 'G1' not found in structure
+[skip] 7WFD_A3: chain 'A3' not found in structure
+[skip] 7OQV_BBB: chain 'BBB' not found in structure
+[skip] 4V61_AP: chain 'AP' not found in structure
+[skip] 8WA1_c: chain 'c' not found in structure
+[skip] 3JCU_q: chain 'q' not found in structure
+[skip] 8GLV_H4: chain 'H4' not found in structure
+
+[18200/20984  86.7%] Processing batch of 50 proteins…
+[skip] 7SQC_H3: chain 'H3' not found in structure
+[skip] 7N6G_0S: chain '0S' not found in structure
+[skip] 4V61_AI: chain 'AI' not found in structure
+[skip] 8GLV_Bv: chain 'Bv' not found in structure
+[skip] 8AZW_f: chain 'f' not found in structure
+[skip] 8BCV_1: chain '1' not found in structure
+[skip] 7N6G_9h: chain '9h' not found in structure
+[skip] 7N61_9b: chain '9b' not found in structure
+[skip] 8BQ6_BH: chain 'BH' not found in structure
+
+[18250/20984  87.0%] Processing batch of 50 proteins…
+[skip] 6VE7_1: chain '1' not found in structure
+[skip] 8GLV_Kz: chain 'Kz' not found in structure
+[skip] 6JO5_5: chain '5' not found in structure
+[skip] 8GLV_U7: chain 'U7' not found in structure
+
+[18300/20984  87.2%] Processing batch of 50 proteins…
+
+[18350/20984  87.4%] Processing batch of 50 proteins…
+[skip] 6U42_O9: chain 'O9' not found in structure
+[skip] 6EKC_I6: chain 'I6' not found in structure
+[skip] 7N6G_8d: chain '8d' not found in structure
+[skip] 4V61_AE: chain 'AE' not found in structure
+[skip] 8J6Z_3: chain '3' not found in structure
+[skip] 6IR9_M: chain 'M' not found in structure
+[skip] 5MMM_e: chain 'e' not found in structure
+
+[18400/20984  87.7%] Processing batch of 50 proteins…
+[skip] 8A22_Ae: chain 'Ae' not found in structure
+[skip] 6DWU_DN: chain 'DN' not found in structure
+[skip] 7VN3_C: chain 'C' not found in structure
+[skip] 7CVQ_Q: chain 'Q' not found in structure
+[skip] 6VOF_d: chain 'd' not found in structure
+[skip] 6SJJ_f: chain 'f' not found in structure
+[skip] 1RCO_S: chain 'S' not found in structure
+[skip] 6XYW_BE: chain 'BE' not found in structure
+[skip] 6V1Y_P: chain 'P' not found in structure
+[skip] 7PKQ_v: chain 'v' not found in structure
+[skip] 8BPX_AC: chain 'AC' not found in structure
+[skip] 7N6G_8f: chain '8f' not found in structure
+[skip] 1LW6_E: chain 'E' not found in structure
+
+[18450/20984  87.9%] Processing batch of 50 proteins…
+[skip] 6RED_Z: chain 'Z' not found in structure
+[skip] 5MDX_z: chain 'z' not found in structure
+[skip] 8IP9_ta: chain 'ta' not found in structure
+[skip] 4XK8_g: chain 'g' not found in structure
+
+[18500/20984  88.2%] Processing batch of 50 proteins…
+[skip] 7ZQ9_3: chain '3' not found in structure
+[skip] 7YCA_1: chain '1' not found in structure
+[skip] 6DWU_AI: chain 'AI' not found in structure
+[skip] 5XNL_1: chain '1' not found in structure
+[skip] 7WFE_B1: chain 'B1' not found in structure
+[skip] 6U42_N8: chain 'N8' not found in structure
+
+[18550/20984  88.4%] Processing batch of 50 proteins…
+[skip] 7N61_3h: chain '3h' not found in structure
+[skip] 6SL5_2: chain '2' not found in structure
+[skip] 6IU5_I: chain 'I' not found in structure
+[skip] 7JTS_d: chain 'd' not found in structure
+[skip] 7SQC_Y7: chain 'Y7' not found in structure
+[skip] 8GLV_Nf: chain 'Nf' not found in structure
+
+[18600/20984  88.6%] Processing batch of 50 proteins…
+[skip] 7N61_6a: chain '6a' not found in structure
+[skip] 7N61_1E: chain '1E' not found in structure
+[skip] 4V3P_LR: chain 'LR' not found in structure
+[skip] 8A22_Bc: chain 'Bc' not found in structure
+[skip] 7ZQ9_6: chain '6' not found in structure
+[skip] 1YVE_L: chain 'L' not found in structure
+[skip] 7N61_2b: chain '2b' not found in structure
+
+[18650/20984  88.9%] Processing batch of 50 proteins…
+[skip] 7N61_0E: chain '0E' not found in structure
+[skip] 3JCU_a: chain 'a' not found in structure
+[skip] 8GLV_zd: chain 'zd' not found in structure
+[skip] 4TUE_QJ: chain 'QJ' not found in structure
+[skip] 6DWU_BV: chain 'BV' not found in structure
+[skip] 7SOM_CH: chain 'CH' not found in structure
+[skip] 6U42_L0: chain 'L0' not found in structure
+[skip] 4DPB_X: chain 'X' not found in structure
+[skip] 6U42_A8: chain 'A8' not found in structure
+[skip] 8GLV_O2: chain 'O2' not found in structure
+[skip] 4V7E_BY: chain 'BY' not found in structure
+
+[18700/20984  89.1%] Processing batch of 50 proteins…
+[skip] 8GLV_Z9: chain 'Z9' not found in structure
+[skip] 7N6G_3K: chain '3K' not found in structure
+[skip] 6X89_A9: chain 'A9' not found in structure
+[skip] 4V3P_Lk: chain 'Lk' not found in structure
+[skip] 7SQC_F2: chain 'F2' not found in structure
+[skip] 6VOO_g: chain 'g' not found in structure
+[skip] 7WFD_AA: chain 'AA' not found in structure
+[skip] 7N61_7e: chain '7e' not found in structure
+
+[18750/20984  89.4%] Processing batch of 50 proteins…
+[skip] 7BZW_12: chain '12' not found in structure
+[skip] 7A23_q: chain 'q' not found in structure
+[skip] 7EU3_3: chain '3' not found in structure
+[skip] 6U42_4R: chain '4R' not found in structure
+[skip] 8BQ6_l: chain 'l' not found in structure
+[skip] 7N6G_3G: chain '3G' not found in structure
+
+[18800/20984  89.6%] Processing batch of 50 proteins…
+[skip] 7ZQD_G2: chain 'G2' not found in structure
+[skip] 6X89_S1: chain 'S1' not found in structure
+[skip] 6U42_5P: chain '5P' not found in structure
+[skip] 8GLV_Lb: chain 'Lb' not found in structure
+[skip] 2GHD_X: chain 'X' not found in structure
+[skip] 6O1F_I: chain 'I' not found in structure
+[skip] 7F9O_s: chain 's' not found in structure
+
+[18850/20984  89.8%] Processing batch of 50 proteins…
+[skip] 8HTU_8: chain '8' not found in structure
+[skip] 7ZQD_Z2: chain 'Z2' not found in structure
+[skip] 6FKH_a: chain 'a' not found in structure
+[skip] 7N6G_0M: chain '0M' not found in structure
+[skip] 6KAD_n: chain 'n' not found in structure
+[skip] 7N6G_Bf: chain 'Bf' not found in structure
+
+[18900/20984  90.1%] Processing batch of 50 proteins…
+[skip] 7N6G_Ad: chain 'Ad' not found in structure
+[skip] 6U42_H3: chain 'H3' not found in structure
+[skip] 7PIN_h: chain 'h' not found in structure
+[skip] 4V3P_LG: chain 'LG' not found in structure
+[skip] 4V7E_BO: chain 'BO' not found in structure
+
+[18950/20984  90.3%] Processing batch of 50 proteins…
+[skip] 6RDG_U: chain 'U' not found in structure
+[skip] 2ILN_I: chain 'I' not found in structure
+[skip] 7DQN_D: chain 'D' not found in structure
+[skip] 4XK8_b: chain 'b' not found in structure
+[skip] 5XNM_3: chain '3' not found in structure
+
+[19000/20984  90.5%] Processing batch of 50 proteins…
+[skip] 6U42_2M: chain '2M' not found in structure
+[skip] 5X8P_r: chain 'r' not found in structure
+
+[19050/20984  90.8%] Processing batch of 50 proteins…
+[skip] 5X8R_q: chain 'q' not found in structure
+[skip] 1E4M_M: chain 'M' not found in structure
+[skip] 8GLV_E9: chain 'E9' not found in structure
+
+[19100/20984  91.0%] Processing batch of 50 proteins…
+[skip] 4XK8_h: chain 'h' not found in structure
+[skip] 7WG5_BD: chain 'BD' not found in structure
+[skip] 6VON_g: chain 'g' not found in structure
+[skip] 8BQ5_BE: chain 'BE' not found in structure
+[skip] 6KAF_z: chain 'z' not found in structure
+[skip] 7WFD_A4: chain 'A4' not found in structure
+[skip] 1U0C_A: chain 'A' not found in structure
+[skip] 6U42_P8: chain 'P8' not found in structure
+[skip] 8GLV_F7: chain 'F7' not found in structure
+[skip] 8APO_Au: chain 'Au' not found in structure
+[skip] 8GLV_0F: chain '0F' not found in structure
+[skip] 6RER_V: chain 'V' not found in structure
+
+[19150/20984  91.3%] Processing batch of 50 proteins…
+[skip] 5X8P_m: chain 'm' not found in structure
+[skip] 4TUE_RN: chain 'RN' not found in structure
+[skip] 6U42_L1: chain 'L1' not found in structure
+[skip] 7N61_1f: chain '1f' not found in structure
+
+[19200/20984  91.5%] Processing batch of 50 proteins…
+
+[19250/20984  91.7%] Processing batch of 50 proteins…
+[skip] 7PNK_c: chain 'c' not found in structure
+[skip] 6SL5_3: chain '3' not found in structure
+[skip] 8JIW_BJ: chain 'BJ' not found in structure
+
+[19300/20984  92.0%] Processing batch of 50 proteins…
+[skip] 7QVE_s: chain 's' not found in structure
+[skip] 7SQC_M1: chain 'M1' not found in structure
+[skip] 8JIW_BE: chain 'BE' not found in structure
+[skip] 8GLV_Je: chain 'Je' not found in structure
+[skip] 7N6G_5d: chain '5d' not found in structure
+[skip] 8BDA_L: chain 'L' not found in structure
+[skip] 7A23_p: chain 'p' not found in structure
+[skip] 7JU4_c: chain 'c' not found in structure
+[skip] 6U42_S9: chain 'S9' not found in structure
+
+[19350/20984  92.2%] Processing batch of 50 proteins…
+
+[19400/20984  92.5%] Processing batch of 50 proteins…
+[skip] 7A24_z: chain 'z' not found in structure
+[skip] 7SOM_JH: chain 'JH' not found in structure
+[skip] 6IJJ_7: chain '7' not found in structure
+[skip] 7KZO_A2: chain 'A2' not found in structure
+[skip] 7KUX_1: chain '1' not found in structure
+
+[19450/20984  92.7%] Processing batch of 50 proteins…
+[skip] 6U42_N7: chain 'N7' not found in structure
+[skip] 4TUE_RH: chain 'RH' not found in structure
+[skip] 6DWU_AL: chain 'AL' not found in structure
+[skip] 7WFE_B3: chain 'B3' not found in structure
+[skip] 6U42_Z7: chain 'Z7' not found in structure
+[skip] 4TUE_YN: chain 'YN' not found in structure
+[skip] 7SQC_4F: chain '4F' not found in structure
+
+[19500/20984  92.9%] Processing batch of 50 proteins…
+[skip] 6U42_1L: chain '1L' not found in structure
+
+[19550/20984  93.2%] Processing batch of 50 proteins…
+[skip] 7ZQ9_92: chain '92' not found in structure
+[skip] 7QVE_b: chain 'b' not found in structure
+[skip] 7VCF_W: chain 'W' not found in structure
+[skip] 8GLV_I6: chain 'I6' not found in structure
+
+[19600/20984  93.4%] Processing batch of 50 proteins…
+[skip] 8IP9_hb: chain 'hb' not found in structure
+[skip] 7JOW_I: chain 'I' not found in structure
+[skip] 8A22_Ac: chain 'Ac' not found in structure
+[skip] 6FB9_A: chain 'A' not found in structure
+[skip] 7Q53_P: chain 'P' not found in structure
+
+[19650/20984  93.6%] Processing batch of 50 proteins…
+[skip] 7ZQD_C2: chain 'C2' not found in structure
+[skip] 6U42_1O: chain '1O' not found in structure
+
+[19700/20984  93.9%] Processing batch of 50 proteins…
+
+[19750/20984  94.1%] Processing batch of 50 proteins…
+[skip] 4XK8_2: chain '2' not found in structure
+[skip] 7D0J_9: chain '9' not found in structure
+[skip] 6ERI_AK: chain 'AK' not found in structure
+[skip] 6U42_1M: chain '1M' not found in structure
+[skip] 8APO_Bg: chain 'Bg' not found in structure
+[skip] 7AL8_R: chain 'R' not found in structure
+
+[19800/20984  94.4%] Processing batch of 50 proteins…
+[skip] 5MMM_I: chain 'I' not found in structure
+[skip] 7BP4_G: chain 'G' not found in structure
+[skip] 4V61_AT: chain 'AT' not found in structure
+[skip] 7N61_1c: chain '1c' not found in structure
+[skip] 5MMI_4: chain '4' not found in structure
+[skip] 7PIW_N1: chain 'N1' not found in structure
+[skip] 6U42_U3: chain 'U3' not found in structure
+
+[19850/20984  94.6%] Processing batch of 50 proteins…
+[skip] 7ZQD_62: chain '62' not found in structure
+[skip] 1E70_M: chain 'M' not found in structure
+[skip] 8GLV_Fl: chain 'Fl' not found in structure
+[skip] 7AL8_X: chain 'X' not found in structure
+[skip] 8IX0_Y: chain 'Y' not found in structure
+[skip] 6KAF_1: chain '1' not found in structure
+
+[19900/20984  94.8%] Processing batch of 50 proteins…
+
+[19950/20984  95.1%] Processing batch of 50 proteins…
+[skip] 6KAF_5: chain '5' not found in structure
+[skip] 6U42_C1: chain 'C1' not found in structure
+[skip] 7AQQ_y: chain 'y' not found in structure
+[skip] 4V7E_Ca: chain 'Ca' not found in structure
+
+[20000/20984  95.3%] Processing batch of 50 proteins…
+[skip] 4XK8_4: chain '4' not found in structure
+[skip] 8APO_Ac: chain 'Ac' not found in structure
+[skip] 8BPX_AE: chain 'AE' not found in structure
+[skip] 6F36_M: chain 'M' not found in structure
+[skip] 7N6G_Be: chain 'Be' not found in structure
+[skip] 7KZM_A5: chain 'A5' not found in structure
+[skip] 7KZO_A3: chain 'A3' not found in structure
+[skip] 6DWU_AE: chain 'AE' not found in structure
+[skip] 6U42_D7: chain 'D7' not found in structure
+[skip] 7DKZ_3: chain '3' not found in structure
+[skip] 8GLV_P6: chain 'P6' not found in structure
+[skip] 7A24_k: chain 'k' not found in structure
+[skip] 8APN_Bm: chain 'Bm' not found in structure
+
+[20050/20984  95.5%] Processing batch of 50 proteins…
+[skip] 6EKC_E8: chain 'E8' not found in structure
+[skip] 8GLV_Ou: chain 'Ou' not found in structure
+[skip] 7JQV_I: chain 'I' not found in structure
+[skip] 8APN_AG: chain 'AG' not found in structure
+[skip] 6U42_D8: chain 'D8' not found in structure
+
+[20100/20984  95.8%] Processing batch of 50 proteins…
+[skip] 4TUE_XI: chain 'XI' not found in structure
+[skip] 5X8R_8: chain '8' not found in structure
+[skip] 2J37_5: chain '5' not found in structure
+[skip] 6U42_Y1: chain 'Y1' not found in structure
+[skip] 1Y3D_E: chain 'E' not found in structure
+[skip] 6EKC_S6: chain 'S6' not found in structure
+[skip] 6REA_Y: chain 'Y' not found in structure
+[skip] 7JRO_i: chain 'i' not found in structure
+
+[20150/20984  96.0%] Processing batch of 50 proteins…
+[skip] 6EKC_G8: chain 'G8' not found in structure
+[skip] 6YEZ_2: chain '2' not found in structure
+[skip] 6U42_2D: chain '2D' not found in structure
+
+[20200/20984  96.3%] Processing batch of 50 proteins…
+[skip] 6U42_4A: chain '4A' not found in structure
+[skip] 6U42_I8: chain 'I8' not found in structure
+[skip] 7ZQC_5: chain '5' not found in structure
+[skip] 8BEE_W: chain 'W' not found in structure
+[skip] 7N6G_9b: chain '9b' not found in structure
+[skip] 4V61_AQ: chain 'AQ' not found in structure
+[skip] 6U42_N3: chain 'N3' not found in structure
+[skip] 6XYW_Ah: chain 'Ah' not found in structure
+[skip] 5MMM_p: chain 'p' not found in structure
+[skip] 8QS0_AAA: chain 'AAA' not found in structure
+[skip] 8GLV_3B: chain '3B' not found in structure
+
+[20250/20984  96.5%] Processing batch of 50 proteins…
+[skip] 6U42_Y3: chain 'Y3' not found in structure
+[skip] 6HMZ_X: chain 'X' not found in structure
+[skip] 8GLV_Ip: chain 'Ip' not found in structure
+[skip] 7SOM_GK: chain 'GK' not found in structure
+[skip] 8P1Z_AAA: chain 'AAA' not found in structure
+[skip] 5XNL_3: chain '3' not found in structure
+[skip] 6IJO_a: chain 'a' not found in structure
+
+[20300/20984  96.7%] Processing batch of 50 proteins…
+[skip] 6U42_G6: chain 'G6' not found in structure
+[skip] 5MDX_4: chain '4' not found in structure
+[skip] 6U42_R6: chain 'R6' not found in structure
+[skip] 7PIW_s1: chain 's1' not found in structure
+[skip] 7BGI_5: chain '5' not found in structure
+[skip] 8BPX_AG: chain 'AG' not found in structure
+[skip] 1N3E_G: chain 'G' not found in structure
+[skip] 4V61_BS: chain 'BS' not found in structure
+[skip] 8JIW_Ba: chain 'Ba' not found in structure
+[skip] 8BD3_3: chain '3' not found in structure
+[skip] 7N61_5a: chain '5a' not found in structure
+[skip] 8GLV_E7: chain 'E7' not found in structure
+
+[20350/20984  97.0%] Processing batch of 50 proteins…
+[skip] 1TM4_E: chain 'E' not found in structure
+[skip] 6IGZ_9: chain '9' not found in structure
+[skip] 6DWU_BF: chain 'BF' not found in structure
+[skip] 6IJJ_8: chain '8' not found in structure
+[skip] 8GLV_Hs: chain 'Hs' not found in structure
+[skip] 7N6G_3c: chain '3c' not found in structure
+
+[20400/20984  97.2%] Processing batch of 50 proteins…
+[skip] 8GLV_Ca: chain 'Ca' not found in structure
+[skip] 4TUE_YZ: chain 'YZ' not found in structure
+[skip] 5MDX_n: chain 'n' not found in structure
+[skip] 4DP5_X: chain 'X' not found in structure
+[skip] 8GLV_Fx: chain 'Fx' not found in structure
+[skip] 8GLV_Cl: chain 'Cl' not found in structure
+[skip] 6RDP_Y: chain 'Y' not found in structure
+[skip] 7N61_0F: chain '0F' not found in structure
+
+[20450/20984  97.5%] Processing batch of 50 proteins…
+[skip] 7F9O_k: chain 'k' not found in structure
+[skip] 6DWU_CK: chain 'CK' not found in structure
+[skip] 8HG5_R: chain 'R' not found in structure
+[skip] 7BZW_3: chain '3' not found in structure
+[skip] 8GLV_Kd: chain 'Kd' not found in structure
+[skip] 8GLV_Ks: chain 'Ks' not found in structure
+[skip] 7SQC_Y0: chain 'Y0' not found in structure
+[skip] 8GLV_E4: chain 'E4' not found in structure
+[skip] 7D0J_4: chain '4' not found in structure
+
+[20500/20984  97.7%] Processing batch of 50 proteins…
+[skip] 7N61_6f: chain '6f' not found in structure
+[skip] 6DWU_CQ: chain 'CQ' not found in structure
+[skip] 7SOM_MK: chain 'MK' not found in structure
+[skip] 8GLV_Ju: chain 'Ju' not found in structure
+[skip] 8IWY_Y: chain 'Y' not found in structure
+[skip] 6XYW_AF: chain 'AF' not found in structure
+[skip] 7Z1R_D000: chain 'D000' not found in structure
+[skip] 8GLV_A2: chain 'A2' not found in structure
+
+[20550/20984  97.9%] Processing batch of 50 proteins…
+[skip] 6ZZY_9: chain '9' not found in structure
+[skip] 8BQ6_x: chain 'x' not found in structure
+[skip] 6X89_G2: chain 'G2' not found in structure
+[skip] 7ZQ9_1: chain '1' not found in structure
+[skip] 7N6G_2a: chain '2a' not found in structure
+[skip] 6U42_I7: chain 'I7' not found in structure
+[skip] 7CVQ_P: chain 'P' not found in structure
+[skip] 7PKT_n: chain 'n' not found in structure
+[skip] 6U42_2Z: chain '2Z' not found in structure
+[skip] 7SQC_0B: chain '0B' not found in structure
+
+[20600/20984  98.2%] Processing batch of 50 proteins…
+[skip] 8GLV_1M: chain '1M' not found in structure
+[skip] 8GLV_H8: chain 'H8' not found in structure
+[skip] 8GLV_6Z: chain '6Z' not found in structure
+[skip] 7KZO_A1: chain 'A1' not found in structure
+
+[20650/20984  98.4%] Processing batch of 50 proteins…
+[skip] 6DWU_AJ: chain 'AJ' not found in structure
+[skip] 6ERI_BC: chain 'BC' not found in structure
+[skip] 6RDM_Z: chain 'Z' not found in structure
+[skip] 7SQC_C3: chain 'C3' not found in structure
+[skip] 8GLV_I3: chain 'I3' not found in structure
+
+[20700/20984  98.6%] Processing batch of 50 proteins…
+
+[20750/20984  98.9%] Processing batch of 50 proteins…
+[skip] 8GLV_Fi: chain 'Fi' not found in structure
+[skip] 7X5M_B: chain 'B' not found in structure
+[skip] 7N6G_8a: chain '8a' not found in structure
+[skip] 8GLV_4B: chain '4B' not found in structure
+[skip] 7SQC_RO: chain 'RO' not found in structure
+[skip] 7OBO_AAA: chain 'AAA' not found in structure
+[skip] 3JCU_h: chain 'h' not found in structure
+[skip] 8JIV_CB: chain 'CB' not found in structure
+[skip] 6U42_2C: chain '2C' not found in structure
+
+[20800/20984  99.1%] Processing batch of 50 proteins…
+[skip] 5MMM_i: chain 'i' not found in structure
+[skip] 6U42_I1: chain 'I1' not found in structure
+[skip] 8E73_5M: chain '5M' not found in structure
+[skip] 7O01_z: chain 'z' not found in structure
+[skip] 7PKQ_c: chain 'c' not found in structure
+[skip] 7SQC_D4: chain 'D4' not found in structure
+[skip] 6DWU_BP: chain 'BP' not found in structure
+
+[20850/20984  99.4%] Processing batch of 50 proteins…
+[skip] 5MMJ_n: chain 'n' not found in structure
+[skip] 8IP9_ha: chain 'ha' not found in structure
+[skip] 4V7E_BV: chain 'BV' not found in structure
+[skip] 8GLV_F9: chain 'F9' not found in structure
+[skip] 8BPX_BG: chain 'BG' not found in structure
+[skip] 6KAD_c: chain 'c' not found in structure
+[skip] 5X8R_p: chain 'p' not found in structure
+[skip] 7F9O_o: chain 'o' not found in structure
+[skip] 7XQP_c: chain 'c' not found in structure
+[skip] 7E0I_U: chain 'U' not found in structure
+[skip] 4V61_AS: chain 'AS' not found in structure
+[skip] 4Z0H_O: chain 'O' not found in structure
+[skip] 4TUE_QT: chain 'QT' not found in structure
+[skip] 7N6G_4L: chain '4L' not found in structure
+[skip] 8XC1_B: chain 'B' not found in structure
+[skip] 7N6G_Cf: chain 'Cf' not found in structure
+
+[20900/20984  99.6%] Processing batch of 50 proteins…
+[skip] 8GLV_Aq: chain 'Aq' not found in structure
+[skip] 6RDB_V: chain 'V' not found in structure
+[skip] 6VE7_y: chain 'y' not found in structure
+[skip] 8H2U_6: chain '6' not found in structure
+[skip] 8IPB_pa: chain 'pa' not found in structure
+[skip] 6FKI_g: chain 'g' not found in structure
+[skip] 8IPB_ja: chain 'ja' not found in structure
+[skip] 7OQV_CCC: chain 'CCC' not found in structure
+[skip] 7KZO_A5: chain 'A5' not found in structure
+[skip] 8GLV_J9: chain 'J9' not found in structure
+
+[20950/20984  99.8%] Processing batch of 50 proteins…
+[skip] 7XZI_9: chain '9' not found in structure
+[skip] 8A22_Aj: chain 'Aj' not found in structure
+[skip] 7ZQC_1: chain '1' not found in structure
+[skip] 5ZJI_3: chain '3' not found in structure
+
+[20984/20984  100.0%] Processing batch of 34 proteins…
+[skip] 6KAF_e: chain 'e' not found in structure
+[skip] 8QJ0_O: chain 'O' not found in structure
+[skip] 6U42_D0: chain 'D0' not found in structure
+[skip] 8GLV_Ag: chain 'Ag' not found in structure
+
+✓ Contact-map generation complete.
+  [32m✔[0m Contact maps written to preprocessing/data/structure_files/tmp_cmap_files/
+  [33m▸[0m 1d. Building PyG graph datasets (ProtBERT embeddings)...
+Using device: cuda
+ Loaded dataset with 1722 proteins for biological_process
+Loading ProtBERT tokenizer…
+Loading ProtBERT model…
+========================================================
+Job finished  : Thu Jun 25 02:52:30 MDT 2026
+========================================================
