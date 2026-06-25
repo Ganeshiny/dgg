@@ -151,20 +151,24 @@ class PDB_Dataset(Dataset):
 
     @property
     def processed_file_names(self):
-        """Returns a list of processed filenames."""
+        """Returns a list of processed filenames uniquely prefixed by ontology."""
+        prefix = self.selected_ontology[:2] if self.selected_ontology else "na"
+        d_type = self.dataset_type if self.dataset_type else "all"
         if self.pdb_split_list:
-            return [f'data_{i}.pt' for i in range(len(self.pdb_split_list))]
+            return [f'data_{prefix}_{d_type}_{i}.pt' for i in range(len(self.pdb_split_list))]
         else:
-            return [f'data_{i}.pt' for i in range(len(self.prot_list))]
+            return [f'data_{prefix}_{d_type}_{i}.pt' for i in range(len(self.prot_list))]
 
     def process(self):
-        data_list = []
+        # Stream directly to disk to prevent OOM
         for index, prot_id in tqdm(enumerate(self.pdb_split_list), total=len(self.pdb_split_list)):
+            out_file = os.path.join(self.processed_dir, self.processed_file_names[index])
+            if os.path.exists(out_file):
+                continue
+                
             data = self._load_data(prot_id)
             if data:
-                data_list.append(data)
-                torch.save(data, os.path.join(self.processed_dir, f'data_{self.dataset_type}_{index}.pt'))
-        return data_list
+                torch.save(data, out_file)
 
     def _load_data(self, prot_id):
         pdb_file = os.path.join(self.npz_dir, f'{prot_id}.npz')
@@ -234,7 +238,8 @@ class PDB_Dataset(Dataset):
         return len(self.pdb_split_list)
 
     def get(self, idx):
-        return self._load_data(self.pdb_split_list[idx])
+        # Load directly from PyG disk cache instead of re-running ProtBERT!
+        return torch.load(os.path.join(self.processed_dir, self.processed_file_names[idx]))
 
 
 if __name__ == '__main__':
