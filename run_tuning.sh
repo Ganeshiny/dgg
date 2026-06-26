@@ -19,7 +19,7 @@ else
 fi
 
 DATASET_PATH="${DATASET_PATH:-preprocessing/data/split_files/datasets.pkl}"
-EPOCHS="${EPOCHS:-200}"
+EPOCHS="${EPOCHS:-1000}"
 OUT_DIR="tuning_runs"
 
 echo "========================================="

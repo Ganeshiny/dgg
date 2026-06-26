@@ -22,7 +22,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description="DeepGreenGO Training Script")
     parser.add_argument('--model', type=str, default='Hybrid', choices=['GCN', 'GAT', 'Hybrid', 'MLP'], help='Model architecture to use.')
     parser.add_argument('--loss', type=str, default='Focal', choices=['BCE', 'Focal'], help='Loss function to use.')
-    parser.add_argument('--epochs', type=int, default=200, help='Number of training epochs.')
+    parser.add_argument('--epochs', type=int, default=1000, help='Number of training epochs.')
     parser.add_argument('--batch_size', type=int, default=32, help='Batch size.')
     parser.add_argument('--lr', type=float, default=1e-5, help='Learning rate.')
     parser.add_argument('--seed', type=int, default=12345, help='Random seed.')
