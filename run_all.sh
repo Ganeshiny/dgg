@@ -60,7 +60,7 @@ SEQS_FILE="${SEQS_FILE:-preprocessing/data/seqs_from_structure_dir.fasta}"
 ANNOT_FILE="${ANNOT_FILE:-preprocessing/data/pdb2go.tsv}"
 DATASET_PKL="${DATASET_PKL:-preprocessing/data/split_files/datasets.pkl}"
 
-EPOCHS="${EPOCHS:-100}"          # Set to 200+ for final runs
+EPOCHS="${EPOCHS:-200}"          # Set to 200+ for final runs
 BATCH_SIZE="${BATCH_SIZE:-32}"
 MAIN_MODEL="${MAIN_MODEL:-Hybrid}"
 MAIN_LOSS="${MAIN_LOSS:-Focal}"
