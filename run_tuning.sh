@@ -4,7 +4,7 @@
 # Usage: bash run_tuning.sh [ontology]
 # If ontology is not provided, runs for all 3 ontologies sequentially.
 
-LRS=(1e-5 5e-5 1e-4)
+LRS=(1e-4 5e-4 1e-3)
 DROPOUTS=(0.2 0.3 0.4)
 BATCH_SIZES=(16 32)
 MODEL="Hybrid"
@@ -19,7 +19,7 @@ else
 fi
 
 DATASET_PATH="${DATASET_PATH:-preprocessing/data/split_files/datasets.pkl}"
-EPOCHS="${EPOCHS:-100}"
+EPOCHS="${EPOCHS:-200}"
 OUT_DIR="tuning_runs"
 
 echo "========================================="
