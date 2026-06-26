@@ -33,6 +33,7 @@ SKIP_ABLATIONS=false
 SKIP_EVAL=false
 SKIP_PLOTS=false
 SKIP_CMAPS=false
+RUN_TUNING=false
 
 for arg in "$@"; do
     case "$arg" in
@@ -42,8 +43,9 @@ for arg in "$@"; do
         --skip-eval)       SKIP_EVAL=true       ;;
         --skip-plots)      SKIP_PLOTS=true      ;;
         --skip-cmaps)      SKIP_CMAPS=true      ;;
+        --tune)            RUN_TUNING=true      ;;
         --help|-h)
-            echo "Usage: bash run_all.sh [--skip-preprocess] [--skip-cmaps] [--skip-baselines] [--skip-ablations] [--skip-eval] [--skip-plots]"
+            echo "Usage: bash run_all.sh [--tune] [--skip-preprocess] [--skip-cmaps] [--skip-baselines] [--skip-ablations] [--skip-eval] [--skip-plots]"
             exit 0
             ;;
         *) warn "Unknown argument: $arg" ;;
@@ -110,6 +112,16 @@ if [ "$SKIP_PREPROCESS" = false ]; then
     success "Datasets pickled to $DATASET_PKL"
 else
     warn "Skipping preprocessing (--skip-preprocess)"
+fi
+
+# ─── Step 2.5: Hyperparameter Tuning ──────────────────────────────────────────
+if [ "$RUN_TUNING" = true ]; then
+    section "Step 2.5: Hyperparameter Tuning"
+    info "Running grid search over LR, Dropout, and Batch Size for all 3 ontologies."
+    EPOCHS="$EPOCHS" DATASET_PATH="$DATASET_PKL" bash run_tuning.sh
+    python3 aggregate_tuning.py
+else
+    warn "Skipping hyperparameter tuning (pass --tune to run)"
 fi
 
 # (Baselines moved to Step 5)

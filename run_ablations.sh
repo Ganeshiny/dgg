@@ -6,11 +6,19 @@
 MODELS=("MLP" "GCN" "GAT" "Hybrid")
 LOSSES=("BCE" "Focal")
 SEEDS=(42 123 456)
-ONTOLOGIES=("biological_process" "molecular_function" "cellular_component")
+
+# Default to all 3, but allow passing a specific ontology as an argument
+if [ -n "$1" ]; then
+    ONTOLOGIES=("$1")
+    echo "Running ablations only for: $1"
+else
+    ONTOLOGIES=("biological_process" "molecular_function" "cellular_component")
+fi
 
 DATASET_PATH="${DATASET_PATH:-preprocessing/data/split_files/datasets.pkl}"
 EPOCHS="${EPOCHS:-100}"
 BATCH_SIZE="${BATCH_SIZE:-32}"
+
 
 echo "========================================="
 echo "  DeepGreenGO  Ablation Sweep"

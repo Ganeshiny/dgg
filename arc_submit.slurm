@@ -61,10 +61,36 @@ echo "========================================================"
 
 # Run the full DeepGreenGO pipeline from the project directory.
 # --skip-cmaps is added because we already have ~16,000 cmaps and want to force
-# the pipeline to move to the dataset building step with what we have.
+# the pipeline to move to the dataset building step.
 cd "${PROJECT_DIR}"
-# HF_TOKEN should be exported in your ~/.bashrc or a secure .env file, NOT hardcoded here.
-bash run_all.sh --skip-preprocess
+
+# ─────────────────────────────────────────────────────────────────────────────
+# IMPORTANT: SLURM ARRAY JOBS FOR PARALLEL ONTOLOGY TRAINING
+# Running all 3 ontologies sequentially takes >23 hours and will timeout.
+# Instead, submit this script as a SLURM array: `sbatch --array=0-2 arc_submit.slurm`
+# ─────────────────────────────────────────────────────────────────────────────
+ONT_LIST=("biological_process" "molecular_function" "cellular_component")
+
+# If submitted as an array, pick one ontology based on the array task ID.
+# If run normally, it will just run all 3 sequentially (which may timeout).
+if [ -n "$SLURM_ARRAY_TASK_ID" ]; then
+    CURRENT_ONT="${ONT_LIST[$SLURM_ARRAY_TASK_ID]}"
+    echo "Array Job Detected: Running ONLY for $CURRENT_ONT"
+    
+    # Optional: Run hyperparameter tuning first for this ontology
+    # bash run_tuning.sh "$CURRENT_ONT"
+    # python3 aggregate_tuning.py
+
+    # Run ablations for just this ontology
+    bash run_ablations.sh "$CURRENT_ONT"
+else
+    echo "Running sequentially for all ontologies (Warning: May timeout)"
+    
+    # To run tuning before ablations sequentially, uncomment this:
+    # bash run_all.sh --skip-preprocess --tune
+    
+    bash run_all.sh --skip-preprocess
+fi
 
 echo "========================================================"
 echo "Job finished  : $(date)"

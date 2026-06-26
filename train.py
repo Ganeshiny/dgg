@@ -88,19 +88,41 @@ def main():
     if torch.cuda.is_available():
         hardware_info['gpu_name'] = torch.cuda.get_device_name(0)
 
+    # Gather reproducibility info
+    import subprocess
+    try:
+        git_commit = subprocess.check_output(['git', 'rev-parse', 'HEAD'], stderr=subprocess.DEVNULL).decode('ascii').strip()
+    except Exception:
+        git_commit = 'unknown'
+
+    reproducibility_info = {
+        'git_commit': git_commit,
+        'command_line': ' '.join(sys.argv)
+    }
+
     # Ensure output dir exists
     os.makedirs(args.output_dir, exist_ok=True)
     
     # Abbrev ontology
     ont_short = {'molecular_function': 'mf', 'biological_process': 'bp', 'cellular_component': 'cc'}[args.ontology]
     
+    # If tuning is enabled or lr/dropout are non-default, include them in the run name to avoid collisions
     run_name = f"{ont_short}_{args.model}_{args.loss}_s{args.seed}"
+    # In case we're doing hyperparameter tuning, we might be writing to a different output_dir, 
+    # but let's make sure the config is saved properly.
     run_dir = os.path.join(args.output_dir, run_name)
+    
+    # Append a unique suffix if the directory already exists (e.g. tuning runs)
+    if os.path.exists(run_dir):
+        import time
+        run_dir = f"{run_dir}_{int(time.time())}"
+        
     os.makedirs(run_dir, exist_ok=True)
 
     # Log hyperparameters
     config = vars(args)
     config['hardware'] = hardware_info
+    config['reproducibility'] = reproducibility_info
     with open(os.path.join(run_dir, 'config.json'), 'w') as f:
         json.dump(config, f, indent=4)
 
