@@ -32,6 +32,23 @@ RUN=0
 FAILED=0
 
 for ont in "${ONTOLOGIES[@]}"; do
+    # Default to base script variables
+    BEST_LR=""
+    BEST_DROPOUT=""
+    BEST_BATCH_SIZE="$BATCH_SIZE"
+    
+    # Try to load best parameters if tuning was run
+    if [ -f "tuning_runs/tuning_results_summary.csv" ]; then
+        BEST_PARAMS=$(python3 get_best_hyperparams.py --ontology "$ont")
+        if [ -n "$BEST_PARAMS" ]; then
+            eval "$BEST_PARAMS"
+            BEST_BATCH_SIZE="$BATCH_SIZE"
+            BEST_LR="$LR"
+            BEST_DROPOUT="$DROPOUT"
+            echo "  [INFO] Using tuned params for $ont: LR=$BEST_LR, Dropout=$BEST_DROPOUT, BatchSize=$BEST_BATCH_SIZE"
+        fi
+    fi
+
     for model in "${MODELS[@]}"; do
         for loss in "${LOSSES[@]}"; do
             for seed in "${SEEDS[@]}"; do
@@ -41,14 +58,10 @@ for ont in "${ONTOLOGIES[@]}"; do
                 echo "  Ontology: $ont | Model: $model | Loss: $loss | Seed: $seed"
                 echo "------------------------------------------------------"
 
-                python3 train.py \
-                    --model "$model" \
-                    --loss  "$loss" \
-                    --seed  "$seed" \
-                    --ontology "$ont" \
-                    --epochs "$EPOCHS" \
-                    --batch_size "$BATCH_SIZE" \
-                    --dataset_path "$DATASET_PATH"
+                CMD="python3 train.py --model \"$model\" --loss \"$loss\" --seed \"$seed\" --ontology \"$ont\" --epochs \"$EPOCHS\" --batch_size \"$BEST_BATCH_SIZE\" --dataset_path \"$DATASET_PATH\""
+                if [ -n "$BEST_LR" ]; then CMD="$CMD --lr $BEST_LR"; fi
+                if [ -n "$BEST_DROPOUT" ]; then CMD="$CMD --dropout $BEST_DROPOUT"; fi
+                eval $CMD
 
                 if [ $? -ne 0 ]; then
                     echo "  [WARN] Run failed — continuing sweep"

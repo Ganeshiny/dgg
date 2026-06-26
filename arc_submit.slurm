@@ -77,19 +77,17 @@ if [ -n "$SLURM_ARRAY_TASK_ID" ]; then
     CURRENT_ONT="${ONT_LIST[$SLURM_ARRAY_TASK_ID]}"
     echo "Array Job Detected: Running ONLY for $CURRENT_ONT"
     
-    # Optional: Run hyperparameter tuning first for this ontology
-    # bash run_tuning.sh "$CURRENT_ONT"
-    # python3 aggregate_tuning.py
+    # Run hyperparameter tuning first for this ontology
+    bash run_tuning.sh "$CURRENT_ONT"
+    python3 aggregate_tuning.py
 
     # Run ablations for just this ontology
     bash run_ablations.sh "$CURRENT_ONT"
 else
     echo "Running sequentially for all ontologies (Warning: May timeout)"
     
-    # To run tuning before ablations sequentially, uncomment this:
-    # bash run_all.sh --skip-preprocess --tune
-    
-    bash run_all.sh --skip-preprocess
+    # Run tuning before ablations sequentially
+    bash run_all.sh --skip-preprocess --tune
 fi
 
 echo "========================================================"

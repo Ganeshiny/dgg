@@ -12,6 +12,10 @@ python3 preprocessing/create_batch_dataset.py
 
 echo "=== Preprocessing Completed Successfully ==="
 
+echo "=== 3.5 Run Hyperparameter Tuning ==="
+bash run_tuning.sh
+python3 aggregate_tuning.py
+
 echo "=== 4. Run Baseline (BLAST) ==="
 cd baselines/blast
 python3 run_blast_baseline.py
