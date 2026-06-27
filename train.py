@@ -107,15 +107,39 @@ def main():
     ont_short = {'molecular_function': 'mf', 'biological_process': 'bp', 'cellular_component': 'cc'}[args.ontology]
     
     # If tuning is enabled or lr/dropout are non-default, include them in the run name to avoid collisions
-    run_name = f"{ont_short}_{args.model}_{args.loss}_s{args.seed}"
-    # In case we're doing hyperparameter tuning, we might be writing to a different output_dir, 
-    # but let's make sure the config is saved properly.
+    # --- SMART RESUME LOGIC ---
+    # Scan existing runs to see if this exact hyperparameter combo already finished
+    import glob
+    for existing_run in glob.glob(os.path.join(args.output_dir, "*", "config.json")):
+        try:
+            with open(existing_run) as f:
+                existing_config = json.load(f)
+            
+            # Check if the existing run matches our current args
+            match = True
+            for key in ['ontology', 'model', 'loss', 'lr', 'dropout', 'batch_size', 'seed']:
+                if existing_config.get(key) != getattr(args, key):
+                    match = False
+                    break
+                    
+            if match:
+                run_dir = os.path.dirname(existing_run)
+                if os.path.exists(os.path.join(run_dir, 'test_metrics.json')):
+                    print(f"\n[RESUME] Found successfully completed run in {run_dir}.")
+                    print("[RESUME] Skipping training to save compute!\n")
+                    sys.exit(0)
+        except Exception:
+            continue
+
+    # Name the new directory explicitly with hyperparameters to avoid collision
+    run_name = f"{ont_short}_{args.model}_{args.loss}_lr{args.lr}_dp{args.dropout}_bs{args.batch_size}_s{args.seed}"
     run_dir = os.path.join(args.output_dir, run_name)
     
-    # Append a unique suffix if the directory already exists (e.g. tuning runs)
+    # If a directory with this exact name exists but didn't finish, we wipe it and start fresh
     if os.path.exists(run_dir):
-        import time
-        run_dir = f"{run_dir}_{int(time.time())}"
+        import shutil
+        shutil.rmtree(run_dir)
+
         
     os.makedirs(run_dir, exist_ok=True)
 
