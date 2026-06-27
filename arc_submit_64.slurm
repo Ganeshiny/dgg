@@ -86,8 +86,8 @@ if [ -n "$SLURM_ARRAY_TASK_ID" ]; then
 else
     echo "Running sequentially for all ontologies (Warning: May timeout)"
     
-    # Run tuning before ablations sequentially
-    bash run_all.sh --skip-preprocess --tune
+    # Run the 64 batch size tuning directly
+    bash run_tuning_64.sh
 fi
 
 echo "========================================================"
