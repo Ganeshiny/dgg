@@ -1,0 +1,265 @@
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 237, in <module>
+    main()
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 105, in main
+    train_dataset, valid_dataset, test_dataset = load_datasets(args.dataset_path, args.ontology)
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 48, in load_datasets
+    datasets = pickle.load(f)
+AttributeError: Can't get attribute 'PDB_Dataset' on <module '__main__' from '/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py'>
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 237, in <module>
+    main()
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 105, in main
+    train_dataset, valid_dataset, test_dataset = load_datasets(args.dataset_path, args.ontology)
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 48, in load_datasets
+    datasets = pickle.load(f)
+AttributeError: Can't get attribute 'PDB_Dataset' on <module '__main__' from '/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py'>
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 237, in <module>
+    main()
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 105, in main
+    train_dataset, valid_dataset, test_dataset = load_datasets(args.dataset_path, args.ontology)
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 48, in load_datasets
+    datasets = pickle.load(f)
+AttributeError: Can't get attribute 'PDB_Dataset' on <module '__main__' from '/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py'>
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 237, in <module>
+    main()
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 105, in main
+    train_dataset, valid_dataset, test_dataset = load_datasets(args.dataset_path, args.ontology)
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 48, in load_datasets
+    datasets = pickle.load(f)
+AttributeError: Can't get attribute 'PDB_Dataset' on <module '__main__' from '/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py'>
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 237, in <module>
+    main()
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 105, in main
+    train_dataset, valid_dataset, test_dataset = load_datasets(args.dataset_path, args.ontology)
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 48, in load_datasets
+    datasets = pickle.load(f)
+AttributeError: Can't get attribute 'PDB_Dataset' on <module '__main__' from '/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py'>
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 237, in <module>
+    main()
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 105, in main
+    train_dataset, valid_dataset, test_dataset = load_datasets(args.dataset_path, args.ontology)
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 48, in load_datasets
+    datasets = pickle.load(f)
+AttributeError: Can't get attribute 'PDB_Dataset' on <module '__main__' from '/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py'>
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 237, in <module>
+    main()
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 105, in main
+    train_dataset, valid_dataset, test_dataset = load_datasets(args.dataset_path, args.ontology)
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 48, in load_datasets
+    datasets = pickle.load(f)
+AttributeError: Can't get attribute 'PDB_Dataset' on <module '__main__' from '/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py'>
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 237, in <module>
+    main()
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 105, in main
+    train_dataset, valid_dataset, test_dataset = load_datasets(args.dataset_path, args.ontology)
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 48, in load_datasets
+    datasets = pickle.load(f)
+AttributeError: Can't get attribute 'PDB_Dataset' on <module '__main__' from '/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py'>
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 237, in <module>
+    main()
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 105, in main
+    train_dataset, valid_dataset, test_dataset = load_datasets(args.dataset_path, args.ontology)
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 48, in load_datasets
+    datasets = pickle.load(f)
+AttributeError: Can't get attribute 'PDB_Dataset' on <module '__main__' from '/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py'>
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 237, in <module>
+    main()
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 105, in main
+    train_dataset, valid_dataset, test_dataset = load_datasets(args.dataset_path, args.ontology)
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 48, in load_datasets
+    datasets = pickle.load(f)
+AttributeError: Can't get attribute 'PDB_Dataset' on <module '__main__' from '/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py'>
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 237, in <module>
+    main()
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 105, in main
+    train_dataset, valid_dataset, test_dataset = load_datasets(args.dataset_path, args.ontology)
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 48, in load_datasets
+    datasets = pickle.load(f)
+AttributeError: Can't get attribute 'PDB_Dataset' on <module '__main__' from '/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py'>
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 237, in <module>
+    main()
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 105, in main
+    train_dataset, valid_dataset, test_dataset = load_datasets(args.dataset_path, args.ontology)
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 48, in load_datasets
+    datasets = pickle.load(f)
+AttributeError: Can't get attribute 'PDB_Dataset' on <module '__main__' from '/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py'>
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 237, in <module>
+    main()
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 105, in main
+    train_dataset, valid_dataset, test_dataset = load_datasets(args.dataset_path, args.ontology)
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 48, in load_datasets
+    datasets = pickle.load(f)
+AttributeError: Can't get attribute 'PDB_Dataset' on <module '__main__' from '/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py'>
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 237, in <module>
+    main()
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 105, in main
+    train_dataset, valid_dataset, test_dataset = load_datasets(args.dataset_path, args.ontology)
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 48, in load_datasets
+    datasets = pickle.load(f)
+AttributeError: Can't get attribute 'PDB_Dataset' on <module '__main__' from '/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py'>
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 237, in <module>
+    main()
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 105, in main
+    train_dataset, valid_dataset, test_dataset = load_datasets(args.dataset_path, args.ontology)
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 48, in load_datasets
+    datasets = pickle.load(f)
+AttributeError: Can't get attribute 'PDB_Dataset' on <module '__main__' from '/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py'>
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 237, in <module>
+    main()
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 105, in main
+    train_dataset, valid_dataset, test_dataset = load_datasets(args.dataset_path, args.ontology)
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 48, in load_datasets
+    datasets = pickle.load(f)
+AttributeError: Can't get attribute 'PDB_Dataset' on <module '__main__' from '/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py'>
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 237, in <module>
+    main()
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 105, in main
+    train_dataset, valid_dataset, test_dataset = load_datasets(args.dataset_path, args.ontology)
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 48, in load_datasets
+    datasets = pickle.load(f)
+AttributeError: Can't get attribute 'PDB_Dataset' on <module '__main__' from '/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py'>
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 237, in <module>
+    main()
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 105, in main
+    train_dataset, valid_dataset, test_dataset = load_datasets(args.dataset_path, args.ontology)
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 48, in load_datasets
+    datasets = pickle.load(f)
+AttributeError: Can't get attribute 'PDB_Dataset' on <module '__main__' from '/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py'>
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 237, in <module>
+    main()
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 105, in main
+    train_dataset, valid_dataset, test_dataset = load_datasets(args.dataset_path, args.ontology)
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 48, in load_datasets
+    datasets = pickle.load(f)
+AttributeError: Can't get attribute 'PDB_Dataset' on <module '__main__' from '/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py'>
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 237, in <module>
+    main()
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 105, in main
+    train_dataset, valid_dataset, test_dataset = load_datasets(args.dataset_path, args.ontology)
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 48, in load_datasets
+    datasets = pickle.load(f)
+AttributeError: Can't get attribute 'PDB_Dataset' on <module '__main__' from '/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py'>
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 237, in <module>
+    main()
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 105, in main
+    train_dataset, valid_dataset, test_dataset = load_datasets(args.dataset_path, args.ontology)
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 48, in load_datasets
+    datasets = pickle.load(f)
+AttributeError: Can't get attribute 'PDB_Dataset' on <module '__main__' from '/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py'>
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 237, in <module>
+    main()
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 105, in main
+    train_dataset, valid_dataset, test_dataset = load_datasets(args.dataset_path, args.ontology)
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 48, in load_datasets
+    datasets = pickle.load(f)
+AttributeError: Can't get attribute 'PDB_Dataset' on <module '__main__' from '/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py'>
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 237, in <module>
+    main()
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 105, in main
+    train_dataset, valid_dataset, test_dataset = load_datasets(args.dataset_path, args.ontology)
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 48, in load_datasets
+    datasets = pickle.load(f)
+AttributeError: Can't get attribute 'PDB_Dataset' on <module '__main__' from '/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py'>
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 237, in <module>
+    main()
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 105, in main
+    train_dataset, valid_dataset, test_dataset = load_datasets(args.dataset_path, args.ontology)
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 48, in load_datasets
+    datasets = pickle.load(f)
+AttributeError: Can't get attribute 'PDB_Dataset' on <module '__main__' from '/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py'>
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 237, in <module>
+    main()
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 105, in main
+    train_dataset, valid_dataset, test_dataset = load_datasets(args.dataset_path, args.ontology)
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 48, in load_datasets
+    datasets = pickle.load(f)
+AttributeError: Can't get attribute 'PDB_Dataset' on <module '__main__' from '/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py'>
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 237, in <module>
+    main()
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 105, in main
+    train_dataset, valid_dataset, test_dataset = load_datasets(args.dataset_path, args.ontology)
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 48, in load_datasets
+    datasets = pickle.load(f)
+AttributeError: Can't get attribute 'PDB_Dataset' on <module '__main__' from '/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py'>
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 237, in <module>
+    main()
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 105, in main
+    train_dataset, valid_dataset, test_dataset = load_datasets(args.dataset_path, args.ontology)
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 48, in load_datasets
+    datasets = pickle.load(f)
+AttributeError: Can't get attribute 'PDB_Dataset' on <module '__main__' from '/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py'>
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 237, in <module>
+    main()
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 105, in main
+    train_dataset, valid_dataset, test_dataset = load_datasets(args.dataset_path, args.ontology)
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 48, in load_datasets
+    datasets = pickle.load(f)
+AttributeError: Can't get attribute 'PDB_Dataset' on <module '__main__' from '/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py'>
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 237, in <module>
+    main()
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 105, in main
+    train_dataset, valid_dataset, test_dataset = load_datasets(args.dataset_path, args.ontology)
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 48, in load_datasets
+    datasets = pickle.load(f)
+AttributeError: Can't get attribute 'PDB_Dataset' on <module '__main__' from '/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py'>
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 237, in <module>
+    main()
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 105, in main
+    train_dataset, valid_dataset, test_dataset = load_datasets(args.dataset_path, args.ontology)
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 48, in load_datasets
+    datasets = pickle.load(f)
+AttributeError: Can't get attribute 'PDB_Dataset' on <module '__main__' from '/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py'>
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 237, in <module>
+    main()
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 105, in main
+    train_dataset, valid_dataset, test_dataset = load_datasets(args.dataset_path, args.ontology)
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 48, in load_datasets
+    datasets = pickle.load(f)
+AttributeError: Can't get attribute 'PDB_Dataset' on <module '__main__' from '/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py'>
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 237, in <module>
+    main()
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 105, in main
+    train_dataset, valid_dataset, test_dataset = load_datasets(args.dataset_path, args.ontology)
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 48, in load_datasets
+    datasets = pickle.load(f)
+AttributeError: Can't get attribute 'PDB_Dataset' on <module '__main__' from '/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py'>
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 237, in <module>
+    main()
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 105, in main
+    train_dataset, valid_dataset, test_dataset = load_datasets(args.dataset_path, args.ontology)
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 48, in load_datasets
+    datasets = pickle.load(f)
+AttributeError: Can't get attribute 'PDB_Dataset' on <module '__main__' from '/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py'>
+slurmstepd: error: *** JOB 44265827 ON fg1 CANCELLED AT 2026-06-25T15:07:57 ***

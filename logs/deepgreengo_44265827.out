@@ -1,0 +1,265 @@
+========================================================
+Job ID        : 44265827
+Node          : fg1
+CPUs          : 8
+Start time    : Thu Jun 25 14:57:17 MDT 2026
+Project dir   : /home/ganeshiny.sridharan/dgg/deep-green-GO
+Log .out      : /home/ganeshiny.sridharan/dgg/deep-green-GO/logs/deepgreengo_44265827.out
+Log .err      : /home/ganeshiny.sridharan/dgg/deep-green-GO/logs/deepgreengo_44265827.err
+========================================================
+Python : /home/ganeshiny.sridharan/miniconda3/envs/deepgreengo/bin/python
+PyTorch: 2.4.1
+CUDA   : Tesla V100-PCIE-16GB
+Scratch dir   : /scratch/44265827
+CMAP_THREADS  : 8
+========================================================
+  [33m▸[0m Project root: /home/ganeshiny.sridharan/dgg/deep-green-GO
+  [33m▸[0m Settings: EPOCHS=100  BATCH=32  MODEL=Hybrid  LOSS=Focal
+  [33m▸[0m Ontology: biological_process
+  [33m⚠[0m  Skipping preprocessing (--skip-preprocess)
+
+[1m[32m══════════════════════════════════════════[0m
+[1m[32m  Step 3: Ablation Study (all Model×Loss×Seed×Ontology combos)[0m
+[1m[32m══════════════════════════════════════════[0m
+  [33m▸[0m This can take many hours. Override epochs: EPOCHS=50 bash run_all.sh
+=========================================
+  DeepGreenGO  Ablation Sweep
+=========================================
+Dataset: preprocessing/data/split_files/datasets.pkl
+Epochs:  100  | Batch: 32
+
+------------------------------------------------------
+  Run 1 / 72
+  Ontology: biological_process | Model: MLP | Loss: BCE | Seed: 42
+------------------------------------------------------
+Using device: cuda
+Loading datasets from preprocessing/data/split_files/datasets.pkl for biological_process...
+  [WARN] Run failed — continuing sweep
+------------------------------------------------------
+  Run 2 / 72
+  Ontology: biological_process | Model: MLP | Loss: BCE | Seed: 123
+------------------------------------------------------
+Using device: cuda
+Loading datasets from preprocessing/data/split_files/datasets.pkl for biological_process...
+  [WARN] Run failed — continuing sweep
+------------------------------------------------------
+  Run 3 / 72
+  Ontology: biological_process | Model: MLP | Loss: BCE | Seed: 456
+------------------------------------------------------
+Using device: cuda
+Loading datasets from preprocessing/data/split_files/datasets.pkl for biological_process...
+  [WARN] Run failed — continuing sweep
+------------------------------------------------------
+  Run 4 / 72
+  Ontology: biological_process | Model: MLP | Loss: Focal | Seed: 42
+------------------------------------------------------
+Using device: cuda
+Loading datasets from preprocessing/data/split_files/datasets.pkl for biological_process...
+  [WARN] Run failed — continuing sweep
+------------------------------------------------------
+  Run 5 / 72
+  Ontology: biological_process | Model: MLP | Loss: Focal | Seed: 123
+------------------------------------------------------
+Using device: cuda
+Loading datasets from preprocessing/data/split_files/datasets.pkl for biological_process...
+  [WARN] Run failed — continuing sweep
+------------------------------------------------------
+  Run 6 / 72
+  Ontology: biological_process | Model: MLP | Loss: Focal | Seed: 456
+------------------------------------------------------
+Using device: cuda
+Loading datasets from preprocessing/data/split_files/datasets.pkl for biological_process...
+  [WARN] Run failed — continuing sweep
+------------------------------------------------------
+  Run 7 / 72
+  Ontology: biological_process | Model: GCN | Loss: BCE | Seed: 42
+------------------------------------------------------
+Using device: cuda
+Loading datasets from preprocessing/data/split_files/datasets.pkl for biological_process...
+  [WARN] Run failed — continuing sweep
+------------------------------------------------------
+  Run 8 / 72
+  Ontology: biological_process | Model: GCN | Loss: BCE | Seed: 123
+------------------------------------------------------
+Using device: cuda
+Loading datasets from preprocessing/data/split_files/datasets.pkl for biological_process...
+  [WARN] Run failed — continuing sweep
+------------------------------------------------------
+  Run 9 / 72
+  Ontology: biological_process | Model: GCN | Loss: BCE | Seed: 456
+------------------------------------------------------
+Using device: cuda
+Loading datasets from preprocessing/data/split_files/datasets.pkl for biological_process...
+  [WARN] Run failed — continuing sweep
+------------------------------------------------------
+  Run 10 / 72
+  Ontology: biological_process | Model: GCN | Loss: Focal | Seed: 42
+------------------------------------------------------
+Using device: cuda
+Loading datasets from preprocessing/data/split_files/datasets.pkl for biological_process...
+  [WARN] Run failed — continuing sweep
+------------------------------------------------------
+  Run 11 / 72
+  Ontology: biological_process | Model: GCN | Loss: Focal | Seed: 123
+------------------------------------------------------
+Using device: cuda
+Loading datasets from preprocessing/data/split_files/datasets.pkl for biological_process...
+  [WARN] Run failed — continuing sweep
+------------------------------------------------------
+  Run 12 / 72
+  Ontology: biological_process | Model: GCN | Loss: Focal | Seed: 456
+------------------------------------------------------
+Using device: cuda
+Loading datasets from preprocessing/data/split_files/datasets.pkl for biological_process...
+  [WARN] Run failed — continuing sweep
+------------------------------------------------------
+  Run 13 / 72
+  Ontology: biological_process | Model: GAT | Loss: BCE | Seed: 42
+------------------------------------------------------
+Using device: cuda
+Loading datasets from preprocessing/data/split_files/datasets.pkl for biological_process...
+  [WARN] Run failed — continuing sweep
+------------------------------------------------------
+  Run 14 / 72
+  Ontology: biological_process | Model: GAT | Loss: BCE | Seed: 123
+------------------------------------------------------
+Using device: cuda
+Loading datasets from preprocessing/data/split_files/datasets.pkl for biological_process...
+  [WARN] Run failed — continuing sweep
+------------------------------------------------------
+  Run 15 / 72
+  Ontology: biological_process | Model: GAT | Loss: BCE | Seed: 456
+------------------------------------------------------
+Using device: cuda
+Loading datasets from preprocessing/data/split_files/datasets.pkl for biological_process...
+  [WARN] Run failed — continuing sweep
+------------------------------------------------------
+  Run 16 / 72
+  Ontology: biological_process | Model: GAT | Loss: Focal | Seed: 42
+------------------------------------------------------
+Using device: cuda
+Loading datasets from preprocessing/data/split_files/datasets.pkl for biological_process...
+  [WARN] Run failed — continuing sweep
+------------------------------------------------------
+  Run 17 / 72
+  Ontology: biological_process | Model: GAT | Loss: Focal | Seed: 123
+------------------------------------------------------
+Using device: cuda
+Loading datasets from preprocessing/data/split_files/datasets.pkl for biological_process...
+  [WARN] Run failed — continuing sweep
+------------------------------------------------------
+  Run 18 / 72
+  Ontology: biological_process | Model: GAT | Loss: Focal | Seed: 456
+------------------------------------------------------
+Using device: cuda
+Loading datasets from preprocessing/data/split_files/datasets.pkl for biological_process...
+  [WARN] Run failed — continuing sweep
+------------------------------------------------------
+  Run 19 / 72
+  Ontology: biological_process | Model: Hybrid | Loss: BCE | Seed: 42
+------------------------------------------------------
+Using device: cuda
+Loading datasets from preprocessing/data/split_files/datasets.pkl for biological_process...
+  [WARN] Run failed — continuing sweep
+------------------------------------------------------
+  Run 20 / 72
+  Ontology: biological_process | Model: Hybrid | Loss: BCE | Seed: 123
+------------------------------------------------------
+Using device: cuda
+Loading datasets from preprocessing/data/split_files/datasets.pkl for biological_process...
+  [WARN] Run failed — continuing sweep
+------------------------------------------------------
+  Run 21 / 72
+  Ontology: biological_process | Model: Hybrid | Loss: BCE | Seed: 456
+------------------------------------------------------
+Using device: cuda
+Loading datasets from preprocessing/data/split_files/datasets.pkl for biological_process...
+  [WARN] Run failed — continuing sweep
+------------------------------------------------------
+  Run 22 / 72
+  Ontology: biological_process | Model: Hybrid | Loss: Focal | Seed: 42
+------------------------------------------------------
+Using device: cuda
+Loading datasets from preprocessing/data/split_files/datasets.pkl for biological_process...
+  [WARN] Run failed — continuing sweep
+------------------------------------------------------
+  Run 23 / 72
+  Ontology: biological_process | Model: Hybrid | Loss: Focal | Seed: 123
+------------------------------------------------------
+Using device: cuda
+Loading datasets from preprocessing/data/split_files/datasets.pkl for biological_process...
+  [WARN] Run failed — continuing sweep
+------------------------------------------------------
+  Run 24 / 72
+  Ontology: biological_process | Model: Hybrid | Loss: Focal | Seed: 456
+------------------------------------------------------
+Using device: cuda
+Loading datasets from preprocessing/data/split_files/datasets.pkl for biological_process...
+  [WARN] Run failed — continuing sweep
+------------------------------------------------------
+  Run 25 / 72
+  Ontology: molecular_function | Model: MLP | Loss: BCE | Seed: 42
+------------------------------------------------------
+Using device: cuda
+Loading datasets from preprocessing/data/split_files/datasets.pkl for molecular_function...
+  [WARN] Run failed — continuing sweep
+------------------------------------------------------
+  Run 26 / 72
+  Ontology: molecular_function | Model: MLP | Loss: BCE | Seed: 123
+------------------------------------------------------
+Using device: cuda
+Loading datasets from preprocessing/data/split_files/datasets.pkl for molecular_function...
+  [WARN] Run failed — continuing sweep
+------------------------------------------------------
+  Run 27 / 72
+  Ontology: molecular_function | Model: MLP | Loss: BCE | Seed: 456
+------------------------------------------------------
+Using device: cuda
+Loading datasets from preprocessing/data/split_files/datasets.pkl for molecular_function...
+  [WARN] Run failed — continuing sweep
+------------------------------------------------------
+  Run 28 / 72
+  Ontology: molecular_function | Model: MLP | Loss: Focal | Seed: 42
+------------------------------------------------------
+Using device: cuda
+Loading datasets from preprocessing/data/split_files/datasets.pkl for molecular_function...
+  [WARN] Run failed — continuing sweep
+------------------------------------------------------
+  Run 29 / 72
+  Ontology: molecular_function | Model: MLP | Loss: Focal | Seed: 123
+------------------------------------------------------
+Using device: cuda
+Loading datasets from preprocessing/data/split_files/datasets.pkl for molecular_function...
+  [WARN] Run failed — continuing sweep
+------------------------------------------------------
+  Run 30 / 72
+  Ontology: molecular_function | Model: MLP | Loss: Focal | Seed: 456
+------------------------------------------------------
+Using device: cuda
+Loading datasets from preprocessing/data/split_files/datasets.pkl for molecular_function...
+  [WARN] Run failed — continuing sweep
+------------------------------------------------------
+  Run 31 / 72
+  Ontology: molecular_function | Model: GCN | Loss: BCE | Seed: 42
+------------------------------------------------------
+Using device: cuda
+Loading datasets from preprocessing/data/split_files/datasets.pkl for molecular_function...
+  [WARN] Run failed — continuing sweep
+------------------------------------------------------
+  Run 32 / 72
+  Ontology: molecular_function | Model: GCN | Loss: BCE | Seed: 123
+------------------------------------------------------
+Using device: cuda
+Loading datasets from preprocessing/data/split_files/datasets.pkl for molecular_function...
+  [WARN] Run failed — continuing sweep
+------------------------------------------------------
+  Run 33 / 72
+  Ontology: molecular_function | Model: GCN | Loss: BCE | Seed: 456
+------------------------------------------------------
+Using device: cuda
+Loading datasets from preprocessing/data/split_files/datasets.pkl for molecular_function...
+  [WARN] Run failed — continuing sweep
+------------------------------------------------------
+  Run 34 / 72
+  Ontology: molecular_function | Model: GCN | Loss: Focal | Seed: 42
+------------------------------------------------------
