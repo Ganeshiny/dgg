@@ -1,0 +1,26 @@
+========================================================
+Job ID        : 44315745
+Node          : mlg3
+CPUs          : 8
+Start time    : Sat Jun 27 12:49:38 MDT 2026
+Project dir   : /home/ganeshiny.sridharan/dgg/deep-green-GO
+Log .out      : /home/ganeshiny.sridharan/dgg/deep-green-GO/logs/deepgreengo_44315745.out
+Log .err      : /home/ganeshiny.sridharan/dgg/deep-green-GO/logs/deepgreengo_44315745.err
+========================================================
+Python : /home/ganeshiny.sridharan/miniconda3/envs/deepgreengo/bin/python
+PyTorch: 2.4.1
+CUDA   : NVIDIA L40S
+Scratch dir   : /scratch/44315745
+CMAP_THREADS  : 8
+========================================================
+Running sequentially for all ontologies (Warning: May timeout)
+=========================================
+  DeepGreenGO Hyperparameter Tuning
+=========================================
+Dataset: preprocessing/data/split_files/datasets.pkl
+Output Directory: tuning_runs
+
+------------------------------------------------------
+  Tuning Run 1 / 27
+  Ontology: biological_process | LR: 1e-4 | Dropout: 0.2 | Batch: 64
+------------------------------------------------------
