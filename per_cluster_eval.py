@@ -146,7 +146,7 @@ def main():
     print(f"Loading {arch} model from {args.model_path}...")
     model = get_model(arch, input_size, hidden_sizes, output_size)
     model.load_state_dict(torch.load(args.model_path, map_location=device,
-                                     weights_only=False))
+                                     weights_only=True))
     model.to(device)
 
     print("Evaluating per cluster...")

@@ -244,7 +244,7 @@ def main():
 
     print("Training finished. Evaluating on Test Set...")
     model.load_state_dict(torch.load(os.path.join(run_dir, 'best_model.pth'),
-                                     map_location=device, weights_only=False))
+                                     map_location=device, weights_only=True))
     test_metrics, test_y_true, test_y_pred = evaluate(test_loader)
     
     print("\n--- TEST METRICS ---")

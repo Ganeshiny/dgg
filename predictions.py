@@ -209,7 +209,7 @@ if __name__ == '__main__':
     gonames = train_ds.gonames[ontology]
 
     model = get_model(args.model, input_size, hidden_sizes, output_size)
-    model.load_state_dict(torch.load(args.model_path, map_location=device, weights_only=False))
+    model.load_state_dict(torch.load(args.model_path, map_location=device, weights_only=True))
     model.to(device).eval()
 
     run_predictions(struct_dir, model, args.output, gonames, goterms)

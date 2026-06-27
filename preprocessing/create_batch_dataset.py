@@ -239,7 +239,12 @@ class PDB_Dataset(Dataset):
 
     def get(self, idx):
         # Load directly from PyG disk cache instead of re-running ProtBERT!
-        return torch.load(os.path.join(self.processed_dir, self.processed_file_names[idx]))
+        # Suppress the PyTorch 2.4+ warning about weights_only=False being dangerous
+        # since we are loading trusted local PyG Data objects, not arbitrary pickles.
+        import warnings
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", category=FutureWarning)
+            return torch.load(os.path.join(self.processed_dir, self.processed_file_names[idx]), weights_only=False)
 
 
 if __name__ == '__main__':
