@@ -6,7 +6,7 @@
 
 LRS=(1e-4 5e-4 1e-3)
 DROPOUTS=(0.2 0.3 0.4)
-BATCH_SIZES=(16 32)
+BATCH_SIZES=(64)
 MODEL="Hybrid"
 LOSS="Focal"
 SEED=42
