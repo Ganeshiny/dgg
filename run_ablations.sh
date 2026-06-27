@@ -17,7 +17,7 @@ fi
 
 DATASET_PATH="${DATASET_PATH:-preprocessing/data/split_files/datasets.pkl}"
 EPOCHS="${EPOCHS:-1000}"
-BATCH_SIZE="${BATCH_SIZE:-32}"
+BATCH_SIZE="${BATCH_SIZE:-16}"
 
 
 echo "========================================="

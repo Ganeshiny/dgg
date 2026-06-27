@@ -1,7 +1,7 @@
 #!/bin/bash
 # ==============================================================================
 # ARC Cluster Submission Script for DeepGreenGO
-# University of Calgary ARC — gpu-v100 partition
+# University of Calgary ARC — gpu-l40 partition
 #
 # Submit with:  sbatch arc_submit.slurm
 # Monitor with: squeue -u $USER
@@ -14,7 +14,7 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --time=23:00:00
 #SBATCH --mem=128000
-#SBATCH --partition=gpu-v100
+#SBATCH --partition=gpu-l40
 #SBATCH --gres=gpu:1
 #SBATCH --output=/home/%u/dgg/deep-green-GO/logs/deepgreengo_%j.out
 #SBATCH --error=/home/%u/dgg/deep-green-GO/logs/deepgreengo_%j.err
