@@ -97,10 +97,15 @@ bash run_all.sh --skip-plots        # Skip figure generation
 EPOCHS=50 BATCH_SIZE=16 MAIN_MODEL=GAT MAIN_LOSS=BCE bash run_all.sh
 ```
 
-### Hyperparameter Ablations
-To run the automated hyperparameter sensitivity sweeps for the Hybrid model:
+### Hyperparameter Tuning
+To run an automated grid search for learning rate, dropout, and batch size across all 3 ontologies:
 ```bash
-bash run_hyperparam_ablations.sh
+bash run_tuning_64.sh
+python3 aggregate_tuning.py
+```
+*Note: On HPC clusters (e.g., UCalgary ARC), use the provided SLURM scripts and submit as an array job to train ontologies in parallel:*
+```bash
+sbatch --array=0-2 arc_submit_64.slurm
 ```
 
 ---
@@ -149,11 +154,13 @@ deep-green-GO/
 ├── focal_loss.py                 # Focal loss implementation
 ├── per_cluster_eval.py           # Per homology-cluster generalisation eval
 ├── aggregate_results.py          # Aggregate runs into mean±std tables
+├── aggregate_tuning.py           # Summarize grid search tuning results
 ├── plot_results.py               # Publication-quality figure generation
 ├── predictions.py                # Inference on new structures
 ├── run_all.sh                    # ONE-CLICK full pipeline
 ├── run_ablations.sh              # Ablation sweep helper
-├── run_hyperparam_ablations.sh   # Hyperparameter sensitivity helper
+├── run_tuning_64.sh              # Batch 64 hyperparameter sensitivity helper
+├── arc_submit_64.slurm           # ARC HPC SLURM submission script
 ├── generate_supp_tables.py       # LaTeX config table generator
 ├── environment.yml               # Conda environment
 └── requirements.txt              # pip requirements
