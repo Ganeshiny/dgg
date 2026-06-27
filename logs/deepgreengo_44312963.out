@@ -1,0 +1,35 @@
+========================================================
+Job ID        : 44312963
+Node          : mlg6
+CPUs          : 8
+Start time    : Sat Jun 27 11:59:54 MDT 2026
+Project dir   : /home/ganeshiny.sridharan/dgg/deep-green-GO
+Log .out      : /home/ganeshiny.sridharan/dgg/deep-green-GO/logs/deepgreengo_44312963.out
+Log .err      : /home/ganeshiny.sridharan/dgg/deep-green-GO/logs/deepgreengo_44312963.err
+========================================================
+Python : /home/ganeshiny.sridharan/miniconda3/envs/deepgreengo/bin/python
+PyTorch: 2.4.1
+CUDA   : NVIDIA L40S
+Scratch dir   : /scratch/44312963
+CMAP_THREADS  : 8
+========================================================
+Running sequentially for all ontologies (Warning: May timeout)
+  [33m▸[0m Project root: /home/ganeshiny.sridharan/dgg/deep-green-GO
+  [33m▸[0m Settings: EPOCHS=1000  BATCH=32  MODEL=Hybrid  LOSS=Focal
+  [33m▸[0m Ontology: biological_process
+  [33m⚠[0m  Skipping preprocessing (--skip-preprocess)
+
+[1m[32m══════════════════════════════════════════[0m
+[1m[32m  Step 2.5: Hyperparameter Tuning[0m
+[1m[32m══════════════════════════════════════════[0m
+  [33m▸[0m Running grid search over LR, Dropout, and Batch Size for all 3 ontologies.
+=========================================
+  DeepGreenGO Hyperparameter Tuning
+=========================================
+Dataset: preprocessing/data/split_files/datasets.pkl
+Output Directory: tuning_runs
+
+------------------------------------------------------
+  Tuning Run 1 / 54
+  Ontology: biological_process | LR: 1e-4 | Dropout: 0.2 | Batch: 16
+------------------------------------------------------
