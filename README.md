@@ -147,8 +147,9 @@ deep-green-GO/
 │   ├── blast/                    # BLASTp nearest-neighbour baseline
 │   ├── diamond/                  # DIAMOND nearest-neighbour baseline
 │   ├── naive_frequency/          # GO term frequency prior baseline
-│   └── deepfri_comparison/       # Comparison notes vs DeepFRI
+│   └── DeepFRI/                  # DeepFRI baseline and models
 ├── model.py                      # GCN / GAT / Hybrid / MLP architectures
+├── utils.py                      # Utility functions (weights, graph helpers)
 ├── train.py                      # Training script with early stopping
 ├── evals.py                      # Micro/Macro Fmax, Smin, AUROC, AUPRC
 ├── focal_loss.py                 # Focal loss implementation
@@ -157,10 +158,15 @@ deep-green-GO/
 ├── aggregate_tuning.py           # Summarize grid search tuning results
 ├── plot_results.py               # Publication-quality figure generation
 ├── predictions.py                # Inference on new structures
+├── sanity_check_cmaps.py         # Diagnostic check for contact maps
 ├── run_all.sh                    # ONE-CLICK full pipeline
 ├── run_ablations.sh              # Ablation sweep helper
+├── run_tuning.sh                 # Standard hyperparameter sensitivity helper
 ├── run_tuning_64.sh              # Batch 64 hyperparameter sensitivity helper
-├── arc_submit_64.slurm           # ARC HPC SLURM submission script
+├── arc_submit.slurm              # ARC HPC SLURM submission script (Standard)
+├── arc_submit_64.slurm           # ARC HPC SLURM submission script (Batch 64)
+├── logs/                         # SLURM output and error logs
+├── tuning_runs/                  # Grid search output directories
 ├── generate_supp_tables.py       # LaTeX config table generator
 ├── environment.yml               # Conda environment
 └── requirements.txt              # pip requirements
