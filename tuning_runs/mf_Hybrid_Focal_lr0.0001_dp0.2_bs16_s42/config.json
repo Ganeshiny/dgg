@@ -3,7 +3,7 @@
     "loss": "Focal",
     "epochs": 1000,
     "batch_size": 16,
-    "lr": 0.001,
+    "lr": 0.0001,
     "seed": 42,
     "dropout": 0.2,
     "focal_gamma": 4.0,
@@ -12,7 +12,7 @@
     "accumulation_steps": 4,
     "patience": 15,
     "dataset_path": "preprocessing/data/split_files/datasets.pkl",
-    "ontology": "biological_process",
+    "ontology": "molecular_function",
     "output_dir": "tuning_runs",
     "hardware": {
         "platform": "Linux",
@@ -21,7 +21,7 @@
         "gpu_name": "NVIDIA L40S"
     },
     "reproducibility": {
-        "git_commit": "44b05a12fd320ebeed943958a62923f2ed463f10",
-        "command_line": "train.py --model Hybrid --loss Focal --seed 42 --ontology biological_process --epochs 1000 --lr 1e-3 --dropout 0.2 --batch_size 16 --dataset_path preprocessing/data/split_files/datasets.pkl --output_dir tuning_runs"
+        "git_commit": "a8c8a836f294e4b755dbc88374d1c0b0ca436c14",
+        "command_line": "train.py --model Hybrid --loss Focal --seed 42 --ontology molecular_function --epochs 1000 --lr 1e-4 --dropout 0.2 --batch_size 16 --dataset_path preprocessing/data/split_files/datasets.pkl --output_dir tuning_runs"
     }
 }

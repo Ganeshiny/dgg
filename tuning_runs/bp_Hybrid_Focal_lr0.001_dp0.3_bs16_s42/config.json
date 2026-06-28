@@ -5,7 +5,7 @@
     "batch_size": 16,
     "lr": 0.001,
     "seed": 42,
-    "dropout": 0.2,
+    "dropout": 0.3,
     "focal_gamma": 4.0,
     "hidden_sizes": "1024,912",
     "num_heads": 4,
@@ -21,7 +21,7 @@
         "gpu_name": "NVIDIA L40S"
     },
     "reproducibility": {
-        "git_commit": "44b05a12fd320ebeed943958a62923f2ed463f10",
-        "command_line": "train.py --model Hybrid --loss Focal --seed 42 --ontology biological_process --epochs 1000 --lr 1e-3 --dropout 0.2 --batch_size 16 --dataset_path preprocessing/data/split_files/datasets.pkl --output_dir tuning_runs"
+        "git_commit": "017855a804ab8f3ad2bfd63e65a7b333ead5de40",
+        "command_line": "train.py --model Hybrid --loss Focal --seed 42 --ontology biological_process --epochs 1000 --lr 1e-3 --dropout 0.3 --batch_size 16 --dataset_path preprocessing/data/split_files/datasets.pkl --output_dir tuning_runs"
     }
 }
