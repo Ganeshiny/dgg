@@ -1,0 +1,27 @@
+{
+    "model": "Hybrid",
+    "loss": "Focal",
+    "epochs": 1000,
+    "batch_size": 32,
+    "lr": 0.001,
+    "seed": 42,
+    "dropout": 0.2,
+    "focal_gamma": 4.0,
+    "hidden_sizes": "1024,912",
+    "num_heads": 4,
+    "accumulation_steps": 4,
+    "patience": 15,
+    "dataset_path": "preprocessing/data/split_files/datasets.pkl",
+    "ontology": "molecular_function",
+    "output_dir": "tuning_runs",
+    "hardware": {
+        "platform": "Linux",
+        "python_version": "3.10.20",
+        "gpu_available": true,
+        "gpu_name": "NVIDIA L40S"
+    },
+    "reproducibility": {
+        "git_commit": "3a8e95091b66b36d6c7470e5b2a7018b30e29ea9",
+        "command_line": "train.py --model Hybrid --loss Focal --seed 42 --ontology molecular_function --epochs 1000 --lr 1e-3 --dropout 0.2 --batch_size 32 --dataset_path preprocessing/data/split_files/datasets.pkl --output_dir tuning_runs"
+    }
+}
