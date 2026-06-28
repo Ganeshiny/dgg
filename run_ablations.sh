@@ -18,7 +18,7 @@ fi
 DATASET_PATH="${DATASET_PATH:-preprocessing/data/split_files/datasets.pkl}"
 EPOCHS="${EPOCHS:-1000}"
 BATCH_SIZE="${BATCH_SIZE:-16}"
-
+OUT_DIR="runs"
 
 echo "========================================="
 echo "  DeepGreenGO  Ablation Sweep"
@@ -32,14 +32,6 @@ RUN=0
 FAILED=0
 
 for ont in "${ONTOLOGIES[@]}"; do
-    # Default to base script variables
-    BEST_LR=""
-    BEST_DROPOUT=""
-    BEST_BATCH_SIZE="$BATCH_SIZE"
-    
-    # Try to load best parameters if tuning was run
-    if [ -f "tuning_runs/tuning_results_summary.csv" ]; then
-        BEST_PARAMS=$(python3 get_best_hyperparams.py --ontology "$ont")
     # Dynamically fetch the best hyperparameters for this specific ontology
     BEST_PARAMS=$(python3 get_best_hyperparams.py --ontology "$ont")
     if [ -n "$BEST_PARAMS" ]; then
