@@ -40,28 +40,40 @@ for ont in "${ONTOLOGIES[@]}"; do
     # Try to load best parameters if tuning was run
     if [ -f "tuning_runs/tuning_results_summary.csv" ]; then
         BEST_PARAMS=$(python3 get_best_hyperparams.py --ontology "$ont")
-        if [ -n "$BEST_PARAMS" ]; then
-            eval "$BEST_PARAMS"
-            BEST_BATCH_SIZE="$BATCH_SIZE"
-            BEST_LR="$LR"
-            BEST_DROPOUT="$DROPOUT"
-            echo "  [INFO] Using tuned params for $ont: LR=$BEST_LR, Dropout=$BEST_DROPOUT, BatchSize=$BEST_BATCH_SIZE"
-        fi
+    # Dynamically fetch the best hyperparameters for this specific ontology
+    BEST_PARAMS=$(python3 get_best_hyperparams.py --ontology "$ont")
+    if [ -n "$BEST_PARAMS" ]; then
+        eval "$BEST_PARAMS"
+        echo "  [✓] Found Tuned Params: LR=$LR | Dropout=$DROPOUT | BatchSize=$BATCH_SIZE"
+    else
+        echo "  [!] No tuning results found. Falling back to defaults."
+        LR=1e-5
+        DROPOUT=0.3
+        BATCH_SIZE=16
     fi
+    echo "========================================="
 
     for model in "${MODELS[@]}"; do
         for loss in "${LOSSES[@]}"; do
             for seed in "${SEEDS[@]}"; do
                 RUN=$(( RUN + 1 ))
+                RUN_NAME="${ont}_${model}_${loss}_s${seed}"
+                
                 echo "------------------------------------------------------"
                 echo "  Run $RUN / $TOTAL"
-                echo "  Ontology: $ont | Model: $model | Loss: $loss | Seed: $seed"
+                echo "  Run: $RUN_NAME"
                 echo "------------------------------------------------------"
 
-                CMD="python3 train.py --model \"$model\" --loss \"$loss\" --seed \"$seed\" --ontology \"$ont\" --epochs \"$EPOCHS\" --batch_size \"$BEST_BATCH_SIZE\" --dataset_path \"$DATASET_PATH\""
-                if [ -n "$BEST_LR" ]; then CMD="$CMD --lr $BEST_LR"; fi
-                if [ -n "$BEST_DROPOUT" ]; then CMD="$CMD --dropout $BEST_DROPOUT"; fi
-                eval $CMD
+                python3 train.py \
+                    --model "$model" \
+                    --loss  "$loss" \
+                    --seed  "$seed" \
+                    --ontology "$ont" \
+                    --epochs "$EPOCHS" \
+                    --batch_size "$BATCH_SIZE" \
+                    --lr "$LR" \
+                    --dropout "$DROPOUT" \
+                    --dataset_path "$DATASET_PATH"
 
                 if [ $? -ne 0 ]; then
                     echo "  [WARN] Run failed — continuing sweep"
