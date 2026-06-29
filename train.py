@@ -10,7 +10,7 @@ import sys
 import platform
 import csv
 
-from model import get_model, HybridGNN
+from model import get_model, HybridGNN, HybridGNN_JK
 from evals import evaluate_all, compute_ic
 import __main__
 from preprocessing.create_batch_dataset import PDB_Dataset
@@ -20,7 +20,7 @@ from utils import load_alpha_weights
 
 def parse_args():
     parser = argparse.ArgumentParser(description="DeepGreenGO Training Script")
-    parser.add_argument('--model', type=str, default='Hybrid', choices=['GCN', 'GAT', 'Hybrid', 'MLP'], help='Model architecture to use.')
+    parser.add_argument('--model', type=str, default='Hybrid', choices=['GCN', 'GAT', 'Hybrid', 'Hybrid_JK', 'MLP'], help='Model architecture to use.')
     parser.add_argument('--loss', type=str, default='Focal', choices=['BCE', 'Focal'], help='Loss function to use.')
     parser.add_argument('--epochs', type=int, default=1000, help='Number of training epochs.')
     parser.add_argument('--batch_size', type=int, default=16, help='Batch size.')
@@ -171,6 +171,8 @@ def main():
     # Handle model kwargs gracefully (only pass num_heads and dropout to Hybrid and GAT if supported)
     if args.model.lower() in ["hybrid", "deepgreengo", "rarelabelgnn"]:
         model = HybridGNN(input_size, hidden_sizes, output_size, num_attention_heads=args.num_heads, dropout=args.dropout)
+    elif args.model.lower() == "hybrid_jk":
+        model = HybridGNN_JK(input_size, hidden_sizes, output_size, num_attention_heads=args.num_heads, dropout=args.dropout)
     elif args.model.lower() == "gat":
         # Our current GATModel doesn't accept dropout in its constructor in model.py, but we could pass num_heads
         model = get_model(args.model, input_size, hidden_sizes, output_size)

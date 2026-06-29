@@ -106,6 +106,55 @@ class HybridGNN(nn.Module):
         out = self.head_dropout(out)
         return self.output_layer(out)
 
+class HybridGNN_JK(nn.Module):
+    """DeepGreenGO architecture with Jumping Knowledge (Jump Connections)."""
+    def __init__(self, input_size, hidden_sizes, output_size, num_attention_heads=4, dropout=0.3):
+        super(HybridGNN_JK, self).__init__()
+        self.input_linear = nn.Linear(input_size, hidden_sizes[0])
+        self.input_bn     = nn.BatchNorm1d(hidden_sizes[0])
+        
+        self.gcn_conv = GCNConv(hidden_sizes[0], hidden_sizes[1])
+        self.gcn_ln   = nn.LayerNorm(hidden_sizes[1])
+        
+        gat_out_dim = hidden_sizes[1] if len(hidden_sizes) < 3 else hidden_sizes[2]
+        self.gat_conv = GATv2Conv(hidden_sizes[1], gat_out_dim, heads=num_attention_heads, concat=False)
+        self.gat_ln   = nn.LayerNorm(gat_out_dim)
+
+        combined_dim = hidden_sizes[0] + hidden_sizes[1] + gat_out_dim
+        self.attention_pool = AttentionalAggregation(
+            gate_nn=nn.Sequential(nn.Linear(combined_dim, 128), nn.ReLU(), nn.Linear(128, 1))
+        )
+        
+        self.head_linear1 = nn.Linear(combined_dim, gat_out_dim)
+        self.head_bn      = nn.BatchNorm1d(gat_out_dim)
+        self.head_dropout = nn.Dropout(dropout)
+        self.output_layer = nn.Linear(gat_out_dim, output_size)
+        
+        self.dropout = nn.Dropout(dropout)
+
+    def forward(self, x, edge_index, batch):
+        x_in = self.input_linear(x)
+        x_in = F.leaky_relu(x_in, negative_slope=0.1)
+        x_in = self.input_bn(x_in)
+        x_in = self.dropout(x_in)
+        
+        x_gcn = self.gcn_conv(x_in, edge_index)
+        x_gcn = F.leaky_relu(x_gcn, negative_slope=0.1)
+        x_gcn = self.gcn_ln(x_gcn)
+        
+        x_gat = self.gat_conv(x_gcn, edge_index)
+        x_gat = F.leaky_relu(x_gat, negative_slope=0.1)
+        x_gat = self.gat_ln(x_gat)
+        
+        x_combined = torch.cat([x_in, x_gcn, x_gat], dim=1)
+        
+        graph_embedding = self.attention_pool(x_combined, batch)
+        
+        out = F.leaky_relu(self.head_linear1(graph_embedding), negative_slope=0.1)
+        out = self.head_bn(out)
+        out = self.head_dropout(out)
+        return self.output_layer(out)
+
 class MLPModel(nn.Module):
     def __init__(self, input_size, hidden_sizes, output_size):
         super(MLPModel, self).__init__()
@@ -131,5 +180,7 @@ def get_model(model_name, input_size, hidden_sizes, output_size):
         return MLPModel(input_size, hidden_sizes, output_size)
     elif model_name.lower() in ["hybrid", "rarelabelgnn", "deepgreengo"]:
         return HybridGNN(input_size, hidden_sizes, output_size)
+    elif model_name.lower() == "hybrid_jk":
+        return HybridGNN_JK(input_size, hidden_sizes, output_size)
     else:
         raise ValueError(f"Unknown model type: {model_name}")
