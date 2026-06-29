@@ -14,7 +14,7 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --time=23:00:00
 #SBATCH --mem=128000
-#SBATCH --partition=gpu-a100
+#SBATCH --partition=gpu-l40
 #SBATCH --gres=gpu:1
 #SBATCH --output=/home/%u/dgg/deep-green-GO/logs/deepgreengo_jk_%j.out
 #SBATCH --error=/home/%u/dgg/deep-green-GO/logs/deepgreengo_jk_%j.err
