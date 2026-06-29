@@ -54,7 +54,12 @@ if [ -n "$SLURM_ARRAY_TASK_ID" ]; then
     CURRENT_ONT="${ONT_LIST[$SLURM_ARRAY_TASK_ID]}"
     echo "Array Job Detected: Running ONLY for $CURRENT_ONT"
     
-    # Run hyperparameter tuning first for this ontology using the JK model
+    # 1. First, run the JK model with the best previously found hyperparameters
+    echo "--- Running Best Hyperparameters Test First ---"
+    bash run_jk_test.sh "$CURRENT_ONT"
+    
+    # 2. Then, run the full hyperparameter tuning grid
+    echo "--- Starting Full Grid Search ---"
     bash run_tuning_jk.sh "$CURRENT_ONT"
 else
     echo "Running sequentially for all ontologies (Warning: May timeout)"
