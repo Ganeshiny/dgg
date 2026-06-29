@@ -2,7 +2,7 @@
     "model": "Hybrid",
     "loss": "Focal",
     "epochs": 1000,
-    "batch_size": 16,
+    "batch_size": 32,
     "lr": 0.001,
     "seed": 42,
     "dropout": 0.4,
@@ -22,6 +22,6 @@
     },
     "reproducibility": {
         "git_commit": "d39b3a5472eb65a0c2423f9a4ecb2b1ccfad6b71",
-        "command_line": "train.py --model Hybrid --loss Focal --seed 42 --ontology cellular_component --epochs 1000 --lr 1e-3 --dropout 0.4 --batch_size 16 --dataset_path preprocessing/data/split_files/datasets.pkl --output_dir tuning_runs"
+        "command_line": "train.py --model Hybrid --loss Focal --seed 42 --ontology cellular_component --epochs 1000 --lr 1e-3 --dropout 0.4 --batch_size 32 --dataset_path preprocessing/data/split_files/datasets.pkl --output_dir tuning_runs"
     }
 }

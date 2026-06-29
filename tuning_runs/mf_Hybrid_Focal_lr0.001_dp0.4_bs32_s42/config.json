@@ -21,7 +21,7 @@
         "gpu_name": "NVIDIA L40S"
     },
     "reproducibility": {
-        "git_commit": "e9b278afdfb0471338bdc57120b9cd91a5f34c6c",
+        "git_commit": "9cde71410ed3354be29b3e9a37e5ab4477e34fde",
         "command_line": "train.py --model Hybrid --loss Focal --seed 42 --ontology molecular_function --epochs 1000 --lr 1e-3 --dropout 0.4 --batch_size 32 --dataset_path preprocessing/data/split_files/datasets.pkl --output_dir tuning_runs"
     }
 }

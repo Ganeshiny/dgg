@@ -1,0 +1,278 @@
+========================================================
+Job ID        : 44336662
+Node          : mlg6
+CPUs          : 8
+Start time    : Sun Jun 28 19:15:08 MDT 2026
+Project dir   : /home/ganeshiny.sridharan/dgg/deep-green-GO
+Log .out      : /home/ganeshiny.sridharan/dgg/deep-green-GO/logs/deepgreengo_44336662.out
+Log .err      : /home/ganeshiny.sridharan/dgg/deep-green-GO/logs/deepgreengo_44336662.err
+========================================================
+Python : /home/ganeshiny.sridharan/miniconda3/envs/deepgreengo/bin/python
+PyTorch: 2.4.1
+CUDA   : NVIDIA L40S
+Scratch dir   : /scratch/44336662
+CMAP_THREADS  : 8
+========================================================
+Array Job Detected: Running ONLY for biological_process
+Running tuning only for: biological_process
+=========================================
+  DeepGreenGO Hyperparameter Tuning
+=========================================
+Dataset: preprocessing/data/split_files/datasets.pkl
+Output Directory: tuning_runs
+
+------------------------------------------------------
+  Tuning Run 1 / 18
+  Ontology: biological_process | LR: 1e-4 | Dropout: 0.2 | Batch: 16
+------------------------------------------------------
+Using device: cuda
+
+[RESUME] Found successfully completed run in tuning_runs/bp_Hybrid_Focal_s42.
+[RESUME] Skipping training to save compute!
+
+------------------------------------------------------
+  Tuning Run 2 / 18
+  Ontology: biological_process | LR: 1e-4 | Dropout: 0.2 | Batch: 32
+------------------------------------------------------
+Using device: cuda
+
+[RESUME] Found successfully completed run in tuning_runs/bp_Hybrid_Focal_s42_1782543643.
+[RESUME] Skipping training to save compute!
+
+------------------------------------------------------
+  Tuning Run 3 / 18
+  Ontology: biological_process | LR: 1e-4 | Dropout: 0.3 | Batch: 16
+------------------------------------------------------
+Using device: cuda
+
+[RESUME] Found successfully completed run in tuning_runs/bp_Hybrid_Focal_s42_1782550761.
+[RESUME] Skipping training to save compute!
+
+------------------------------------------------------
+  Tuning Run 4 / 18
+  Ontology: biological_process | LR: 1e-4 | Dropout: 0.3 | Batch: 32
+------------------------------------------------------
+Using device: cuda
+
+[RESUME] Found successfully completed run in tuning_runs/bp_Hybrid_Focal_s42_1782556077.
+[RESUME] Skipping training to save compute!
+
+------------------------------------------------------
+  Tuning Run 5 / 18
+  Ontology: biological_process | LR: 1e-4 | Dropout: 0.4 | Batch: 16
+------------------------------------------------------
+Using device: cuda
+
+[RESUME] Found successfully completed run in tuning_runs/bp_Hybrid_Focal_s42_1782561788.
+[RESUME] Skipping training to save compute!
+
+------------------------------------------------------
+  Tuning Run 6 / 18
+  Ontology: biological_process | LR: 1e-4 | Dropout: 0.4 | Batch: 32
+------------------------------------------------------
+Using device: cuda
+
+[RESUME] Found successfully completed run in tuning_runs/bp_Hybrid_Focal_s42_1782567234.
+[RESUME] Skipping training to save compute!
+
+------------------------------------------------------
+  Tuning Run 7 / 18
+  Ontology: biological_process | LR: 5e-4 | Dropout: 0.2 | Batch: 16
+------------------------------------------------------
+Using device: cuda
+
+[RESUME] Found successfully completed run in tuning_runs/bp_Hybrid_Focal_s42_1782575007.
+[RESUME] Skipping training to save compute!
+
+------------------------------------------------------
+  Tuning Run 8 / 18
+  Ontology: biological_process | LR: 5e-4 | Dropout: 0.2 | Batch: 32
+------------------------------------------------------
+Using device: cuda
+
+[RESUME] Found successfully completed run in tuning_runs/bp_Hybrid_Focal_s42_1782580718.
+[RESUME] Skipping training to save compute!
+
+------------------------------------------------------
+  Tuning Run 9 / 18
+  Ontology: biological_process | LR: 5e-4 | Dropout: 0.3 | Batch: 16
+------------------------------------------------------
+Using device: cuda
+
+[RESUME] Found successfully completed run in tuning_runs/bp_Hybrid_Focal_s42_1782589439.
+[RESUME] Skipping training to save compute!
+
+------------------------------------------------------
+  Tuning Run 10 / 18
+  Ontology: biological_process | LR: 5e-4 | Dropout: 0.3 | Batch: 32
+------------------------------------------------------
+Using device: cuda
+
+[RESUME] Found successfully completed run in tuning_runs/bp_Hybrid_Focal_lr0.0005_dp0.3_bs32_s42.
+[RESUME] Skipping training to save compute!
+
+------------------------------------------------------
+  Tuning Run 11 / 18
+  Ontology: biological_process | LR: 5e-4 | Dropout: 0.4 | Batch: 16
+------------------------------------------------------
+Using device: cuda
+
+[RESUME] Found successfully completed run in tuning_runs/bp_Hybrid_Focal_lr0.0005_dp0.4_bs16_s42.
+[RESUME] Skipping training to save compute!
+
+------------------------------------------------------
+  Tuning Run 12 / 18
+  Ontology: biological_process | LR: 5e-4 | Dropout: 0.4 | Batch: 32
+------------------------------------------------------
+Using device: cuda
+
+[RESUME] Found successfully completed run in tuning_runs/bp_Hybrid_Focal_lr0.0005_dp0.4_bs32_s42.
+[RESUME] Skipping training to save compute!
+
+------------------------------------------------------
+  Tuning Run 13 / 18
+  Ontology: biological_process | LR: 1e-3 | Dropout: 0.2 | Batch: 16
+------------------------------------------------------
+Using device: cuda
+
+[RESUME] Found successfully completed run in tuning_runs/bp_Hybrid_Focal_lr0.001_dp0.2_bs16_s42.
+[RESUME] Skipping training to save compute!
+
+------------------------------------------------------
+  Tuning Run 14 / 18
+  Ontology: biological_process | LR: 1e-3 | Dropout: 0.2 | Batch: 32
+------------------------------------------------------
+Using device: cuda
+
+[RESUME] Found successfully completed run in tuning_runs/bp_Hybrid_Focal_lr0.001_dp0.2_bs32_s42.
+[RESUME] Skipping training to save compute!
+
+------------------------------------------------------
+  Tuning Run 15 / 18
+  Ontology: biological_process | LR: 1e-3 | Dropout: 0.3 | Batch: 16
+------------------------------------------------------
+Using device: cuda
+
+[RESUME] Found successfully completed run in tuning_runs/bp_Hybrid_Focal_lr0.001_dp0.3_bs16_s42.
+[RESUME] Skipping training to save compute!
+
+------------------------------------------------------
+  Tuning Run 16 / 18
+  Ontology: biological_process | LR: 1e-3 | Dropout: 0.3 | Batch: 32
+------------------------------------------------------
+Using device: cuda
+
+[RESUME] Found successfully completed run in tuning_runs/bp_Hybrid_Focal_lr0.001_dp0.3_bs32_s42.
+[RESUME] Skipping training to save compute!
+
+------------------------------------------------------
+  Tuning Run 17 / 18
+  Ontology: biological_process | LR: 1e-3 | Dropout: 0.4 | Batch: 16
+------------------------------------------------------
+Using device: cuda
+
+[RESUME] Found successfully completed run in tuning_runs/bp_Hybrid_Focal_lr0.001_dp0.4_bs16_s42.
+[RESUME] Skipping training to save compute!
+
+------------------------------------------------------
+  Tuning Run 18 / 18
+  Ontology: biological_process | LR: 1e-3 | Dropout: 0.4 | Batch: 32
+------------------------------------------------------
+Using device: cuda
+
+[RESUME] Found successfully completed run in tuning_runs/bp_Hybrid_Focal_lr0.001_dp0.4_bs32_s42.
+[RESUME] Skipping training to save compute!
+
+
+=========================================
+  Tuning sweep complete.
+  Completed: 18  /  18
+=========================================
+Run 'python3 aggregate_tuning.py' to summarize results.
+
+All tuning results saved to tuning_runs/tuning_results_summary.csv
+
+===========================================================================
+  Tuning Results: biological_process (Best configurations at the top)
+===========================================================================
+    LR  Dropout  BatchSize  Val_Macro_Fmax  Val_Micro_Fmax  Val_Smin
+0.0005   0.3000         32          0.7388          0.7459   25.5285
+0.0001   0.4000         16          0.7362          0.7368   26.7980
+0.0001   0.4000         32          0.7353          0.7378   26.4387
+0.0005   0.4000         32          0.7339          0.7429   25.7052
+0.0005   0.4000         16          0.7335          0.7275   27.4629
+0.0001   0.3000         16          0.7331          0.7407   25.9877
+0.0001   0.2000         16          0.7328          0.7450   25.5958
+0.0005   0.3000         16          0.7317          0.7277   26.8211
+0.0010   0.2000         16          0.7314          0.7276   27.2202
+0.0005   0.2000         16          0.7314          0.7434   25.9655
+0.0001   0.4000         64          0.7282          0.7203   28.6862
+0.0001   0.2000         32          0.7281          0.7278   27.4963
+0.0010   0.4000         32          0.7275          0.7343   26.2808
+0.0001   0.3000         32          0.7272          0.7232   28.3391
+0.0001   0.2000         64          0.7268          0.7486   25.7740
+0.0010   0.3000         32          0.7267          0.7240   27.3399
+0.0010   0.2000         32          0.7260          0.7444   25.4599
+0.0005   0.2000         32          0.7249          0.7314   26.7925
+0.0005   0.2000         64          0.7233          0.7367   26.3044
+0.0010   0.4000         16          0.7227          0.7278   27.6083
+0.0001   0.3000         64          0.7219          0.7124   28.6338
+0.0010   0.3000         16          0.4811          0.1545   65.3773
+
+===========================================================================
+  Tuning Results: molecular_function (Best configurations at the top)
+===========================================================================
+    LR  Dropout  BatchSize  Val_Macro_Fmax  Val_Micro_Fmax  Val_Smin
+0.0005   0.2000         32          0.9051          0.8603    6.1663
+0.0005   0.3000         16          0.9050          0.8619    6.2467
+0.0005   0.3000         32          0.9045          0.8643    6.2820
+0.0005   0.4000         16          0.9031          0.8575    6.5836
+0.0010   0.2000         32          0.9031          0.8604    6.4780
+0.0010   0.3000         32          0.9019          0.8594    6.5093
+0.0005   0.4000         32          0.9013          0.8600    6.3025
+0.0010   0.4000         16          0.8969          0.8558    6.4061
+0.0010   0.3000         16          0.8963          0.8546    6.5981
+0.0010   0.4000         32          0.8941          0.8582    6.6917
+0.0010   0.2000         16          0.8927          0.8489    6.7373
+0.0001   0.2000         32          0.8909          0.8574    6.6859
+0.0001   0.4000         16          0.8908          0.8508    6.8481
+0.0001   0.4000         32          0.8898          0.8402    7.4933
+0.0005   0.2000         16          0.8888          0.8424    7.1649
+0.0001   0.2000         16          0.8883          0.8567    6.4110
+0.0001   0.3000         16          0.8873          0.8581    6.5768
+0.0001   0.3000         32          0.8801          0.8506    6.7774
+
+===========================================================================
+  Tuning Results: cellular_component (Best configurations at the top)
+===========================================================================
+    LR  Dropout  BatchSize  Val_Macro_Fmax  Val_Micro_Fmax  Val_Smin
+0.0001   0.3000         16          0.7097          0.6948    5.6729
+0.0005   0.4000         16          0.6918          0.6752    5.9671
+0.0001   0.2000         32          0.6913          0.7064    5.4469
+0.0010   0.3000         32          0.6903          0.6975    5.6388
+0.0001   0.3000         32          0.6891          0.6855    5.8116
+0.0005   0.3000         16          0.6889          0.6752    5.9153
+0.0010   0.3000         16          0.6860          0.6904    5.6867
+0.0010   0.2000         16          0.6824          0.6758    5.9741
+0.0001   0.4000         32          0.6790          0.7016    5.5573
+0.0001   0.4000         16          0.6734          0.6881    5.7823
+0.0001   0.2000         16          0.6731          0.6909    5.7178
+0.0010   0.2000         32          0.6691          0.6732    6.1420
+0.0005   0.3000         32          0.6654          0.6934    5.7020
+0.0005   0.2000         16          0.6607          0.6808    5.8782
+0.0005   0.4000         32          0.6536          0.7023    5.5399
+0.0005   0.2000         32          0.6476          0.6676    6.0424
+0.0010   0.4000         16          0.6143          0.6420    6.5230
+Running ablations only for: biological_process
+=========================================
+  DeepGreenGO  Ablation Sweep
+=========================================
+Dataset: preprocessing/data/split_files/datasets.pkl
+Epochs:  1000  | Batch: 16
+
+  [✓] Found Tuned Params: LR=0.0005 | Dropout=0.3 | BatchSize=32
+=========================================
+------------------------------------------------------
+  Run 1 / 24
+  Run: biological_process_MLP_BCE_s42
+------------------------------------------------------
