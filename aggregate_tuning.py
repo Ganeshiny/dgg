@@ -75,4 +75,9 @@ def aggregate_tuning(runs_dir: str, output_file: str):
         print(sub[display_cols].to_string(index=False, float_format=lambda x: f"{x:.4f}"))
 
 if __name__ == "__main__":
-    aggregate_tuning("tuning_runs/", "tuning_runs/tuning_results_summary.csv")
+    import argparse
+    parser = argparse.ArgumentParser(description="Aggregate tuning results")
+    parser.add_argument("--runs_dir", type=str, default="tuning_runs/", help="Directory containing tuning runs")
+    parser.add_argument("--output_file", type=str, default="tuning_runs/tuning_results_summary.csv", help="Path to output CSV")
+    args = parser.parse_args()
+    aggregate_tuning(args.runs_dir, args.output_file)

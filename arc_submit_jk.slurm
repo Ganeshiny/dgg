@@ -61,6 +61,14 @@ if [ -n "$SLURM_ARRAY_TASK_ID" ]; then
     # 2. Then, run the full hyperparameter tuning grid
     echo "--- Starting Full Grid Search ---"
     bash run_tuning_jk.sh "$CURRENT_ONT"
+    
+    # 3. Aggregate the tuning results
+    echo "--- Aggregating JK Tuning Results ---"
+    python3 aggregate_tuning.py --runs_dir "tuning_runs_jk/" --output_file "tuning_runs_jk/tuning_results_summary.csv"
+    
+    # 4. Start the full ablation sweep (which now includes Hybrid_JK)
+    echo "--- Starting Full Ablations ---"
+    bash run_ablations.sh "$CURRENT_ONT"
 else
     echo "Running sequentially for all ontologies (Warning: May timeout)"
     # Fallback to run all if not run as array

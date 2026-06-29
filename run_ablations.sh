@@ -3,7 +3,7 @@
 # Runs all Model × Loss combinations across 3 seeds for all three GO ontologies.
 # Failures are logged but do NOT halt the whole sweep.
 
-MODELS=("MLP" "GCN" "GAT" "Hybrid")
+MODELS=("MLP" "GCN" "GAT" "Hybrid" "Hybrid_JK")
 LOSSES=("BCE" "Focal")
 SEEDS=(42 123 456)
 
@@ -32,8 +32,8 @@ RUN=0
 FAILED=0
 
 for ont in "${ONTOLOGIES[@]}"; do
-    # Dynamically fetch the best hyperparameters for this specific ontology
-    BEST_PARAMS=$(python3 get_best_hyperparams.py --ontology "$ont")
+    # Dynamically fetch the best hyperparameters for this specific ontology from the JK tuning runs
+    BEST_PARAMS=$(python3 get_best_hyperparams.py --ontology "$ont" --summary_file "tuning_runs_jk/tuning_results_summary.csv")
     if [ -n "$BEST_PARAMS" ]; then
         eval "$BEST_PARAMS"
         echo "  [✓] Found Tuned Params: LR=$LR | Dropout=$DROPOUT | BatchSize=$BATCH_SIZE"
