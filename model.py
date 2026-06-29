@@ -115,12 +115,12 @@ class MLPModel(nn.Module):
         self.dropout = nn.Dropout(0.3)
 
     def forward(self, x, edge_index, batch):
-        # Ignore edge_index for MLP
-        x = F.leaky_relu(self.input_linear(x), negative_slope=0.1)
+        # Ignore edge_index for MLP, pool first to create graph-level baseline
+        graph_embedding = global_mean_pool(x, batch)
+        x = F.leaky_relu(self.input_linear(graph_embedding), negative_slope=0.1)
         x = self.dropout(x)
         x = F.leaky_relu(self.hidden_linear(x), negative_slope=0.1)
-        graph_embedding = global_mean_pool(x, batch)
-        return self.output_layer(graph_embedding)
+        return self.output_layer(x)
 
 def get_model(model_name, input_size, hidden_sizes, output_size):
     if model_name.lower() == "gcn":
