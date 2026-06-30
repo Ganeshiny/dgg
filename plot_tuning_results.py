@@ -82,4 +82,10 @@ def plot_tuning_summary(csv_path="tuning_runs/tuning_results_summary.csv", out_p
     print(f"Saved highly polished publication plot to {out_path} (and .png)")
 
 if __name__ == "__main__":
-    plot_tuning_summary()
+    import argparse
+    parser = argparse.ArgumentParser(description="Plot tuning results from CSV")
+    parser.add_argument("--csv_path", type=str, default="tuning_runs/tuning_results_summary.csv", help="Path to tuning summary CSV")
+    parser.add_argument("--out_path", type=str, default="tuning_runs/tuning_visualization.pdf", help="Path to output plot PDF")
+    args = parser.parse_args()
+    
+    plot_tuning_summary(csv_path=args.csv_path, out_path=args.out_path)

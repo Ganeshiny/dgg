@@ -12,33 +12,57 @@ import glob
 def aggregate_tuning(runs_dir: str, output_file: str):
     results = []
 
-    for config_file in glob.glob(os.path.join(runs_dir, "*", "config.json")):
-        run_dir = os.path.dirname(config_file)
-        metric_file = os.path.join(run_dir, "valid_metrics.json")
-
-        # Config always exists if we are in this loop, but metrics might not if it failed
-        with open(config_file) as f:
-            config = json.load(f)
+    for log_file in glob.glob(os.path.join(runs_dir, "*", "training_log.csv")):
+        run_dir = os.path.dirname(log_file)
+        dir_name = os.path.basename(run_dir)
+        
+        # Example dir_name: bp_Hybrid_JK_Focal_lr0.0001_dp0.2_bs16_s42
+        parts = dir_name.split('_')
+        
+        # Handle ontology prefix mapping
+        ont_map = {'bp': 'biological_process', 'mf': 'molecular_function', 'cc': 'cellular_component'}
+        ontology = ont_map.get(parts[0], 'Unknown')
+        
+        # Parse params from dir name
+        lr = 'Unknown'
+        dp = 'Unknown'
+        bs = 'Unknown'
+        seed = 'Unknown'
+        for part in parts:
+            if part.startswith('lr'): lr = part[2:]
+            elif part.startswith('dp'): dp = part[2:]
+            elif part.startswith('bs'): bs = part[2:]
+            elif part.startswith('s') and part[1:].isdigit(): seed = part[1:]
             
         row = {
-            'Ontology': config.get('ontology', 'Unknown'),
-            'Model':    config.get('model', 'Unknown'),
-            'LR':       config.get('lr', 'Unknown'),
-            'Dropout':  config.get('dropout', 'Unknown'),
-            'BatchSize': config.get('batch_size', 'Unknown'),
-            'Seed':     config.get('seed', 'Unknown'),
+            'Ontology': ontology,
+            'Model':    'Hybrid_JK' if 'JK' in dir_name else 'Hybrid',
+            'LR':       lr,
+            'Dropout':  dp,
+            'BatchSize': bs,
+            'Seed':     seed,
         }
 
-        if os.path.exists(metric_file):
-            with open(metric_file) as f:
-                metrics = json.load(f)
-            row.update({
-                'Val_Micro_Fmax': metrics.get('Micro_Fmax', float('nan')),
-                'Val_Macro_Fmax': metrics.get('Macro_Fmax', float('nan')),
-                'Val_Smin':       metrics.get('Smin', float('nan')),
-            })
-            row['Status'] = 'Completed'
-        else:
+        # Get best metrics from training_log.csv
+        try:
+            log_df = pd.read_csv(log_file)
+            if not log_df.empty and 'Valid_Macro_Fmax' in log_df.columns:
+                best_idx = log_df['Valid_Macro_Fmax'].idxmax()
+                best_row = log_df.loc[best_idx]
+                row.update({
+                    'Val_Micro_Fmax': best_row['Valid_Micro_Fmax'],
+                    'Val_Macro_Fmax': best_row['Valid_Macro_Fmax'],
+                    'Val_Smin':       best_row['Valid_Smin'],
+                })
+                row['Status'] = 'Completed'
+            else:
+                row.update({
+                    'Val_Micro_Fmax': float('nan'),
+                    'Val_Macro_Fmax': float('nan'),
+                    'Val_Smin':       float('nan'),
+                })
+                row['Status'] = 'Failed/Incomplete'
+        except Exception as e:
             row.update({
                 'Val_Micro_Fmax': float('nan'),
                 'Val_Macro_Fmax': float('nan'),
