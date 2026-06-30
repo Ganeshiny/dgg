@@ -1,0 +1,357 @@
+========================================================
+Job ID        : 44348676
+Node          : mgh5
+CPUs          : 8
+Start time    : Mon Jun 29 20:18:17 MDT 2026
+Project dir   : /home/ganeshiny.sridharan/dgg/deep-green-GO
+Log .out      : /home/ganeshiny.sridharan/dgg/deep-green-GO/logs/deepgreengo_jk_44348676.out
+Log .err      : /home/ganeshiny.sridharan/dgg/deep-green-GO/logs/deepgreengo_jk_44348676.err
+========================================================
+Array Job Detected: Running ONLY for cellular_component
+--- Running Best Hyperparameters Test First ---
+Fetching best hyperparameters for cellular_component...
+Found Best Params -> LR: 0.0001, Dropout: 0.3, Batch Size: 16
+Running HybridGNN_JK training test...
+Using device: cuda
+
+[RESUME] Found successfully completed run in runs_jk_test/cellular_component/cc_Hybrid_JK_Focal_lr0.0001_dp0.3_bs16_s42.
+[RESUME] Skipping training to save compute!
+
+--- Starting Full Grid Search ---
+Running tuning only for: cellular_component
+=========================================
+  DeepGreenGO Hyperparameter Tuning (JK)
+=========================================
+Dataset: preprocessing/data/split_files/datasets.pkl
+Output Directory: tuning_runs_jk
+
+------------------------------------------------------
+  Tuning Run 1 / 18
+  Ontology: cellular_component | LR: 1e-4 | Dropout: 0.2 | Batch: 16
+------------------------------------------------------
+Using device: cuda
+
+[RESUME] Found successfully completed run in tuning_runs_jk/cc_Hybrid_JK_Focal_lr0.0001_dp0.2_bs16_s42.
+[RESUME] Skipping training to save compute!
+
+------------------------------------------------------
+  Tuning Run 2 / 18
+  Ontology: cellular_component | LR: 1e-4 | Dropout: 0.2 | Batch: 32
+------------------------------------------------------
+Using device: cuda
+
+[RESUME] Found successfully completed run in tuning_runs_jk/cc_Hybrid_JK_Focal_lr0.0001_dp0.2_bs32_s42.
+[RESUME] Skipping training to save compute!
+
+------------------------------------------------------
+  Tuning Run 3 / 18
+  Ontology: cellular_component | LR: 1e-4 | Dropout: 0.3 | Batch: 16
+------------------------------------------------------
+Using device: cuda
+
+[RESUME] Found successfully completed run in tuning_runs_jk/cc_Hybrid_JK_Focal_lr0.0001_dp0.3_bs16_s42.
+[RESUME] Skipping training to save compute!
+
+------------------------------------------------------
+  Tuning Run 4 / 18
+  Ontology: cellular_component | LR: 1e-4 | Dropout: 0.3 | Batch: 32
+------------------------------------------------------
+Using device: cuda
+
+[RESUME] Found successfully completed run in tuning_runs_jk/cc_Hybrid_JK_Focal_lr0.0001_dp0.3_bs32_s42.
+[RESUME] Skipping training to save compute!
+
+------------------------------------------------------
+  Tuning Run 5 / 18
+  Ontology: cellular_component | LR: 1e-4 | Dropout: 0.4 | Batch: 16
+------------------------------------------------------
+Using device: cuda
+
+[RESUME] Found successfully completed run in tuning_runs_jk/cc_Hybrid_JK_Focal_lr0.0001_dp0.4_bs16_s42.
+[RESUME] Skipping training to save compute!
+
+------------------------------------------------------
+  Tuning Run 6 / 18
+  Ontology: cellular_component | LR: 1e-4 | Dropout: 0.4 | Batch: 32
+------------------------------------------------------
+Using device: cuda
+
+[RESUME] Found successfully completed run in tuning_runs_jk/cc_Hybrid_JK_Focal_lr0.0001_dp0.4_bs32_s42.
+[RESUME] Skipping training to save compute!
+
+------------------------------------------------------
+  Tuning Run 7 / 18
+  Ontology: cellular_component | LR: 5e-4 | Dropout: 0.2 | Batch: 16
+------------------------------------------------------
+Using device: cuda
+
+[RESUME] Found successfully completed run in tuning_runs_jk/cc_Hybrid_JK_Focal_lr0.0005_dp0.2_bs16_s42.
+[RESUME] Skipping training to save compute!
+
+------------------------------------------------------
+  Tuning Run 8 / 18
+  Ontology: cellular_component | LR: 5e-4 | Dropout: 0.2 | Batch: 32
+------------------------------------------------------
+Using device: cuda
+
+[RESUME] Found successfully completed run in tuning_runs_jk/cc_Hybrid_JK_Focal_lr0.0005_dp0.2_bs32_s42.
+[RESUME] Skipping training to save compute!
+
+------------------------------------------------------
+  Tuning Run 9 / 18
+  Ontology: cellular_component | LR: 5e-4 | Dropout: 0.3 | Batch: 16
+------------------------------------------------------
+Using device: cuda
+
+[RESUME] Found successfully completed run in tuning_runs_jk/cc_Hybrid_JK_Focal_lr0.0005_dp0.3_bs16_s42.
+[RESUME] Skipping training to save compute!
+
+------------------------------------------------------
+  Tuning Run 10 / 18
+  Ontology: cellular_component | LR: 5e-4 | Dropout: 0.3 | Batch: 32
+------------------------------------------------------
+Using device: cuda
+
+[RESUME] Found successfully completed run in tuning_runs_jk/cc_Hybrid_JK_Focal_lr0.0005_dp0.3_bs32_s42.
+[RESUME] Skipping training to save compute!
+
+------------------------------------------------------
+  Tuning Run 11 / 18
+  Ontology: cellular_component | LR: 5e-4 | Dropout: 0.4 | Batch: 16
+------------------------------------------------------
+Using device: cuda
+
+[RESUME] Found successfully completed run in tuning_runs_jk/cc_Hybrid_JK_Focal_lr0.0005_dp0.4_bs16_s42.
+[RESUME] Skipping training to save compute!
+
+------------------------------------------------------
+  Tuning Run 12 / 18
+  Ontology: cellular_component | LR: 5e-4 | Dropout: 0.4 | Batch: 32
+------------------------------------------------------
+Using device: cuda
+
+[RESUME] Found successfully completed run in tuning_runs_jk/cc_Hybrid_JK_Focal_lr0.0005_dp0.4_bs32_s42.
+[RESUME] Skipping training to save compute!
+
+------------------------------------------------------
+  Tuning Run 13 / 18
+  Ontology: cellular_component | LR: 1e-3 | Dropout: 0.2 | Batch: 16
+------------------------------------------------------
+Using device: cuda
+
+[RESUME] Found successfully completed run in tuning_runs_jk/cc_Hybrid_JK_Focal_lr0.001_dp0.2_bs16_s42.
+[RESUME] Skipping training to save compute!
+
+------------------------------------------------------
+  Tuning Run 14 / 18
+  Ontology: cellular_component | LR: 1e-3 | Dropout: 0.2 | Batch: 32
+------------------------------------------------------
+Using device: cuda
+
+[RESUME] Found successfully completed run in tuning_runs_jk/cc_Hybrid_JK_Focal_lr0.001_dp0.2_bs32_s42.
+[RESUME] Skipping training to save compute!
+
+------------------------------------------------------
+  Tuning Run 15 / 18
+  Ontology: cellular_component | LR: 1e-3 | Dropout: 0.3 | Batch: 16
+------------------------------------------------------
+Using device: cuda
+
+[RESUME] Found successfully completed run in tuning_runs_jk/cc_Hybrid_JK_Focal_lr0.001_dp0.3_bs16_s42.
+[RESUME] Skipping training to save compute!
+
+------------------------------------------------------
+  Tuning Run 16 / 18
+  Ontology: cellular_component | LR: 1e-3 | Dropout: 0.3 | Batch: 32
+------------------------------------------------------
+Using device: cuda
+
+[RESUME] Found successfully completed run in tuning_runs_jk/cc_Hybrid_JK_Focal_lr0.001_dp0.3_bs32_s42.
+[RESUME] Skipping training to save compute!
+
+------------------------------------------------------
+  Tuning Run 17 / 18
+  Ontology: cellular_component | LR: 1e-3 | Dropout: 0.4 | Batch: 16
+------------------------------------------------------
+Using device: cuda
+
+[RESUME] Found successfully completed run in tuning_runs_jk/cc_Hybrid_JK_Focal_lr0.001_dp0.4_bs16_s42.
+[RESUME] Skipping training to save compute!
+
+------------------------------------------------------
+  Tuning Run 18 / 18
+  Ontology: cellular_component | LR: 1e-3 | Dropout: 0.4 | Batch: 32
+------------------------------------------------------
+Using device: cuda
+Loading datasets from preprocessing/data/split_files/datasets.pkl for cellular_component...
+Alpha weights not found. Using default FocalLoss (alpha=0.25, gamma=4.0).
+Epoch 001 | Loss: 0.0114 | Val MiFmax: 0.1843 | Val MaFmax: 0.1485 | Val Smin: 12.3756
+  --> New best model saved!
+Epoch 002 | Loss: 0.0022 | Val MiFmax: 0.2965 | Val MaFmax: 0.2257 | Val Smin: 11.4615
+  --> New best model saved!
+Epoch 003 | Loss: 0.0014 | Val MiFmax: 0.3970 | Val MaFmax: 0.3650 | Val Smin: 10.2453
+  --> New best model saved!
+Epoch 004 | Loss: 0.0011 | Val MiFmax: 0.4599 | Val MaFmax: 0.4234 | Val Smin: 9.2719
+  --> New best model saved!
+Epoch 005 | Loss: 0.0009 | Val MiFmax: 0.5398 | Val MaFmax: 0.4796 | Val Smin: 8.0953
+  --> New best model saved!
+Epoch 006 | Loss: 0.0007 | Val MiFmax: 0.5624 | Val MaFmax: 0.5243 | Val Smin: 7.7827
+  --> New best model saved!
+Epoch 007 | Loss: 0.0006 | Val MiFmax: 0.5732 | Val MaFmax: 0.5386 | Val Smin: 7.6762
+  --> New best model saved!
+Epoch 008 | Loss: 0.0005 | Val MiFmax: 0.5916 | Val MaFmax: 0.5393 | Val Smin: 7.3482
+  --> New best model saved!
+Epoch 009 | Loss: 0.0005 | Val MiFmax: 0.6007 | Val MaFmax: 0.5669 | Val Smin: 7.1914
+  --> New best model saved!
+Epoch 010 | Loss: 0.0004 | Val MiFmax: 0.6095 | Val MaFmax: 0.5637 | Val Smin: 7.2487
+Epoch 011 | Loss: 0.0003 | Val MiFmax: 0.6284 | Val MaFmax: 0.6066 | Val Smin: 6.6884
+  --> New best model saved!
+Epoch 012 | Loss: 0.0003 | Val MiFmax: 0.6172 | Val MaFmax: 0.5770 | Val Smin: 6.9237
+Epoch 013 | Loss: 0.0003 | Val MiFmax: 0.6556 | Val MaFmax: 0.6164 | Val Smin: 6.3827
+  --> New best model saved!
+Epoch 014 | Loss: 0.0003 | Val MiFmax: 0.6434 | Val MaFmax: 0.6102 | Val Smin: 6.5552
+Epoch 015 | Loss: 0.0003 | Val MiFmax: 0.6590 | Val MaFmax: 0.6127 | Val Smin: 6.2969
+Epoch 016 | Loss: 0.0002 | Val MiFmax: 0.6557 | Val MaFmax: 0.6188 | Val Smin: 6.2870
+  --> New best model saved!
+Epoch 017 | Loss: 0.0002 | Val MiFmax: 0.6539 | Val MaFmax: 0.6081 | Val Smin: 6.3389
+Epoch 018 | Loss: 0.0002 | Val MiFmax: 0.6622 | Val MaFmax: 0.6264 | Val Smin: 6.2023
+  --> New best model saved!
+Epoch 019 | Loss: 0.0002 | Val MiFmax: 0.6702 | Val MaFmax: 0.6124 | Val Smin: 6.1808
+Epoch 020 | Loss: 0.0003 | Val MiFmax: 0.6450 | Val MaFmax: 0.6155 | Val Smin: 6.5446
+Epoch 021 | Loss: 0.0003 | Val MiFmax: 0.6644 | Val MaFmax: 0.6114 | Val Smin: 6.1750
+Epoch 022 | Loss: 0.0002 | Val MiFmax: 0.6534 | Val MaFmax: 0.5912 | Val Smin: 6.4022
+Epoch 023 | Loss: 0.0002 | Val MiFmax: 0.6738 | Val MaFmax: 0.6163 | Val Smin: 6.0514
+Epoch 024 | Loss: 0.0002 | Val MiFmax: 0.6668 | Val MaFmax: 0.6175 | Val Smin: 6.1460
+Epoch 025 | Loss: 0.0001 | Val MiFmax: 0.6818 | Val MaFmax: 0.6222 | Val Smin: 5.8661
+Epoch 026 | Loss: 0.0001 | Val MiFmax: 0.6766 | Val MaFmax: 0.6219 | Val Smin: 5.9458
+Epoch 027 | Loss: 0.0001 | Val MiFmax: 0.6709 | Val MaFmax: 0.6220 | Val Smin: 6.0777
+Epoch 028 | Loss: 0.0001 | Val MiFmax: 0.6824 | Val MaFmax: 0.6281 | Val Smin: 5.9284
+  --> New best model saved!
+Epoch 029 | Loss: 0.0001 | Val MiFmax: 0.6688 | Val MaFmax: 0.6210 | Val Smin: 6.0685
+Epoch 030 | Loss: 0.0001 | Val MiFmax: 0.6803 | Val MaFmax: 0.6232 | Val Smin: 5.8870
+Epoch 031 | Loss: 0.0001 | Val MiFmax: 0.6852 | Val MaFmax: 0.6256 | Val Smin: 5.9405
+Epoch 032 | Loss: 0.0001 | Val MiFmax: 0.6760 | Val MaFmax: 0.6186 | Val Smin: 5.9629
+Epoch 033 | Loss: 0.0001 | Val MiFmax: 0.6631 | Val MaFmax: 0.6131 | Val Smin: 6.1757
+Epoch 034 | Loss: 0.0001 | Val MiFmax: 0.6763 | Val MaFmax: 0.6253 | Val Smin: 5.9462
+Epoch 035 | Loss: 0.0001 | Val MiFmax: 0.6843 | Val MaFmax: 0.6325 | Val Smin: 5.8639
+  --> New best model saved!
+Epoch 036 | Loss: 0.0001 | Val MiFmax: 0.6928 | Val MaFmax: 0.6293 | Val Smin: 5.7938
+Epoch 037 | Loss: 0.0001 | Val MiFmax: 0.6890 | Val MaFmax: 0.6363 | Val Smin: 5.7968
+  --> New best model saved!
+Epoch 038 | Loss: 0.0001 | Val MiFmax: 0.6760 | Val MaFmax: 0.6249 | Val Smin: 5.9605
+Epoch 039 | Loss: 0.0001 | Val MiFmax: 0.6837 | Val MaFmax: 0.6343 | Val Smin: 5.8784
+Epoch 040 | Loss: 0.0001 | Val MiFmax: 0.6918 | Val MaFmax: 0.6353 | Val Smin: 5.7454
+Epoch 041 | Loss: 0.0001 | Val MiFmax: 0.6910 | Val MaFmax: 0.6406 | Val Smin: 5.7724
+  --> New best model saved!
+Epoch 042 | Loss: 0.0001 | Val MiFmax: 0.6797 | Val MaFmax: 0.6375 | Val Smin: 5.8957
+Epoch 043 | Loss: 0.0001 | Val MiFmax: 0.6836 | Val MaFmax: 0.6360 | Val Smin: 5.8196
+Epoch 044 | Loss: 0.0001 | Val MiFmax: 0.6826 | Val MaFmax: 0.6364 | Val Smin: 5.8622
+Epoch 045 | Loss: 0.0001 | Val MiFmax: 0.6786 | Val MaFmax: 0.6312 | Val Smin: 5.9541
+Epoch 046 | Loss: 0.0001 | Val MiFmax: 0.6804 | Val MaFmax: 0.6258 | Val Smin: 5.9024
+Epoch 047 | Loss: 0.0001 | Val MiFmax: 0.6898 | Val MaFmax: 0.6385 | Val Smin: 5.7598
+Epoch 048 | Loss: 0.0000 | Val MiFmax: 0.6916 | Val MaFmax: 0.6355 | Val Smin: 5.7493
+Epoch 049 | Loss: 0.0000 | Val MiFmax: 0.6901 | Val MaFmax: 0.6332 | Val Smin: 5.7551
+Epoch 050 | Loss: 0.0000 | Val MiFmax: 0.6944 | Val MaFmax: 0.6347 | Val Smin: 5.6887
+Epoch 051 | Loss: 0.0000 | Val MiFmax: 0.6896 | Val MaFmax: 0.6319 | Val Smin: 5.7267
+Epoch 052 | Loss: 0.0000 | Val MiFmax: 0.6916 | Val MaFmax: 0.6362 | Val Smin: 5.7239
+Epoch 053 | Loss: 0.0000 | Val MiFmax: 0.6916 | Val MaFmax: 0.6400 | Val Smin: 5.7555
+Epoch 054 | Loss: 0.0000 | Val MiFmax: 0.6948 | Val MaFmax: 0.6360 | Val Smin: 5.6883
+Epoch 055 | Loss: 0.0000 | Val MiFmax: 0.6917 | Val MaFmax: 0.6363 | Val Smin: 5.7124
+Epoch 056 | Loss: 0.0000 | Val MiFmax: 0.6956 | Val MaFmax: 0.6365 | Val Smin: 5.6558
+Early stopping triggered after 56 epochs.
+Training finished. Evaluating on Test Set...
+
+--- TEST METRICS ---
+Micro_Fmax: 0.5656
+Macro_Fmax: 0.6009
+Macro_AUROC: 0.9164
+Micro_AUROC: 0.9115
+Macro_AUPRC: 0.5416
+Micro_AUPRC: 0.5490
+Smin: 9.6107
+
+=========================================
+  Tuning sweep complete.
+  Completed: 18  /  18
+=========================================
+Run 'python3 aggregate_tuning.py' to summarize results.
+--- Aggregating JK Tuning Results ---
+
+All tuning results saved to tuning_runs_jk/tuning_results_summary.csv
+
+===========================================================================
+  Tuning Results: biological_process (Best configurations at the top)
+===========================================================================
+    LR Dropout BatchSize  Val_Macro_Fmax  Val_Micro_Fmax  Val_Smin
+0.0005     0.4        32          0.7452          0.7466   25.6504
+0.0005     0.3        16          0.7435          0.7319   26.5875
+0.0005     0.3        32          0.7421          0.7520   24.9222
+0.0001     0.3        16          0.7379          0.7365   26.4514
+0.0001     0.4        16          0.7375          0.7357   26.6255
+0.0001     0.4        32          0.7372          0.7515   25.5841
+0.0001     0.2        16          0.7371          0.7243   27.6238
+0.0001     0.3        32          0.7349          0.7470   25.5098
+ 0.001     0.2        16          0.7321          0.7583   24.5182
+0.0005     0.4        16          0.7318          0.7558   24.9371
+0.0005     0.2        16          0.7306          0.7405   25.9754
+0.0001     0.2        32          0.7292          0.7435   26.1667
+ 0.001     0.2        32          0.7256          0.7217   27.6188
+0.0005     0.2        32          0.7244          0.7166   28.7973
+ 0.001     0.3        16          0.6470          0.6295   36.1645
+
+===========================================================================
+  Tuning Results: cellular_component (Best configurations at the top)
+===========================================================================
+    LR Dropout BatchSize  Val_Macro_Fmax  Val_Micro_Fmax  Val_Smin
+0.0005     0.2        16          0.7087          0.7048    5.4309
+ 0.001     0.4        16          0.7053          0.6879    5.7228
+0.0001     0.2        32          0.7020          0.7033    5.5484
+0.0001     0.3        32          0.7012          0.7058    5.3946
+0.0001     0.4        32          0.7003          0.7034    5.5316
+0.0001     0.3        16          0.6986          0.6835    5.8733
+0.0001     0.2        16          0.6974          0.6977    5.5857
+ 0.001     0.3        16          0.6966          0.6881    5.8280
+0.0005     0.3        16          0.6951          0.7059    5.4545
+0.0005     0.4        16          0.6850          0.7064    5.4435
+0.0001     0.4        16          0.6841          0.6956    5.6815
+0.0005     0.4        32          0.6838          0.6955    5.6850
+0.0005     0.3        32          0.6673          0.6855    5.7775
+ 0.001     0.2        16          0.6666          0.6892    5.8084
+0.0005     0.2        32          0.6657          0.6772    5.8917
+ 0.001     0.3        32          0.6583          0.6676    6.0983
+ 0.001     0.2        32          0.6564          0.6955    5.5816
+ 0.001     0.4        32          0.6406          0.6910    5.7724
+
+===========================================================================
+  Tuning Results: molecular_function (Best configurations at the top)
+===========================================================================
+    LR Dropout BatchSize  Val_Macro_Fmax  Val_Micro_Fmax  Val_Smin
+0.0005     0.2        16          0.9069          0.8640    6.3895
+0.0001     0.4        32          0.9064          0.8543    6.4151
+0.0005     0.3        32          0.9036          0.8670    5.9507
+0.0005     0.2        32          0.9021          0.8680    6.1752
+0.0005     0.4        32          0.9000          0.8512    6.6884
+0.0001     0.3        16          0.8996          0.8511    6.7719
+0.0001     0.4        16          0.8945          0.8521    6.6639
+0.0001     0.2        16          0.8906          0.8525    6.6815
+ 0.001     0.2        32          0.8893          0.8320    7.2550
+0.0001     0.3        32          0.8874          0.8470    7.1809
+ 0.001     0.2        16          0.8873          0.8485    6.8677
+0.0005     0.3        16          0.8852          0.8537    6.5328
+0.0001     0.2        32          0.8844          0.8486    7.1679
+ 0.001     0.3        16          0.8779          0.8240    7.9880
+0.0005     0.4        16          0.8778          0.8335    7.6104
+--- Starting Full Ablations ---
+Running ablations only for: cellular_component
+=========================================
+  DeepGreenGO  Ablation Sweep
+=========================================
+Dataset: preprocessing/data/split_files/datasets.pkl
+Epochs:  1000  | Batch: 16
+
+  [✓] Found Tuned Params: LR=0.0005 | Dropout=0.2 | BatchSize=16
+=========================================
+------------------------------------------------------
+  Run 1 / 30
+  Run: cellular_component_MLP_BCE_s42
+------------------------------------------------------
