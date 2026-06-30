@@ -1,0 +1,83 @@
+
+EnvironmentNameNotFound: Could not find conda environment: deep-green-go
+You can list all discoverable environments with `conda info --envs`.
+
+
+Starting Input Modality Ablation on mgh5
+Array Task ID: 1
+Running for ontology: molecular_function
+Running only for: molecular_function
+=========================================
+  Input Modality Ablation (Hybrid_JK)
+=========================================
+Output Directory: runs_ablation_input
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/get_best_hyperparams.py", line 1, in <module>
+    import pandas as pd
+ModuleNotFoundError: No module named 'pandas'
+  [!] No tuning results found. Falling back to defaults.
+=========================================
+------------------------------------------------------
+  Run 1 / 9 | molecular_function | modality=seq_only | s42
+------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 1, in <module>
+    import torch
+ModuleNotFoundError: No module named 'torch'
+------------------------------------------------------
+  Run 2 / 9 | molecular_function | modality=seq_only | s123
+------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 1, in <module>
+    import torch
+ModuleNotFoundError: No module named 'torch'
+------------------------------------------------------
+  Run 3 / 9 | molecular_function | modality=seq_only | s456
+------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 1, in <module>
+    import torch
+ModuleNotFoundError: No module named 'torch'
+------------------------------------------------------
+  Run 4 / 9 | molecular_function | modality=struct_only | s42
+------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 1, in <module>
+    import torch
+ModuleNotFoundError: No module named 'torch'
+------------------------------------------------------
+  Run 5 / 9 | molecular_function | modality=struct_only | s123
+------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 1, in <module>
+    import torch
+ModuleNotFoundError: No module named 'torch'
+------------------------------------------------------
+  Run 6 / 9 | molecular_function | modality=struct_only | s456
+------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 1, in <module>
+    import torch
+ModuleNotFoundError: No module named 'torch'
+------------------------------------------------------
+  Run 7 / 9 | molecular_function | modality=full | s42
+------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 1, in <module>
+    import torch
+ModuleNotFoundError: No module named 'torch'
+------------------------------------------------------
+  Run 8 / 9 | molecular_function | modality=full | s123
+------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 1, in <module>
+    import torch
+ModuleNotFoundError: No module named 'torch'
+------------------------------------------------------
+  Run 9 / 9 | molecular_function | modality=full | s456
+------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 1, in <module>
+    import torch
+ModuleNotFoundError: No module named 'torch'
+Completed: 0 / 9

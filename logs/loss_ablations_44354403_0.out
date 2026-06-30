@@ -1,0 +1,104 @@
+
+EnvironmentNameNotFound: Could not find conda environment: deep-green-go
+You can list all discoverable environments with `conda info --envs`.
+
+
+Starting Loss Function Ablation on mgh5
+Array Task ID: 0
+Running for ontology: biological_process
+Running only for: biological_process
+=========================================
+  Loss Function Ablation (Hybrid_JK)
+=========================================
+Output Directory: runs_ablation_loss
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/get_best_hyperparams.py", line 1, in <module>
+    import pandas as pd
+ModuleNotFoundError: No module named 'pandas'
+  [!] No tuning results found. Falling back to defaults.
+=========================================
+------------------------------------------------------
+  Run 1 / 12 | biological_process | BCE | gamma=4.0 | s42
+------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 1, in <module>
+    import torch
+ModuleNotFoundError: No module named 'torch'
+------------------------------------------------------
+  Run 2 / 12 | biological_process | BCE | gamma=4.0 | s123
+------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 1, in <module>
+    import torch
+ModuleNotFoundError: No module named 'torch'
+------------------------------------------------------
+  Run 3 / 12 | biological_process | BCE | gamma=4.0 | s456
+------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 1, in <module>
+    import torch
+ModuleNotFoundError: No module named 'torch'
+------------------------------------------------------
+  Run 4 / 12 | biological_process | Focal | gamma=1.0 | s42
+------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 1, in <module>
+    import torch
+ModuleNotFoundError: No module named 'torch'
+------------------------------------------------------
+  Run 5 / 12 | biological_process | Focal | gamma=1.0 | s123
+------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 1, in <module>
+    import torch
+ModuleNotFoundError: No module named 'torch'
+------------------------------------------------------
+  Run 6 / 12 | biological_process | Focal | gamma=1.0 | s456
+------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 1, in <module>
+    import torch
+ModuleNotFoundError: No module named 'torch'
+------------------------------------------------------
+  Run 7 / 12 | biological_process | Focal | gamma=2.0 | s42
+------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 1, in <module>
+    import torch
+ModuleNotFoundError: No module named 'torch'
+------------------------------------------------------
+  Run 8 / 12 | biological_process | Focal | gamma=2.0 | s123
+------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 1, in <module>
+    import torch
+ModuleNotFoundError: No module named 'torch'
+------------------------------------------------------
+  Run 9 / 12 | biological_process | Focal | gamma=2.0 | s456
+------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 1, in <module>
+    import torch
+ModuleNotFoundError: No module named 'torch'
+------------------------------------------------------
+  Run 10 / 12 | biological_process | Focal | gamma=3.0 | s42
+------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 1, in <module>
+    import torch
+ModuleNotFoundError: No module named 'torch'
+------------------------------------------------------
+  Run 11 / 12 | biological_process | Focal | gamma=3.0 | s123
+------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 1, in <module>
+    import torch
+ModuleNotFoundError: No module named 'torch'
+------------------------------------------------------
+  Run 12 / 12 | biological_process | Focal | gamma=3.0 | s456
+------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/train.py", line 1, in <module>
+    import torch
+ModuleNotFoundError: No module named 'torch'
+Completed: 0 / 12
