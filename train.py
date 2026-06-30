@@ -35,6 +35,7 @@ def parse_args():
     parser.add_argument('--dataset_path', type=str, default='preprocessing/data/split_files/datasets.pkl', help='Path to pre-split datasets.')
     parser.add_argument('--ontology', type=str, default='biological_process', choices=['molecular_function', 'biological_process', 'cellular_component'], help='GO ontology to train on.')
     parser.add_argument('--output_dir', type=str, default='runs/', help='Directory to save logs and models.')
+    parser.add_argument('--input_modality', type=str, default='full', choices=['full', 'seq_only', 'struct_only'], help='Input modality ablation mode.')
     return parser.parse_args()
 
 def set_seed(seed):
@@ -133,6 +134,11 @@ def main():
 
     # Name the new directory explicitly with hyperparameters to avoid collision
     run_name = f"{ont_short}_{args.model}_{args.loss}_lr{args.lr}_dp{args.dropout}_bs{args.batch_size}_s{args.seed}"
+    if args.loss == 'Focal' and args.focal_gamma != 4.0:
+        run_name += f"_g{args.focal_gamma}"
+    if args.input_modality != 'full':
+        run_name += f"_{args.input_modality}"
+        
     run_dir = os.path.join(args.output_dir, run_name)
     
     # If a directory with this exact name exists but didn't finish, we wipe it and start fresh
@@ -205,6 +211,11 @@ def main():
         with torch.no_grad():
             for data in loader:
                 data = data.to(device)
+                if args.input_modality == 'seq_only':
+                    data.edge_index = torch.arange(data.x.size(0), device=device).unsqueeze(0).repeat(2, 1)
+                elif args.input_modality == 'struct_only':
+                    data.x = torch.randn_like(data.x)
+                    
                 out = model(data.x, data.edge_index, data.batch)
                 pred_probs = torch.sigmoid(out)
                 all_preds.append(pred_probs.cpu().numpy())
@@ -226,6 +237,11 @@ def main():
         
         for i, data in enumerate(train_loader):
             data = data.to(device)
+            if args.input_modality == 'seq_only':
+                data.edge_index = torch.arange(data.x.size(0), device=device).unsqueeze(0).repeat(2, 1)
+            elif args.input_modality == 'struct_only':
+                data.x = torch.randn_like(data.x)
+                
             out = model(data.x, data.edge_index, data.batch)
             loss = criterion(out, data.y.float())
             loss = loss / args.accumulation_steps
