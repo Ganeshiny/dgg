@@ -1,0 +1,27 @@
+{
+    "model": "MLP",
+    "loss": "BCE",
+    "epochs": 1000,
+    "batch_size": 16,
+    "lr": 0.0005,
+    "seed": 42,
+    "dropout": 0.2,
+    "focal_gamma": 4.0,
+    "hidden_sizes": "1024,912",
+    "num_heads": 4,
+    "accumulation_steps": 4,
+    "patience": 15,
+    "dataset_path": "preprocessing/data/split_files/datasets.pkl",
+    "ontology": "cellular_component",
+    "output_dir": "runs/",
+    "hardware": {
+        "platform": "Linux",
+        "python_version": "3.10.20",
+        "gpu_available": true,
+        "gpu_name": "NVIDIA H100 80GB HBM3"
+    },
+    "reproducibility": {
+        "git_commit": "5b01bede89fb3e251ec79a9fda72dec490b8d12a",
+        "command_line": "train.py --model MLP --loss BCE --seed 42 --ontology cellular_component --epochs 1000 --batch_size 16 --lr 0.0005 --dropout 0.2 --dataset_path preprocessing/data/split_files/datasets.pkl"
+    }
+}

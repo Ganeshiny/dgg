@@ -1,0 +1,27 @@
+{
+    "model": "GCN",
+    "loss": "Focal",
+    "epochs": 1000,
+    "batch_size": 16,
+    "lr": 0.0005,
+    "seed": 123,
+    "dropout": 0.2,
+    "focal_gamma": 4.0,
+    "hidden_sizes": "1024,912",
+    "num_heads": 4,
+    "accumulation_steps": 4,
+    "patience": 15,
+    "dataset_path": "preprocessing/data/split_files/datasets.pkl",
+    "ontology": "cellular_component",
+    "output_dir": "runs/",
+    "hardware": {
+        "platform": "Linux",
+        "python_version": "3.10.20",
+        "gpu_available": true,
+        "gpu_name": "NVIDIA H100 80GB HBM3"
+    },
+    "reproducibility": {
+        "git_commit": "f9d9d200c52a3dd5614f2d38ff1c71d20021d0ca",
+        "command_line": "train.py --model GCN --loss Focal --seed 123 --ontology cellular_component --epochs 1000 --batch_size 16 --lr 0.0005 --dropout 0.2 --dataset_path preprocessing/data/split_files/datasets.pkl"
+    }
+}

@@ -1,0 +1,28 @@
+{
+    "model": "Hybrid",
+    "loss": "BCE",
+    "epochs": 1000,
+    "batch_size": 16,
+    "lr": 0.0005,
+    "seed": 42,
+    "dropout": 0.2,
+    "focal_gamma": 4.0,
+    "hidden_sizes": "1024,912",
+    "num_heads": 4,
+    "accumulation_steps": 4,
+    "patience": 15,
+    "dataset_path": "preprocessing/data/split_files/datasets.pkl",
+    "ontology": "molecular_function",
+    "output_dir": "runs/",
+    "input_modality": "full",
+    "hardware": {
+        "platform": "Linux",
+        "python_version": "3.10.20",
+        "gpu_available": true,
+        "gpu_name": "NVIDIA H100 80GB HBM3"
+    },
+    "reproducibility": {
+        "git_commit": "09b68c2384a8f334748808f64e0216d61b15ad82",
+        "command_line": "train.py --model Hybrid --loss BCE --seed 42 --ontology molecular_function --epochs 1000 --batch_size 16 --lr 0.0005 --dropout 0.2 --dataset_path preprocessing/data/split_files/datasets.pkl"
+    }
+}

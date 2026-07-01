@@ -1,0 +1,28 @@
+{
+    "model": "GCN",
+    "loss": "BCE",
+    "epochs": 1000,
+    "batch_size": 32,
+    "lr": 0.0005,
+    "seed": 456,
+    "dropout": 0.4,
+    "focal_gamma": 4.0,
+    "hidden_sizes": "1024,912",
+    "num_heads": 4,
+    "accumulation_steps": 4,
+    "patience": 15,
+    "dataset_path": "preprocessing/data/split_files/datasets.pkl",
+    "ontology": "biological_process",
+    "output_dir": "runs/",
+    "input_modality": "full",
+    "hardware": {
+        "platform": "Linux",
+        "python_version": "3.10.20",
+        "gpu_available": true,
+        "gpu_name": "NVIDIA H100 80GB HBM3"
+    },
+    "reproducibility": {
+        "git_commit": "9d3b23495ff9e78335b25798b2dc8a53c1b73e26",
+        "command_line": "train.py --model GCN --loss BCE --seed 456 --ontology biological_process --epochs 1000 --batch_size 32 --lr 0.0005 --dropout 0.4 --dataset_path preprocessing/data/split_files/datasets.pkl"
+    }
+}
