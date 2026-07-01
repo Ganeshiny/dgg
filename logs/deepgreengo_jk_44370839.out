@@ -531,3 +531,25 @@ Using device: cuda
   Run 29 / 30
   Run: molecular_function_Hybrid_JK_Focal_s123
 ------------------------------------------------------
+Using device: cuda
+
+[RESUME] Found successfully completed run in runs/mf_Hybrid_JK_Focal_lr0.0005_dp0.2_bs16_s123.
+[RESUME] Skipping training to save compute!
+
+------------------------------------------------------
+  Run 30 / 30
+  Run: molecular_function_Hybrid_JK_Focal_s456
+------------------------------------------------------
+Using device: cuda
+
+[RESUME] Found successfully completed run in runs/mf_Hybrid_JK_Focal_lr0.0005_dp0.2_bs16_s456.
+[RESUME] Skipping training to save compute!
+
+
+=========================================
+  Ablation sweep complete.
+  Completed: 30  /  30
+=========================================
+========================================================
+Job finished  : Wed Jul  1 09:56:58 MDT 2026
+========================================================

@@ -405,3 +405,39 @@ Using device: cuda
   Run 15 / 30
   Run: biological_process_GAT_BCE_s456
 ------------------------------------------------------
+Using device: cuda
+
+[RESUME] Found successfully completed run in runs/bp_GAT_BCE_lr0.0005_dp0.4_bs32_s456.
+[RESUME] Skipping training to save compute!
+
+------------------------------------------------------
+  Run 16 / 30
+  Run: biological_process_GAT_Focal_s42
+------------------------------------------------------
+Using device: cuda
+
+[RESUME] Found successfully completed run in runs/bp_GAT_Focal_lr0.0005_dp0.4_bs32_s42.
+[RESUME] Skipping training to save compute!
+
+------------------------------------------------------
+  Run 17 / 30
+  Run: biological_process_GAT_Focal_s123
+------------------------------------------------------
+Using device: cuda
+
+[RESUME] Found successfully completed run in runs/bp_GAT_Focal_lr0.0005_dp0.4_bs32_s123.
+[RESUME] Skipping training to save compute!
+
+------------------------------------------------------
+  Run 18 / 30
+  Run: biological_process_GAT_Focal_s456
+------------------------------------------------------
+Using device: cuda
+
+[RESUME] Found successfully completed run in runs/bp_GAT_Focal_lr0.0005_dp0.4_bs32_s456.
+[RESUME] Skipping training to save compute!
+
+------------------------------------------------------
+  Run 19 / 30
+  Run: biological_process_Hybrid_BCE_s42
+------------------------------------------------------

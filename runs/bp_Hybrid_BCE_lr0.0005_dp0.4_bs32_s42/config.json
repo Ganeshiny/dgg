@@ -19,10 +19,10 @@
         "platform": "Linux",
         "python_version": "3.10.20",
         "gpu_available": true,
-        "gpu_name": "NVIDIA H100 80GB HBM3"
+        "gpu_name": "NVIDIA H100 NVL"
     },
     "reproducibility": {
-        "git_commit": "09b68c2384a8f334748808f64e0216d61b15ad82",
+        "git_commit": "b3b44a8ce4930ab629fb7103fb3dd24bb8d27f02",
         "command_line": "train.py --model Hybrid --loss BCE --seed 42 --ontology biological_process --epochs 1000 --batch_size 32 --lr 0.0005 --dropout 0.4 --dataset_path preprocessing/data/split_files/datasets.pkl"
     }
 }
