@@ -8,7 +8,7 @@ import csv
 from transformers import BertTokenizer, BertModel
 import scipy.sparse as sp
 from model import get_model
-from utils import write_seqs_from_cifdir, read_seqs_file
+from utils import write_seqs_from_cifdir, read_seqs_file, CA_DISTANCE_THRESHOLD, PLDDT_THRESHOLD
 from preprocessing.create_cmaps import write_annot_npz
 import gc
 import json
@@ -23,7 +23,7 @@ transformers.utils.import_utils.check_torch_load_is_safe = lambda: None
 
 # Set device
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-threshold = 0.5
+PREDICTION_THRESHOLD = 0.5
 
 # Load ProtBERT model and tokenizer
 hf_token = os.environ.get("HF_TOKEN")
@@ -74,7 +74,7 @@ def seq2protbert(seq):
         outputs = protbert_model(**inputs)
     return outputs.last_hidden_state.detach().cpu().numpy()
 
-def get_adjacency_info(distance_matrix, plddt_array=None, threshold=8.0, plddt_threshold=70.0):
+def get_adjacency_info(distance_matrix, plddt_array=None, threshold=CA_DISTANCE_THRESHOLD, plddt_threshold=PLDDT_THRESHOLD):
     """Convert distance matrix to adjacency matrix with pLDDT filtering."""
     with np.errstate(invalid='ignore'):
         adjacency_matrix = (distance_matrix <= threshold).astype(int)
@@ -143,7 +143,7 @@ def run_predictions(struct_dir, model, output_file, gonames, goids, batch_size=8
                     # Run model inference
                     with torch.no_grad():
                         out = model(node_features, adjacency_info, torch.tensor([0] * len(seq), dtype=torch.long, device=device))
-                    pred = torch.sigmoid(out) > threshold
+                    pred = torch.sigmoid(out) > PREDICTION_THRESHOLD
                     true_indices = torch.nonzero(pred, as_tuple=False).cpu().numpy()
 
                     # Write predictions to CSV

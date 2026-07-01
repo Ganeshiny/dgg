@@ -81,4 +81,6 @@ def load_go_graph(fname):
     #print(f"DEBUG: {go_graph}, and the number of nodes: {len(go_graph.nodes)}")
     return go_graph
 
-
+# Global constants for structure preprocessing to prevent training/inference mismatches
+CA_DISTANCE_THRESHOLD = 10.0
+PLDDT_THRESHOLD = 70.0

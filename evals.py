@@ -57,8 +57,10 @@ def compute_ic(y_train):
     Compute Information Content for each term based on frequency in the training set.
     """
     N = y_train.shape[0]
-    counts = np.sum(y_train, axis=0) + 1 # avoid log(0)
-    ic = -np.log2(counts / N)
+    counts = np.sum(y_train, axis=0)
+    ic = np.zeros_like(counts, dtype=float)
+    valid_mask = counts > 0
+    ic[valid_mask] = -np.log2(counts[valid_mask] / N)
     return ic
 
 def get_smin(y_true, y_pred_probs, ic):

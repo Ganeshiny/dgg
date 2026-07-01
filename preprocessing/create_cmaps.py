@@ -28,8 +28,11 @@ import gzip
 import argparse
 import glob
 import csv
-import multiprocessing
+import multiprocessing as mp
 from pathlib import Path
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from utils import PLDDT_THRESHOLD
 
 import numpy as np
 
@@ -160,7 +163,7 @@ def make_distance_maps(file_path: str, is_alphafold: bool = False) -> dict:
         # For AlphaFold structures pLDDT < 50 signals unreliable IDRs
         # that should not contribute edges to the contact graph.
         if is_alphafold:
-            low_conf = plddt < 50.0
+            low_conf = plddt < PLDDT_THRESHOLD
             if low_conf.any():
                 ca_dist[low_conf, :] = np.nan
                 ca_dist[:, low_conf] = np.nan

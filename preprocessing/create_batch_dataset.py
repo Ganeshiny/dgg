@@ -1,10 +1,16 @@
 import os
+import sys
 import csv
 import numpy as np
 import torch
+from scipy.spatial.distance import pdist, squareform
 from torch_geometric.data import Data, Dataset
 from tqdm import tqdm
 import pickle
+
+# Add parent directory to path to import utils
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from utils import CA_DISTANCE_THRESHOLD, PLDDT_THRESHOLD
 
 # ── Lazy ProtBERT singleton ──────────────────────────────────────────────────
 # Loading ProtBERT at module-import time crashes any script that merely imports
@@ -219,7 +225,7 @@ class PDB_Dataset(Dataset):
         
         return labels.get(self.selected_ontology, torch.zeros(len(self.y_labels), dtype=torch.long))
 
-    def _get_adjacency_info(self, distance_matrix, plddt_array=None, prot_id="", threshold=10.0, plddt_threshold=70.0):
+    def _get_adjacency_info(self, distance_matrix, plddt_array=None, prot_id="", threshold=CA_DISTANCE_THRESHOLD, plddt_threshold=PLDDT_THRESHOLD):
         # 10 Å Cα threshold as per DeepFRI protocol and the manuscript
         with np.errstate(invalid='ignore'):
             adjacency_matrix = (distance_matrix <= threshold).astype(int)

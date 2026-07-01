@@ -214,7 +214,7 @@ def main():
                 if args.input_modality == 'seq_only':
                     data.edge_index = torch.arange(data.x.size(0), device=device).unsqueeze(0).repeat(2, 1)
                 elif args.input_modality == 'struct_only':
-                    data.x = torch.randn_like(data.x)
+                    data.x = torch.ones_like(data.x)
                     
                 out = model(data.x, data.edge_index, data.batch)
                 pred_probs = torch.sigmoid(out)
@@ -240,7 +240,7 @@ def main():
             if args.input_modality == 'seq_only':
                 data.edge_index = torch.arange(data.x.size(0), device=device).unsqueeze(0).repeat(2, 1)
             elif args.input_modality == 'struct_only':
-                data.x = torch.randn_like(data.x)
+                data.x = torch.ones_like(data.x)
                 
             out = model(data.x, data.edge_index, data.batch)
             loss = criterion(out, data.y.float())
@@ -251,6 +251,10 @@ def main():
                 optimizer.step()
                 optimizer.zero_grad()
             total_loss += loss.item() * args.accumulation_steps
+            
+        if len(train_loader) % args.accumulation_steps != 0:
+            optimizer.step()
+            optimizer.zero_grad()
 
         train_loss = total_loss / len(train_loader)
 
