@@ -10,8 +10,9 @@
 #SBATCH --output=logs/input_ablations_%A_%a.out
 
 # Activate conda environment (adjust path if needed)
-source ~/miniconda3/etc/profile.d/conda.sh
-conda activate deep-green-go
+source "$(conda info --base)/etc/profile.d/conda.sh"
+conda activate deepgreengo \
+  || { echo "ERROR: 'deepgreengo' conda env not found. Aborting."; exit 1; }
 
 # Create logs directory if it doesn't exist
 mkdir -p logs
