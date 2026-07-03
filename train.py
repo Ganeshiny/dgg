@@ -118,7 +118,7 @@ def main():
             
             # Check if the existing run matches our current args
             match = True
-            for key in ['ontology', 'model', 'loss', 'lr', 'dropout', 'batch_size', 'seed']:
+            for key in ['ontology', 'model', 'loss', 'lr', 'dropout', 'batch_size', 'seed', 'input_modality']:
                 if existing_config.get(key) != getattr(args, key):
                     match = False
                     break
