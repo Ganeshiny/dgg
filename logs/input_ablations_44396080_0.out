@@ -1,0 +1,83 @@
+Starting Input Modality Ablation on mgh3
+Array Task ID: 0
+Running for ontology: biological_process
+Running only for: biological_process
+=========================================
+  Input Modality Ablation (Hybrid_JK)
+=========================================
+Output Directory: runs_ablation_input
+  [✓] Found Tuned Params: LR=0.0005 | Dropout=0.4 | BatchSize=32
+=========================================
+------------------------------------------------------
+  Run 1 / 9 | biological_process | modality=seq_only | s42
+------------------------------------------------------
+Using device: cuda
+
+[RESUME] Found successfully completed run in runs_ablation_input/bp_Hybrid_JK_Focal_lr0.0005_dp0.4_bs32_s42_seq_only.
+[RESUME] Skipping training to save compute!
+
+------------------------------------------------------
+  Run 2 / 9 | biological_process | modality=seq_only | s123
+------------------------------------------------------
+Using device: cuda
+
+[RESUME] Found successfully completed run in runs_ablation_input/bp_Hybrid_JK_Focal_lr0.0005_dp0.4_bs32_s123_seq_only.
+[RESUME] Skipping training to save compute!
+
+------------------------------------------------------
+  Run 3 / 9 | biological_process | modality=seq_only | s456
+------------------------------------------------------
+Using device: cuda
+
+[RESUME] Found successfully completed run in runs_ablation_input/bp_Hybrid_JK_Focal_lr0.0005_dp0.4_bs32_s456_seq_only.
+[RESUME] Skipping training to save compute!
+
+------------------------------------------------------
+  Run 4 / 9 | biological_process | modality=struct_only | s42
+------------------------------------------------------
+Using device: cuda
+
+[RESUME] Found successfully completed run in runs_ablation_input/bp_Hybrid_JK_Focal_lr0.0005_dp0.4_bs32_s42_seq_only.
+[RESUME] Skipping training to save compute!
+
+------------------------------------------------------
+  Run 5 / 9 | biological_process | modality=struct_only | s123
+------------------------------------------------------
+Using device: cuda
+
+[RESUME] Found successfully completed run in runs_ablation_input/bp_Hybrid_JK_Focal_lr0.0005_dp0.4_bs32_s123_seq_only.
+[RESUME] Skipping training to save compute!
+
+------------------------------------------------------
+  Run 6 / 9 | biological_process | modality=struct_only | s456
+------------------------------------------------------
+Using device: cuda
+
+[RESUME] Found successfully completed run in runs_ablation_input/bp_Hybrid_JK_Focal_lr0.0005_dp0.4_bs32_s456_seq_only.
+[RESUME] Skipping training to save compute!
+
+------------------------------------------------------
+  Run 7 / 9 | biological_process | modality=full | s42
+------------------------------------------------------
+Using device: cuda
+
+[RESUME] Found successfully completed run in runs_ablation_input/bp_Hybrid_JK_Focal_lr0.0005_dp0.4_bs32_s42_seq_only.
+[RESUME] Skipping training to save compute!
+
+------------------------------------------------------
+  Run 8 / 9 | biological_process | modality=full | s123
+------------------------------------------------------
+Using device: cuda
+
+[RESUME] Found successfully completed run in runs_ablation_input/bp_Hybrid_JK_Focal_lr0.0005_dp0.4_bs32_s123_seq_only.
+[RESUME] Skipping training to save compute!
+
+------------------------------------------------------
+  Run 9 / 9 | biological_process | modality=full | s456
+------------------------------------------------------
+Using device: cuda
+
+[RESUME] Found successfully completed run in runs_ablation_input/bp_Hybrid_JK_Focal_lr0.0005_dp0.4_bs32_s456_seq_only.
+[RESUME] Skipping training to save compute!
+
+Completed: 9 / 9
