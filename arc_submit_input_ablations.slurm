@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=deepgreen-input
-#SBATCH --partition=gpu-h100
+#SBATCH --partition=gpu-l40
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --gpus-per-task=1

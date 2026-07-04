@@ -1,0 +1,28 @@
+{
+    "model": "Hybrid_JK",
+    "loss": "Focal",
+    "epochs": 1000,
+    "batch_size": 32,
+    "lr": 0.0005,
+    "seed": 123,
+    "dropout": 0.4,
+    "focal_gamma": 2.0,
+    "hidden_sizes": "1024,912",
+    "num_heads": 4,
+    "accumulation_steps": 4,
+    "patience": 15,
+    "dataset_path": "preprocessing/data/split_files/datasets.pkl",
+    "ontology": "biological_process",
+    "output_dir": "runs_ablation_loss",
+    "input_modality": "full",
+    "hardware": {
+        "platform": "Linux",
+        "python_version": "3.10.20",
+        "gpu_available": true,
+        "gpu_name": "NVIDIA L40S"
+    },
+    "reproducibility": {
+        "git_commit": "63b5485c1f4914c2a37937a3a6a30556dabe8c84",
+        "command_line": "train.py --model Hybrid_JK --loss Focal --focal_gamma 2.0 --seed 123 --ontology biological_process --epochs 1000 --batch_size 32 --lr 0.0005 --dropout 0.4 --dataset_path preprocessing/data/split_files/datasets.pkl --output_dir runs_ablation_loss"
+    }
+}
