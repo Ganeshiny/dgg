@@ -1,0 +1,37 @@
+Starting Input Modality Ablation on mlg6
+Array Task ID: 1
+Running for ontology: molecular_function
+Running only for: molecular_function
+=========================================
+  Input Modality Ablation (Hybrid_JK)
+=========================================
+Output Directory: runs_ablation_input
+  [✓] Found Tuned Params: LR=0.0005 | Dropout=0.2 | BatchSize=16
+=========================================
+------------------------------------------------------
+  Run 1 / 9 | molecular_function | modality=seq_only | s42
+------------------------------------------------------
+Using device: cuda
+
+[RESUME] Found successfully completed run in runs_ablation_input/mf_Hybrid_JK_Focal_lr0.0005_dp0.2_bs16_s42_seq_only.
+[RESUME] Skipping training to save compute!
+
+------------------------------------------------------
+  Run 2 / 9 | molecular_function | modality=seq_only | s123
+------------------------------------------------------
+Using device: cuda
+
+[RESUME] Found successfully completed run in runs_ablation_input/mf_Hybrid_JK_Focal_lr0.0005_dp0.2_bs16_s123_seq_only.
+[RESUME] Skipping training to save compute!
+
+------------------------------------------------------
+  Run 3 / 9 | molecular_function | modality=seq_only | s456
+------------------------------------------------------
+Using device: cuda
+
+[RESUME] Found successfully completed run in runs_ablation_input/mf_Hybrid_JK_Focal_lr0.0005_dp0.2_bs16_s456_seq_only.
+[RESUME] Skipping training to save compute!
+
+------------------------------------------------------
+  Run 4 / 9 | molecular_function | modality=struct_only | s42
+------------------------------------------------------
