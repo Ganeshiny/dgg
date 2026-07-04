@@ -35,3 +35,40 @@ Using device: cuda
 ------------------------------------------------------
   Run 4 / 9 | molecular_function | modality=struct_only | s42
 ------------------------------------------------------
+Using device: cuda
+Loading datasets from preprocessing/data/split_files/datasets.pkl for molecular_function...
+Alpha weights not found. Using default FocalLoss (alpha=0.25, gamma=4.0).
+Epoch 001 | Loss: 0.0047 | Val MiFmax: 0.0398 | Val MaFmax: 0.0420 | Val Smin: 2008.0424
+  --> New best model saved!
+Epoch 002 | Loss: 0.0020 | Val MiFmax: 0.0398 | Val MaFmax: 0.0420 | Val Smin: 31.8746
+Epoch 003 | Loss: 0.0020 | Val MiFmax: 0.0718 | Val MaFmax: 0.0425 | Val Smin: 124.0464
+  --> New best model saved!
+Epoch 004 | Loss: 0.0019 | Val MiFmax: 0.0398 | Val MaFmax: 0.0420 | Val Smin: 2008.0424
+Epoch 005 | Loss: 0.0019 | Val MiFmax: 0.0398 | Val MaFmax: 0.0420 | Val Smin: 2005.3752
+Epoch 006 | Loss: 0.0019 | Val MiFmax: 0.0862 | Val MaFmax: 0.0420 | Val Smin: 34.4945
+Epoch 007 | Loss: 0.0019 | Val MiFmax: 0.0535 | Val MaFmax: 0.0420 | Val Smin: 37.6899
+Epoch 008 | Loss: 0.0019 | Val MiFmax: 0.0398 | Val MaFmax: 0.0420 | Val Smin: 2005.2193
+Epoch 009 | Loss: 0.0019 | Val MiFmax: 0.0398 | Val MaFmax: 0.0420 | Val Smin: 1931.9208
+Epoch 010 | Loss: 0.0019 | Val MiFmax: 0.0398 | Val MaFmax: 0.0420 | Val Smin: 2002.4924
+Epoch 011 | Loss: 0.0019 | Val MiFmax: 0.0398 | Val MaFmax: 0.0420 | Val Smin: 31.3478
+Epoch 012 | Loss: 0.0019 | Val MiFmax: 0.0398 | Val MaFmax: 0.0421 | Val Smin: 1992.1526
+Epoch 013 | Loss: 0.0019 | Val MiFmax: 0.0398 | Val MaFmax: 0.0420 | Val Smin: 1990.3307
+Epoch 014 | Loss: 0.0019 | Val MiFmax: 0.0878 | Val MaFmax: 0.0421 | Val Smin: 31.1653
+Epoch 015 | Loss: 0.0019 | Val MiFmax: 0.0398 | Val MaFmax: 0.0420 | Val Smin: 31.3478
+Epoch 016 | Loss: 0.0019 | Val MiFmax: 0.0710 | Val MaFmax: 0.0421 | Val Smin: 35.2388
+Epoch 017 | Loss: 0.0019 | Val MiFmax: 0.0398 | Val MaFmax: 0.0420 | Val Smin: 1720.7270
+Epoch 018 | Loss: 0.0019 | Val MiFmax: 0.0698 | Val MaFmax: 0.0422 | Val Smin: 101.1429
+Early stopping triggered after 18 epochs.
+Training finished. Evaluating on Test Set...
+
+--- TEST METRICS ---
+Micro_Fmax: 0.0804
+Macro_Fmax: 0.0484
+Macro_AUROC: 0.5009
+Micro_AUROC: 0.5465
+Macro_AUPRC: 0.5065
+Micro_AUPRC: 0.1160
+Smin: 124.0788
+------------------------------------------------------
+  Run 5 / 9 | molecular_function | modality=struct_only | s123
+------------------------------------------------------
