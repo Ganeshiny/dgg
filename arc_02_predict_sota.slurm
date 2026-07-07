@@ -18,7 +18,7 @@
 #SBATCH --cpus-per-task=16
 #SBATCH --time=06:00:00
 #SBATCH --mem=32000
-#SBATCH --partition=gpu
+#SBATCH --partition=gpu-h100
 #SBATCH --gres=gpu:1
 #SBATCH --output=logs/predict_sota_%j.out
 #SBATCH --error=logs/predict_sota_%j.err

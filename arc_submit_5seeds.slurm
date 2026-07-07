@@ -29,7 +29,7 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --time=12:00:00
 #SBATCH --mem=64000
-#SBATCH --partition=gpu
+#SBATCH --partition=gpu-h100
 #SBATCH --gres=gpu:1
 #SBATCH --output=logs/5seeds_%A_%a.out
 #SBATCH --error=logs/5seeds_%A_%a.err
