@@ -1,0 +1,188 @@
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/DeepFRI/prep_deepfri_fasta.py", line 9, in <module>
+    from preprocessing.create_batch_dataset import PDB_Dataset
+ModuleNotFoundError: No module named 'preprocessing.create_batch_dataset'
+2026-07-07 08:34:26.570607: I tensorflow/core/util/port.cc:110] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-07-07 08:34:26.893168: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2026-07-07 08:34:28.865152: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2026-07-07 08:34:28.870392: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F AVX512_VNNI AVX512_BF16 AVX_VNNI AMX_TILE AMX_INT8 AMX_BF16 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2026-07-07 08:34:41.328722: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+2026-07-07 08:35:19.102284: W tensorflow/core/common_runtime/gpu/gpu_device.cc:1960] Cannot dlopen some GPU libraries. Please make sure the missing libraries mentioned above are installed properly if you would like to use GPU. Follow the guide at https://www.tensorflow.org/install/gpu for how to download and setup the required libraries for your platform.
+Skipping registering GPU devices...
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/DeepFRI/predict.py", line 43, in <module>
+    predictor.predict_from_fasta(args.fasta_fn)
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/DeepFRI/deepfrier/Predictor.py", line 178, in predict_from_fasta
+    self.test_prot_list, sequences = load_FASTA(fasta_fn)
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/DeepFRI/deepfrier/utils.py", line 33, in load_FASTA
+    infile = open(filename, 'rU')
+FileNotFoundError: [Errno 2] No such file or directory: 'test_seqs.fasta'
+2026-07-07 08:35:26.717168: I tensorflow/core/util/port.cc:110] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-07-07 08:35:26.719178: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2026-07-07 08:35:26.760518: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2026-07-07 08:35:26.760967: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F AVX512_VNNI AVX512_BF16 AVX_VNNI AMX_TILE AMX_INT8 AMX_BF16 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2026-07-07 08:35:30.901835: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+2026-07-07 08:35:41.137213: W tensorflow/core/common_runtime/gpu/gpu_device.cc:1960] Cannot dlopen some GPU libraries. Please make sure the missing libraries mentioned above are installed properly if you would like to use GPU. Follow the guide at https://www.tensorflow.org/install/gpu for how to download and setup the required libraries for your platform.
+Skipping registering GPU devices...
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/DeepFRI/predict.py", line 43, in <module>
+    predictor.predict_from_fasta(args.fasta_fn)
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/DeepFRI/deepfrier/Predictor.py", line 178, in predict_from_fasta
+    self.test_prot_list, sequences = load_FASTA(fasta_fn)
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/DeepFRI/deepfrier/utils.py", line 33, in load_FASTA
+    infile = open(filename, 'rU')
+FileNotFoundError: [Errno 2] No such file or directory: 'test_seqs.fasta'
+2026-07-07 08:35:45.732357: I tensorflow/core/util/port.cc:110] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-07-07 08:35:45.734238: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2026-07-07 08:35:45.776031: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2026-07-07 08:35:45.776471: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F AVX512_VNNI AVX512_BF16 AVX_VNNI AMX_TILE AMX_INT8 AMX_BF16 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2026-07-07 08:35:49.854311: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+2026-07-07 08:35:59.745476: W tensorflow/core/common_runtime/gpu/gpu_device.cc:1960] Cannot dlopen some GPU libraries. Please make sure the missing libraries mentioned above are installed properly if you would like to use GPU. Follow the guide at https://www.tensorflow.org/install/gpu for how to download and setup the required libraries for your platform.
+Skipping registering GPU devices...
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/DeepFRI/predict.py", line 43, in <module>
+    predictor.predict_from_fasta(args.fasta_fn)
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/DeepFRI/deepfrier/Predictor.py", line 178, in predict_from_fasta
+    self.test_prot_list, sequences = load_FASTA(fasta_fn)
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/DeepFRI/deepfrier/utils.py", line 33, in load_FASTA
+    infile = open(filename, 'rU')
+FileNotFoundError: [Errno 2] No such file or directory: 'test_seqs.fasta'
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/TransFun/predict.py", line 5, in <module>
+    import obonet
+ModuleNotFoundError: No module named 'obonet'
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/TransFun/predict.py", line 5, in <module>
+    import obonet
+ModuleNotFoundError: No module named 'obonet'
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/TransFun/predict.py", line 5, in <module>
+    import obonet
+ModuleNotFoundError: No module named 'obonet'
+DGL backend not selected or invalid.  Assuming PyTorch for now.
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/DPFunc/DPFunc_demo_pipeline/scripts/build_data_demo.py", line 21, in <module>
+    import dgl
+  File "/home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages/dgl/__init__.py", line 16, in <module>
+    from . import (
+  File "/home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages/dgl/dataloading/__init__.py", line 13, in <module>
+    from .dataloader import *
+  File "/home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages/dgl/dataloading/dataloader.py", line 27, in <module>
+    from ..distributed import DistGraph
+  File "/home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages/dgl/distributed/__init__.py", line 5, in <module>
+    from .dist_graph import DistGraph, DistGraphServer, edge_split, node_split
+  File "/home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages/dgl/distributed/dist_graph.py", line 11, in <module>
+    from .. import backend as F, graphbolt as gb, heterograph_index
+  File "/home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages/dgl/graphbolt/__init__.py", line 8, in <module>
+    from .base import *
+  File "/home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages/dgl/graphbolt/base.py", line 8, in <module>
+    from torchdata.datapipes.iter import IterDataPipe
+ModuleNotFoundError: No module named 'torchdata.datapipes'
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/DPFunc/DPFunc_pred.py", line 1, in <module>
+    from ruamel.yaml import YAML
+ModuleNotFoundError: No module named 'ruamel'
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/DPFunc/DPFunc_demo_pipeline/scripts/run_dpfunc.py", line 82, in <module>
+    main()
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/DPFunc/DPFunc_demo_pipeline/scripts/run_dpfunc.py", line 78, in main
+    run_cmd(cmd, cwd=workspace)
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/DPFunc/DPFunc_demo_pipeline/scripts/run_dpfunc.py", line 19, in run_cmd
+    subprocess.run(cmd, cwd=str(cwd), check=True)
+  File "/home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/subprocess.py", line 528, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/bin/python', '/home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/DPFunc/DPFunc_pred.py', '-d', 'bp', '-n', '-1', '-p', 'DPFunc_model']' returned non-zero exit status 1.
+cp: cannot stat 'workspace_bp/results/DPFunc_model_bp_final.pkl': No such file or directory
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/DPFunc/convert_dpfunc.py", line 2, in <module>
+    df = pd.read_pickle(sys.argv[1])
+  File "/home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages/pandas/io/pickle.py", line 185, in read_pickle
+    with get_handle(
+  File "/home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages/pandas/io/common.py", line 882, in get_handle
+    handle = open(handle, ioargs.mode)
+FileNotFoundError: [Errno 2] No such file or directory: '/home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA_predictions/DPFunc/bp_results.pkl'
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/DPFunc/DPFunc_demo_pipeline/scripts/build_data_demo.py", line 21, in <module>
+    import dgl
+  File "/home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages/dgl/__init__.py", line 16, in <module>
+    from . import (
+  File "/home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages/dgl/dataloading/__init__.py", line 13, in <module>
+    from .dataloader import *
+  File "/home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages/dgl/dataloading/dataloader.py", line 27, in <module>
+    from ..distributed import DistGraph
+  File "/home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages/dgl/distributed/__init__.py", line 5, in <module>
+    from .dist_graph import DistGraph, DistGraphServer, edge_split, node_split
+  File "/home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages/dgl/distributed/dist_graph.py", line 11, in <module>
+    from .. import backend as F, graphbolt as gb, heterograph_index
+  File "/home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages/dgl/graphbolt/__init__.py", line 8, in <module>
+    from .base import *
+  File "/home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages/dgl/graphbolt/base.py", line 8, in <module>
+    from torchdata.datapipes.iter import IterDataPipe
+ModuleNotFoundError: No module named 'torchdata.datapipes'
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/DPFunc/DPFunc_pred.py", line 1, in <module>
+    from ruamel.yaml import YAML
+ModuleNotFoundError: No module named 'ruamel'
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/DPFunc/DPFunc_demo_pipeline/scripts/run_dpfunc.py", line 82, in <module>
+    main()
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/DPFunc/DPFunc_demo_pipeline/scripts/run_dpfunc.py", line 78, in main
+    run_cmd(cmd, cwd=workspace)
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/DPFunc/DPFunc_demo_pipeline/scripts/run_dpfunc.py", line 19, in run_cmd
+    subprocess.run(cmd, cwd=str(cwd), check=True)
+  File "/home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/subprocess.py", line 528, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/bin/python', '/home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/DPFunc/DPFunc_pred.py', '-d', 'mf', '-n', '-1', '-p', 'DPFunc_model']' returned non-zero exit status 1.
+cp: cannot stat 'workspace_mf/results/DPFunc_model_mf_final.pkl': No such file or directory
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/DPFunc/convert_dpfunc.py", line 2, in <module>
+    df = pd.read_pickle(sys.argv[1])
+  File "/home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages/pandas/io/pickle.py", line 185, in read_pickle
+    with get_handle(
+  File "/home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages/pandas/io/common.py", line 882, in get_handle
+    handle = open(handle, ioargs.mode)
+FileNotFoundError: [Errno 2] No such file or directory: '/home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA_predictions/DPFunc/mf_results.pkl'
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/DPFunc/DPFunc_demo_pipeline/scripts/build_data_demo.py", line 21, in <module>
+    import dgl
+  File "/home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages/dgl/__init__.py", line 16, in <module>
+    from . import (
+  File "/home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages/dgl/dataloading/__init__.py", line 13, in <module>
+    from .dataloader import *
+  File "/home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages/dgl/dataloading/dataloader.py", line 27, in <module>
+    from ..distributed import DistGraph
+  File "/home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages/dgl/distributed/__init__.py", line 5, in <module>
+    from .dist_graph import DistGraph, DistGraphServer, edge_split, node_split
+  File "/home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages/dgl/distributed/dist_graph.py", line 11, in <module>
+    from .. import backend as F, graphbolt as gb, heterograph_index
+  File "/home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages/dgl/graphbolt/__init__.py", line 8, in <module>
+    from .base import *
+  File "/home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages/dgl/graphbolt/base.py", line 8, in <module>
+    from torchdata.datapipes.iter import IterDataPipe
+ModuleNotFoundError: No module named 'torchdata.datapipes'
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/DPFunc/DPFunc_pred.py", line 1, in <module>
+    from ruamel.yaml import YAML
+ModuleNotFoundError: No module named 'ruamel'
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/DPFunc/DPFunc_demo_pipeline/scripts/run_dpfunc.py", line 82, in <module>
+    main()
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/DPFunc/DPFunc_demo_pipeline/scripts/run_dpfunc.py", line 78, in main
+    run_cmd(cmd, cwd=workspace)
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/DPFunc/DPFunc_demo_pipeline/scripts/run_dpfunc.py", line 19, in run_cmd
+    subprocess.run(cmd, cwd=str(cwd), check=True)
+  File "/home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/subprocess.py", line 528, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/bin/python', '/home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/DPFunc/DPFunc_pred.py', '-d', 'cc', '-n', '-1', '-p', 'DPFunc_model']' returned non-zero exit status 1.
+cp: cannot stat 'workspace_cc/results/DPFunc_model_cc_final.pkl': No such file or directory
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/DPFunc/convert_dpfunc.py", line 2, in <module>
+    df = pd.read_pickle(sys.argv[1])
+  File "/home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages/pandas/io/pickle.py", line 185, in read_pickle
+    with get_handle(
+  File "/home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages/pandas/io/common.py", line 882, in get_handle
+    handle = open(handle, ioargs.mode)
+FileNotFoundError: [Errno 2] No such file or directory: '/home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA_predictions/DPFunc/cc_results.pkl'

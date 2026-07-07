@@ -1,0 +1,14 @@
+========================================================
+  Job ID      : 44491781  (array task )
+  Node        : mgh4
+  CPUs        : 8
+  Start time  : Tue Jul  7 07:53:37 MDT 2026
+  Project dir : /home/ganeshiny.sridharan/dgg/deep-green-GO
+========================================================
+  Model     : Hybrid
+  Ontology  : biological_process
+  Seed      : 42
+========================================================
+  LR=0.0001  Dropout=0.2  BatchSize=64
+  Output dir : /home/ganeshiny.sridharan/dgg/deep-green-GO/runs_5seeds/bp/Hybrid/42
+========================================================
