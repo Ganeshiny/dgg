@@ -1,0 +1,10 @@
+WARNING: Ignoring invalid distribution -ympy (/home/ganeshiny.sridharan/miniconda3/envs/dgg_sota/lib/python3.9/site-packages)
+WARNING: Ignoring invalid distribution -ympy (/home/ganeshiny.sridharan/miniconda3/envs/dgg_sota/lib/python3.9/site-packages)
+WARNING: Ignoring invalid distribution -ympy (/home/ganeshiny.sridharan/miniconda3/envs/dgg_sota/lib/python3.9/site-packages)
+WARNING: Ignoring invalid distribution -ympy (/home/ganeshiny.sridharan/miniconda3/envs/dgg_sota/lib/python3.9/site-packages)
+WARNING: Ignoring invalid distribution -ympy (/home/ganeshiny.sridharan/miniconda3/envs/dgg_sota/lib/python3.9/site-packages)
+ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.
+torch 2.5.1 requires fsspec, which is not installed.
+torch 2.5.1 requires typing-extensions>=4.8.0, but you have typing-extensions 4.5.0 which is incompatible.
+ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.
+tensorflow 2.13.0 requires typing-extensions<4.6.0,>=3.6.6, but you have typing-extensions 4.16.0 which is incompatible.
