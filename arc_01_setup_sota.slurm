@@ -31,33 +31,33 @@ echo "========================================================"
 # Source conda
 source "$(conda info --base)/etc/profile.d/conda.sh"
 
-ENV_NAME="dgg_sota"
+ENV_TF="dgg_sota_tf"
+ENV_TORCH="dgg_sota_torch"
 
-echo "1. Checking for existing ${ENV_NAME} environment..."
-if conda info --envs | grep -q "^${ENV_NAME} "; then
-    echo "  Environment ${ENV_NAME} already exists. Updating/Ensuring packages..."
-    conda activate ${ENV_NAME}
+echo "1. Setting up DeepFRI Environment (TensorFlow) -> ${ENV_TF}"
+if conda info --envs | grep -q "^${ENV_TF} "; then
+    echo "  Environment ${ENV_TF} exists."
 else
-    echo "  Creating new conda environment: ${ENV_NAME} (Python 3.9)..."
-    conda create -y -n ${ENV_NAME} python=3.9
-    conda activate ${ENV_NAME}
+    conda create -y -n ${ENV_TF} python=3.9
 fi
+source "$(conda info --base)/etc/profile.d/conda.sh"
+conda activate ${ENV_TF}
+pip install --upgrade pip
+pip install tensorflow==2.13.0 networkx biopython pandas scikit-learn tqdm h5py
 
-echo "2. Installing Core Packages via Conda (PyTorch, Diamond)..."
-# PyTorch (for DPFunc and TransFun) and Diamond (for TransFun)
+echo "2. Setting up DPFunc & TransFun Environment (PyTorch) -> ${ENV_TORCH}"
+if conda info --envs | grep -q "^${ENV_TORCH} "; then
+    echo "  Environment ${ENV_TORCH} exists."
+else
+    conda create -y -n ${ENV_TORCH} python=3.9
+fi
+conda activate ${ENV_TORCH}
 conda install -y pytorch torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvidia
 conda install -y -c bioconda diamond
-conda install -y -c conda-forge openbabel  # often helpful for chemo/bio dependencies
-
-echo "3. Installing Packages via Pip (TensorFlow, DGL, ESM, Biopython)..."
-# TensorFlow is needed for DeepFRI
-# DGL and fair-esm are needed for DPFunc
-# Networkx, Biopython, pandas, scikit-learn are universally needed
+conda install -y -c conda-forge openbabel
 pip install --upgrade pip
-pip install tensorflow==2.13.0
 pip install dgl -f https://data.dgl.ai/wheels/cu118/repo.html
-pip install fair-esm
-pip install networkx biopython pandas scikit-learn tqdm h5py
+pip install fair-esm networkx biopython pandas scikit-learn tqdm h5py matplotlib seaborn
 
 echo "========================================================"
 echo "  Setup Complete!"

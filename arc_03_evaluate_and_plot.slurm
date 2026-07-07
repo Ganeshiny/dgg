@@ -30,7 +30,7 @@ echo "  Start time  : $(date)"
 echo "========================================================"
 
 source "$(conda info --base)/etc/profile.d/conda.sh"
-conda activate dgg_sota
+conda activate dgg_sota_torch
 
 PROJECT_DIR=$(pwd)
 cd ${PROJECT_DIR}

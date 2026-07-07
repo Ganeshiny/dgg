@@ -16,9 +16,9 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=16
-#SBATCH --time=12:00:00
-#SBATCH --mem=64000
-#SBATCH --partition=gpu-h100
+#SBATCH --time=06:00:00
+#SBATCH --mem=32000
+#SBATCH --partition=gpu
 #SBATCH --gres=gpu:1
 #SBATCH --output=logs/predict_sota_%j.out
 #SBATCH --error=logs/predict_sota_%j.err
@@ -30,7 +30,6 @@ echo "  Start time  : $(date)"
 echo "========================================================"
 
 source "$(conda info --base)/etc/profile.d/conda.sh"
-conda activate dgg_sota
 
 PROJECT_DIR=$(pwd)
 mkdir -p baselines/deepfri_results
@@ -39,6 +38,8 @@ mkdir -p SOTA_predictions/DPFunc
 echo "========================================================"
 echo "  [1/3] DeepFRI Inference"
 echo "========================================================"
+# The prep script needs PyTorch to read the .pt files, so use the torch env
+conda activate dgg_sota_torch
 cd baselines/DeepFRI
 
 # Generate fasta for test sequences using the dataset pickle
@@ -71,6 +72,9 @@ EOF
 
 python prep_deepfri_fasta.py
 
+# Now switch to TF environment for actual DeepFRI inference
+conda activate dgg_sota_tf
+
 for ont in bp mf cc; do
     echo "Running DeepFRI for ${ont}..."
     python predict.py --fasta_fn test_seqs.fasta -ont ${ont} -o ../deepfri_results/deepfri_seq_${ont^^}
@@ -80,6 +84,7 @@ done
 echo "========================================================"
 echo "  [2/3] TransFun Inference"
 echo "========================================================"
+conda activate dgg_sota_torch
 cd ${PROJECT_DIR}/SOTA/TransFun
 for ont in bp mf cc; do
     case "${ont}" in
