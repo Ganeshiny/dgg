@@ -22,7 +22,8 @@ PREDICT_JOB_ID=$(echo $PREDICT_JOB_STR | awk '{print $4}')
 echo "✓ SOTA Predict Job: ${PREDICT_JOB_ID} (Waiting on Setup)"
 
 # 3. Submit your 5-seed Training Array (Independent of Setup, can run concurrently)
-TRAIN_JOB_STR=$(sbatch arc_submit_5seeds.slurm)
+# --array=0-29 covers all 2 models × 3 ontologies × 5 seeds = 30 combinations
+TRAIN_JOB_STR=$(sbatch --array=0-29 arc_submit_5seeds.slurm)
 TRAIN_JOB_ID=$(echo $TRAIN_JOB_STR | awk '{print $4}')
 echo "✓ 5-Seed Training Array: ${TRAIN_JOB_ID}"
 

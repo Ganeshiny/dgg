@@ -226,20 +226,36 @@ def eval_your_model(model_name, ont_full, ont_short, y_true, ic):
     """
     Loads test_y_pred.npy for each seed from
       runs_5seeds/{ont_short}/{model_name}/{seed}/
+    train.py creates a run_name subdirectory inside output_dir, so we
+    search recursively for test_y_pred.npy under each seed directory.
     """
     records = []
     for seed in SEEDS:
         seed_dir = os.path.join(RESULTS_DIR, ont_short, model_name, str(seed))
-        pred_path = os.path.join(seed_dir, 'test_y_pred.npy')
-        true_path = os.path.join(seed_dir, 'test_y_true.npy')
 
-        if not os.path.exists(pred_path):
-            print(f"  [MISSING] {pred_path}")
+        # train.py saves files inside output_dir/run_name/, so search one level deeper
+        pred_path = None
+        true_path = None
+        if os.path.exists(seed_dir):
+            # First check directly in seed_dir (in case someone ran with flat structure)
+            if os.path.exists(os.path.join(seed_dir, 'test_y_pred.npy')):
+                pred_path = os.path.join(seed_dir, 'test_y_pred.npy')
+                true_path = os.path.join(seed_dir, 'test_y_true.npy')
+            else:
+                # Search one level deeper (run_name subdir created by train.py)
+                for sub in os.listdir(seed_dir):
+                    candidate = os.path.join(seed_dir, sub, 'test_y_pred.npy')
+                    if os.path.exists(candidate):
+                        pred_path = candidate
+                        true_path = os.path.join(seed_dir, sub, 'test_y_true.npy')
+                        break
+
+        if pred_path is None:
+            print(f"  [MISSING] test_y_pred.npy under {seed_dir}")
             continue
 
         yp = np.load(pred_path)
-        # Use the loaded y_true if present (sanity check), else the one passed in
-        yt = np.load(true_path) if os.path.exists(true_path) else y_true
+        yt = np.load(true_path) if (true_path and os.path.exists(true_path)) else y_true
 
         if yt.shape != y_true.shape:
             print(f"  [SHAPE MISMATCH] {true_path}: {yt.shape} vs {y_true.shape}")

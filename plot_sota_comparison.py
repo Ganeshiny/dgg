@@ -226,12 +226,25 @@ def load_predictions(ont_full, ont_short, prot_list, goterms):
     return preds
 
 def load_per_seed_preds(ont_short, mname, goterms_len, n_prots):
-    """Load per-seed y_pred arrays for your models."""
+    """Load per-seed y_pred arrays for your models.
+    train.py creates output_dir/run_name/ so we search one level deep.
+    """
     out = []
     for s in SEEDS:
-        p = os.path.join(RESULTS_DIR, ont_short, mname, str(s), 'test_y_pred.npy')
-        if os.path.exists(p):
-            out.append((s, np.load(p)))
+        seed_dir = os.path.join(RESULTS_DIR, ont_short, mname, str(s))
+        pred_path = None
+        if os.path.exists(seed_dir):
+            direct = os.path.join(seed_dir, 'test_y_pred.npy')
+            if os.path.exists(direct):
+                pred_path = direct
+            else:
+                for sub in os.listdir(seed_dir):
+                    candidate = os.path.join(seed_dir, sub, 'test_y_pred.npy')
+                    if os.path.exists(candidate):
+                        pred_path = candidate
+                        break
+        if pred_path is not None:
+            out.append((s, np.load(pred_path)))
     return out
 
 
@@ -415,9 +428,10 @@ def plot_C_ic_bins(datasets):
         ax.set_xticklabels([b[2] for b in bins], rotation=20, ha='right')
         ax.set_xlabel('GO Term IC Value')
         ax.set_ylabel('Fmax' if ax_idx == 0 else '')
-        ax.set_title(f'c   {ont_full.replace("_", " ").title()[:2].upper()+ont_full.replace("_"," ")[2:].title()[:0]}  {ont_short.upper()}',
-                     loc='left', fontweight='bold')
-        ax.set_ylim(0, 1.05)
+        ax.set_title(f'c   {ont_short.upper()}', loc='left', fontweight='bold')
+        # Dynamic y-axis: fit to data with a small margin
+        ax.autoscale(axis='y')
+        ax.set_ylim(bottom=0)
         if ax_idx == 0:
             ax.legend(frameon=False, loc='upper right', fontsize=7)
         style_ax(ax)
@@ -552,7 +566,8 @@ def plot_F_depth_bins(datasets):
         ax.set_xlabel('GO Term Depth')
         ax.set_ylabel('Fmax' if ax_idx == 0 else '')
         ax.set_title(f'f   {ont_short.upper()}', loc='left', fontweight='bold')
-        ax.set_ylim(0, 1.05)
+        ax.autoscale(axis='y')
+        ax.set_ylim(bottom=0)
         if ax_idx == 0:
             ax.legend(frameon=False, loc='upper right', fontsize=7)
         style_ax(ax)
@@ -575,9 +590,10 @@ def ic_weighted_pr(y_true, y_pred, ic):
     precisions, recalls = [], []
     for t in thresholds:
         pred = (y_pred >= t).astype(bool)
-        tp_ic = np.sum((y_true == 1) & pred * ic)
-        fp_ic = np.sum((y_true == 0) & pred * ic)
-        fn_ic = np.sum((y_true == 1) & ~pred * ic)
+        # Fix: operator precedence requires explicit parentheses before multiplying by ic
+        tp_ic = np.sum(((y_true == 1) & pred) * ic)
+        fp_ic = np.sum(((y_true == 0) & pred) * ic)
+        fn_ic = np.sum(((y_true == 1) & ~pred) * ic)
         prec = tp_ic / (tp_ic + fp_ic + 1e-12)
         rec  = tp_ic / (tp_ic + fn_ic + 1e-12)
         precisions.append(prec)
@@ -736,7 +752,11 @@ def plot_summary_fmax(results_csv):
 
         ax.set_title(ont, fontweight='bold')
         ax.set_ylabel('Micro Fmax' if ax_idx == 0 else '')
-        ax.set_ylim(0, 1.05)
+        # Dynamic y-axis fitted to data range with margin
+        if len(vals) > 0:
+            lo = max(0, vals.min() - 0.05)
+            hi = min(1.0, vals.max() + 0.08)
+            ax.set_ylim(lo, hi)
         ax.set_xticklabels(sub.index, rotation=30, ha='right')
         style_ax(ax)
 
