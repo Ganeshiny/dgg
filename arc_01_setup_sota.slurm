@@ -57,7 +57,7 @@ conda install -y -c bioconda diamond
 conda install -y -c conda-forge openbabel
 pip install --upgrade pip
 pip install dgl -f https://data.dgl.ai/wheels/cu118/repo.html
-pip install fair-esm networkx biopython pandas scikit-learn tqdm h5py matplotlib seaborn
+pip install fair-esm networkx biopython pandas scikit-learn tqdm h5py matplotlib seaborn obonet torchdata ruamel.yaml
 
 echo "========================================================"
 echo "  Setup Complete!"

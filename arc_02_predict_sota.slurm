@@ -52,6 +52,8 @@ class _Up(pickle.Unpickler):
         if m == 'numpy._core.multiarray': m = 'numpy.core.multiarray'
         return super().find_class(m, n)
 import __main__
+import sys
+sys.path.append('../../')
 from preprocessing.create_batch_dataset import PDB_Dataset
 __main__.PDB_Dataset = PDB_Dataset
 with open(PKL, 'rb') as f: ds = _Up(f).load()
