@@ -53,11 +53,11 @@ else
 fi
 conda activate ${ENV_TORCH}
 conda install -y pytorch torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvidia
-conda install -y -c bioconda diamond
+conda install -y -c bioconda diamond blast
 conda install -y -c conda-forge openbabel
 pip install --upgrade pip
 pip install dgl -f https://data.dgl.ai/wheels/cu118/repo.html
-pip install fair-esm networkx biopython pandas scikit-learn tqdm h5py matplotlib seaborn obonet torchdata ruamel.yaml
+pip install fair-esm networkx biopython pandas scikit-learn tqdm h5py matplotlib seaborn obonet torchdata ruamel.yaml torch_geometric
 
 echo "========================================================"
 echo "  Setup Complete!"
