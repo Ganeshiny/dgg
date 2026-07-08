@@ -1,0 +1,23 @@
+========================================================
+  Job ID      : 44536818  (array task 0)
+  Node        : mgh3
+  CPUs        : 8
+  Start time  : Tue Jul  7 23:43:00 MDT 2026
+  Project dir : /home/ganeshiny.sridharan/dgg/deep-green-GO
+========================================================
+  Model     : Hybrid
+  Ontology  : biological_process
+  Seed      : 42
+========================================================
+  LR=0.0001  Dropout=0.2  BatchSize=64
+  Output dir : /home/ganeshiny.sridharan/dgg/deep-green-GO/runs_5seeds/bp/Hybrid/42
+========================================================
+Using device: cuda
+
+[RESUME] Found successfully completed run in /home/ganeshiny.sridharan/dgg/deep-green-GO/runs_5seeds/bp/Hybrid/42/bp_Hybrid_Focal_lr0.0001_dp0.2_bs64_s42.
+[RESUME] Skipping training to save compute!
+
+========================================================
+  Training finished with exit code: 0
+  End time  : Tue Jul  7 23:43:20 MDT 2026
+========================================================

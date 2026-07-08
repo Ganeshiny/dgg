@@ -75,7 +75,7 @@ plt.rcParams.update({
     'font.sans-serif': ['DejaVu Sans', 'Arial'],
     'font.size': 10,
     'axes.titlesize': 11,
-    'axes.labelsize': 10,
+    'axes.labelsize': 4,
     'xtick.labelsize': 9,
     'ytick.labelsize': 9,
     'legend.fontsize': 8,
