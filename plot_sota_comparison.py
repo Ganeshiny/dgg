@@ -394,7 +394,10 @@ def plot_C_ic_bins(datasets):
             else:
                 rng = np.random.default_rng(mi * 7)
                 N = y_true.shape[0]
-                seed_ps = [preds[mname][rng.choice(N, N, replace=True)] for _ in range(5)]
+                seed_ps = []
+                for _ in range(5):
+                    idx = rng.choice(N, N, replace=True)
+                    seed_ps.append((y_true[idx], preds[mname][idx]))
 
             fmax_means, fmax_sems = [], []
             for lo, hi, _ in bins:
@@ -404,8 +407,12 @@ def plot_C_ic_bins(datasets):
                     fmax_means.append(np.nan); fmax_sems.append(0.0); continue
                 bin_fmaxes = []
                 for sp in seed_ps:
-                    yt_b = y_true[:, term_mask]
-                    yp_b = sp[:, term_mask]
+                    if isinstance(sp, tuple):
+                        yt_curr, yp_curr = sp
+                    else:
+                        yt_curr, yp_curr = y_true, sp
+                    yt_b = yt_curr[:, term_mask]
+                    yp_b = yp_curr[:, term_mask]
                     if yt_b.sum() == 0:
                         continue
                     prec, rec, _ = precision_recall_curve(yt_b.ravel(), yp_b.ravel())
@@ -534,7 +541,10 @@ def plot_F_depth_bins(datasets):
             else:
                 rng = np.random.default_rng(mi * 13)
                 N = y_true.shape[0]
-                seed_ps = [preds[mname][rng.choice(N, N, replace=True)] for _ in range(5)]
+                seed_ps = []
+                for _ in range(5):
+                    idx = rng.choice(N, N, replace=True)
+                    seed_ps.append((y_true[idx], preds[mname][idx]))
 
             fmax_means, fmax_sems = [], []
             for lo, hi, _ in bins:
@@ -543,8 +553,12 @@ def plot_F_depth_bins(datasets):
                     fmax_means.append(np.nan); fmax_sems.append(0.0); continue
                 bin_fmaxes = []
                 for sp in seed_ps:
-                    yt_b = y_true[:, term_mask]
-                    yp_b = sp[:, term_mask]
+                    if isinstance(sp, tuple):
+                        yt_curr, yp_curr = sp
+                    else:
+                        yt_curr, yp_curr = y_true, sp
+                    yt_b = yt_curr[:, term_mask]
+                    yp_b = yp_curr[:, term_mask]
                     if yt_b.sum() == 0: continue
                     prec, rec, _ = precision_recall_curve(yt_b.ravel(), yp_b.ravel())
                     f1 = 2*prec*rec/(prec+rec+1e-10)
@@ -633,11 +647,18 @@ def plot_BDE_pr_curves(datasets):
             else:
                 rng = np.random.default_rng(hash(mname) % (2**31))
                 N = y_true.shape[0]
-                seed_ps = [preds[mname][rng.choice(N, N, replace=True)] for _ in range(5)]
+                seed_ps = []
+                for _ in range(5):
+                    idx = rng.choice(N, N, replace=True)
+                    seed_ps.append((y_true[idx], preds[mname][idx], ic_flat[idx]))
 
             all_rec, all_prec = [], []
-            for sp in seed_ps:
-                rec, prec = ic_weighted_pr(y_true, sp, ic_flat)
+            for sp_item in seed_ps:
+                if isinstance(sp_item, tuple):
+                    yt_curr, yp_curr, ic_curr = sp_item
+                else:
+                    yt_curr, yp_curr, ic_curr = y_true, sp_item, ic_flat
+                rec, prec = ic_weighted_pr(yt_curr, yp_curr, ic_curr)
                 all_rec.append(rec)
                 all_prec.append(prec)
             # Interpolate to common recall grid
