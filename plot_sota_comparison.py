@@ -808,7 +808,8 @@ def plot_summary_fmax(results_csv):
     for ax_idx, ont in enumerate(ont_order):
         ax = axes[ax_idx]
         sub = df[df['Ontology'] == ont]
-        sub = sub.set_index('Model').reindex(MODEL_ORDER).dropna(subset=[metric])
+        local_order = list(dict.fromkeys([m if not m.startswith('DeepFRI') else 'DeepFRI' for m in MODEL_ORDER]))
+        sub = sub.set_index('Model').reindex(local_order).dropna(subset=[metric])
 
         colors = [PALETTE.get(m, '#888888') for m in sub.index]
         vals   = sub[metric].values
