@@ -394,10 +394,7 @@ def plot_C_ic_bins(datasets):
             else:
                 rng = np.random.default_rng(mi * 7)
                 N = y_true.shape[0]
-                seed_ps = []
-                for _ in range(5):
-                    idx = rng.choice(N, N, replace=True)
-                    seed_ps.append((y_true[idx], preds[mname][idx]))
+                seed_ps = [preds[mname][rng.choice(N, N, replace=True)] for _ in range(5)]
 
             fmax_means, fmax_sems = [], []
             for lo, hi, _ in bins:
@@ -407,12 +404,8 @@ def plot_C_ic_bins(datasets):
                     fmax_means.append(np.nan); fmax_sems.append(0.0); continue
                 bin_fmaxes = []
                 for sp in seed_ps:
-                    if isinstance(sp, tuple):
-                        yt_curr, yp_curr = sp
-                    else:
-                        yt_curr, yp_curr = y_true, sp
-                    yt_b = yt_curr[:, term_mask]
-                    yp_b = yp_curr[:, term_mask]
+                    yt_b = y_true[:, term_mask]
+                    yp_b = sp[:, term_mask]
                     if yt_b.sum() == 0:
                         continue
                     prec, rec, _ = precision_recall_curve(yt_b.ravel(), yp_b.ravel())
@@ -541,10 +534,7 @@ def plot_F_depth_bins(datasets):
             else:
                 rng = np.random.default_rng(mi * 13)
                 N = y_true.shape[0]
-                seed_ps = []
-                for _ in range(5):
-                    idx = rng.choice(N, N, replace=True)
-                    seed_ps.append((y_true[idx], preds[mname][idx]))
+                seed_ps = [preds[mname][rng.choice(N, N, replace=True)] for _ in range(5)]
 
             fmax_means, fmax_sems = [], []
             for lo, hi, _ in bins:
@@ -553,12 +543,8 @@ def plot_F_depth_bins(datasets):
                     fmax_means.append(np.nan); fmax_sems.append(0.0); continue
                 bin_fmaxes = []
                 for sp in seed_ps:
-                    if isinstance(sp, tuple):
-                        yt_curr, yp_curr = sp
-                    else:
-                        yt_curr, yp_curr = y_true, sp
-                    yt_b = yt_curr[:, term_mask]
-                    yp_b = yp_curr[:, term_mask]
+                    yt_b = y_true[:, term_mask]
+                    yp_b = sp[:, term_mask]
                     if yt_b.sum() == 0: continue
                     prec, rec, _ = precision_recall_curve(yt_b.ravel(), yp_b.ravel())
                     f1 = 2*prec*rec/(prec+rec+1e-10)
@@ -647,18 +633,11 @@ def plot_BDE_pr_curves(datasets):
             else:
                 rng = np.random.default_rng(hash(mname) % (2**31))
                 N = y_true.shape[0]
-                seed_ps = []
-                for _ in range(5):
-                    idx = rng.choice(N, N, replace=True)
-                    seed_ps.append((y_true[idx], preds[mname][idx], ic_flat[idx]))
+                seed_ps = [preds[mname][rng.choice(N, N, replace=True)] for _ in range(5)]
 
             all_rec, all_prec = [], []
-            for sp_item in seed_ps:
-                if isinstance(sp_item, tuple):
-                    yt_curr, yp_curr, ic_curr = sp_item
-                else:
-                    yt_curr, yp_curr, ic_curr = y_true, sp_item, ic_flat
-                rec, prec = ic_weighted_pr(yt_curr, yp_curr, ic_curr)
+            for sp in seed_ps:
+                rec, prec = ic_weighted_pr(y_true, sp, ic_flat)
                 all_rec.append(rec)
                 all_prec.append(prec)
             # Interpolate to common recall grid
@@ -721,19 +700,22 @@ def plot_G_coverage(datasets):
         colors = [PALETTE.get(m, '#888888') for m in model_names]
         bars = ax.bar(model_names, coverages, color=colors, edgecolor='white', linewidth=0.8)
 
-        # Add total-terms reference line
-        ax.axhline(n_total_terms, linestyle='--', color='#555555', linewidth=1.0,
-                   label=f'Total terms ({n_total_terms})')
+        # Let the bars set the y-limit, but add some headroom
+        max_coverage = max(coverages) if coverages else 1
+        ax.set_ylim(0, max_coverage * 1.2)
 
         for bar, val in zip(bars, coverages):
-            ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + n_total_terms*0.01,
+            ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + max_coverage * 0.02,
                     str(val), ha='center', va='bottom', fontsize=8)
 
         ax.set_title(f'{ont_short.upper()}', loc='left')
         ax.set_ylabel('Unique GO terms predicted' if ax_idx == 0 else '')
         ax.set_xticklabels(model_names, rotation=30, ha='right')
-        ax.set_ylim(0, n_total_terms * 1.2)
-        ax.legend(frameon=False, fontsize=8)
+        
+        # Display total terms in the legend instead of a horizontal line
+        ax.plot([], [], ' ', label=f'Total terms in dataset: {n_total_terms}')
+        ax.legend(frameon=False, fontsize=8, loc='upper left')
+        
         style_ax(ax)
 
     plt.tight_layout()
