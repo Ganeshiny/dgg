@@ -178,16 +178,29 @@ def _deepfri_to_matrix(path, prot_list, goterms):
     dterms = d['goterms']
     Yhat   = np.array(d['Y_hat'], dtype=np.float32)
     y = np.zeros((len(prot_list), len(goterms)), dtype=np.float32)
+    
     pi = {p: i for i, p in enumerate(prot_list)}
     ti = {t: i for i, t in enumerate(goterms)}
     dti = {t: i for i, t in enumerate(dterms)}
+    
+    match_chains = set()
+    
     for di, dp in enumerate(chains):
-        if dp not in pi:
+        candidates = [dp, dp.replace('-', '_'), dp.split('_')[0] + '_' + dp.split('_')[-1] if '_' in dp else dp]
+        best_p = next((c for c in candidates if c in pi), None)
+        
+        if not best_p:
             continue
+            
+        match_chains.add(best_p)
         row = Yhat[di]
         for dt, dj in dti.items():
-            if dt in ti:
-                y[pi[dp], ti[dt]] = row[dj]
+            dt_fix = dt if dt.startswith('GO:') else f'GO:{dt}'
+            if dt_fix in ti:
+                y[pi[best_p], ti[dt_fix]] = row[dj]
+
+    match_terms = sum(1 for dt in dterms if (dt if dt.startswith('GO:') else f'GO:{dt}') in ti)
+    print(f"  [DeepFRI Debug] {os.path.basename(path)} -> matched {len(match_chains)}/{len(chains)} test proteins, {match_terms}/{len(dterms)} terms. Max score: {np.max(y):.4f}")
     return y
 
 def load_predictions(ont_full, ont_short, prot_list, goterms):
