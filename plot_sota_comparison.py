@@ -266,8 +266,7 @@ def plot_A_sequence_identity(datasets):
     """
     blast_csv = os.path.join(PROJECT_DIR, 'preprocessing', 'data', 'blast_identity.csv')
     if not os.path.exists(blast_csv):
-        print(f'  [SKIP plot A] {blast_csv} not found. '
-              f'Run preprocessing/calc_blast_identity.sh first.')
+        print(f'  [SKIP plot A] {blast_csv} not found.')
         return
 
     id_df = pd.read_csv(blast_csv)   # columns: prot, max_identity
@@ -457,12 +456,19 @@ def _compute_go_depths():
     Returns dict: GO_ID → depth (int)
     Falls back gracefully if obo not found.
     """
-    obo_paths = [
-        os.path.join(PROJECT_DIR, 'preprocessing', 'data', 'go-basic.obo'),
-        os.path.join(PROJECT_DIR, 'go-basic.obo'),
-        '/home/gane/my-stuff/deep-green-GO/preprocessing/data/go-basic.obo',
+    import glob
+    obo_file = None
+    search_dirs = [
+        os.path.join(PROJECT_DIR, 'preprocessing', 'data'),
+        PROJECT_DIR,
+        os.path.join(PROJECT_DIR, 'SOTA', 'TransFun', 'data')
     ]
-    obo_file = next((p for p in obo_paths if os.path.exists(p)), None)
+    for sdir in search_dirs:
+        matches = glob.glob(os.path.join(sdir, 'go-basic*.obo'))
+        if matches:
+            obo_file = matches[0]
+            break
+            
     if obo_file is None:
         print('  [SKIP plot F] go-basic.obo not found. '
               'Download from http://purl.obolibrary.org/obo/go/go-basic.obo')
