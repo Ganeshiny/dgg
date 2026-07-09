@@ -10,7 +10,7 @@
 # Activate your deepgreengo environment (or whichever env has TensorFlow/PyTorch)
 # Adjust this path if your miniconda is elsewhere
 source ~/miniconda3/etc/profile.d/conda.sh
-conda activate deepgreengo
+conda activate deepfri
 
 # Move to the root directory of the project
 cd ~/dgg/deep-green-GO
