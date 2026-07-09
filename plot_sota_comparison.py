@@ -174,9 +174,17 @@ def _deepfri_to_matrix(path, prot_list, goterms):
         return np.zeros((len(prot_list), len(goterms)), dtype=np.float32)
     with open(path) as f:
         d = json.load(f)
-    chains = d['pdb_chains']
-    dterms = d['goterms']
-    Yhat   = np.array(d['Y_hat'], dtype=np.float32)
+    chains = d.get('pdb_chains', [])
+    Yhat   = np.array(d.get('Y_hat', []), dtype=np.float32)
+    
+    # If pdb_chains is empty or not present, try to find another key with the protein names
+    if len(chains) != Yhat.shape[0]:
+        for k, v in d.items():
+            if isinstance(v, list) and len(v) == Yhat.shape[0] and len(v) > 0 and isinstance(v[0], str):
+                chains = v
+                break
+
+    dterms = d.get('goterms', [])
     y = np.zeros((len(prot_list), len(goterms)), dtype=np.float32)
     
     pi = {p: i for i, p in enumerate(prot_list)}
@@ -203,20 +211,20 @@ def _deepfri_to_matrix(path, prot_list, goterms):
     print(f"  [DeepFRI Debug] {os.path.basename(path)} -> matched {len(match_chains)}/{len(chains)} test proteins, {match_terms}/{len(dterms)} terms. Max score: {np.max(y):.4f}")
     return y
 
+def _find_robust(filename_variants, req_dir_part, search_roots):
+    for sdir in search_roots:
+        r = os.path.join(PROJECT_DIR, sdir)
+        if not os.path.isdir(r): continue
+        for root, _, files in os.walk(r):
+            if req_dir_part.lower() in root.lower() or req_dir_part == '':
+                for f in files:
+                    if f in filename_variants:
+                        return os.path.join(root, f)
+    return None
+
 def load_predictions(ont_full, ont_short, prot_list, goterms):
     """Returns dict model→y_pred matrix (averaged over seeds for your models)."""
     preds = {}
-
-    def _find_robust(filename_variants, req_dir_part, search_roots):
-        for sdir in search_roots:
-            r = os.path.join(PROJECT_DIR, sdir)
-            if not os.path.isdir(r): continue
-            for root, _, files in os.walk(r):
-                if req_dir_part.lower() in root.lower() or req_dir_part == '':
-                    for f in files:
-                        if f in filename_variants:
-                            return os.path.join(root, f)
-        return None
 
     # TransFun
     tf_file = _find_robust([f'{ont_short}_results.txt'], 'TransFun', ['SOTA', 'SOTA_predictions'])
@@ -289,6 +297,13 @@ def plot_A_sequence_identity(datasets):
         # Auto-generate it from BLAST or Diamond results if possible
         import glob
         tsv_matches = glob.glob(os.path.join(PROJECT_DIR, 'baselines', '*', '*_results.tsv'))
+        # If glob fails, try a robust walk
+        if not tsv_matches:
+            for root, _, files in os.walk(os.path.join(PROJECT_DIR, 'baselines')):
+                for f in files:
+                    if f.endswith('_results.tsv') or f.endswith('_results.txt') or f.endswith('.m8'):
+                        tsv_matches.append(os.path.join(root, f))
+        
         if tsv_matches:
             print(f'  [INFO] Auto-generating blast_identity.csv from {tsv_matches[0]} ...')
             df_align = pd.read_csv(tsv_matches[0], sep='\t', header=None, usecols=[0, 2], names=['prot', 'pident'])
@@ -296,7 +311,7 @@ def plot_A_sequence_identity(datasets):
             id_map = {p: max_id.get(p, 0.0) for p in prot_list}
             pd.DataFrame({'prot': list(id_map.keys()), 'max_identity': list(id_map.values())}).to_csv(blast_csv, index=False)
         else:
-            print(f'  [SKIP plot A] {blast_csv} not found and no baseline alignment .tsv found.')
+            print(f'  [SKIP plot A] {blast_csv} not found and no baseline alignment file found.')
             return
 
     id_df = pd.read_csv(blast_csv)   # columns: prot, max_identity
