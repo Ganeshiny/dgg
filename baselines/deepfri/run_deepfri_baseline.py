@@ -72,9 +72,9 @@ def main():
             out_prefix = os.path.join(out_dir, f"deepfri_{mode}_{ont.upper()}")
             print(f"=== Running DeepFRI {mode.upper()} mode for {ont.upper()} ===")
             
+            import sys
             cmd = [
-                "conda", "run", "-n", "deepfri",
-                "python", "predict.py",
+                sys.executable, "predict.py",
                 "-ont", ont,
                 "-o", out_prefix
             ]
