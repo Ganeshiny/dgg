@@ -1,0 +1,120 @@
+========================================================
+  Job ID      : 44539732  (array task 16)
+  Node        : mgh1
+  CPUs        : 8
+  Start time  : Wed Jul  8 11:04:41 MDT 2026
+  Project dir : /home/ganeshiny.sridharan/dgg/deep-green-GO
+========================================================
+  Model     : Hybrid_JK
+  Ontology  : biological_process
+  Seed      : 43
+========================================================
+  LR=0.001  Dropout=0.2  BatchSize=16
+  Output dir : /home/ganeshiny.sridharan/dgg/deep-green-GO/runs_5seeds/bp/Hybrid_JK/43
+========================================================
+Using device: cuda
+Loading datasets from preprocessing/data/split_files/datasets.pkl for biological_process...
+Alpha weights not found. Using default FocalLoss (alpha=0.25, gamma=4.0).
+Epoch 001 | Loss: 0.0054 | Val MiFmax: 0.3070 | Val MaFmax: 0.2942 | Val Smin: 60.1338
+  --> New best model saved!
+Epoch 002 | Loss: 0.0010 | Val MiFmax: 0.4078 | Val MaFmax: 0.4164 | Val Smin: 53.9993
+  --> New best model saved!
+Epoch 003 | Loss: 0.0007 | Val MiFmax: 0.5460 | Val MaFmax: 0.5389 | Val Smin: 42.4338
+  --> New best model saved!
+Epoch 004 | Loss: 0.0005 | Val MiFmax: 0.5819 | Val MaFmax: 0.5863 | Val Smin: 39.6745
+  --> New best model saved!
+Epoch 005 | Loss: 0.0004 | Val MiFmax: 0.6177 | Val MaFmax: 0.6344 | Val Smin: 36.2898
+  --> New best model saved!
+Epoch 006 | Loss: 0.0003 | Val MiFmax: 0.6319 | Val MaFmax: 0.6327 | Val Smin: 35.5215
+Epoch 007 | Loss: 0.0003 | Val MiFmax: 0.6364 | Val MaFmax: 0.6598 | Val Smin: 35.1477
+  --> New best model saved!
+Epoch 008 | Loss: 0.0003 | Val MiFmax: 0.6503 | Val MaFmax: 0.6757 | Val Smin: 33.8715
+  --> New best model saved!
+Epoch 009 | Loss: 0.0002 | Val MiFmax: 0.6701 | Val MaFmax: 0.6835 | Val Smin: 32.1740
+  --> New best model saved!
+Epoch 010 | Loss: 0.0002 | Val MiFmax: 0.6800 | Val MaFmax: 0.7084 | Val Smin: 31.3619
+  --> New best model saved!
+Epoch 011 | Loss: 0.0002 | Val MiFmax: 0.6784 | Val MaFmax: 0.6991 | Val Smin: 31.1027
+Epoch 012 | Loss: 0.0002 | Val MiFmax: 0.6748 | Val MaFmax: 0.7019 | Val Smin: 31.3788
+Epoch 013 | Loss: 0.0002 | Val MiFmax: 0.6797 | Val MaFmax: 0.7047 | Val Smin: 30.7391
+Epoch 014 | Loss: 0.0002 | Val MiFmax: 0.7104 | Val MaFmax: 0.7183 | Val Smin: 28.6878
+  --> New best model saved!
+Epoch 015 | Loss: 0.0001 | Val MiFmax: 0.7071 | Val MaFmax: 0.7078 | Val Smin: 28.8940
+Epoch 016 | Loss: 0.0001 | Val MiFmax: 0.7162 | Val MaFmax: 0.7185 | Val Smin: 28.1474
+  --> New best model saved!
+Epoch 017 | Loss: 0.0001 | Val MiFmax: 0.7240 | Val MaFmax: 0.7163 | Val Smin: 27.5196
+Epoch 018 | Loss: 0.0001 | Val MiFmax: 0.7089 | Val MaFmax: 0.7095 | Val Smin: 28.7274
+Epoch 019 | Loss: 0.0001 | Val MiFmax: 0.7256 | Val MaFmax: 0.7227 | Val Smin: 27.6188
+  --> New best model saved!
+Epoch 020 | Loss: 0.0001 | Val MiFmax: 0.7193 | Val MaFmax: 0.7186 | Val Smin: 27.6694
+Epoch 021 | Loss: 0.0001 | Val MiFmax: 0.7226 | Val MaFmax: 0.7215 | Val Smin: 27.4130
+Epoch 022 | Loss: 0.0001 | Val MiFmax: 0.7269 | Val MaFmax: 0.7156 | Val Smin: 27.2707
+Epoch 023 | Loss: 0.0001 | Val MiFmax: 0.7416 | Val MaFmax: 0.7249 | Val Smin: 26.2157
+  --> New best model saved!
+Epoch 024 | Loss: 0.0001 | Val MiFmax: 0.7243 | Val MaFmax: 0.7201 | Val Smin: 27.4568
+Epoch 025 | Loss: 0.0001 | Val MiFmax: 0.7024 | Val MaFmax: 0.6977 | Val Smin: 29.1386
+Epoch 026 | Loss: 0.0001 | Val MiFmax: 0.7215 | Val MaFmax: 0.7134 | Val Smin: 27.5798
+Epoch 027 | Loss: 0.0001 | Val MiFmax: 0.7215 | Val MaFmax: 0.7239 | Val Smin: 27.3866
+Epoch 028 | Loss: 0.0001 | Val MiFmax: 0.7261 | Val MaFmax: 0.7123 | Val Smin: 27.1978
+Epoch 029 | Loss: 0.0001 | Val MiFmax: 0.7342 | Val MaFmax: 0.7197 | Val Smin: 26.5914
+Epoch 030 | Loss: 0.0000 | Val MiFmax: 0.7491 | Val MaFmax: 0.7244 | Val Smin: 25.5378
+Epoch 031 | Loss: 0.0000 | Val MiFmax: 0.7551 | Val MaFmax: 0.7275 | Val Smin: 25.1127
+  --> New best model saved!
+Epoch 032 | Loss: 0.0000 | Val MiFmax: 0.7483 | Val MaFmax: 0.7315 | Val Smin: 25.6144
+  --> New best model saved!
+Epoch 033 | Loss: 0.0000 | Val MiFmax: 0.7544 | Val MaFmax: 0.7291 | Val Smin: 25.0838
+Epoch 034 | Loss: 0.0000 | Val MiFmax: 0.7483 | Val MaFmax: 0.7235 | Val Smin: 25.6093
+Epoch 035 | Loss: 0.0000 | Val MiFmax: 0.7523 | Val MaFmax: 0.7308 | Val Smin: 25.2336
+Epoch 036 | Loss: 0.0000 | Val MiFmax: 0.7563 | Val MaFmax: 0.7279 | Val Smin: 25.0570
+Epoch 037 | Loss: 0.0000 | Val MiFmax: 0.7532 | Val MaFmax: 0.7285 | Val Smin: 25.0263
+Epoch 038 | Loss: 0.0000 | Val MiFmax: 0.7525 | Val MaFmax: 0.7318 | Val Smin: 25.2601
+  --> New best model saved!
+Epoch 039 | Loss: 0.0000 | Val MiFmax: 0.7546 | Val MaFmax: 0.7274 | Val Smin: 25.0525
+Epoch 040 | Loss: 0.0000 | Val MiFmax: 0.7535 | Val MaFmax: 0.7264 | Val Smin: 25.0590
+Epoch 041 | Loss: 0.0000 | Val MiFmax: 0.7514 | Val MaFmax: 0.7311 | Val Smin: 25.1412
+Epoch 042 | Loss: 0.0000 | Val MiFmax: 0.7563 | Val MaFmax: 0.7339 | Val Smin: 24.8930
+  --> New best model saved!
+Epoch 043 | Loss: 0.0000 | Val MiFmax: 0.7522 | Val MaFmax: 0.7244 | Val Smin: 25.2956
+Epoch 044 | Loss: 0.0000 | Val MiFmax: 0.7386 | Val MaFmax: 0.7218 | Val Smin: 26.1856
+Epoch 045 | Loss: 0.0000 | Val MiFmax: 0.7553 | Val MaFmax: 0.7287 | Val Smin: 24.9372
+Epoch 046 | Loss: 0.0000 | Val MiFmax: 0.7572 | Val MaFmax: 0.7279 | Val Smin: 24.9014
+Epoch 047 | Loss: 0.0000 | Val MiFmax: 0.7509 | Val MaFmax: 0.7255 | Val Smin: 25.4636
+Epoch 048 | Loss: 0.0000 | Val MiFmax: 0.7502 | Val MaFmax: 0.7290 | Val Smin: 25.2363
+Epoch 049 | Loss: 0.0000 | Val MiFmax: 0.7595 | Val MaFmax: 0.7321 | Val Smin: 24.6772
+Epoch 050 | Loss: 0.0000 | Val MiFmax: 0.7637 | Val MaFmax: 0.7347 | Val Smin: 24.7047
+  --> New best model saved!
+Epoch 051 | Loss: 0.0000 | Val MiFmax: 0.7600 | Val MaFmax: 0.7319 | Val Smin: 24.7798
+Epoch 052 | Loss: 0.0000 | Val MiFmax: 0.7601 | Val MaFmax: 0.7314 | Val Smin: 24.8347
+Epoch 053 | Loss: 0.0000 | Val MiFmax: 0.7634 | Val MaFmax: 0.7330 | Val Smin: 24.5111
+Epoch 054 | Loss: 0.0000 | Val MiFmax: 0.7614 | Val MaFmax: 0.7310 | Val Smin: 24.4688
+Epoch 055 | Loss: 0.0000 | Val MiFmax: 0.7590 | Val MaFmax: 0.7345 | Val Smin: 24.6584
+Epoch 056 | Loss: 0.0000 | Val MiFmax: 0.7588 | Val MaFmax: 0.7333 | Val Smin: 24.8698
+Epoch 057 | Loss: 0.0000 | Val MiFmax: 0.7598 | Val MaFmax: 0.7319 | Val Smin: 24.9285
+Epoch 058 | Loss: 0.0000 | Val MiFmax: 0.7596 | Val MaFmax: 0.7302 | Val Smin: 24.7214
+Epoch 059 | Loss: 0.0000 | Val MiFmax: 0.7577 | Val MaFmax: 0.7318 | Val Smin: 24.8842
+Epoch 060 | Loss: 0.0000 | Val MiFmax: 0.7608 | Val MaFmax: 0.7309 | Val Smin: 24.5415
+Epoch 061 | Loss: 0.0000 | Val MiFmax: 0.7610 | Val MaFmax: 0.7319 | Val Smin: 24.7038
+Epoch 062 | Loss: 0.0000 | Val MiFmax: 0.7616 | Val MaFmax: 0.7313 | Val Smin: 24.6242
+Epoch 063 | Loss: 0.0000 | Val MiFmax: 0.7612 | Val MaFmax: 0.7331 | Val Smin: 24.5768
+Epoch 064 | Loss: 0.0000 | Val MiFmax: 0.7606 | Val MaFmax: 0.7307 | Val Smin: 24.7003
+Epoch 065 | Loss: 0.0000 | Val MiFmax: 0.7645 | Val MaFmax: 0.7324 | Val Smin: 24.3842
+Epoch 066 | Loss: 0.0000 | Val MiFmax: 0.7633 | Val MaFmax: 0.7324 | Val Smin: 24.5175
+Epoch 067 | Loss: 0.0000 | Val MiFmax: 0.7652 | Val MaFmax: 0.7316 | Val Smin: 24.2601
+Epoch 068 | Loss: 0.0000 | Val MiFmax: 0.7633 | Val MaFmax: 0.7317 | Val Smin: 24.4053
+Epoch 069 | Loss: 0.0000 | Val MiFmax: 0.7629 | Val MaFmax: 0.7324 | Val Smin: 24.4392
+Epoch 070 | Loss: 0.0000 | Val MiFmax: 0.7655 | Val MaFmax: 0.7321 | Val Smin: 24.5001
+Early stopping triggered after 70 epochs.
+Training finished. Evaluating on Test Set...
+
+--- TEST METRICS ---
+Micro_Fmax: 0.6766
+Macro_Fmax: 0.6723
+Macro_AUROC: 0.8910
+Micro_AUROC: 0.8953
+Macro_AUPRC: 0.6266
+Micro_AUPRC: 0.6510
+Smin: 34.9717
+========================================================
+  Training finished with exit code: 0
+  End time  : Wed Jul  8 12:53:22 MDT 2026
+========================================================

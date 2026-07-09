@@ -1,0 +1,1517 @@
+========================================================
+  Job ID      : 44526753
+  Node        : fc19
+  Start time  : Tue Jul  7 09:20:09 MDT 2026
+========================================================
+1. Setting up DeepFRI Environment (TensorFlow) -> dgg_sota_tf
+  Environment dgg_sota_tf exists.
+Requirement already satisfied: pip in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (26.0.1)
+Requirement already satisfied: tensorflow==2.13.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (2.13.0)
+Requirement already satisfied: networkx in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (3.2.1)
+Requirement already satisfied: biopython in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (1.85)
+Requirement already satisfied: pandas in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (2.3.3)
+Requirement already satisfied: scikit-learn in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (1.6.1)
+Requirement already satisfied: tqdm in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (4.68.3)
+Requirement already satisfied: h5py in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (3.14.0)
+Requirement already satisfied: absl-py>=1.0.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from tensorflow==2.13.0) (2.3.1)
+Requirement already satisfied: astunparse>=1.6.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from tensorflow==2.13.0) (1.6.3)
+Requirement already satisfied: flatbuffers>=23.1.21 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from tensorflow==2.13.0) (25.12.19)
+Requirement already satisfied: gast<=0.4.0,>=0.2.1 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from tensorflow==2.13.0) (0.4.0)
+Requirement already satisfied: google-pasta>=0.1.1 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from tensorflow==2.13.0) (0.2.0)
+Requirement already satisfied: grpcio<2.0,>=1.24.3 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from tensorflow==2.13.0) (1.74.0)
+Requirement already satisfied: keras<2.14,>=2.13.1 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from tensorflow==2.13.0) (2.13.1)
+Requirement already satisfied: libclang>=13.0.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from tensorflow==2.13.0) (18.1.1)
+Requirement already satisfied: numpy<=1.24.3,>=1.22 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from tensorflow==2.13.0) (1.24.3)
+Requirement already satisfied: opt-einsum>=2.3.2 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from tensorflow==2.13.0) (3.4.0)
+Requirement already satisfied: packaging in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from tensorflow==2.13.0) (26.2)
+Requirement already satisfied: protobuf!=4.21.0,!=4.21.1,!=4.21.2,!=4.21.3,!=4.21.4,!=4.21.5,<5.0.0dev,>=3.20.3 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from tensorflow==2.13.0) (4.25.9)
+Requirement already satisfied: setuptools in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from tensorflow==2.13.0) (80.9.0)
+Requirement already satisfied: six>=1.12.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from tensorflow==2.13.0) (1.17.0)
+Requirement already satisfied: tensorboard<2.14,>=2.13 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from tensorflow==2.13.0) (2.13.0)
+Requirement already satisfied: tensorflow-estimator<2.14,>=2.13.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from tensorflow==2.13.0) (2.13.0)
+Requirement already satisfied: termcolor>=1.1.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from tensorflow==2.13.0) (3.1.0)
+Requirement already satisfied: typing-extensions<4.6.0,>=3.6.6 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from tensorflow==2.13.0) (4.5.0)
+Requirement already satisfied: wrapt>=1.11.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from tensorflow==2.13.0) (2.2.2)
+Requirement already satisfied: tensorflow-io-gcs-filesystem>=0.23.1 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from tensorflow==2.13.0) (0.37.1)
+Requirement already satisfied: google-auth<3,>=1.6.3 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from tensorboard<2.14,>=2.13->tensorflow==2.13.0) (2.50.0)
+Requirement already satisfied: google-auth-oauthlib<1.1,>=0.5 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from tensorboard<2.14,>=2.13->tensorflow==2.13.0) (1.0.0)
+Requirement already satisfied: markdown>=2.6.8 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from tensorboard<2.14,>=2.13->tensorflow==2.13.0) (3.9)
+Requirement already satisfied: requests<3,>=2.21.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from tensorboard<2.14,>=2.13->tensorflow==2.13.0) (2.32.5)
+Requirement already satisfied: tensorboard-data-server<0.8.0,>=0.7.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from tensorboard<2.14,>=2.13->tensorflow==2.13.0) (0.7.2)
+Requirement already satisfied: werkzeug>=1.0.1 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from tensorboard<2.14,>=2.13->tensorflow==2.13.0) (3.1.8)
+Requirement already satisfied: wheel>=0.26 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from tensorboard<2.14,>=2.13->tensorflow==2.13.0) (0.45.1)
+Requirement already satisfied: pyasn1-modules>=0.2.1 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from google-auth<3,>=1.6.3->tensorboard<2.14,>=2.13->tensorflow==2.13.0) (0.4.2)
+Requirement already satisfied: cryptography>=38.0.3 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from google-auth<3,>=1.6.3->tensorboard<2.14,>=2.13->tensorflow==2.13.0) (45.0.7)
+Requirement already satisfied: requests-oauthlib>=0.7.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from google-auth-oauthlib<1.1,>=0.5->tensorboard<2.14,>=2.13->tensorflow==2.13.0) (2.0.0)
+Requirement already satisfied: charset_normalizer<4,>=2 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from requests<3,>=2.21.0->tensorboard<2.14,>=2.13->tensorflow==2.13.0) (3.4.8)
+Requirement already satisfied: idna<4,>=2.5 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from requests<3,>=2.21.0->tensorboard<2.14,>=2.13->tensorflow==2.13.0) (3.18)
+Requirement already satisfied: urllib3<3,>=1.21.1 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from requests<3,>=2.21.0->tensorboard<2.14,>=2.13->tensorflow==2.13.0) (2.6.3)
+Requirement already satisfied: certifi>=2017.4.17 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from requests<3,>=2.21.0->tensorboard<2.14,>=2.13->tensorflow==2.13.0) (2026.6.17)
+Requirement already satisfied: python-dateutil>=2.8.2 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from pandas) (2.9.0.post0)
+Requirement already satisfied: pytz>=2020.1 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from pandas) (2026.2)
+Requirement already satisfied: tzdata>=2022.7 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from pandas) (2026.2)
+Requirement already satisfied: scipy>=1.6.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from scikit-learn) (1.13.1)
+Requirement already satisfied: joblib>=1.2.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from scikit-learn) (1.5.3)
+Requirement already satisfied: threadpoolctl>=3.1.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from scikit-learn) (3.6.0)
+Requirement already satisfied: cffi>=1.14 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from cryptography>=38.0.3->google-auth<3,>=1.6.3->tensorboard<2.14,>=2.13->tensorflow==2.13.0) (2.0.0)
+Requirement already satisfied: pycparser in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from cffi>=1.14->cryptography>=38.0.3->google-auth<3,>=1.6.3->tensorboard<2.14,>=2.13->tensorflow==2.13.0) (2.23)
+Requirement already satisfied: importlib-metadata>=4.4 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from markdown>=2.6.8->tensorboard<2.14,>=2.13->tensorflow==2.13.0) (8.7.1)
+Requirement already satisfied: zipp>=3.20 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from importlib-metadata>=4.4->markdown>=2.6.8->tensorboard<2.14,>=2.13->tensorflow==2.13.0) (3.23.1)
+Requirement already satisfied: pyasn1<0.7.0,>=0.6.1 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from pyasn1-modules>=0.2.1->google-auth<3,>=1.6.3->tensorboard<2.14,>=2.13->tensorflow==2.13.0) (0.6.3)
+Requirement already satisfied: oauthlib>=3.0.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from requests-oauthlib>=0.7.0->google-auth-oauthlib<1.1,>=0.5->tensorboard<2.14,>=2.13->tensorflow==2.13.0) (3.3.1)
+Requirement already satisfied: markupsafe>=2.1.1 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from werkzeug>=1.0.1->tensorboard<2.14,>=2.13->tensorflow==2.13.0) (3.0.3)
+2. Setting up DPFunc & TransFun Environment (PyTorch) -> dgg_sota_torch
+  Environment dgg_sota_torch exists.
+2 channel Terms of Service accepted
+Channels:
+ - pytorch
+ - nvidia
+ - defaults
+Platform: linux-64
+Collecting package metadata (repodata.json): - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | done
+Solving environment: - \ done
+
+# All requested packages already installed.
+
+2 channel Terms of Service accepted
+Channels:
+ - bioconda
+ - defaults
+Platform: linux-64
+Collecting package metadata (repodata.json): - \ | / - \ | / - \ | / - \ done
+Solving environment: / - \ done
+
+## Package Plan ##
+
+  environment location: /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch
+
+  added / updated specs:
+    - blast
+    - diamond
+
+
+The following packages will be downloaded:
+
+    package                    |            build
+    ---------------------------|-----------------
+    blast-2.17.0               |       h66d330f_0        80.9 MB  bioconda
+    c-ares-1.34.7              |       hd44998d_0         204 KB
+    curl-8.19.0                |       h292069f_0         185 KB
+    diamond-2.2.3              |       he361c42_0         2.9 MB  bioconda
+    entrez-direct-24.0         |       he881be0_0        16.3 MB  bioconda
+    jansson-2.15.0             |       hbcba0ee_0          65 KB
+    libkrb5-1.22.2             |       hbd13c29_0         787 KB
+    ncbi-vdb-3.4.1             |       hd63eeec_0         8.8 MB  bioconda
+    perl-5.32.1                | 0_h5eee18b_perl5        13.5 MB
+    perl-archive-tar-3.12      | pl5321hdfd78af_0          38 KB  bioconda
+    perl-carp-1.38             | pl5321hdfd78af_4          17 KB  bioconda
+    perl-common-sense-3.75     | pl5321hdfd78af_0          13 KB  bioconda
+    perl-compress-raw-bzip2-2.201| pl5321h87f3376_1          48 KB  bioconda
+    perl-compress-raw-zlib-2.105| pl5321h87f3376_0          75 KB  bioconda
+    perl-encode-3.19           | pl5321hec16e2b_1         2.1 MB  bioconda
+    perl-exporter-5.72         | pl5321hdfd78af_2          16 KB  bioconda
+    perl-exporter-tiny-1.002002| pl5321hdfd78af_0          25 KB  bioconda
+    perl-extutils-makemaker-7.78| pl5422h47b2149_0         148 KB
+    perl-io-compress-2.201     | pl5321h503566f_5          85 KB  bioconda
+    perl-io-zlib-1.15          | pl5321hdfd78af_1          12 KB  bioconda
+    perl-json-4.11             | pl5321hdfd78af_0          52 KB  bioconda
+    perl-json-xs-4.04          | pl5321h9948957_0          69 KB  bioconda
+    perl-list-moreutils-0.430  | pl5321hdfd78af_0          32 KB  bioconda
+    perl-list-moreutils-xs-0.430| pl5321h7b50bb2_5          50 KB  bioconda
+    perl-parent-0.236          | pl5321hdfd78af_2           8 KB  bioconda
+    perl-pathtools-3.75        | pl5321hec16e2b_3          42 KB  bioconda
+    perl-scalar-list-utils-1.62| pl5321hec16e2b_1          44 KB  bioconda
+    perl-types-serialiser-1.01 | pl5321hdfd78af_0          13 KB  bioconda
+    wget-1.24.5                |       h251f7ec_0         825 KB
+    ------------------------------------------------------------
+                                           Total:       127.4 MB
+
+The following NEW packages will be INSTALLED:
+
+  blast              bioconda/linux-64::blast-2.17.0-h66d330f_0 
+  c-ares             pkgs/main/linux-64::c-ares-1.34.7-hd44998d_0 
+  curl               pkgs/main/linux-64::curl-8.19.0-h292069f_0 
+  entrez-direct      bioconda/linux-64::entrez-direct-24.0-he881be0_0 
+  jansson            pkgs/main/linux-64::jansson-2.15.0-hbcba0ee_0 
+  libbrotlicommon    pkgs/main/linux-64::libbrotlicommon-1.2.0-h32cd6e7_0 
+  libbrotlidec       pkgs/main/linux-64::libbrotlidec-1.2.0-ha2c5f68_0 
+  libbrotlienc       pkgs/main/linux-64::libbrotlienc-1.2.0-h2e96acb_0 
+  libcurl            pkgs/main/linux-64::libcurl-8.19.0-ha05a353_0 
+  libev              pkgs/main/linux-64::libev-4.33-h7f8727e_1 
+  libkrb5            pkgs/main/linux-64::libkrb5-1.22.2-hbd13c29_0 
+  libnghttp2         pkgs/main/linux-64::libnghttp2-1.67.1-h697f920_0 
+  libssh2            pkgs/main/linux-64::libssh2-1.11.1-h251f7ec_0 
+  lmdb               pkgs/main/linux-64::lmdb-0.9.31-hb25bd0a_0 
+  ncbi-vdb           bioconda/linux-64::ncbi-vdb-3.4.1-hd63eeec_0 
+  perl               pkgs/main/linux-64::perl-5.32.1-0_h5eee18b_perl5 
+  perl-archive-tar   bioconda/noarch::perl-archive-tar-3.12-pl5321hdfd78af_0 
+  perl-carp          bioconda/noarch::perl-carp-1.38-pl5321hdfd78af_4 
+  perl-common-sense  bioconda/noarch::perl-common-sense-3.75-pl5321hdfd78af_0 
+  perl-compress-raw~ bioconda/linux-64::perl-compress-raw-bzip2-2.201-pl5321h87f3376_1 
+  perl-compress-raw~ bioconda/linux-64::perl-compress-raw-zlib-2.105-pl5321h87f3376_0 
+  perl-encode        bioconda/linux-64::perl-encode-3.19-pl5321hec16e2b_1 
+  perl-exporter      bioconda/noarch::perl-exporter-5.72-pl5321hdfd78af_2 
+  perl-exporter-tiny bioconda/noarch::perl-exporter-tiny-1.002002-pl5321hdfd78af_0 
+  perl-extutils-mak~ pkgs/main/linux-64::perl-extutils-makemaker-7.78-pl5422h47b2149_0 
+  perl-io-compress   bioconda/linux-64::perl-io-compress-2.201-pl5321h503566f_5 
+  perl-io-zlib       bioconda/noarch::perl-io-zlib-1.15-pl5321hdfd78af_1 
+  perl-json          bioconda/noarch::perl-json-4.11-pl5321hdfd78af_0 
+  perl-json-xs       bioconda/linux-64::perl-json-xs-4.04-pl5321h9948957_0 
+  perl-list-moreuti~ bioconda/noarch::perl-list-moreutils-0.430-pl5321hdfd78af_0 
+  perl-list-moreuti~ bioconda/linux-64::perl-list-moreutils-xs-0.430-pl5321h7b50bb2_5 
+  perl-parent        bioconda/noarch::perl-parent-0.236-pl5321hdfd78af_2 
+  perl-pathtools     bioconda/linux-64::perl-pathtools-3.75-pl5321hec16e2b_3 
+  perl-scalar-list-~ bioconda/linux-64::perl-scalar-list-utils-1.62-pl5321hec16e2b_1 
+  perl-types-serial~ bioconda/noarch::perl-types-serialiser-1.01-pl5321hdfd78af_0 
+  wget               pkgs/main/linux-64::wget-1.24.5-h251f7ec_0 
+
+The following packages will be UPDATED:
+
+  diamond                                 2.1.11-h5ca1c30_2 --> 2.2.3-he361c42_0 
+
+
+
+Downloading and Extracting Packages: ...working...blast-2.17.0         | 80.9 MB   |            |   0% 
+entrez-direct-24.0   | 16.3 MB   |            |   0% [A
+
+perl-5.32.1          | 13.5 MB   |            |   0% [A[A
+
+
+ncbi-vdb-3.4.1       | 8.8 MB    |            |   0% [A[A[A
+
+
+
+diamond-2.2.3        | 2.9 MB    |            |   0% [A[A[A[A
+
+
+
+
+perl-encode-3.19     | 2.1 MB    |            |   0% [A[A[A[A[A
+
+
+
+
+
+wget-1.24.5          | 825 KB    |            |   0% [A[A[A[A[A[A
+
+
+
+
+
+
+libkrb5-1.22.2       | 787 KB    |            |   0% [A[A[A[A[A[A[A
+
+
+
+
+
+
+
+c-ares-1.34.7        | 204 KB    |            |   0% [A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+curl-8.19.0          | 185 KB    |            |   0% [A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+perl-extutils-makema | 148 KB    |            |   0% [A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+perl-io-compress-2.2 | 85 KB     |            |   0% [A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+perl-compress-raw-zl | 75 KB     |            |   0% [A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+perl-json-xs-4.04    | 69 KB     |            |   0% [A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+jansson-2.15.0       | 65 KB     |            |   0% [A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+perl-json-4.11       | 52 KB     |            |   0% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+perl-list-moreutils- | 50 KB     |            |   0% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+perl-compress-raw-bz | 48 KB     |            |   0% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+perl-scalar-list-uti | 44 KB     |            |   0% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ... (more hidden) ...[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+ncbi-vdb-3.4.1       | 8.8 MB    |            |   1% [A[A[A
+entrez-direct-24.0   | 16.3 MB   |            |   1% [Ablast-2.17.0         | 80.9 MB   |            |   0% 
+
+
+
+diamond-2.2.3        | 2.9 MB    |            |   1% [A[A[A[A
+
+
+ncbi-vdb-3.4.1       | 8.8 MB    | ##4        |  24% [A[A[A
+entrez-direct-24.0   | 16.3 MB   | #7         |  17% [Ablast-2.17.0         | 80.9 MB   | 2          |   3% 
+
+
+
+diamond-2.2.3        | 2.9 MB    | ######2    |  63% [A[A[A[A
+
+
+ncbi-vdb-3.4.1       | 8.8 MB    | #####4     |  54% [A[A[A
+entrez-direct-24.0   | 16.3 MB   | ###        |  31% [Ablast-2.17.0         | 80.9 MB   | 4          |   5% 
+
+
+
+diamond-2.2.3        | 2.9 MB    | ########## | 100% [A[A[A[A
+
+
+
+diamond-2.2.3        | 2.9 MB    | ########## | 100% [A[A[A[A
+entrez-direct-24.0   | 16.3 MB   | ####2      |  42% [A
+
+
+
+
+perl-encode-3.19     | 2.1 MB    |            |   1% [A[A[A[A[A
+
+
+
+
+perl-encode-3.19     | 2.1 MB    | #3         |  13% [A[A[A[A[A
+
+
+
+
+perl-encode-3.19     | 2.1 MB    | ##1        |  21% [A[A[A[A[A
+
+
+ncbi-vdb-3.4.1       | 8.8 MB    | #######5   |  76% [A[A[Ablast-2.17.0         | 80.9 MB   | 6          |   7% 
+entrez-direct-24.0   | 16.3 MB   | #####1     |  51% [A
+
+
+
+
+perl-encode-3.19     | 2.1 MB    | ########## | 100% [A[A[A[A[Ablast-2.17.0         | 80.9 MB   | 9          |   9% 
+entrez-direct-24.0   | 16.3 MB   | #######2   |  73% [Ablast-2.17.0         | 80.9 MB   | #          |  11% 
+entrez-direct-24.0   | 16.3 MB   | ########5  |  85% [Ablast-2.17.0         | 80.9 MB   | #3         |  14% 
+entrez-direct-24.0   | 16.3 MB   | #########7 |  97% [A
+
+
+ncbi-vdb-3.4.1       | 8.8 MB    | ########## | 100% [A[A[A
+
+
+ncbi-vdb-3.4.1       | 8.8 MB    | ########## | 100% [A[A[Ablast-2.17.0         | 80.9 MB   | #6         |  16% blast-2.17.0         | 80.9 MB   | #9         |  19% blast-2.17.0         | 80.9 MB   | ##3        |  24% 
+entrez-direct-24.0   | 16.3 MB   | ########## | 100% [Ablast-2.17.0         | 80.9 MB   | ##7        |  27% 
+
+
+
+diamond-2.2.3        | 2.9 MB    | ########## | 100% [A[A[A[Ablast-2.17.0         | 80.9 MB   | ###1       |  32% blast-2.17.0         | 80.9 MB   | ###5       |  35% 
+
+
+
+
+
+
+libkrb5-1.22.2       | 787 KB    | 2          |   2% [A[A[A[A[A[A[A
+
+perl-5.32.1          | 13.5 MB   |            |   0% [A[Ablast-2.17.0         | 80.9 MB   | ###8       |  39% 
+
+
+
+
+
+
+libkrb5-1.22.2       | 787 KB    | ########## | 100% [A[A[A[A[A[A[A
+
+perl-5.32.1          | 13.5 MB   | #7         |  17% [A[Ablast-2.17.0         | 80.9 MB   | ####3      |  43% 
+
+perl-5.32.1          | 13.5 MB   | ##6        |  26% [A[Ablast-2.17.0         | 80.9 MB   | ####6      |  47% 
+
+perl-5.32.1          | 13.5 MB   | #####2     |  52% [A[A
+
+
+
+
+
+
+
+c-ares-1.34.7        | 204 KB    | 7          |   8% [A[A[A[A[A[A[A[Ablast-2.17.0         | 80.9 MB   | #####      |  51% 
+
+perl-5.32.1          | 13.5 MB   | ######6    |  67% [A[A
+
+
+
+
+
+
+
+c-ares-1.34.7        | 204 KB    | ########## | 100% [A[A[A[A[A[A[A[Ablast-2.17.0         | 80.9 MB   | #####4     |  54% 
+
+perl-5.32.1          | 13.5 MB   | ########9  |  90% [A[Ablast-2.17.0         | 80.9 MB   | #####7     |  58% blast-2.17.0         | 80.9 MB   | ######5    |  65% 
+
+
+
+
+
+
+
+
+curl-8.19.0          | 185 KB    | 8          |   9% [A[A[A[A[A[A[A[A[A
+
+perl-5.32.1          | 13.5 MB   | ########## | 100% [A[A
+
+
+
+
+
+
+
+
+curl-8.19.0          | 185 KB    | ########## | 100% [A[A[A[A[A[A[A[A[Ablast-2.17.0         | 80.9 MB   | #######1   |  72% 
+
+
+
+
+
+
+
+
+
+
+
+perl-compress-raw-zl | 75 KB     | ##1        |  21% [A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+perl-compress-raw-zl | 75 KB     | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+perl-json-xs-4.04    | 69 KB     | ##3        |  23% [A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+perl-io-compress-2.2 | 85 KB     | #8         |  19% [A[A[A[A[A[A[A[A[A[A[Ablast-2.17.0         | 80.9 MB   | #######6   |  77% 
+
+
+
+
+
+
+
+
+
+
+
+
+perl-json-xs-4.04    | 69 KB     | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+perl-io-compress-2.2 | 85 KB     | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+perl-json-4.11       | 52 KB     | ###1       |  31% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[Ablast-2.17.0         | 80.9 MB   | ########1  |  82% 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+perl-json-4.11       | 52 KB     | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+perl-list-moreutils- | 50 KB     | ###1       |  32% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+perl-list-moreutils- | 50 KB     | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+perl-extutils-makema | 148 KB    | #          |  11% [A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+perl-extutils-makema | 148 KB    | ########## | 100% [A[A[A[A[A[A[A[A[A[Ablast-2.17.0         | 80.9 MB   | ########8  |  89% 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+perl-scalar-list-uti | 44 KB     | ###6       |  37% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+perl-compress-raw-bz | 48 KB     | ###3       |  34% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+perl-compress-raw-bz | 48 KB     | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+perl-scalar-list-uti | 44 KB     | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[Ablast-2.17.0         | 80.9 MB   | #########4 |  95% 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ... (more hidden) ...[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ... (more hidden) ...[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+perl-encode-3.19     | 2.1 MB    | ########## | 100% [A[A[A[A[A
+
+
+
+
+perl-encode-3.19     | 2.1 MB    | ########## | 100% [A[A[A[A[A
+
+
+
+
+
+wget-1.24.5          | 825 KB    | 1          |   2% [A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+jansson-2.15.0       | 65 KB     | ##4        |  25% [A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+jansson-2.15.0       | 65 KB     | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+wget-1.24.5          | 825 KB    | ########## | 100% [A[A[A[A[A[A
+
+
+
+
+
+wget-1.24.5          | 825 KB    | ########## | 100% [A[A[A[A[A[Ablast-2.17.0         | 80.9 MB   | ########## | 100% 
+
+
+
+
+
+
+libkrb5-1.22.2       | 787 KB    | ########## | 100% [A[A[A[A[A[A[A
+
+
+
+
+
+
+libkrb5-1.22.2       | 787 KB    | ########## | 100% [A[A[A[A[A[A[A
+entrez-direct-24.0   | 16.3 MB   | ########## | 100% [A
+
+
+
+
+
+
+
+c-ares-1.34.7        | 204 KB    | ########## | 100% [A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+c-ares-1.34.7        | 204 KB    | ########## | 100% [A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+curl-8.19.0          | 185 KB    | ########## | 100% [A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+curl-8.19.0          | 185 KB    | ########## | 100% [A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+perl-compress-raw-zl | 75 KB     | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+perl-compress-raw-zl | 75 KB     | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A
+
+
+ncbi-vdb-3.4.1       | 8.8 MB    | ########## | 100% [A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+perl-json-xs-4.04    | 69 KB     | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+perl-json-xs-4.04    | 69 KB     | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+perl-json-4.11       | 52 KB     | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+perl-json-4.11       | 52 KB     | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+perl-io-compress-2.2 | 85 KB     | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+perl-io-compress-2.2 | 85 KB     | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+perl-list-moreutils- | 50 KB     | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+perl-list-moreutils- | 50 KB     | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+perl-compress-raw-bz | 48 KB     | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+perl-compress-raw-bz | 48 KB     | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+perl-extutils-makema | 148 KB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+perl-extutils-makema | 148 KB    | ########## | 100% [A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+perl-scalar-list-uti | 44 KB     | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+perl-scalar-list-uti | 44 KB     | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ... (more hidden) ...[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ... (more hidden) ...[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+jansson-2.15.0       | 65 KB     | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+jansson-2.15.0       | 65 KB     | ########## | 100% [A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+wget-1.24.5          | 825 KB    | ########## | 100% [A[A[A[A[A[Ablast-2.17.0         | 80.9 MB   | ########## | 100% 
+
+perl-5.32.1          | 13.5 MB   | ########## | 100% [A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                      [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A                                                     
+                                                     [A
+
+                                                     [A[A
+
+
+                                                     [A[A[A
+
+
+
+                                                     [A[A[A[A
+
+
+
+
+                                                     [A[A[A[A[A
+
+
+
+
+
+                                                     [A[A[A[A[A[A
+
+
+
+
+
+
+                                                     [A[A[A[A[A[A[A
+
+
+
+
+
+
+
+                                                     [A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+                                                     [A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+                                                     [A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+                                                     [A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+                                                     [A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+                                                     [A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                     [A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                     [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                     [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                     [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                     [A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A[A
+[A
+
+[A[A
+
+
+[A[A[A
+
+
+
+[A[A[A[A
+
+
+
+
+[A[A[A[A[A
+
+
+
+
+
+[A[A[A[A[A[A
+
+
+
+
+
+
+[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+[A[A[A[A[A[A[A[A
+
+
+
+
+
+
+
+
+[A[A[A[A[A[A[A[A[A done
+Preparing transaction: / - \ | / - \ | / - \ | / - \ done
+Verifying transaction: / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - done
+Executing transaction: | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ done
+2 channel Terms of Service accepted
+Channels:
+ - conda-forge
+ - defaults
+Platform: linux-64
+Collecting package metadata (repodata.json): - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / done
+Solving environment: \ | / done
+
+# All requested packages already installed.
+
+Requirement already satisfied: pip in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (26.0.1)
+Looking in links: https://data.dgl.ai/wheels/cu118/repo.html
+Requirement already satisfied: dgl in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (2.1.0+cu118)
+Requirement already satisfied: numpy>=1.14.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from dgl) (2.0.1)
+Requirement already satisfied: scipy>=1.1.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from dgl) (1.13.1)
+Requirement already satisfied: networkx>=2.1 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from dgl) (3.2.1)
+Requirement already satisfied: requests>=2.19.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from dgl) (2.32.5)
+Requirement already satisfied: tqdm in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from dgl) (4.68.3)
+Requirement already satisfied: psutil>=5.8.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from dgl) (7.2.2)
+Requirement already satisfied: torchdata>=0.5.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from dgl) (0.11.0)
+Requirement already satisfied: charset_normalizer<4,>=2 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from requests>=2.19.0->dgl) (3.4.4)
+Requirement already satisfied: idna<4,>=2.5 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from requests>=2.19.0->dgl) (3.11)
+Requirement already satisfied: urllib3<3,>=1.21.1 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from requests>=2.19.0->dgl) (2.5.0)
+Requirement already satisfied: certifi>=2017.4.17 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from requests>=2.19.0->dgl) (2025.10.5)
+Requirement already satisfied: torch>=2 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from torchdata>=0.5.0->dgl) (2.5.1)
+Requirement already satisfied: filelock in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from torch>=2->torchdata>=0.5.0->dgl) (3.17.0)
+Requirement already satisfied: typing-extensions>=4.8.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from torch>=2->torchdata>=0.5.0->dgl) (4.15.0)
+Requirement already satisfied: jinja2 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from torch>=2->torchdata>=0.5.0->dgl) (3.1.6)
+Requirement already satisfied: fsspec in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from torch>=2->torchdata>=0.5.0->dgl) (2025.10.0)
+Requirement already satisfied: sympy==1.13.1 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from torch>=2->torchdata>=0.5.0->dgl) (1.13.1)
+Requirement already satisfied: mpmath<1.4,>=1.1.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from sympy==1.13.1->torch>=2->torchdata>=0.5.0->dgl) (1.3.0)
+Requirement already satisfied: MarkupSafe>=2.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from jinja2->torch>=2->torchdata>=0.5.0->dgl) (3.0.2)
+Requirement already satisfied: fair-esm in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (2.0.0)
+Requirement already satisfied: networkx in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (3.2.1)
+Requirement already satisfied: biopython in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (1.85)
+Requirement already satisfied: pandas in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (2.3.3)
+Requirement already satisfied: scikit-learn in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (1.6.1)
+Requirement already satisfied: tqdm in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (4.68.3)
+Requirement already satisfied: h5py in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (3.14.0)
+Requirement already satisfied: matplotlib in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (3.9.4)
+Requirement already satisfied: seaborn in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (0.13.2)
+Collecting obonet
+  Downloading obonet-1.2.0-py3-none-any.whl.metadata (7.2 kB)
+Requirement already satisfied: torchdata in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (0.11.0)
+Collecting ruamel.yaml
+  Downloading ruamel_yaml-0.19.1-py3-none-any.whl.metadata (16 kB)
+Collecting torch_geometric
+  Downloading torch_geometric-2.6.1-py3-none-any.whl.metadata (63 kB)
+Requirement already satisfied: numpy in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from biopython) (2.0.1)
+Requirement already satisfied: python-dateutil>=2.8.2 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from pandas) (2.9.0.post0)
+Requirement already satisfied: pytz>=2020.1 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from pandas) (2026.2)
+Requirement already satisfied: tzdata>=2022.7 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from pandas) (2026.2)
+Requirement already satisfied: scipy>=1.6.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from scikit-learn) (1.13.1)
+Requirement already satisfied: joblib>=1.2.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from scikit-learn) (1.5.3)
+Requirement already satisfied: threadpoolctl>=3.1.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from scikit-learn) (3.6.0)
+Requirement already satisfied: contourpy>=1.0.1 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from matplotlib) (1.3.0)
+Requirement already satisfied: cycler>=0.10 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from matplotlib) (0.12.1)
+Requirement already satisfied: fonttools>=4.22.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from matplotlib) (4.60.2)
+Requirement already satisfied: kiwisolver>=1.3.1 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from matplotlib) (1.4.7)
+Requirement already satisfied: packaging>=20.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from matplotlib) (26.2)
+Requirement already satisfied: pillow>=8 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from matplotlib) (11.3.0)
+Requirement already satisfied: pyparsing>=2.3.1 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from matplotlib) (3.3.2)
+Requirement already satisfied: importlib-resources>=3.2.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from matplotlib) (6.5.2)
+Requirement already satisfied: urllib3>=1.25 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from torchdata) (2.5.0)
+Requirement already satisfied: requests in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from torchdata) (2.32.5)
+Requirement already satisfied: torch>=2 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from torchdata) (2.5.1)
+Collecting aiohttp (from torch_geometric)
+  Downloading aiohttp-3.13.5-cp39-cp39-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (8.1 kB)
+Requirement already satisfied: fsspec in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from torch_geometric) (2025.10.0)
+Requirement already satisfied: jinja2 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from torch_geometric) (3.1.6)
+Requirement already satisfied: psutil>=5.8.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from torch_geometric) (7.2.2)
+Requirement already satisfied: zipp>=3.1.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from importlib-resources>=3.2.0->matplotlib) (3.23.1)
+Requirement already satisfied: six>=1.5 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from python-dateutil>=2.8.2->pandas) (1.17.0)
+Requirement already satisfied: filelock in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from torch>=2->torchdata) (3.17.0)
+Requirement already satisfied: typing-extensions>=4.8.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from torch>=2->torchdata) (4.15.0)
+Requirement already satisfied: sympy==1.13.1 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from torch>=2->torchdata) (1.13.1)
+Requirement already satisfied: mpmath<1.4,>=1.1.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from sympy==1.13.1->torch>=2->torchdata) (1.3.0)
+Collecting aiohappyeyeballs>=2.5.0 (from aiohttp->torch_geometric)
+  Downloading aiohappyeyeballs-2.6.1-py3-none-any.whl.metadata (5.9 kB)
+Collecting aiosignal>=1.4.0 (from aiohttp->torch_geometric)
+  Downloading aiosignal-1.4.0-py3-none-any.whl.metadata (3.7 kB)
+Collecting async-timeout<6.0,>=4.0 (from aiohttp->torch_geometric)
+  Downloading async_timeout-5.0.1-py3-none-any.whl.metadata (5.1 kB)
+Collecting attrs>=17.3.0 (from aiohttp->torch_geometric)
+  Downloading attrs-26.1.0-py3-none-any.whl.metadata (8.8 kB)
+Collecting frozenlist>=1.1.1 (from aiohttp->torch_geometric)
+  Downloading frozenlist-1.8.0-cp39-cp39-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (20 kB)
+Collecting multidict<7.0,>=4.5 (from aiohttp->torch_geometric)
+  Downloading multidict-6.7.1-cp39-cp39-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (5.3 kB)
+Collecting propcache>=0.2.0 (from aiohttp->torch_geometric)
+  Downloading propcache-0.4.1-cp39-cp39-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (13 kB)
+Collecting yarl<2.0,>=1.17.0 (from aiohttp->torch_geometric)
+  Downloading yarl-1.22.0-cp39-cp39-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (75 kB)
+Requirement already satisfied: idna>=2.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from yarl<2.0,>=1.17.0->aiohttp->torch_geometric) (3.11)
+Requirement already satisfied: MarkupSafe>=2.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from jinja2->torch_geometric) (3.0.2)
+Requirement already satisfied: charset_normalizer<4,>=2 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from requests->torchdata) (3.4.4)
+Requirement already satisfied: certifi>=2017.4.17 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from requests->torchdata) (2025.10.5)
+Downloading obonet-1.2.0-py3-none-any.whl (10 kB)
+Downloading ruamel_yaml-0.19.1-py3-none-any.whl (118 kB)
+Downloading torch_geometric-2.6.1-py3-none-any.whl (1.1 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.1/1.1 MB 10.6 MB/s  0:00:00
+Downloading aiohttp-3.13.5-cp39-cp39-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (1.7 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.7/1.7 MB 13.8 MB/s  0:00:00
+Downloading async_timeout-5.0.1-py3-none-any.whl (6.2 kB)
+Downloading multidict-6.7.1-cp39-cp39-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (240 kB)
+Downloading yarl-1.22.0-cp39-cp39-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (346 kB)
+Downloading aiohappyeyeballs-2.6.1-py3-none-any.whl (15 kB)
+Downloading aiosignal-1.4.0-py3-none-any.whl (7.5 kB)
+Downloading attrs-26.1.0-py3-none-any.whl (67 kB)
+Downloading frozenlist-1.8.0-cp39-cp39-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (219 kB)
+Downloading propcache-0.4.1-cp39-cp39-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (197 kB)
+Installing collected packages: ruamel.yaml, propcache, obonet, multidict, frozenlist, attrs, async-timeout, aiohappyeyeballs, yarl, aiosignal, aiohttp, torch_geometric
+
+Successfully installed aiohappyeyeballs-2.6.1 aiohttp-3.13.5 aiosignal-1.4.0 async-timeout-5.0.1 attrs-26.1.0 frozenlist-1.8.0 multidict-6.7.1 obonet-1.2.0 propcache-0.4.1 ruamel.yaml-0.19.1 torch_geometric-2.6.1 yarl-1.22.0
+========================================================
+  Setup Complete!
+  End time  : Tue Jul  7 09:23:54 MDT 2026
+========================================================

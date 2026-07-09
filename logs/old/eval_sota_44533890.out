@@ -1,0 +1,137 @@
+========================================================
+  Job ID      : 44533890
+  Node        : fc5
+  Start time  : Wed Jul  8 17:05:59 MDT 2026
+========================================================
+1. Generating BLAST maximum sequence identity (for Plot A)
+Loading datasets ...
+  Train: 12889 proteins,  Test: 1722 proteins
+Extracting training sequences from .pt files ...
+WARNING: Could not extract sequences from .pt files.
+Please provide train_sequences.fasta manually and re-run with --skip_blast.
+2. Running 5-seed Evaluation and Bootstrapping
+Loading datasets from /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data/split_files/datasets.pkl ...
+
+============================================================
+  Ontology: BIOLOGICAL_PROCESS
+============================================================
+  Test proteins: 1722, GO terms: 727
+  y_true shape: (1722, 727)
+  [WARN] train_labels.npy not found for bp, approximating IC from test set.
+  [TransFun] Bootstrapping ...
+  [DeepFRI] Bootstrapping ...
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_seq_BP_pred_scores.json
+  [DPFunc] Bootstrapping ...
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA_predictions/DPFunc/bp_results.txt
+  [Hybrid] Loading 5-seed predictions ...
+  [Hybrid_JK] Loading 5-seed predictions ...
+
+============================================================
+  Ontology: MOLECULAR_FUNCTION
+============================================================
+  Test proteins: 1722, GO terms: 316
+  y_true shape: (1722, 316)
+  [WARN] train_labels.npy not found for mf, approximating IC from test set.
+  [TransFun] Bootstrapping ...
+  [DeepFRI] Bootstrapping ...
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_seq_MF_pred_scores.json
+  [DPFunc] Bootstrapping ...
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA_predictions/DPFunc/mf_results.txt
+  [Hybrid] Loading 5-seed predictions ...
+  [Hybrid_JK] Loading 5-seed predictions ...
+
+============================================================
+  Ontology: CELLULAR_COMPONENT
+============================================================
+  Test proteins: 1722, GO terms: 161
+  y_true shape: (1722, 161)
+  [WARN] train_labels.npy not found for cc, approximating IC from test set.
+  [TransFun] Bootstrapping ...
+  [DeepFRI] Bootstrapping ...
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_seq_CC_pred_scores.json
+  [DPFunc] Bootstrapping ...
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA_predictions/DPFunc/cc_results.txt
+  [Hybrid] Loading 5-seed predictions ...
+  [Hybrid_JK] Loading 5-seed predictions ...
+
+✓ Results saved to /home/ganeshiny.sridharan/dgg/deep-green-GO/runs_5seeds/evaluation_results.csv
+    Model Ontology  N_seeds  Micro_Fmax_mean  Micro_Fmax_std  Micro_Fmax_se  Macro_Fmax_mean  Macro_Fmax_std  Macro_Fmax_se  Micro_AUROC_mean  Micro_AUROC_std  Micro_AUROC_se  Micro_AUPRC_mean  Micro_AUPRC_std  Micro_AUPRC_se  Smin_mean  Smin_std  Smin_se
+ TransFun       BP        5         0.238178        0.009499       0.004248         0.262775        0.004203       0.001880          0.704935         0.013965        0.006245          0.138873         0.010417        0.004659  62.573566  2.202268 0.984884
+  DeepFRI       BP        5         0.040622        0.001367       0.000611         0.042253        0.001677       0.000750          0.500000         0.000000        0.000000          0.510366         0.000356        0.000159  68.142333  2.308605 1.032439
+   DPFunc       BP        5         0.039523        0.001148       0.000513         0.041427        0.001511       0.000676          0.500000         0.000000        0.000000          0.510080         0.000299        0.000134  65.858029  2.046218 0.915096
+   Hybrid       BP        5         0.670232        0.004697       0.002101         0.661932        0.006863       0.003069          0.840094         0.009538        0.004265          0.630543         0.005279        0.002361  32.415829  0.457148 0.204443
+Hybrid_JK       BP        5         0.670872        0.006521       0.002916         0.663013        0.010030       0.004485          0.879360         0.008642        0.003865          0.637804         0.008952        0.004004  32.272409  0.573062 0.256281
+ TransFun       MF        5         0.409938        0.006591       0.002947         0.429508        0.004440       0.001986          0.722553         0.002949        0.001319          0.348707         0.008657        0.003872  24.587698  0.746222 0.333721
+  DeepFRI       MF        5         0.047790        0.000714       0.000320         0.049738        0.000708       0.000317          0.500000         0.000000        0.000000          0.512240         0.000187        0.000084  34.102126  0.558119 0.249598
+   DPFunc       MF        5         0.047842        0.000512       0.000229         0.049062        0.000532       0.000238          0.500000         0.000000        0.000000          0.512254         0.000134        0.000060  33.978182  0.340045 0.152073
+   Hybrid       MF        5         0.823263        0.005608       0.002508         0.854976        0.004831       0.002161          0.950936         0.008770        0.003922          0.842348         0.001838        0.000822   8.468647  0.243062 0.108701
+Hybrid_JK       MF        5         0.814451        0.009624       0.004304         0.840536        0.005910       0.002643          0.943627         0.009004        0.004027          0.827728         0.007902        0.003534   9.100286  0.419937 0.187802
+ TransFun       CC        5         0.294150        0.009463       0.004232         0.350161        0.006149       0.002750          0.731742         0.007364        0.003293          0.181017         0.007379        0.003300  14.368514  0.235747 0.105429
+  DeepFRI       CC        5         0.046321        0.001948       0.000871         0.048884        0.002962       0.001325          0.500000         0.000000        0.000000          0.511855         0.000510        0.000228  16.584223  0.749602 0.335232
+   DPFunc       CC        5         0.045473        0.001153       0.000515         0.047425        0.001861       0.000832          0.500000         0.000000        0.000000          0.511633         0.000302        0.000135  16.289523  0.523561 0.234144
+   Hybrid       CC        5         0.613455        0.003848       0.001721         0.618562        0.015452       0.006911          0.882786         0.013864        0.006200          0.602704         0.020300        0.009078   8.797609  0.106818 0.047770
+Hybrid_JK       CC        5         0.603726        0.011471       0.005130         0.625064        0.008991       0.004021          0.875097         0.018181        0.008131          0.576573         0.021462        0.009598   8.986055  0.223003 0.099730
+3. Generating Publication Comparison Plots
+Loading datasets ...
+
+[Plot A] Sequence identity bins ...
+  [SKIP plot A] /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data/blast_identity.csv not found. Run preprocessing/calc_blast_identity.sh first.
+
+[Plot C] IC bins ...
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_seq_BP_pred_scores.json
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA_predictions/DPFunc/bp_results.txt
+  [MISSING] No seeds found for Hybrid/bp
+  [MISSING] No seeds found for Hybrid_JK/bp
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_seq_MF_pred_scores.json
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA_predictions/DPFunc/mf_results.txt
+  [MISSING] No seeds found for Hybrid/mf
+  [MISSING] No seeds found for Hybrid_JK/mf
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_seq_CC_pred_scores.json
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA_predictions/DPFunc/cc_results.txt
+  [MISSING] No seeds found for Hybrid/cc
+  [MISSING] No seeds found for Hybrid_JK/cc
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison/plot_C_ic_bins.png
+
+[Plots B/D/E] IC-weighted PR curves ...
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_seq_BP_pred_scores.json
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA_predictions/DPFunc/bp_results.txt
+  [MISSING] No seeds found for Hybrid/bp
+  [MISSING] No seeds found for Hybrid_JK/bp
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison/plot_E_pr_curve_bp.png
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_seq_MF_pred_scores.json
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA_predictions/DPFunc/mf_results.txt
+  [MISSING] No seeds found for Hybrid/mf
+  [MISSING] No seeds found for Hybrid_JK/mf
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison/plot_B_pr_curve_mf.png
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_seq_CC_pred_scores.json
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA_predictions/DPFunc/cc_results.txt
+  [MISSING] No seeds found for Hybrid/cc
+  [MISSING] No seeds found for Hybrid_JK/cc
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison/plot_D_pr_curve_cc.png
+
+[Plot F] GO depth bins ...
+  [SKIP plot F] go-basic.obo not found. Download from http://purl.obolibrary.org/obo/go/go-basic.obo
+
+[Plot G] Coverage ...
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_seq_BP_pred_scores.json
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA_predictions/DPFunc/bp_results.txt
+  [MISSING] No seeds found for Hybrid/bp
+  [MISSING] No seeds found for Hybrid_JK/bp
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_seq_MF_pred_scores.json
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA_predictions/DPFunc/mf_results.txt
+  [MISSING] No seeds found for Hybrid/mf
+  [MISSING] No seeds found for Hybrid_JK/mf
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_seq_CC_pred_scores.json
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA_predictions/DPFunc/cc_results.txt
+  [MISSING] No seeds found for Hybrid/cc
+  [MISSING] No seeds found for Hybrid_JK/cc
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison/plot_G_coverage.png
+
+[Summary] Fmax bar chart ...
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison/plot_summary_fmax.png
+
+✓ All plots saved to: /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison
+========================================================
+  Evaluation and Plotting Complete!
+  End time  : Wed Jul  8 17:10:49 MDT 2026
+========================================================
