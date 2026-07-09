@@ -232,7 +232,7 @@ def load_predictions(ont_full, ont_short, prot_list, goterms):
     preds['TransFun'] = _txt_to_matrix(tf_file, prot_list, goterms)
 
     # DeepFRI
-    df_variants = [f'deepfri_seq_{ont_short.upper()}_pred_scores.json', f'deepfri_seq_{ont_short.upper()}_{ont_short.upper()}_pred_scores.json']
+    df_variants = [f'deepfri_seq_{ont_short.upper()}_pred_scores.json']
     df_file = _find_robust(df_variants, 'deepfri', ['baselines', 'baselines/deepfri_results'])
     if not df_file: df_file = os.path.join(PROJECT_DIR, 'baselines', 'deepfri_results', f'deepfri_seq_{ont_short.upper()}_pred_scores.json')
     preds['DeepFRI'] = _deepfri_to_matrix(df_file, prot_list, goterms)
