@@ -16,8 +16,11 @@ def create_deepfri_npz(orig_npz_path, new_npz_path):
     seqres_raw = data['seqres']
     seq_str = str(seqres_raw.item()) if seqres_raw.ndim == 0 else str(seqres_raw)
     
-    # Truncate sequence to match contact map size
-    trunc_seq = seq_str[:c_alpha.shape[0]]
+    # DeepFRI requires sequence length and contact map size to be exactly equal.
+    # We truncate both to the minimum length to ensure they match perfectly without out-of-bounds errors.
+    min_len = min(c_alpha.shape[0], len(seq_str))
+    trunc_seq = seq_str[:min_len]
+    c_alpha = c_alpha[:min_len, :min_len]
     
     # Save new npz with only the keys DeepFRI needs: C_alpha, C_beta, seqres
     save_dict = {
