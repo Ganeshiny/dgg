@@ -67,7 +67,15 @@ PALETTE = {
     'DPFunc':    '#009988',   # teal
     'DeepFRI':   '#EE7733',   # orange
 }
-MODEL_ORDER = ['Hybrid_JK', 'Hybrid', 'DPFunc', 'TransFun', 'DeepFRI']
+MODEL_ORDER = ['Hybrid', 'Hybrid_JK', 'DPFunc', 'TransFun', 'DeepFRI_Seq', 'DeepFRI_Cmap']
+MODEL_COLORS = {
+    'Hybrid': '#1f77b4',
+    'Hybrid_JK': '#ff7f0e',
+    'DPFunc': '#2ca02c',
+    'TransFun': '#9467bd',
+    'DeepFRI_Seq': '#d62728',
+    'DeepFRI_Cmap': '#8c564b'
+}
 
 # ── matplotlib config ─────────────────────────────────────────────────────────
 plt.rcParams.update({
@@ -231,11 +239,17 @@ def load_predictions(ont_full, ont_short, prot_list, goterms):
     if not tf_file: tf_file = os.path.join(PROJECT_DIR, 'SOTA', 'TransFun', 'data', f'{ont_short}_results.txt')
     preds['TransFun'] = _txt_to_matrix(tf_file, prot_list, goterms)
 
-    # DeepFRI
-    df_variants = [f'deepfri_seq_{ont_short.upper()}_pred_scores.json', f'deepfri_seq_{ont_short.upper()}_{ont_short.upper()}_pred_scores.json']
-    df_file = _find_robust(df_variants, 'deepfri', ['baselines', 'baselines/deepfri_results'])
-    if not df_file: df_file = os.path.join(PROJECT_DIR, 'baselines', 'deepfri_results', f'deepfri_seq_{ont_short.upper()}_pred_scores.json')
-    preds['DeepFRI'] = _deepfri_to_matrix(df_file, prot_list, goterms)
+    # DeepFRI Sequence Mode
+    df_seq_variants = [f'deepfri_seq_{ont_short.upper()}_pred_scores.json', f'deepfri_seq_{ont_short.upper()}_{ont_short.upper()}_pred_scores.json']
+    df_seq_file = _find_robust(df_seq_variants, 'deepfri', ['baselines', 'baselines/deepfri_results'])
+    if not df_seq_file: df_seq_file = os.path.join(PROJECT_DIR, 'baselines', 'deepfri_results', f'deepfri_seq_{ont_short.upper()}_pred_scores.json')
+    preds['DeepFRI_Seq'] = _deepfri_to_matrix(df_seq_file, prot_list, goterms)
+
+    # DeepFRI Structure Mode (Cmap)
+    df_cmap_variants = [f'deepfri_cmap_{ont_short.upper()}_pred_scores.json', f'deepfri_cmap_{ont_short.upper()}_{ont_short.upper()}_pred_scores.json']
+    df_cmap_file = _find_robust(df_cmap_variants, 'deepfri', ['baselines', 'baselines/deepfri_results'])
+    if not df_cmap_file: df_cmap_file = os.path.join(PROJECT_DIR, 'baselines', 'deepfri_results', f'deepfri_cmap_{ont_short.upper()}_pred_scores.json')
+    preds['DeepFRI_Cmap'] = _deepfri_to_matrix(df_cmap_file, prot_list, goterms)
 
     # DPFunc
     dpf_file = _find_robust([f'{ont_short}_results.txt'], 'DPFunc', ['SOTA_predictions', 'SOTA'])
