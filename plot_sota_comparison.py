@@ -107,6 +107,9 @@ def style_ax(ax):
     ax.set_axisbelow(True)
 
 def save_fig(name):
+    global args
+    if args and args.common_subset:
+        name += '_common_subset' 
     path = os.path.join(OUT_DIR, f'{name}.png')
     plt.savefig(path, bbox_inches='tight', dpi=300)
     plt.close()
@@ -126,6 +129,12 @@ def load_datasets():
         return _Up(f).load()
 
 _FULL_ONT = {'bp': 'biological_process', 'mf': 'molecular_function', 'cc': 'cellular_component'}
+
+def _load_valid_mask(ont_short):
+    mask_file = os.path.join(PROJECT_DIR, f"{ont_short}_valid_mask.npy")
+    if os.path.exists(mask_file):
+        return np.load(mask_file)
+    return None
 
 def _load_y_true(ont_short):
     """Load test_y_true.npy from any completed run for this ontology."""
@@ -164,22 +173,25 @@ def compute_ic(y_train):
 def _txt_to_matrix(path, prot_list, goterms):
     """Load space-separated 'PROT TERM SCORE' file."""
     y = np.zeros((len(prot_list), len(goterms)), dtype=np.float32)
+    cov = set()
     if not os.path.exists(path):
         print(f'  [MISSING] {path}')
-        return y
+        return y, cov
     pi = {p: i for i, p in enumerate(prot_list)}
     ti = {t: i for i, t in enumerate(goterms)}
     with open(path) as f:
         for line in f:
             parts = line.strip().split()
-            if len(parts) >= 3 and parts[0] in pi and parts[1] in ti:
-                y[pi[parts[0]], ti[parts[1]]] = float(parts[2])
-    return y
+            if len(parts) >= 3 and parts[0] in pi:
+                cov.add(parts[0])
+                if parts[1] in ti:
+                    y[pi[parts[0]], ti[parts[1]]] = float(parts[2])
+    return y, cov
 
 def _deepfri_to_matrix(path, prot_list, goterms):
     if not os.path.exists(path):
         print(f'  [MISSING] {path}')
-        return np.zeros((len(prot_list), len(goterms)), dtype=np.float32)
+        return np.zeros((len(prot_list), len(goterms)), dtype=np.float32), set()
     with open(path) as f:
         d = json.load(f)
     chains = d.get('pdb_chains', [])
@@ -217,7 +229,7 @@ def _deepfri_to_matrix(path, prot_list, goterms):
 
     match_terms = sum(1 for dt in dterms if (dt if dt.startswith('GO:') else f'GO:{dt}') in ti)
     print(f"  [DeepFRI Debug] {os.path.basename(path)} -> matched {len(match_chains)}/{len(chains)} test proteins, {match_terms}/{len(dterms)} terms. Max score: {np.max(y):.4f}")
-    return y
+    return y, match_chains
 
 def _find_robust(filename_variants, req_dir_part, search_roots):
     for sdir in search_roots:
@@ -231,33 +243,35 @@ def _find_robust(filename_variants, req_dir_part, search_roots):
     return None
 
 def load_predictions(ont_full, ont_short, prot_list, goterms):
-    """Returns dict model→y_pred matrix (averaged over seeds for your models)."""
+    """Returns (preds, cov_sets) dicts mapping model to predictions and coverage."""
     preds = {}
+    cov_sets = {}
 
     # TransFun
     tf_file = _find_robust([f'{ont_short}_results.txt'], 'TransFun', ['SOTA', 'SOTA_predictions'])
     if not tf_file: tf_file = os.path.join(PROJECT_DIR, 'SOTA', 'TransFun', 'data', f'{ont_short}_results.txt')
-    preds['TransFun'] = _txt_to_matrix(tf_file, prot_list, goterms)
+    preds['TransFun'], cov_sets['TransFun'] = _txt_to_matrix(tf_file, prot_list, goterms)
 
     # DeepFRI Sequence Mode
     df_seq_variants = [f'deepfri_seq_{ont_short.upper()}_pred_scores.json', f'deepfri_seq_{ont_short.upper()}_{ont_short.upper()}_pred_scores.json']
     df_seq_file = _find_robust(df_seq_variants, 'deepfri', ['baselines', 'baselines/deepfri_results'])
     if not df_seq_file: df_seq_file = os.path.join(PROJECT_DIR, 'baselines', 'deepfri_results', f'deepfri_seq_{ont_short.upper()}_pred_scores.json')
-    preds['DeepFRI_Seq'] = _deepfri_to_matrix(df_seq_file, prot_list, goterms)
+    preds['DeepFRI_Seq'], cov_sets['DeepFRI_Seq'] = _deepfri_to_matrix(df_seq_file, prot_list, goterms)
 
     # DeepFRI Structure Mode (Cmap)
     df_cmap_variants = [f'deepfri_cmap_{ont_short.upper()}_pred_scores.json', f'deepfri_cmap_{ont_short.upper()}_{ont_short.upper()}_pred_scores.json']
     df_cmap_file = _find_robust(df_cmap_variants, 'deepfri', ['baselines', 'baselines/deepfri_results'])
     if not df_cmap_file: df_cmap_file = os.path.join(PROJECT_DIR, 'baselines', 'deepfri_results', f'deepfri_cmap_{ont_short.upper()}_pred_scores.json')
-    preds['DeepFRI_Cmap'] = _deepfri_to_matrix(df_cmap_file, prot_list, goterms)
+    preds['DeepFRI_Cmap'], cov_sets['DeepFRI_Cmap'] = _deepfri_to_matrix(df_cmap_file, prot_list, goterms)
 
     # DPFunc
     dpf_file = _find_robust([f'{ont_short}_results.txt'], 'DPFunc', ['SOTA_predictions', 'SOTA'])
     if not dpf_file: dpf_file = os.path.join(PROJECT_DIR, 'SOTA_predictions', 'DPFunc', f'{ont_short}_results.txt')
-    preds['DPFunc'] = _txt_to_matrix(dpf_file, prot_list, goterms)
+    preds['DPFunc'], cov_sets['DPFunc'] = _txt_to_matrix(dpf_file, prot_list, goterms)
 
     # Your models — average over available seeds
     for mname in ('Hybrid', 'Hybrid_JK'):
+        cov_sets[mname] = set(prot_list)
         seed_preds_list = load_per_seed_preds(ont_short, mname, len(goterms), len(prot_list))
         seed_preds = [arr for s, arr in seed_preds_list]
         if seed_preds:
@@ -266,7 +280,19 @@ def load_predictions(ont_full, ont_short, prot_list, goterms):
             preds[mname] = np.zeros((len(prot_list), len(goterms)), dtype=np.float32)
             print(f'  [MISSING] No seeds found for {mname}/{ont_short}')
 
-    return preds
+    global args
+    if args and args.common_subset:
+        common = set(prot_list)
+        for mname, c in cov_sets.items():
+            if mname != 'DeepFRI_Cmap':
+                common = common.intersection(c)
+        mask = np.array([p in common for p in prot_list])
+        print(f"  [Common Subset] {ont_short}: {len(common)}/{len(prot_list)}")
+        for m in preds:
+            preds[m] = preds[m][mask]
+        return preds, mask
+    
+    return preds, None
 
 def load_per_seed_preds(ont_short, mname, goterms_len, n_prots):
     """Load per-seed y_pred arrays for your models.
@@ -338,12 +364,28 @@ def plot_A_sequence_identity(datasets):
     if y_true is None:
         print('  [SKIP plot A] No cached y_true for bp.')
         return
+        
+    valid_mask = _load_valid_mask(ont_short)
+    if valid_mask is not None:
+        y_true = y_true[:, valid_mask]
+        goterms = [gt for gt, v in zip(goterms, valid_mask) if v]
+        
     ic_raw    = _load_ic(ont_short)
+    if ic_raw is not None and valid_mask is not None:
+        ic_raw = ic_raw[:, valid_mask]
     ic        = ic_raw if ic_raw is not None else compute_ic(y_true)
-    preds     = load_predictions(ont_full, ont_short, prot_list, goterms)
+    preds, mask = load_predictions(ont_full, ont_short, prot_list, goterms)
+    if mask is not None:
+        y_true = y_true[mask]
+        # Depending on context, ic or prot_identity or ic_bins may need masking.
+        # It's better to mask them directly after this call.
 
     # Assign each test protein to an identity bin
     prot_identity = np.array([id_map.get(p, 1.0) for p in prot_list])
+    if mask is not None:
+        prot_identity = prot_identity[mask]
+        if ic is not None and len(ic) == len(mask):
+            ic = ic[mask]
 
     fig, ax = plt.subplots(figsize=(7, 4.5))
     x_positions = np.arange(len(bins))
@@ -438,7 +480,11 @@ def plot_C_ic_bins(datasets):
         y_true    = _load_y_true(ont_short)
 
         ic_raw    = _load_ic(ont_short); ic = ic_raw if ic_raw is not None else compute_ic(y_true)
-        preds     = load_predictions(ont_full, ont_short, prot_list, goterms)
+        preds, mask = load_predictions(ont_full, ont_short, prot_list, goterms)
+    if mask is not None:
+        y_true = y_true[mask]
+        # Depending on context, ic or prot_identity or ic_bins may need masking.
+        # It's better to mask them directly after this call.
 
         x_positions = np.arange(len(bins))
         bar_width   = 0.15
@@ -586,7 +632,11 @@ def plot_F_depth_bins(datasets):
         y_true    = _load_y_true(ont_short)
 
         ic_raw    = _load_ic(ont_short); ic = ic_raw if ic_raw is not None else compute_ic(y_true)
-        preds     = load_predictions(ont_full, ont_short, prot_list, goterms)
+        preds, mask = load_predictions(ont_full, ont_short, prot_list, goterms)
+    if mask is not None:
+        y_true = y_true[mask]
+        # Depending on context, ic or prot_identity or ic_bins may need masking.
+        # It's better to mask them directly after this call.
 
         term_depths = np.array([depths.get(t, 0) for t in goterms])
         x_positions = np.arange(len(bins))
@@ -686,7 +736,11 @@ def plot_BDE_pr_curves(datasets):
 
         ic_raw    = _load_ic(ont_short); ic = ic_raw if ic_raw is not None else compute_ic(y_true)
         ic_flat   = np.tile(ic, (len(prot_list), 1))  # broadcast for vectorised ops
-        preds     = load_predictions(ont_full, ont_short, prot_list, goterms)
+        preds, mask = load_predictions(ont_full, ont_short, prot_list, goterms)
+    if mask is not None:
+        y_true = y_true[mask]
+        # Depending on context, ic or prot_identity or ic_bins may need masking.
+        # It's better to mask them directly after this call.
 
         fig, ax = plt.subplots(figsize=(5.5, 4.5))
 
@@ -750,7 +804,11 @@ def plot_G_coverage(datasets):
         test_ds  = datasets[ont_full]['test']
         prot_list = test_ds.pdb_split_list
         goterms   = test_ds.y_labels
-        preds     = load_predictions(ont_full, ont_short, prot_list, goterms)
+        preds, mask = load_predictions(ont_full, ont_short, prot_list, goterms)
+    if mask is not None:
+        y_true = y_true[mask]
+        # Depending on context, ic or prot_identity or ic_bins may need masking.
+        # It's better to mask them directly after this call.
 
         n_total_terms = len(goterms)
         model_names, coverages = [], []
@@ -833,12 +891,22 @@ def plot_summary_fmax(results_csv):
         style_ax(ax)
 
     plt.tight_layout()
+    fig.text(0.5, -0.05, 
+        'Note: DeepGreenGO error bars = training variance (5 seeds); '
+        'SOTA error bars = bootstrap variance (5 resamples)',
+        ha='center', fontsize=7, style='italic', color='#666666')
     save_fig('plot_summary_fmax')
 
 
 # ── entry point ───────────────────────────────────────────────────────────────
 
+args = None
+
 def main():
+    global args
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--common_subset', action='store_true')
+    args = parser.parse_args()
     print(f'Loading datasets ...')
     datasets = load_datasets()
 

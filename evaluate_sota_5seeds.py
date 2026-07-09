@@ -121,11 +121,15 @@ def all_metrics(y_true, y_pred, ic):
 # ── prediction parsers ────────────────────────────────────────────────────────
 
 def parse_transfun(result_file, prot_list, goterms):
-    """TransFun format: PROT GOTERM SCORE  (space-separated)"""
+    """TransFun format: PROT GOTERM SCORE  (space-separated)
+    Returns (y_pred, covered_proteins) where covered_proteins is the set of
+    protein IDs that appeared in the output file (regardless of term mapping).
+    """
     y_pred = np.zeros((len(prot_list), len(goterms)), dtype=np.float32)
+    covered_proteins = set()
     if not os.path.exists(result_file):
         print(f"  [MISSING] {result_file}")
-        return y_pred
+        return y_pred, covered_proteins
     prot_idx = {p: i for i, p in enumerate(prot_list)}
     term_idx = {t: i for i, t in enumerate(goterms)}
     with open(result_file) as f:
@@ -133,16 +137,23 @@ def parse_transfun(result_file, prot_list, goterms):
             parts = line.strip().split()
             if len(parts) >= 3:
                 p, t, s = parts[0], parts[1], float(parts[2])
-                if p in prot_idx and t in term_idx:
-                    y_pred[prot_idx[p], term_idx[t]] = s
-    return y_pred
+                # Track ALL proteins that appear in the file
+                if p in prot_idx:
+                    covered_proteins.add(p)
+                    if t in term_idx:
+                        y_pred[prot_idx[p], term_idx[t]] = s
+    return y_pred, covered_proteins
 
 def parse_deepfri_json(json_file, prot_list, goterms):
-    """DeepFRI JSON: {pdb_chains, Y_hat, goterms, gonames}"""
+    """DeepFRI JSON: {pdb_chains, Y_hat, goterms, gonames}
+    Returns (y_pred, covered_proteins) where covered_proteins is the set of
+    protein IDs from pdb_chains that are in our test set.
+    """
     y_pred = np.zeros((len(prot_list), len(goterms)), dtype=np.float32)
+    covered_proteins = set()
     if not os.path.exists(json_file):
         print(f"  [MISSING] {json_file}")
-        return y_pred
+        return y_pred, covered_proteins
     with open(json_file) as f:
         d = json.load(f)
     deepfri_chains = d['pdb_chains']
@@ -156,16 +167,48 @@ def parse_deepfri_json(json_file, prot_list, goterms):
     for di, dprot in enumerate(deepfri_chains):
         if dprot not in prot_idx:
             continue
+        # Protein appeared in DeepFRI output → covered
+        covered_proteins.add(dprot)
         pi = prot_idx[dprot]
         row = Y_hat[di]
         for dt, dj in df_term_idx.items():
             if dt in term_idx:
                 y_pred[pi, term_idx[dt]] = row[dj]
-    return y_pred
+    return y_pred, covered_proteins
 
 def parse_dpfunc(result_file, prot_list, goterms):
-    """DPFunc format: PROT GOTERM SCORE  (space-separated, same as TransFun)"""
+    """DPFunc format: PROT GOTERM SCORE  (space-separated, same as TransFun)
+    Returns (y_pred, covered_proteins).
+    """
     return parse_transfun(result_file, prot_list, goterms)
+
+
+def _coverage_diagnostic(model_name, covered_proteins, prot_list, goterms, y_pred):
+    """Compute coverage diagnostic breakdown for a SOTA model.
+    Returns dict with: Coverage_Failures, Label_Mismatch, Covered_Mapped.
+    - Coverage_Failures: proteins NOT in the output file at all
+    - Label_Mismatch: proteins in the output but with zero mapped terms (all-zero row)
+    - Covered_Mapped: proteins in the output with ≥1 mapped term (non-zero row)
+    """
+    prot_set = set(prot_list)
+    prot_idx = {p: i for i, p in enumerate(prot_list)}
+    coverage_failures = len(prot_set - covered_proteins)
+    label_mismatch = 0
+    covered_mapped = 0
+    for p in covered_proteins:
+        if p in prot_idx:
+            row = y_pred[prot_idx[p]]
+            if np.any(row != 0):
+                covered_mapped += 1
+            else:
+                label_mismatch += 1
+    return {
+        'Model': model_name,
+        'Total_Test': len(prot_list),
+        'Coverage_Failures': coverage_failures,
+        'Label_Mismatch': label_mismatch,
+        'Covered_Mapped': covered_mapped,
+    }
 
 # ── dataset loading ───────────────────────────────────────────────────────────
 
@@ -274,6 +317,9 @@ def parse_args():
                    help='Number of bootstrap resamples for deterministic SOTA models')
     p.add_argument('--dry_run', action='store_true',
                    help='Only check file paths, do not compute metrics')
+    p.add_argument('--common_subset', action='store_true',
+                   help='Evaluate only on the common subset of proteins that ALL models '
+                        'successfully processed (per ontology). Results saved separately.')
     return p.parse_args()
 
 def _find_cached_npy(ont_short, key):
@@ -313,6 +359,8 @@ def main():
 
     datasets = load_datasets()
     all_rows = []
+    common_subset_rows = []  # rows for --common_subset mode
+    coverage_diag_rows = []  # coverage diagnostic table
     rng = np.random.default_rng(0)
 
     for ont_full, ont_short in ONTOLOGIES.items():
@@ -349,43 +397,148 @@ def main():
             continue
 
         # ── TransFun ─────────────────────────────────────────────────────────
-        print("  [TransFun] Bootstrapping ...")
+        print("  [TransFun] Parsing ...")
         tf_file = os.path.join(PROJECT_DIR, 'SOTA', 'TransFun', 'data', f'{ont_short}_results.txt')
-        yp_tf = parse_transfun(tf_file, prot_list, goterms)
+        yp_tf, cov_tf = parse_transfun(tf_file, prot_list, goterms)
+        print(f"    Coverage: {len(cov_tf)}/{len(prot_list)} proteins")
+
+        # ── DeepFRI ──────────────────────────────────────────────────────────
+        print("  [DeepFRI] Parsing ...")
+        df_file = os.path.join(PROJECT_DIR, 'baselines', 'deepfri_results',
+                               f'deepfri_seq_{ont_short.upper()}_pred_scores.json')
+        yp_df, cov_df = parse_deepfri_json(df_file, prot_list, goterms)
+        print(f"    Coverage: {len(cov_df)}/{len(prot_list)} proteins")
+
+        # ── DPFunc ───────────────────────────────────────────────────────────
+        print("  [DPFunc] Parsing ...")
+        dpfunc_file = os.path.join(PROJECT_DIR, 'SOTA_predictions', 'DPFunc',
+                                   f'{ont_short}_results.txt')
+        yp_dpf, cov_dpf = parse_dpfunc(dpfunc_file, prot_list, goterms)
+        print(f"    Coverage: {len(cov_dpf)}/{len(prot_list)} proteins")
+
+        # ── Coverage diagnostic ──────────────────────────────────────────────
+        for mname, yp, cov in [('TransFun', yp_tf, cov_tf),
+                                ('DeepFRI', yp_df, cov_df),
+                                ('DPFunc', yp_dpf, cov_dpf)]:
+            diag = _coverage_diagnostic(mname, cov, prot_list, goterms, yp)
+            diag['Ontology'] = ont_short.upper()
+            coverage_diag_rows.append(diag)
+
+        # ── Full test set evaluation (Mode 1 — always runs) ──────────────────
+        rng_full = np.random.default_rng(0)  # reset per ontology for consistency
+        print("  [TransFun] Bootstrapping (full test set) ...")
         tf_records = bootstrap_eval(y_true, yp_tf, ic, n=args.bootstrap_seeds, rng=rng)
         all_rows.append(aggregate(tf_records, 'TransFun', ont_short.upper()))
 
-        # ── DeepFRI ──────────────────────────────────────────────────────────
-        print("  [DeepFRI] Bootstrapping ...")
-        df_file = os.path.join(PROJECT_DIR, 'baselines', 'deepfri_results',
-                               f'deepfri_seq_{ont_short.upper()}_pred_scores.json')
-        yp_df = parse_deepfri_json(df_file, prot_list, goterms)
+        print("  [DeepFRI] Bootstrapping (full test set) ...")
         df_records = bootstrap_eval(y_true, yp_df, ic, n=args.bootstrap_seeds, rng=rng)
         all_rows.append(aggregate(df_records, 'DeepFRI', ont_short.upper()))
 
-        # ── DPFunc ───────────────────────────────────────────────────────────
-        print("  [DPFunc] Bootstrapping ...")
-        dpfunc_file = os.path.join(PROJECT_DIR, 'SOTA_predictions', 'DPFunc',
-                                   f'{ont_short}_results.txt')
-        yp_dpf = parse_dpfunc(dpfunc_file, prot_list, goterms)
+        print("  [DPFunc] Bootstrapping (full test set) ...")
         dpf_records = bootstrap_eval(y_true, yp_dpf, ic, n=args.bootstrap_seeds, rng=rng)
         all_rows.append(aggregate(dpf_records, 'DPFunc', ont_short.upper()))
 
-        # ── Hybrid ───────────────────────────────────────────────────────────
         print("  [Hybrid] Loading 5-seed predictions ...")
         hybrid_recs = eval_your_model('Hybrid', ont_full, ont_short, y_true, ic)
         all_rows.append(aggregate(hybrid_recs, 'Hybrid', ont_short.upper()))
 
-        # ── Hybrid_JK ────────────────────────────────────────────────────────
         print("  [Hybrid_JK] Loading 5-seed predictions ...")
         jk_recs = eval_your_model('Hybrid_JK', ont_full, ont_short, y_true, ic)
         all_rows.append(aggregate(jk_recs, 'Hybrid_JK', ont_short.upper()))
 
-    # ── save ─────────────────────────────────────────────────────────────────
+        # ── Common subset evaluation (Mode 2 — only when flag is set) ────────
+        if args.common_subset:
+            # Your models always cover all test proteins
+            cov_hybrid = set(prot_list)
+            cov_hybrid_jk = set(prot_list)
+
+            # Intersection across ALL models
+            common_prots = cov_tf & cov_df & cov_dpf & cov_hybrid & cov_hybrid_jk
+            n_common = len(common_prots)
+            n_total = len(prot_list)
+            print(f"\n  [Common Subset] {ont_short.upper()}: {n_common}/{n_total} test proteins")
+
+            # Build boolean mask aligned to prot_list ordering
+            common_mask = np.array([p in common_prots for p in prot_list], dtype=bool)
+
+            if common_mask.sum() < 5:
+                print(f"  [WARN] Common subset too small ({common_mask.sum()}), skipping {ont_short.upper()}")
+                continue
+
+            # Filter
+            y_true_cs = y_true[common_mask]
+            yp_tf_cs  = yp_tf[common_mask]
+            yp_df_cs  = yp_df[common_mask]
+            yp_dpf_cs = yp_dpf[common_mask]
+
+            rng_cs = np.random.default_rng(0)
+
+            print("  [TransFun] Bootstrapping (common subset) ...")
+            cs_tf_recs = bootstrap_eval(y_true_cs, yp_tf_cs, ic, n=args.bootstrap_seeds, rng=rng_cs)
+            common_subset_rows.append(aggregate(cs_tf_recs, 'TransFun', ont_short.upper()))
+
+            print("  [DeepFRI] Bootstrapping (common subset) ...")
+            cs_df_recs = bootstrap_eval(y_true_cs, yp_df_cs, ic, n=args.bootstrap_seeds, rng=rng_cs)
+            common_subset_rows.append(aggregate(cs_df_recs, 'DeepFRI', ont_short.upper()))
+
+            print("  [DPFunc] Bootstrapping (common subset) ...")
+            cs_dpf_recs = bootstrap_eval(y_true_cs, yp_dpf_cs, ic, n=args.bootstrap_seeds, rng=rng_cs)
+            common_subset_rows.append(aggregate(cs_dpf_recs, 'DPFunc', ont_short.upper()))
+
+            # Your models: reload per-seed preds and filter to common subset
+            for mname in ('Hybrid', 'Hybrid_JK'):
+                print(f"  [{mname}] Evaluating (common subset) ...")
+                cs_records = []
+                for seed in SEEDS:
+                    seed_dir = os.path.join(RESULTS_DIR, ont_short, mname, str(seed))
+                    pred_path = None
+                    true_path = None
+                    if os.path.exists(seed_dir):
+                        if os.path.exists(os.path.join(seed_dir, 'test_y_pred.npy')):
+                            pred_path = os.path.join(seed_dir, 'test_y_pred.npy')
+                            true_path = os.path.join(seed_dir, 'test_y_true.npy')
+                        else:
+                            for sub in os.listdir(seed_dir):
+                                candidate = os.path.join(seed_dir, sub, 'test_y_pred.npy')
+                                if os.path.exists(candidate):
+                                    pred_path = candidate
+                                    true_path = os.path.join(seed_dir, sub, 'test_y_true.npy')
+                                    break
+                    if pred_path is None:
+                        continue
+                    yp = np.load(pred_path)[common_mask]
+                    yt = np.load(true_path)[common_mask] if (true_path and os.path.exists(true_path)) else y_true_cs
+                    if yt.shape[0] == 0:
+                        continue
+                    m = all_metrics(yt, yp, ic)
+                    m['seed'] = seed
+                    cs_records.append(m)
+                common_subset_rows.append(aggregate(cs_records, mname, ont_short.upper()))
+
+    # ── save full test set results (always) ───────────────────────────────────
     df = pd.DataFrame([r for r in all_rows if r])
     df.to_csv(OUT_CSV, index=False)
     print(f"\n✓ Results saved to {OUT_CSV}")
     print(df.to_string(index=False))
+
+    # ── save coverage diagnostic CSV ─────────────────────────────────────────
+    if coverage_diag_rows:
+        diag_csv = os.path.join(RESULTS_DIR, 'coverage_diagnostic.csv')
+        df_diag = pd.DataFrame(coverage_diag_rows)
+        col_order = ['Model', 'Ontology', 'Total_Test', 'Coverage_Failures',
+                     'Label_Mismatch', 'Covered_Mapped']
+        df_diag = df_diag[[c for c in col_order if c in df_diag.columns]]
+        df_diag.to_csv(diag_csv, index=False)
+        print(f"\n✓ Coverage diagnostic saved to {diag_csv}")
+        print(df_diag.to_string(index=False))
+
+    # ── save common subset results (when --common_subset) ────────────────────
+    if args.common_subset and common_subset_rows:
+        cs_csv = os.path.join(RESULTS_DIR, 'evaluation_results_common_subset.csv')
+        df_cs = pd.DataFrame([r for r in common_subset_rows if r])
+        df_cs.to_csv(cs_csv, index=False)
+        print(f"\n✓ Common subset results saved to {cs_csv}")
+        print(df_cs.to_string(index=False))
 
 if __name__ == '__main__':
     main()
