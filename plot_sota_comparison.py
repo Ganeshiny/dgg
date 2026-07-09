@@ -242,7 +242,7 @@ def _find_robust(filename_variants, req_dir_part, search_roots):
                         return os.path.join(root, f)
     return None
 
-def load_predictions(ont_full, ont_short, prot_list, goterms):
+def load_predictions(ont_full, ont_short, prot_list, goterms, valid_mask=None):
     """Returns (preds, cov_sets) dicts mapping model to predictions and coverage."""
     preds = {}
     cov_sets = {}
@@ -272,7 +272,7 @@ def load_predictions(ont_full, ont_short, prot_list, goterms):
     # Your models — average over available seeds
     for mname in ('Hybrid', 'Hybrid_JK'):
         cov_sets[mname] = set(prot_list)
-        seed_preds_list = load_per_seed_preds(ont_short, mname, len(goterms), len(prot_list))
+        seed_preds_list = load_per_seed_preds(ont_short, mname, len(goterms), len(prot_list), valid_mask=valid_mask)
         seed_preds = [arr for s, arr in seed_preds_list]
         if seed_preds:
             preds[mname] = np.mean(np.stack(seed_preds, axis=0), axis=0)
@@ -294,7 +294,7 @@ def load_predictions(ont_full, ont_short, prot_list, goterms):
     
     return preds, None
 
-def load_per_seed_preds(ont_short, mname, goterms_len, n_prots):
+def load_per_seed_preds(ont_short, mname, goterms_len, n_prots, mask=None, valid_mask=None):
     """Load per-seed y_pred arrays for your models.
     train.py creates output_dir/run_name/ so we search one level deep.
     """
@@ -313,7 +313,12 @@ def load_per_seed_preds(ont_short, mname, goterms_len, n_prots):
                         pred_path = candidate
                         break
         if pred_path is not None:
-            out.append((s, np.load(pred_path)))
+            sp = np.load(pred_path)
+            if valid_mask is not None:
+                sp = sp[:, valid_mask]
+            if mask is not None:
+                sp = sp[mask]
+            out.append((s, sp))
     return out
 
 
@@ -374,7 +379,7 @@ def plot_A_sequence_identity(datasets):
     if ic_raw is not None and valid_mask is not None:
         ic_raw = ic_raw[:, valid_mask]
     ic        = ic_raw if ic_raw is not None else compute_ic(y_true)
-    preds, mask = load_predictions(ont_full, ont_short, prot_list, goterms)
+    preds, mask = load_predictions(ont_full, ont_short, prot_list, goterms, valid_mask=valid_mask)
     if mask is not None:
         y_true = y_true[mask]
         # Depending on context, ic or prot_identity or ic_bins may need masking.
@@ -398,7 +403,7 @@ def plot_A_sequence_identity(datasets):
         # per-seed runs for your models, bootstrap for SOTA
         seed_preds_list = []
         if mname in ('Hybrid', 'Hybrid_JK'):
-            for _, sp in load_per_seed_preds(ont_short, mname, len(goterms), len(prot_list)):
+            for _, sp in load_per_seed_preds(ont_short, mname, len(goterms), len(prot_list), mask=mask, valid_mask=valid_mask):
                 seed_preds_list.append(sp)
             if not seed_preds_list:
                 seed_preds_list = [preds[mname]]
@@ -478,9 +483,17 @@ def plot_C_ic_bins(datasets):
         prot_list = test_ds.pdb_split_list
         goterms   = test_ds.y_labels
         y_true    = _load_y_true(ont_short)
+        
+        valid_mask = _load_valid_mask(ont_short)
+        if valid_mask is not None:
+            y_true = y_true[:, valid_mask]
+            goterms = [gt for gt, v in zip(goterms, valid_mask) if v]
 
-        ic_raw    = _load_ic(ont_short); ic = ic_raw if ic_raw is not None else compute_ic(y_true)
-        preds, mask = load_predictions(ont_full, ont_short, prot_list, goterms)
+        ic_raw    = _load_ic(ont_short)
+        if ic_raw is not None and valid_mask is not None:
+            ic_raw = ic_raw[:, valid_mask]
+        ic = ic_raw if ic_raw is not None else compute_ic(y_true)
+        preds, mask = load_predictions(ont_full, ont_short, prot_list, goterms, valid_mask=valid_mask)
     if mask is not None:
         y_true = y_true[mask]
         # Depending on context, ic or prot_identity or ic_bins may need masking.
@@ -495,7 +508,7 @@ def plot_C_ic_bins(datasets):
                 continue
             # Build per-seed predictions list
             if mname in ('Hybrid', 'Hybrid_JK'):
-                seed_ps = [sp for _, sp in load_per_seed_preds(ont_short, mname, len(goterms), len(prot_list))]
+                seed_ps = [sp for _, sp in load_per_seed_preds(ont_short, mname, len(goterms), len(prot_list), mask=mask, valid_mask=valid_mask)]
                 if not seed_ps:
                     seed_ps = [preds[mname]]
             else:
@@ -631,8 +644,16 @@ def plot_F_depth_bins(datasets):
         goterms   = test_ds.y_labels
         y_true    = _load_y_true(ont_short)
 
-        ic_raw    = _load_ic(ont_short); ic = ic_raw if ic_raw is not None else compute_ic(y_true)
-        preds, mask = load_predictions(ont_full, ont_short, prot_list, goterms)
+        valid_mask = _load_valid_mask(ont_short)
+        if valid_mask is not None:
+            y_true = y_true[:, valid_mask]
+            goterms = [gt for gt, v in zip(goterms, valid_mask) if v]
+
+        ic_raw    = _load_ic(ont_short)
+        if ic_raw is not None and valid_mask is not None:
+            ic_raw = ic_raw[:, valid_mask]
+        ic = ic_raw if ic_raw is not None else compute_ic(y_true)
+        preds, mask = load_predictions(ont_full, ont_short, prot_list, goterms, valid_mask=valid_mask)
     if mask is not None:
         y_true = y_true[mask]
         # Depending on context, ic or prot_identity or ic_bins may need masking.
@@ -647,7 +668,7 @@ def plot_F_depth_bins(datasets):
             if mname not in preds:
                 continue
             if mname in ('Hybrid', 'Hybrid_JK'):
-                seed_ps = [sp for _, sp in load_per_seed_preds(ont_short, mname, len(goterms), len(prot_list))]
+                seed_ps = [sp for _, sp in load_per_seed_preds(ont_short, mname, len(goterms), len(prot_list), mask=mask, valid_mask=valid_mask)]
                 if not seed_ps: seed_ps = [preds[mname]]
             else:
                 rng = np.random.default_rng(mi * 13)
@@ -734,13 +755,20 @@ def plot_BDE_pr_curves(datasets):
         goterms   = test_ds.y_labels
         y_true    = _load_y_true(ont_short)
 
-        ic_raw    = _load_ic(ont_short); ic = ic_raw if ic_raw is not None else compute_ic(y_true)
+        valid_mask = _load_valid_mask(ont_short)
+        if valid_mask is not None:
+            y_true = y_true[:, valid_mask]
+            goterms = [gt for gt, v in zip(goterms, valid_mask) if v]
+
+        ic_raw    = _load_ic(ont_short)
+        if ic_raw is not None and valid_mask is not None:
+            ic_raw = ic_raw[:, valid_mask]
+        ic = ic_raw if ic_raw is not None else compute_ic(y_true)
         ic_flat   = np.tile(ic, (len(prot_list), 1))  # broadcast for vectorised ops
-        preds, mask = load_predictions(ont_full, ont_short, prot_list, goterms)
+        preds, mask = load_predictions(ont_full, ont_short, prot_list, goterms, valid_mask=valid_mask)
     if mask is not None:
         y_true = y_true[mask]
-        # Depending on context, ic or prot_identity or ic_bins may need masking.
-        # It's better to mask them directly after this call.
+        ic_flat = ic_flat[mask]
 
         fig, ax = plt.subplots(figsize=(5.5, 4.5))
 
@@ -749,7 +777,7 @@ def plot_BDE_pr_curves(datasets):
                 continue
             # Average PR curve over seeds
             if mname in ('Hybrid', 'Hybrid_JK'):
-                seed_ps = [sp for _, sp in load_per_seed_preds(ont_short, mname, len(goterms), len(prot_list))]
+                seed_ps = [sp for _, sp in load_per_seed_preds(ont_short, mname, len(goterms), len(prot_list), mask=mask, valid_mask=valid_mask)]
                 if not seed_ps:
                     seed_ps = [preds[mname]]
             else:
@@ -804,11 +832,16 @@ def plot_G_coverage(datasets):
         test_ds  = datasets[ont_full]['test']
         prot_list = test_ds.pdb_split_list
         goterms   = test_ds.y_labels
-        preds, mask = load_predictions(ont_full, ont_short, prot_list, goterms)
-    if mask is not None:
-        y_true = y_true[mask]
-        # Depending on context, ic or prot_identity or ic_bins may need masking.
-        # It's better to mask them directly after this call.
+        y_true    = _load_y_true(ont_short)
+        
+        valid_mask = _load_valid_mask(ont_short)
+        if valid_mask is not None:
+            y_true = y_true[:, valid_mask]
+            goterms = [gt for gt, v in zip(goterms, valid_mask) if v]
+            
+        preds, mask = load_predictions(ont_full, ont_short, prot_list, goterms, valid_mask=valid_mask)
+        if mask is not None:
+            y_true = y_true[mask]
 
         n_total_terms = len(goterms)
         model_names, coverages = [], []
