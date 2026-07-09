@@ -212,11 +212,8 @@ def load_predictions(ont_full, ont_short, prot_list, goterms):
 
     # Your models — average over available seeds
     for mname in ('Hybrid', 'Hybrid_JK'):
-        seed_preds = []
-        for s in SEEDS:
-            p = os.path.join(RESULTS_DIR, ont_short, mname, str(s), 'test_y_pred.npy')
-            if os.path.exists(p):
-                seed_preds.append(np.load(p))
+        seed_preds_list = load_per_seed_preds(ont_short, mname, len(goterms), len(prot_list))
+        seed_preds = [arr for s, arr in seed_preds_list]
         if seed_preds:
             preds[mname] = np.mean(np.stack(seed_preds, axis=0), axis=0)
         else:
