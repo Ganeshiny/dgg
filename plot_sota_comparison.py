@@ -194,21 +194,32 @@ def load_predictions(ont_full, ont_short, prot_list, goterms):
     """Returns dict model→y_pred matrix (averaged over seeds for your models)."""
     preds = {}
 
+    def _find_robust(filename_variants, req_dir_part, search_roots):
+        for sdir in search_roots:
+            r = os.path.join(PROJECT_DIR, sdir)
+            if not os.path.isdir(r): continue
+            for root, _, files in os.walk(r):
+                if req_dir_part.lower() in root.lower() or req_dir_part == '':
+                    for f in files:
+                        if f in filename_variants:
+                            return os.path.join(root, f)
+        return None
+
     # TransFun
-    preds['TransFun'] = _txt_to_matrix(
-        os.path.join(PROJECT_DIR, 'SOTA', 'TransFun', 'data', f'{ont_short}_results.txt'),
-        prot_list, goterms)
+    tf_file = _find_robust([f'{ont_short}_results.txt'], 'TransFun', ['SOTA', 'SOTA_predictions'])
+    if not tf_file: tf_file = os.path.join(PROJECT_DIR, 'SOTA', 'TransFun', 'data', f'{ont_short}_results.txt')
+    preds['TransFun'] = _txt_to_matrix(tf_file, prot_list, goterms)
 
     # DeepFRI
-    preds['DeepFRI'] = _deepfri_to_matrix(
-        os.path.join(PROJECT_DIR, 'baselines', 'deepfri_results',
-                     f'deepfri_seq_{ont_short.upper()}_pred_scores.json'),
-        prot_list, goterms)
+    df_variants = [f'deepfri_seq_{ont_short.upper()}_pred_scores.json', f'deepfri_seq_{ont_short.upper()}_{ont_short.upper()}_pred_scores.json']
+    df_file = _find_robust(df_variants, 'deepfri', ['baselines', 'baselines/deepfri_results'])
+    if not df_file: df_file = os.path.join(PROJECT_DIR, 'baselines', 'deepfri_results', f'deepfri_seq_{ont_short.upper()}_pred_scores.json')
+    preds['DeepFRI'] = _deepfri_to_matrix(df_file, prot_list, goterms)
 
     # DPFunc
-    preds['DPFunc'] = _txt_to_matrix(
-        os.path.join(PROJECT_DIR, 'SOTA_predictions', 'DPFunc', f'{ont_short}_results.txt'),
-        prot_list, goterms)
+    dpf_file = _find_robust([f'{ont_short}_results.txt'], 'DPFunc', ['SOTA_predictions', 'SOTA'])
+    if not dpf_file: dpf_file = os.path.join(PROJECT_DIR, 'SOTA_predictions', 'DPFunc', f'{ont_short}_results.txt')
+    preds['DPFunc'] = _txt_to_matrix(dpf_file, prot_list, goterms)
 
     # Your models — average over available seeds
     for mname in ('Hybrid', 'Hybrid_JK'):
