@@ -494,67 +494,67 @@ def plot_C_ic_bins(datasets):
             ic_raw = ic_raw[:, valid_mask]
         ic = ic_raw if ic_raw is not None else compute_ic(y_true)
         preds, mask = load_predictions(ont_full, ont_short, prot_list, goterms, valid_mask=valid_mask)
-    if mask is not None:
-        y_true = y_true[mask]
-        # Depending on context, ic or prot_identity or ic_bins may need masking.
-        # It's better to mask them directly after this call.
+        if mask is not None:
+            y_true = y_true[mask]
+            # Depending on context, ic or prot_identity or ic_bins may need masking.
+            # It's better to mask them directly after this call.
 
-        x_positions = np.arange(len(bins))
-        bar_width   = 0.15
-        n_models    = len(MODEL_ORDER)
+            x_positions = np.arange(len(bins))
+            bar_width   = 0.15
+            n_models    = len(MODEL_ORDER)
 
-        for mi, mname in enumerate(MODEL_ORDER):
-            if mname not in preds:
-                continue
-            # Build per-seed predictions list
-            if mname in ('Hybrid', 'Hybrid_JK'):
-                seed_ps = [sp for _, sp in load_per_seed_preds(ont_short, mname, len(goterms), len(prot_list), mask=mask, valid_mask=valid_mask)]
-                if not seed_ps:
-                    seed_ps = [preds[mname]]
-            else:
-                rng = np.random.default_rng(mi * 7)
-                N = y_true.shape[0]
-                seed_ps = [preds[mname][rng.choice(N, N, replace=True)] for _ in range(5)]
-
-            fmax_means, fmax_sems = [], []
-            for lo, hi, _ in bins:
-                term_mask = (ic >= lo) & (ic < hi)
-                n_terms_in_bin = term_mask.sum()
-                if n_terms_in_bin < 3:
-                    fmax_means.append(np.nan); fmax_sems.append(0.0); continue
-                bin_fmaxes = []
-                for sp in seed_ps:
-                    yt_b = y_true[:, term_mask]
-                    yp_b = sp[:, term_mask]
-                    if yt_b.sum() == 0:
-                        continue
-                    prec, rec, _ = precision_recall_curve(yt_b.ravel(), yp_b.ravel())
-                    f1 = 2*prec*rec/(prec+rec+1e-10)
-                    bin_fmaxes.append(np.max(f1))
-                if bin_fmaxes:
-                    fmax_means.append(np.mean(bin_fmaxes))
-                    fmax_sems.append(np.std(bin_fmaxes)/np.sqrt(len(bin_fmaxes)))
+            for mi, mname in enumerate(MODEL_ORDER):
+                if mname not in preds:
+                    continue
+                # Build per-seed predictions list
+                if mname in ('Hybrid', 'Hybrid_JK'):
+                    seed_ps = [sp for _, sp in load_per_seed_preds(ont_short, mname, len(goterms), len(prot_list), mask=mask, valid_mask=valid_mask)]
+                    if not seed_ps:
+                        seed_ps = [preds[mname]]
                 else:
-                    fmax_means.append(np.nan); fmax_sems.append(0.0)
+                    rng = np.random.default_rng(mi * 7)
+                    N = y_true.shape[0]
+                    seed_ps = [preds[mname][rng.choice(N, N, replace=True)] for _ in range(5)]
 
-            offset = (mi - n_models/2 + 0.5) * bar_width
-            ax.bar(x_positions + offset, fmax_means, bar_width,
-                   yerr=fmax_sems, capsize=3,
-                   color=PALETTE.get(mname, '#888888'),
-                   label=mname, alpha=0.9,
-                   error_kw={'linewidth': 1.0, 'ecolor': '#333333'})
+                fmax_means, fmax_sems = [], []
+                for lo, hi, _ in bins:
+                    term_mask = (ic >= lo) & (ic < hi)
+                    n_terms_in_bin = term_mask.sum()
+                    if n_terms_in_bin < 3:
+                        fmax_means.append(np.nan); fmax_sems.append(0.0); continue
+                    bin_fmaxes = []
+                    for sp in seed_ps:
+                        yt_b = y_true[:, term_mask]
+                        yp_b = sp[:, term_mask]
+                        if yt_b.sum() == 0:
+                            continue
+                        prec, rec, _ = precision_recall_curve(yt_b.ravel(), yp_b.ravel())
+                        f1 = 2*prec*rec/(prec+rec+1e-10)
+                        bin_fmaxes.append(np.max(f1))
+                    if bin_fmaxes:
+                        fmax_means.append(np.mean(bin_fmaxes))
+                        fmax_sems.append(np.std(bin_fmaxes)/np.sqrt(len(bin_fmaxes)))
+                    else:
+                        fmax_means.append(np.nan); fmax_sems.append(0.0)
 
-        ax.set_xticks(x_positions)
-        ax.set_xticklabels([b[2] for b in bins], rotation=20, ha='right')
-        ax.set_xlabel('GO Term IC Value')
-        ax.set_ylabel('Fmax' if ax_idx == 0 else '')
-        ax.set_title(f'c   {ont_short.upper()}', loc='left', fontweight='bold')
-        # Dynamic y-axis: fit to data with a small margin
-        ax.autoscale(axis='y')
-        ax.set_ylim(bottom=0)
-        if ax_idx == 0:
-            ax.legend(frameon=False, loc='upper right', fontsize=7)
-        style_ax(ax)
+                offset = (mi - n_models/2 + 0.5) * bar_width
+                ax.bar(x_positions + offset, fmax_means, bar_width,
+                       yerr=fmax_sems, capsize=3,
+                       color=PALETTE.get(mname, '#888888'),
+                       label=mname, alpha=0.9,
+                       error_kw={'linewidth': 1.0, 'ecolor': '#333333'})
+
+            ax.set_xticks(x_positions)
+            ax.set_xticklabels([b[2] for b in bins], rotation=20, ha='right')
+            ax.set_xlabel('GO Term IC Value')
+            ax.set_ylabel('Fmax' if ax_idx == 0 else '')
+            ax.set_title(f'c   {ont_short.upper()}', loc='left', fontweight='bold')
+            # Dynamic y-axis: fit to data with a small margin
+            ax.autoscale(axis='y')
+            ax.set_ylim(bottom=0)
+            if ax_idx == 0:
+                ax.legend(frameon=False, loc='upper right', fontsize=7)
+            style_ax(ax)
 
     plt.suptitle('c   Performance on Rare GO Terms (IC Bins)', fontsize=12, fontweight='bold', y=1.01)
     plt.tight_layout()
@@ -654,62 +654,62 @@ def plot_F_depth_bins(datasets):
             ic_raw = ic_raw[:, valid_mask]
         ic = ic_raw if ic_raw is not None else compute_ic(y_true)
         preds, mask = load_predictions(ont_full, ont_short, prot_list, goterms, valid_mask=valid_mask)
-    if mask is not None:
-        y_true = y_true[mask]
-        # Depending on context, ic or prot_identity or ic_bins may need masking.
-        # It's better to mask them directly after this call.
+        if mask is not None:
+            y_true = y_true[mask]
+            # Depending on context, ic or prot_identity or ic_bins may need masking.
+            # It's better to mask them directly after this call.
 
-        term_depths = np.array([depths.get(t, 0) for t in goterms])
-        x_positions = np.arange(len(bins))
-        bar_width   = 0.15
-        n_models    = len(MODEL_ORDER)
+            term_depths = np.array([depths.get(t, 0) for t in goterms])
+            x_positions = np.arange(len(bins))
+            bar_width   = 0.15
+            n_models    = len(MODEL_ORDER)
 
-        for mi, mname in enumerate(MODEL_ORDER):
-            if mname not in preds:
-                continue
-            if mname in ('Hybrid', 'Hybrid_JK'):
-                seed_ps = [sp for _, sp in load_per_seed_preds(ont_short, mname, len(goterms), len(prot_list), mask=mask, valid_mask=valid_mask)]
-                if not seed_ps: seed_ps = [preds[mname]]
-            else:
-                rng = np.random.default_rng(mi * 13)
-                N = y_true.shape[0]
-                seed_ps = [preds[mname][rng.choice(N, N, replace=True)] for _ in range(5)]
-
-            fmax_means, fmax_sems = [], []
-            for lo, hi, _ in bins:
-                term_mask = (term_depths >= lo) & (term_depths < hi)
-                if term_mask.sum() < 3:
-                    fmax_means.append(np.nan); fmax_sems.append(0.0); continue
-                bin_fmaxes = []
-                for sp in seed_ps:
-                    yt_b = y_true[:, term_mask]
-                    yp_b = sp[:, term_mask]
-                    if yt_b.sum() == 0: continue
-                    prec, rec, _ = precision_recall_curve(yt_b.ravel(), yp_b.ravel())
-                    f1 = 2*prec*rec/(prec+rec+1e-10)
-                    bin_fmaxes.append(np.max(f1))
-                if bin_fmaxes:
-                    fmax_means.append(np.mean(bin_fmaxes))
-                    fmax_sems.append(np.std(bin_fmaxes)/np.sqrt(len(bin_fmaxes)))
+            for mi, mname in enumerate(MODEL_ORDER):
+                if mname not in preds:
+                    continue
+                if mname in ('Hybrid', 'Hybrid_JK'):
+                    seed_ps = [sp for _, sp in load_per_seed_preds(ont_short, mname, len(goterms), len(prot_list), mask=mask, valid_mask=valid_mask)]
+                    if not seed_ps: seed_ps = [preds[mname]]
                 else:
-                    fmax_means.append(np.nan); fmax_sems.append(0.0)
+                    rng = np.random.default_rng(mi * 13)
+                    N = y_true.shape[0]
+                    seed_ps = [preds[mname][rng.choice(N, N, replace=True)] for _ in range(5)]
 
-            offset = (mi - n_models/2 + 0.5) * bar_width
-            ax.bar(x_positions + offset, fmax_means, bar_width,
-                   yerr=fmax_sems, capsize=3,
-                   color=PALETTE.get(mname, '#888888'), label=mname, alpha=0.9,
-                   error_kw={'linewidth': 1.0, 'ecolor': '#333333'})
+                fmax_means, fmax_sems = [], []
+                for lo, hi, _ in bins:
+                    term_mask = (term_depths >= lo) & (term_depths < hi)
+                    if term_mask.sum() < 3:
+                        fmax_means.append(np.nan); fmax_sems.append(0.0); continue
+                    bin_fmaxes = []
+                    for sp in seed_ps:
+                        yt_b = y_true[:, term_mask]
+                        yp_b = sp[:, term_mask]
+                        if yt_b.sum() == 0: continue
+                        prec, rec, _ = precision_recall_curve(yt_b.ravel(), yp_b.ravel())
+                        f1 = 2*prec*rec/(prec+rec+1e-10)
+                        bin_fmaxes.append(np.max(f1))
+                    if bin_fmaxes:
+                        fmax_means.append(np.mean(bin_fmaxes))
+                        fmax_sems.append(np.std(bin_fmaxes)/np.sqrt(len(bin_fmaxes)))
+                    else:
+                        fmax_means.append(np.nan); fmax_sems.append(0.0)
 
-        ax.set_xticks(x_positions)
-        ax.set_xticklabels([b[2] for b in bins], rotation=20, ha='right')
-        ax.set_xlabel('GO Term Depth')
-        ax.set_ylabel('Fmax' if ax_idx == 0 else '')
-        ax.set_title(f'f   {ont_short.upper()}', loc='left', fontweight='bold')
-        ax.autoscale(axis='y')
-        ax.set_ylim(bottom=0)
-        if ax_idx == 0:
-            ax.legend(frameon=False, loc='upper right', fontsize=7)
-        style_ax(ax)
+                offset = (mi - n_models/2 + 0.5) * bar_width
+                ax.bar(x_positions + offset, fmax_means, bar_width,
+                       yerr=fmax_sems, capsize=3,
+                       color=PALETTE.get(mname, '#888888'), label=mname, alpha=0.9,
+                       error_kw={'linewidth': 1.0, 'ecolor': '#333333'})
+
+            ax.set_xticks(x_positions)
+            ax.set_xticklabels([b[2] for b in bins], rotation=20, ha='right')
+            ax.set_xlabel('GO Term Depth')
+            ax.set_ylabel('Fmax' if ax_idx == 0 else '')
+            ax.set_title(f'f   {ont_short.upper()}', loc='left', fontweight='bold')
+            ax.autoscale(axis='y')
+            ax.set_ylim(bottom=0)
+            if ax_idx == 0:
+                ax.legend(frameon=False, loc='upper right', fontsize=7)
+            style_ax(ax)
 
     plt.suptitle('f   Performance on Deep GO Terms', fontsize=12, fontweight='bold', y=1.01)
     plt.tight_layout()
@@ -766,59 +766,59 @@ def plot_BDE_pr_curves(datasets):
         ic = ic_raw if ic_raw is not None else compute_ic(y_true)
         ic_flat   = np.tile(ic, (len(prot_list), 1))  # broadcast for vectorised ops
         preds, mask = load_predictions(ont_full, ont_short, prot_list, goterms, valid_mask=valid_mask)
-    if mask is not None:
-        y_true = y_true[mask]
-        ic_flat = ic_flat[mask]
+        if mask is not None:
+            y_true = y_true[mask]
+            ic_flat = ic_flat[mask]
 
-        fig, ax = plt.subplots(figsize=(5.5, 4.5))
+            fig, ax = plt.subplots(figsize=(5.5, 4.5))
 
-        for mname in MODEL_ORDER:
-            if mname not in preds:
-                continue
-            # Average PR curve over seeds
-            if mname in ('Hybrid', 'Hybrid_JK'):
-                seed_ps = [sp for _, sp in load_per_seed_preds(ont_short, mname, len(goterms), len(prot_list), mask=mask, valid_mask=valid_mask)]
-                if not seed_ps:
-                    seed_ps = [preds[mname]]
-            else:
-                rng = np.random.default_rng(hash(mname) % (2**31))
-                N = y_true.shape[0]
-                seed_ps = [preds[mname][rng.choice(N, N, replace=True)] for _ in range(5)]
+            for mname in MODEL_ORDER:
+                if mname not in preds:
+                    continue
+                # Average PR curve over seeds
+                if mname in ('Hybrid', 'Hybrid_JK'):
+                    seed_ps = [sp for _, sp in load_per_seed_preds(ont_short, mname, len(goterms), len(prot_list), mask=mask, valid_mask=valid_mask)]
+                    if not seed_ps:
+                        seed_ps = [preds[mname]]
+                else:
+                    rng = np.random.default_rng(hash(mname) % (2**31))
+                    N = y_true.shape[0]
+                    seed_ps = [preds[mname][rng.choice(N, N, replace=True)] for _ in range(5)]
 
-            all_rec, all_prec = [], []
-            for sp in seed_ps:
-                rec, prec = ic_weighted_pr(y_true, sp, ic_flat)
-                all_rec.append(rec)
-                all_prec.append(prec)
-            # Interpolate to common recall grid
-            common_rec = np.linspace(0, 1, 200)
-            interp_precs = []
-            for rec, prec in zip(all_rec, all_prec):
-                sort_idx = np.argsort(rec)
-                interp_precs.append(np.interp(common_rec, rec[sort_idx], prec[sort_idx]))
-            mean_prec = np.mean(interp_precs, axis=0)
-            std_prec  = np.std(interp_precs, axis=0)
+                all_rec, all_prec = [], []
+                for sp in seed_ps:
+                    rec, prec = ic_weighted_pr(y_true, sp, ic_flat)
+                    all_rec.append(rec)
+                    all_prec.append(prec)
+                # Interpolate to common recall grid
+                common_rec = np.linspace(0, 1, 200)
+                interp_precs = []
+                for rec, prec in zip(all_rec, all_prec):
+                    sort_idx = np.argsort(rec)
+                    interp_precs.append(np.interp(common_rec, rec[sort_idx], prec[sort_idx]))
+                mean_prec = np.mean(interp_precs, axis=0)
+                std_prec  = np.std(interp_precs, axis=0)
 
-            color = PALETTE.get(mname, '#888888')
-            ax.plot(common_rec, mean_prec, color=color, linewidth=1.8, label=mname)
-            ax.fill_between(common_rec,
-                            np.clip(mean_prec - std_prec, 0, 1),
-                            np.clip(mean_prec + std_prec, 0, 1),
-                            alpha=0.15, color=color)
+                color = PALETTE.get(mname, '#888888')
+                ax.plot(common_rec, mean_prec, color=color, linewidth=1.8, label=mname)
+                ax.fill_between(common_rec,
+                                np.clip(mean_prec - std_prec, 0, 1),
+                                np.clip(mean_prec + std_prec, 0, 1),
+                                alpha=0.15, color=color)
 
-        ax.set_xlabel('IC-weighted Recall')
-        ax.set_ylabel('IC-weighted Precision')
-        ax.set_xlim(0, 1); ax.set_ylim(0, 1.05)
-        ax.set_title(f'{panel}   IC-weighted PR — {ont_short.upper()}', loc='left', fontweight='bold')
-        ax.legend(frameon=False, loc='upper right')
-        style_ax(ax)
-        ax.spines['left'].set_visible(True)
-        ax.spines['bottom'].set_visible(True)
-        plt.tight_layout()
-        save_fig(f'plot_{panel.upper()}_pr_curve_{ont_short}')
+            ax.set_xlabel('IC-weighted Recall')
+            ax.set_ylabel('IC-weighted Precision')
+            ax.set_xlim(0, 1); ax.set_ylim(0, 1.05)
+            ax.set_title(f'{panel}   IC-weighted PR — {ont_short.upper()}', loc='left', fontweight='bold')
+            ax.legend(frameon=False, loc='upper right')
+            style_ax(ax)
+            ax.spines['left'].set_visible(True)
+            ax.spines['bottom'].set_visible(True)
+            plt.tight_layout()
+            save_fig(f'plot_{panel.upper()}_pr_curve_{ont_short}')
 
 
-# ── PLOT G: Coverage ──────────────────────────────────────────────────────────
+    # ── PLOT G: Coverage ──────────────────────────────────────────────────────────
 
 def plot_G_coverage(datasets):
     """Number of unique GO terms each method predicts (at t=0.5)."""
