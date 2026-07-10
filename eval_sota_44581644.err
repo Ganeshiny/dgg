@@ -1,0 +1,16 @@
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/plot_sota_comparison.py", line 935, in <module>
+    main()
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/plot_sota_comparison.py", line 917, in main
+    plot_C_ic_bins(datasets)
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/plot_sota_comparison.py", line 518, in plot_C_ic_bins
+    prec, rec, _ = precision_recall_curve(yt_b.ravel(), yp_b.ravel())
+  File "/home/ganeshiny.sridharan/miniconda3/envs/deepgreengo/lib/python3.10/site-packages/sklearn/utils/_param_validation.py", line 218, in wrapper
+    return func(*args, **kwargs)
+  File "/home/ganeshiny.sridharan/miniconda3/envs/deepgreengo/lib/python3.10/site-packages/sklearn/metrics/_ranking.py", line 1018, in precision_recall_curve
+    fps, tps, thresholds = _binary_clf_curve(
+  File "/home/ganeshiny.sridharan/miniconda3/envs/deepgreengo/lib/python3.10/site-packages/sklearn/metrics/_ranking.py", line 865, in _binary_clf_curve
+    check_consistent_length(y_true, y_score, sample_weight)
+  File "/home/ganeshiny.sridharan/miniconda3/envs/deepgreengo/lib/python3.10/site-packages/sklearn/utils/validation.py", line 473, in check_consistent_length
+    raise ValueError(
+ValueError: Found input variables with inconsistent numbers of samples: [17472, 24108]

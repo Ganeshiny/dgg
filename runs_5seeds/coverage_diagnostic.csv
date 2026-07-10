@@ -1,0 +1,10 @@
+Model,Ontology,Total_Test,Coverage_Failures,Label_Mismatch,Covered_Mapped
+TransFun,BP,1722,474,0,1248
+DeepFRI,BP,1722,1722,0,0
+DPFunc,BP,1722,1722,0,0
+TransFun,MF,1722,474,0,1248
+DeepFRI,MF,1722,1722,0,0
+DPFunc,MF,1722,1722,0,0
+TransFun,CC,1722,474,0,1248
+DeepFRI,CC,1722,1722,0,0
+DPFunc,CC,1722,1722,0,0
