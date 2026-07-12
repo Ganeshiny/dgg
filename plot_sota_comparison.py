@@ -136,21 +136,6 @@ def _load_valid_mask(ont_short):
         return np.load(mask_file)
     return None
 
-def _load_y_true(ont_short):
-    """Load test_y_true.npy from any completed run for this ontology."""
-    for runs_dir in ('tuning_runs_jk', 'tuning_runs', 'runs_jk_test', 'runs_5seeds'):
-        search_root = os.path.join(PROJECT_DIR, runs_dir)
-        if not os.path.isdir(search_root):
-            continue
-        for root, dirs, files in os.walk(search_root):
-            if 'test_y_true.npy' in files:
-                if os.path.basename(root).startswith(ont_short + '_'):
-                    return np.load(os.path.join(root, 'test_y_true.npy'))
-    return None
-
-def _load_ic(ont_short):
-    """Load pre-computed IC from saved train_labels.npy."""
-    candidates = [
         os.path.join(PROJECT_DIR, f'{ont_short}_train_labels.npy'),
         os.path.join(PROJECT_DIR, f'{_FULL_ONT[ont_short]}_train_labels.npy'),
     ]
@@ -365,7 +350,7 @@ def plot_A_sequence_identity(datasets):
 
     bins   = [(0, 0.2, '<20%'), (0.2, 0.4, '20–40%'),
               (0.4, 0.6, '40–60%'), (0.6, 1.01, '>60%')]
-    y_true    = _load_y_true(ont_short)
+    y_true    = _load_y_true(ont_short, datasets)
     if y_true is None:
         print('  [SKIP plot A] No cached y_true for bp.')
         return
@@ -375,7 +360,7 @@ def plot_A_sequence_identity(datasets):
         y_true = y_true[:, valid_mask]
         goterms = [gt for gt, v in zip(goterms, valid_mask) if v]
         
-    ic_raw    = _load_ic(ont_short)
+    ic_raw    = _load_ic(ont_short, datasets)
     if ic_raw is not None and valid_mask is not None:
         ic_raw = ic_raw[:, valid_mask]
     ic        = ic_raw if ic_raw is not None else compute_ic(y_true)
@@ -482,14 +467,14 @@ def plot_C_ic_bins(datasets):
         test_ds  = datasets[ont_full]['test']
         prot_list = test_ds.pdb_split_list
         goterms   = test_ds.y_labels
-        y_true    = _load_y_true(ont_short)
+        y_true    = _load_y_true(ont_short, datasets)
         
         valid_mask = _load_valid_mask(ont_short)
         if valid_mask is not None:
             y_true = y_true[:, valid_mask]
             goterms = [gt for gt, v in zip(goterms, valid_mask) if v]
 
-        ic_raw    = _load_ic(ont_short)
+        ic_raw    = _load_ic(ont_short, datasets)
         if ic_raw is not None and valid_mask is not None:
             ic_raw = ic_raw[:, valid_mask]
         ic = ic_raw if ic_raw is not None else compute_ic(y_true)
@@ -645,14 +630,14 @@ def plot_F_depth_bins(datasets):
         test_ds  = datasets[ont_full]['test']
         prot_list = test_ds.pdb_split_list
         goterms   = test_ds.y_labels
-        y_true    = _load_y_true(ont_short)
+        y_true    = _load_y_true(ont_short, datasets)
 
         valid_mask = _load_valid_mask(ont_short)
         if valid_mask is not None:
             y_true = y_true[:, valid_mask]
             goterms = [gt for gt, v in zip(goterms, valid_mask) if v]
 
-        ic_raw    = _load_ic(ont_short)
+        ic_raw    = _load_ic(ont_short, datasets)
         if ic_raw is not None and valid_mask is not None:
             ic_raw = ic_raw[:, valid_mask]
         ic = ic_raw if ic_raw is not None else compute_ic(y_true)
@@ -759,14 +744,14 @@ def plot_BDE_pr_curves(datasets):
         test_ds  = datasets[ont_full]['test']
         prot_list = test_ds.pdb_split_list
         goterms   = test_ds.y_labels
-        y_true    = _load_y_true(ont_short)
+        y_true    = _load_y_true(ont_short, datasets)
 
         valid_mask = _load_valid_mask(ont_short)
         if valid_mask is not None:
             y_true = y_true[:, valid_mask]
             goterms = [gt for gt, v in zip(goterms, valid_mask) if v]
 
-        ic_raw    = _load_ic(ont_short)
+        ic_raw    = _load_ic(ont_short, datasets)
         if ic_raw is not None and valid_mask is not None:
             ic_raw = ic_raw[:, valid_mask]
         ic = ic_raw if ic_raw is not None else compute_ic(y_true)
@@ -841,7 +826,7 @@ def plot_G_coverage(datasets):
         test_ds  = datasets[ont_full]['test']
         prot_list = test_ds.pdb_split_list
         goterms   = test_ds.y_labels
-        y_true    = _load_y_true(ont_short)
+        y_true    = _load_y_true(ont_short, datasets)
         
         valid_mask = _load_valid_mask(ont_short)
         if valid_mask is not None:

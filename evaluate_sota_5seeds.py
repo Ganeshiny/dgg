@@ -334,34 +334,7 @@ def parse_args():
                         'successfully processed (per ontology). Results saved separately.')
     return p.parse_args()
 
-def _find_cached_npy(ont_short, key):
-    """
-    Finds a cached test_y_true.npy or train_labels.npy without loading
-    the heavy PyG .pt graph files.  Searches tuning_runs_jk first, then
-    tuning_runs, then runs_5seeds.
-    key is either 'test_y_true' or 'train_labels'.
-    """
-    if key == 'train_labels':
-        candidates = [
-            os.path.join(PROJECT_DIR, f'{ont_short}_train_labels.npy'),
-            os.path.join(PROJECT_DIR, f'{_FULL_ONT[ont_short]}_train_labels.npy'),
-        ]
-        for c in candidates:
-            if os.path.exists(c):
-                return np.load(c)
-        return None
 
-    # test_y_true — find any completed run for this ontology
-    for runs_dir in ('tuning_runs_jk', 'tuning_runs', 'runs_jk_test', 'runs_5seeds'):
-        search_root = os.path.join(PROJECT_DIR, runs_dir)
-        if not os.path.isdir(search_root):
-            continue
-        for root, dirs, files in os.walk(search_root):
-            if 'test_y_true.npy' in files:
-                # Make sure this is the right ontology
-                if os.path.basename(root).startswith(ont_short + '_'):
-                    return np.load(os.path.join(root, 'test_y_true.npy'))
-    return None
 
 _FULL_ONT = {'bp': 'biological_process', 'mf': 'molecular_function', 'cc': 'cellular_component'}
 
@@ -387,22 +360,14 @@ def main():
 
         print(f"  Test proteins: {len(prot_list)}, GO terms: {len(goterms)}")
 
-        # ── load y_true from a pre-saved run (avoids needing .pt files) ────
-        y_true = _find_cached_npy(ont_short, 'test_y_true')
-        if y_true is None:
-            print(f"  [ERROR] No cached test_y_true.npy found for {ont_short}.")
-            print(f"  Run at least one training job for {ont_full} first.")
-            continue
+        # ── generate y_true from loaded datasets.pkl ───────────────────────
+        y_true = np.array([test_ds.prot2annot[p][ont_full] for p in prot_list])
         print(f"  y_true shape: {y_true.shape}")
 
-        # ── load IC from pre-saved train labels ────────────────────────────
-        y_train_raw = _find_cached_npy(ont_short, 'train_labels')
-        if y_train_raw is not None:
-            ic = compute_ic(y_train_raw)
-        else:
-            # Fallback: approximate IC from y_true (not ideal but functional)
-            print(f"  [WARN] train_labels.npy not found for {ont_short}, approximating IC from test set.")
-            ic = compute_ic(y_true)
+        # ── generate IC from train set in datasets.pkl ─────────────────────
+        train_ds = datasets[ont_full]['train']
+        y_train_raw = np.array([train_ds.prot2annot[p][ont_full] for p in train_ds.pdb_split_list])
+        ic = compute_ic(y_train_raw)
 
         if args.dry_run:
             print(f"  [DRY RUN] Paths OK for {ont_short}")
