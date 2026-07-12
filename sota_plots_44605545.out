@@ -1,0 +1,70 @@
+========================================================
+  Job ID      : 44605545
+  Node        : mc45
+  Start time  : Thu Jul  9 22:30:50 MDT 2026
+========================================================
+Starting plotting script (Common Subset)...
+Loading datasets ...
+
+[Plot A] Sequence identity bins ...
+  [SKIP plot A] /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data/blast_identity.csv not found and no baseline alignment file found.
+                Run `python preprocessing/calc_blast_identity.py` to generate it.
+
+[Plot C] IC bins ...
+  [DeepFRI Debug] deepfri_seq_BP_BP_pred_scores.json -> matched 1722/2606 test proteins, 584/3442 terms. Max score: 0.9998
+  [DeepFRI Debug] deepfri_cmap_BP_BP_pred_scores.json -> matched 1722/1722 test proteins, 584/3442 terms. Max score: 1.0000
+  [Common Subset] bp: 1248/1722
+  [DeepFRI Debug] deepfri_seq_MF_MF_pred_scores.json -> matched 1722/2606 test proteins, 268/942 terms. Max score: 1.0000
+  [DeepFRI Debug] deepfri_cmap_MF_MF_pred_scores.json -> matched 1722/1722 test proteins, 268/942 terms. Max score: 1.0000
+  [Common Subset] mf: 1248/1722
+  [DeepFRI Debug] deepfri_seq_CC_CC_pred_scores.json -> matched 1722/2606 test proteins, 136/555 terms. Max score: 0.9911
+  [DeepFRI Debug] deepfri_cmap_CC_CC_pred_scores.json -> matched 1722/1722 test proteins, 136/555 terms. Max score: 1.0000
+  [Common Subset] cc: 1248/1722
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison/plot_C_ic_bins_common_subset.png
+
+[Plots B/D/E] IC-weighted PR curves ...
+  [DeepFRI Debug] deepfri_seq_BP_BP_pred_scores.json -> matched 1722/2606 test proteins, 584/3442 terms. Max score: 0.9998
+  [DeepFRI Debug] deepfri_cmap_BP_BP_pred_scores.json -> matched 1722/1722 test proteins, 584/3442 terms. Max score: 1.0000
+  [Common Subset] bp: 1248/1722
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison/plot_E_pr_curve_bp_common_subset.png
+  [DeepFRI Debug] deepfri_seq_MF_MF_pred_scores.json -> matched 1722/2606 test proteins, 268/942 terms. Max score: 1.0000
+  [DeepFRI Debug] deepfri_cmap_MF_MF_pred_scores.json -> matched 1722/1722 test proteins, 268/942 terms. Max score: 1.0000
+  [Common Subset] mf: 1248/1722
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison/plot_B_pr_curve_mf_common_subset.png
+  [DeepFRI Debug] deepfri_seq_CC_CC_pred_scores.json -> matched 1722/2606 test proteins, 136/555 terms. Max score: 0.9911
+  [DeepFRI Debug] deepfri_cmap_CC_CC_pred_scores.json -> matched 1722/1722 test proteins, 136/555 terms. Max score: 1.0000
+  [Common Subset] cc: 1248/1722
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison/plot_D_pr_curve_cc_common_subset.png
+
+[Plot F] GO depth bins ...
+  [DeepFRI Debug] deepfri_seq_BP_BP_pred_scores.json -> matched 1722/2606 test proteins, 584/3442 terms. Max score: 0.9998
+  [DeepFRI Debug] deepfri_cmap_BP_BP_pred_scores.json -> matched 1722/1722 test proteins, 584/3442 terms. Max score: 1.0000
+  [Common Subset] bp: 1248/1722
+  [DeepFRI Debug] deepfri_seq_MF_MF_pred_scores.json -> matched 1722/2606 test proteins, 268/942 terms. Max score: 1.0000
+  [DeepFRI Debug] deepfri_cmap_MF_MF_pred_scores.json -> matched 1722/1722 test proteins, 268/942 terms. Max score: 1.0000
+  [Common Subset] mf: 1248/1722
+  [DeepFRI Debug] deepfri_seq_CC_CC_pred_scores.json -> matched 1722/2606 test proteins, 136/555 terms. Max score: 0.9911
+  [DeepFRI Debug] deepfri_cmap_CC_CC_pred_scores.json -> matched 1722/1722 test proteins, 136/555 terms. Max score: 1.0000
+  [Common Subset] cc: 1248/1722
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison/plot_F_depth_bins_common_subset.png
+
+[Plot G] Coverage ...
+  [DeepFRI Debug] deepfri_seq_BP_BP_pred_scores.json -> matched 1722/2606 test proteins, 584/3442 terms. Max score: 0.9998
+  [DeepFRI Debug] deepfri_cmap_BP_BP_pred_scores.json -> matched 1722/1722 test proteins, 584/3442 terms. Max score: 1.0000
+  [Common Subset] bp: 1248/1722
+  [DeepFRI Debug] deepfri_seq_MF_MF_pred_scores.json -> matched 1722/2606 test proteins, 268/942 terms. Max score: 1.0000
+  [DeepFRI Debug] deepfri_cmap_MF_MF_pred_scores.json -> matched 1722/1722 test proteins, 268/942 terms. Max score: 1.0000
+  [Common Subset] mf: 1248/1722
+  [DeepFRI Debug] deepfri_seq_CC_CC_pred_scores.json -> matched 1722/2606 test proteins, 136/555 terms. Max score: 0.9911
+  [DeepFRI Debug] deepfri_cmap_CC_CC_pred_scores.json -> matched 1722/1722 test proteins, 136/555 terms. Max score: 1.0000
+  [Common Subset] cc: 1248/1722
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison/plot_G_coverage_common_subset.png
+
+[Summary] Fmax bar chart ...
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison/plot_summary_fmax_common_subset.png
+
+✓ All plots saved to: /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison
+========================================================
+  Plotting Complete!
+  End time  : Thu Jul  9 22:36:32 MDT 2026
+========================================================
