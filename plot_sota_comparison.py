@@ -508,13 +508,16 @@ def plot_C_ic_bins(datasets):
                     continue
                 # Build per-seed predictions list
                 if mname in ('Hybrid', 'Hybrid_JK'):
-                    seed_ps = [sp for _, sp in load_per_seed_preds(ont_short, mname, len(goterms), len(prot_list), mask=mask, valid_mask=valid_mask)]
-                    if not seed_ps:
-                        seed_ps = [preds[mname]]
+                    seed_pairs = [(y_true, sp) for _, sp in load_per_seed_preds(ont_short, mname, len(goterms), len(prot_list), mask=mask, valid_mask=valid_mask)]
+                    if not seed_pairs:
+                        seed_pairs = [(y_true, preds[mname])]
                 else:
                     rng = np.random.default_rng(mi * 7)
                     N = y_true.shape[0]
-                    seed_ps = [preds[mname][rng.choice(N, N, replace=True)] for _ in range(5)]
+                    seed_pairs = []
+                    for _ in range(5):
+                        idx = rng.choice(N, N, replace=True)
+                        seed_pairs.append((y_true[idx], preds[mname][idx]))
 
                 fmax_means, fmax_sems = [], []
                 for lo, hi, _ in bins:
@@ -523,9 +526,9 @@ def plot_C_ic_bins(datasets):
                     if n_terms_in_bin < 3:
                         fmax_means.append(np.nan); fmax_sems.append(0.0); continue
                     bin_fmaxes = []
-                    for sp in seed_ps:
-                        yt_b = y_true[:, term_mask]
-                        yp_b = sp[:, term_mask]
+                    for yt, yp in seed_pairs:
+                        yt_b = yt[:, term_mask]
+                        yp_b = yp[:, term_mask]
                         if yt_b.sum() == 0:
                             continue
                         prec, rec, _ = precision_recall_curve(yt_b.ravel(), yp_b.ravel())
@@ -668,12 +671,15 @@ def plot_F_depth_bins(datasets):
                 if mname not in preds:
                     continue
                 if mname in ('Hybrid', 'Hybrid_JK'):
-                    seed_ps = [sp for _, sp in load_per_seed_preds(ont_short, mname, len(goterms), len(prot_list), mask=mask, valid_mask=valid_mask)]
-                    if not seed_ps: seed_ps = [preds[mname]]
+                    seed_pairs = [(y_true, sp) for _, sp in load_per_seed_preds(ont_short, mname, len(goterms), len(prot_list), mask=mask, valid_mask=valid_mask)]
+                    if not seed_pairs: seed_pairs = [(y_true, preds[mname])]
                 else:
                     rng = np.random.default_rng(mi * 13)
                     N = y_true.shape[0]
-                    seed_ps = [preds[mname][rng.choice(N, N, replace=True)] for _ in range(5)]
+                    seed_pairs = []
+                    for _ in range(5):
+                        idx = rng.choice(N, N, replace=True)
+                        seed_pairs.append((y_true[idx], preds[mname][idx]))
 
                 fmax_means, fmax_sems = [], []
                 for lo, hi, _ in bins:
@@ -681,9 +687,9 @@ def plot_F_depth_bins(datasets):
                     if term_mask.sum() < 3:
                         fmax_means.append(np.nan); fmax_sems.append(0.0); continue
                     bin_fmaxes = []
-                    for sp in seed_ps:
-                        yt_b = y_true[:, term_mask]
-                        yp_b = sp[:, term_mask]
+                    for yt, yp in seed_pairs:
+                        yt_b = yt[:, term_mask]
+                        yp_b = yp[:, term_mask]
                         if yt_b.sum() == 0: continue
                         prec, rec, _ = precision_recall_curve(yt_b.ravel(), yp_b.ravel())
                         f1 = 2*prec*rec/(prec+rec+1e-10)
@@ -777,17 +783,20 @@ def plot_BDE_pr_curves(datasets):
                     continue
                 # Average PR curve over seeds
                 if mname in ('Hybrid', 'Hybrid_JK'):
-                    seed_ps = [sp for _, sp in load_per_seed_preds(ont_short, mname, len(goterms), len(prot_list), mask=mask, valid_mask=valid_mask)]
-                    if not seed_ps:
-                        seed_ps = [preds[mname]]
+                    seed_pairs = [(y_true, ic_flat, sp) for _, sp in load_per_seed_preds(ont_short, mname, len(goterms), len(prot_list), mask=mask, valid_mask=valid_mask)]
+                    if not seed_pairs:
+                        seed_pairs = [(y_true, ic_flat, preds[mname])]
                 else:
                     rng = np.random.default_rng(hash(mname) % (2**31))
                     N = y_true.shape[0]
-                    seed_ps = [preds[mname][rng.choice(N, N, replace=True)] for _ in range(5)]
+                    seed_pairs = []
+                    for _ in range(5):
+                        idx = rng.choice(N, N, replace=True)
+                        seed_pairs.append((y_true[idx], ic_flat[idx], preds[mname][idx]))
 
                 all_rec, all_prec = [], []
-                for sp in seed_ps:
-                    rec, prec = ic_weighted_pr(y_true, sp, ic_flat)
+                for yt, yt_ic_flat, yp in seed_pairs:
+                    rec, prec = ic_weighted_pr(yt, yp, yt_ic_flat)
                     all_rec.append(rec)
                     all_prec.append(prec)
                 # Interpolate to common recall grid

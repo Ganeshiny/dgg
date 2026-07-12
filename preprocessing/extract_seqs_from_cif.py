@@ -165,62 +165,66 @@ def write_fasta(fn, sequences):
             SeqIO.write(sequence, output_handle, "fasta")
             
 def write_output_files(fname, pdb2go, go2info, pdb2seq):
-    onts = ['molecular_function', 'biological_process', 'cellular_component']
-    selected_goterms = {ont: set() for ont in onts}
-    selected_proteins = set()
-    for goterm in go2info:
-        prots = go2info[goterm]['pdb_chains']
-        num = len(prots)
-        namespace = go2info[goterm]['ont']
-        #print(f"Goterm: {goterm}, Num: {num}, Namespace: {namespace}")
-        if (num > 50) and (num <= 5000):
-            selected_goterms[namespace].add(goterm)
-            selected_proteins = selected_proteins.union(prots)
+    """Write RAW (unfiltered) annotations to pdb2go_raw.tsv and all sequences to FASTA.
 
-    selected_goterms_list = {ont: list(selected_goterms[ont]) for ont in onts}
-    selected_gonames_list = {ont: [go2info[goterm]['goname'] for goterm in selected_goterms_list[ont]] for ont in onts}
+    No GO-term frequency filtering is applied here. The raw file uses the same
+    TSV layout as the final pdb2go.tsv (header rows per ontology, then protein
+    rows) so that filter_vocabulary.py can parse it with the same reader and
+    apply train-only frequency filtering afterwards.
+    """
+    onts = ['molecular_function', 'biological_process', 'cellular_component']
+
+    # Collect ALL GO terms grouped by ontology — NO frequency filter
+    all_goterms = {ont: set() for ont in onts}
+    all_proteins = set()
+    for goterm, info in go2info.items():
+        namespace = info['ont']
+        all_goterms[namespace].add(goterm)
+        all_proteins = all_proteins.union(info['pdb_chains'])
+
+    all_goterms_list = {ont: sorted(all_goterms[ont]) for ont in onts}
+    all_gonames_list = {ont: [go2info[gt]['goname'] for gt in all_goterms_list[ont]] for ont in onts}
 
     for ont in onts:
-        print ("###", ont, ":", len(selected_goterms_list[ont]))
+        print("###", ont, ":", len(all_goterms_list[ont]))
 
     sequences_list = []
     protein_list = []
 
-    with open(fname + 'pdb2go.tsv', 'wt', newline='') as out_file:
+    # Write raw (unfiltered) annotation file
+    raw_out = fname + 'pdb2go_raw.tsv'
+    with open(raw_out, 'wt', newline='') as out_file:
         tsv_writer = csv.writer(out_file, delimiter='\t')
         for ont in onts:
             tsv_writer.writerow(["### GO-terms (%s)" % (ont)])
-            tsv_writer.writerow(selected_goterms_list[ont])
+            tsv_writer.writerow(all_goterms_list[ont])
             tsv_writer.writerow(["### GO-names (%s)" % (ont)])
-            tsv_writer.writerow(selected_gonames_list[ont])
+            tsv_writer.writerow(all_gonames_list[ont])
         tsv_writer.writerow(["### PDB-chain", "GO-terms (molecular_function)", "GO-terms (biological_process)", "GO-terms (cellular_component)"])
-        for chain in selected_proteins:
+        for chain in all_proteins:
             if chain in pdb2seq:
                 goterms = set(pdb2go[chain]['goterms'])
-                if len(goterms) > 2:
-                    # selected goterms
-                    mf_goterms = goterms.intersection(set(selected_goterms_list[onts[0]]))
-                    bp_goterms = goterms.intersection(set(selected_goterms_list[onts[1]]))
-                    cc_goterms = goterms.intersection(set(selected_goterms_list[onts[2]]))
+                if len(goterms) > 0:
+                    mf_goterms = goterms.intersection(all_goterms[onts[0]])
+                    bp_goterms = goterms.intersection(all_goterms[onts[1]])
+                    cc_goterms = goterms.intersection(all_goterms[onts[2]])
                     if len(mf_goterms) > 0 or len(bp_goterms) > 0 or len(cc_goterms) > 0:
                         sequences_list.append(SeqRecord(Seq(pdb2seq[chain]), id=chain, description="nrPDB"))
                         protein_list.append(chain)
                         tsv_writer.writerow([chain, ','.join(mf_goterms), ','.join(bp_goterms), ','.join(cc_goterms)])
-                    else:
-                        print(f"Chain {chain} not found in pdb2seq.")
 
-    # Write all valid sequences to FASTA
+    print(f"Wrote {len(protein_list)} proteins (unfiltered) to {raw_out}")
+
+    # Write all valid sequences to FASTA (needed by cluster_and_split.py)
     fasta_out = fname + 'all_sequences.fasta'
     write_fasta(fasta_out, sequences_list)
     print(f"Wrote {len(sequences_list)} sequences to {fasta_out}")
 
 
-#"/home/hpc_users/2019s17273@stu.cmb.ac.lk/ganeshiny/protein-go-predictor/preprocessing/data/seqs_from_structure_dir.fasta"
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('-sifts', type=str, default='preprocessing/data/pdb_chain_go.tsv_2024-06-25', help="SIFTS annotation files.")
     parser.add_argument('-struc_dir', type= str, default='preprocessing/data/structure_files', help= 'directory containing cif files')
-    #parser.add_argument('-clu', type=str, default='preprocessing/data/mmseqs2_clusters_0.5_seq_id_0.8_cov.tsv', help="mmseqs2_cluster_results")
     parser.add_argument('-seqs', type=str, default="preprocessing/data/seqs_from_structure_dir.fasta", help="sequences from cif directory")
     parser.add_argument('-obo', type=str, default='preprocessing/data/go-basic_2024-06-25.obo', help="gene ontology basic.obo file")
     parser.add_argument('-out', type=str, default='preprocessing/data/', help="output files")    
@@ -231,18 +235,10 @@ if __name__ == "__main__":
         write_seqs_from_cifdir(args.struc_dir, args.seqs)
     else:
         print(f"Sequence file {args.seqs} already exists. Skipping extraction.")
-    #repr = load_cluster_file(args.clu)
-
-    #pdb2seq = pdb_2_seq(args.seqs)
-    #write_seqs_file(pdb2seq,repr)
-
-    #f = open("output test.txt", "w")
-    #f.write(str(read_sifts(args.sifts, repr, go_graph)))
 
     ids = read_seqs_file(args.seqs).keys()
     print(ids)
     go_graph = load_go_graph(args.obo)
-    #sub_go_graph = create_subgraph(go_graph, domain_terms)
     pdb2seq = read_seqs_file(args.seqs)
     pdb2go, go2info = read_sifts(args.sifts, ids, go_graph)
     write_output_files(args.out, pdb2go, go2info, pdb2seq)

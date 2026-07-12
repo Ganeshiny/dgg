@@ -168,6 +168,7 @@ def main():
         all_train_labels.append(data.y.numpy())
     all_train_labels = np.vstack(all_train_labels)
     ic = compute_ic(all_train_labels)
+    np.save(os.path.join(os.path.dirname(os.path.abspath(__file__)), f'{args.ontology}_train_labels.npy'), all_train_labels)
 
     # Model Setup
     input_size = len(train_dataset[0].x[0])
