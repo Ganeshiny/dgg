@@ -49,24 +49,20 @@ def load_datasets():
     with open(DATASET_PKL, 'rb') as f:
         return _Up(f).load()
 
-def extract_sequences_from_pt(prot_ids, processed_dir):
+def extract_sequences_from_npz(prot_ids, npz_dir):
     """
-    Extracts amino acid sequences from .pt files.
-    Falls back to returning stub sequences if not available.
+    Extracts amino acid sequences from original .npz files.
     """
-    import torch
     seqs = {}
     for prot in prot_ids:
-        pt_path = os.path.join(processed_dir, f'{prot}.pt')
-        if not os.path.exists(pt_path):
+        npz_path = os.path.join(npz_dir, f'{prot}.npz')
+        if not os.path.exists(npz_path):
             continue
         try:
-            data = torch.load(pt_path, weights_only=False, map_location='cpu')
-            # sequences are stored in data['atoms'].sequence or similar
-            if hasattr(data, 'sequence'):
-                seqs[prot] = data.sequence
-            elif hasattr(data['atoms'], 'sequence'):
-                seqs[prot] = data['atoms'].sequence
+            cmap = np.load(npz_path, allow_pickle=True)
+            raw_seqres = cmap['seqres']
+            seq = str(raw_seqres.item()) if raw_seqres.ndim == 0 else str(raw_seqres)
+            seqs[prot] = seq
         except Exception:
             pass
     return seqs
@@ -117,16 +113,18 @@ def main():
     test_prots  = test_ds.pdb_split_list
     print(f'  Train: {len(train_prots)} proteins,  Test: {len(test_prots)} proteins')
 
-    processed_dir = PROJECT_DIR / 'preprocessing' / 'data' / 'processed'
+    npz_dir = train_ds.npz_dir
+    if not os.path.exists(npz_dir):
+        npz_dir = PROJECT_DIR / 'preprocessing' / 'data' / 'structure_files' / 'tmp_cmap_files'
 
     if not args.skip_blast:
         # Extract sequences
-        print('Extracting training sequences from .pt files ...')
-        train_seqs = extract_sequences_from_pt(train_prots, processed_dir)
-        test_seqs  = extract_sequences_from_pt(test_prots, processed_dir)
+        print('Extracting sequences from .npz files ...')
+        train_seqs = extract_sequences_from_npz(train_prots, npz_dir)
+        test_seqs  = extract_sequences_from_npz(test_prots, npz_dir)
 
         if not train_seqs:
-            print('WARNING: Could not extract sequences from .pt files.')
+            print('WARNING: Could not extract sequences from .npz files.')
             print('Please provide train_sequences.fasta manually and re-run with --skip_blast.')
             sys.exit(1)
 
