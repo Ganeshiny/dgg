@@ -1,0 +1,16 @@
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/plot_sota_comparison.py", line 954, in <module>
+    main()
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/plot_sota_comparison.py", line 933, in main
+    plot_A_sequence_identity(datasets)
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/plot_sota_comparison.py", line 345, in plot_A_sequence_identity
+    y_true    = _load_y_true(ont_short, datasets)
+NameError: name '_load_y_true' is not defined
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/plot_sota_comparison.py", line 954, in <module>
+    main()
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/plot_sota_comparison.py", line 933, in main
+    plot_A_sequence_identity(datasets)
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/plot_sota_comparison.py", line 345, in plot_A_sequence_identity
+    y_true    = _load_y_true(ont_short, datasets)
+NameError: name '_load_y_true' is not defined
