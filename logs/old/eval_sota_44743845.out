@@ -1,0 +1,12 @@
+========================================================
+  Job ID      : 44743845
+  Node        : mc58
+  Start time  : Sun Jul 12 14:14:04 MDT 2026
+========================================================
+1. Generating BLAST maximum sequence identity (for Plot A)
+Loading datasets ...
+  Train: 12889 proteins,  Test: 1722 proteins
+Extracting training sequences from .pt files ...
+WARNING: Could not extract sequences from .pt files.
+Please provide train_sequences.fasta manually and re-run with --skip_blast.
+2. Running 5-seed Evaluation and Bootstrapping

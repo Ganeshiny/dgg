@@ -1,0 +1,94 @@
+========================================================
+  Job ID      : 44743868
+  Node        : mc58
+  Start time  : Sun Jul 12 14:14:40 MDT 2026
+========================================================
+1. Generating BLAST maximum sequence identity (for Plot A)
+Loading datasets ...
+  Train: 12889 proteins,  Test: 1722 proteins
+Extracting training sequences from .pt files ...
+WARNING: Could not extract sequences from .pt files.
+Please provide train_sequences.fasta manually and re-run with --skip_blast.
+2. Running 5-seed Evaluation and Bootstrapping
+Loading datasets from /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data/split_files/datasets.pkl ...
+
+============================================================
+  Ontology: BIOLOGICAL_PROCESS
+============================================================
+  Test proteins: 1722, GO terms: 727
+  y_true shape: (1722, 727)
+  [TransFun] Parsing ...
+    Coverage: 1248/1722 proteins
+  [DeepFRI] Parsing ...
+    Coverage: 1722/1722 proteins
+  [DPFunc] Parsing ...
+    Coverage: 1722/1722 proteins
+  [TransFun] Bootstrapping (full test set) ...
+  [DeepFRI] Bootstrapping (full test set) ...
+  [DPFunc] Bootstrapping (full test set) ...
+  [Hybrid] Loading 5-seed predictions ...
+  [Hybrid_JK] Loading 5-seed predictions ...
+
+============================================================
+  Ontology: MOLECULAR_FUNCTION
+============================================================
+  Test proteins: 1722, GO terms: 316
+  y_true shape: (1722, 316)
+  [TransFun] Parsing ...
+    Coverage: 1248/1722 proteins
+  [DeepFRI] Parsing ...
+    Coverage: 1722/1722 proteins
+  [DPFunc] Parsing ...
+    Coverage: 1722/1722 proteins
+  [TransFun] Bootstrapping (full test set) ...
+  [DeepFRI] Bootstrapping (full test set) ...
+  [DPFunc] Bootstrapping (full test set) ...
+  [Hybrid] Loading 5-seed predictions ...
+  [Hybrid_JK] Loading 5-seed predictions ...
+
+============================================================
+  Ontology: CELLULAR_COMPONENT
+============================================================
+  Test proteins: 1722, GO terms: 161
+  y_true shape: (1722, 161)
+  [TransFun] Parsing ...
+    Coverage: 1248/1722 proteins
+  [DeepFRI] Parsing ...
+    Coverage: 1722/1722 proteins
+  [DPFunc] Parsing ...
+    Coverage: 1722/1722 proteins
+  [TransFun] Bootstrapping (full test set) ...
+  [DeepFRI] Bootstrapping (full test set) ...
+  [DPFunc] Bootstrapping (full test set) ...
+  [Hybrid] Loading 5-seed predictions ...
+  [Hybrid_JK] Loading 5-seed predictions ...
+
+✓ Results saved to /home/ganeshiny.sridharan/dgg/deep-green-GO/runs_5seeds/evaluation_results.csv
+    Model Ontology  N_seeds  Micro_Fmax_mean  Micro_Fmax_std  Micro_Fmax_se  Macro_Fmax_mean  Macro_Fmax_std  Macro_Fmax_se  Micro_AUROC_mean  Micro_AUROC_std  Micro_AUROC_se  Micro_AUPRC_mean  Micro_AUPRC_std  Micro_AUPRC_se  Smin_mean  Smin_std  Smin_se
+ TransFun       BP        5         0.238178        0.009499       0.004248         0.262775        0.004203       0.001880          0.704935         0.013965        0.006245          0.138873         0.010417        0.004659  69.349837  2.641720 1.181413
+  DeepFRI       BP        5         0.158328        0.005566       0.002489         0.242143        0.007496       0.003352          0.676672         0.004053        0.001812          0.118079         0.007490        0.003350  70.603988  2.432720 1.087946
+   DPFunc       BP        5         0.102120        0.003184       0.001424         0.080184        0.003599       0.001609          0.676858         0.002804        0.001254          0.047536         0.001624        0.000726  71.845527  2.505375 1.120438
+   Hybrid       BP        5         0.670232        0.004697       0.002101         0.661932        0.006863       0.003069          0.840094         0.009538        0.004265          0.630543         0.005279        0.002361  35.712528  0.496020 0.221827
+Hybrid_JK       BP        5         0.670872        0.006521       0.002916         0.663013        0.010030       0.004485          0.879360         0.008642        0.003865          0.637804         0.008952        0.004004  35.548513  0.601239 0.268882
+ TransFun       MF        5         0.409938        0.006591       0.002947         0.429508        0.004440       0.001986          0.722553         0.002949        0.001319          0.348707         0.008657        0.003872  26.876664  0.800510 0.357999
+  DeepFRI       MF        5         0.310609        0.010978       0.004910         0.378264        0.004528       0.002025          0.658046         0.003692        0.001651          0.228681         0.007418        0.003318  29.681998  0.673570 0.301230
+   DPFunc       MF        5         0.106673        0.001653       0.000739         0.079747        0.003781       0.001691          0.620995         0.002460        0.001100          0.055457         0.001029        0.000460  36.250039  0.357220 0.159754
+   Hybrid       MF        5         0.823263        0.005608       0.002508         0.854976        0.004831       0.002161          0.950936         0.008770        0.003922          0.842348         0.001838        0.000822   8.736206  0.268448 0.120054
+Hybrid_JK       MF        5         0.814451        0.009624       0.004304         0.840536        0.005910       0.002643          0.943627         0.009004        0.004027          0.827728         0.007902        0.003534   9.408157  0.422817 0.189089
+ TransFun       CC        5         0.294150        0.009463       0.004232         0.350161        0.006149       0.002750          0.731742         0.007364        0.003293          0.181017         0.007379        0.003300  14.467557  0.193203 0.086403
+  DeepFRI       CC        5         0.235417        0.008898       0.003979         0.239218        0.008913       0.003986          0.766587         0.002352        0.001052          0.158783         0.013976        0.006250  14.856928  0.563111 0.251831
+   DPFunc       CC        5         0.091030        0.003420       0.001529         0.077720        0.006015       0.002690          0.607011         0.002182        0.000976          0.039734         0.001511        0.000676  16.270698  0.506536 0.226530
+   Hybrid       CC        5         0.613455        0.003848       0.001721         0.618562        0.015452       0.006911          0.882786         0.013864        0.006200          0.602704         0.020300        0.009078   8.824718  0.089322 0.039946
+Hybrid_JK       CC        5         0.603726        0.011471       0.005130         0.625064        0.008991       0.004021          0.875097         0.018181        0.008131          0.576573         0.021462        0.009598   9.019063  0.238640 0.106723
+
+✓ Coverage diagnostic saved to /home/ganeshiny.sridharan/dgg/deep-green-GO/runs_5seeds/coverage_diagnostic.csv
+   Model Ontology  Total_Test  Coverage_Failures  Label_Mismatch  Covered_Mapped
+TransFun       BP        1722                474               0            1248
+ DeepFRI       BP        1722                  0               0            1722
+  DPFunc       BP        1722                  0               0            1722
+TransFun       MF        1722                474               0            1248
+ DeepFRI       MF        1722                  0               0            1722
+  DPFunc       MF        1722                  0               0            1722
+TransFun       CC        1722                474               0            1248
+ DeepFRI       CC        1722                  0               0            1722
+  DPFunc       CC        1722                  0               0            1722

@@ -1,0 +1,6 @@
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/plot_sota_comparison.py", line 139
+    os.path.join(PROJECT_DIR, f'{ont_short}_train_labels.npy'),
+IndentationError: unexpected indent
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/plot_sota_comparison.py", line 139
+    os.path.join(PROJECT_DIR, f'{ont_short}_train_labels.npy'),
+IndentationError: unexpected indent
