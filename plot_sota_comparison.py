@@ -136,6 +136,19 @@ def _load_valid_mask(ont_short):
         return np.load(mask_file)
     return None
 
+def _load_y_true(ont_short, datasets):
+    """Extract test_y_true directly from datasets.pkl"""
+    ont_full = _FULL_ONT[ont_short]
+    test_ds = datasets[ont_full]['test']
+    return np.array([test_ds.prot2annot[p][ont_full] for p in test_ds.pdb_split_list])
+
+def _load_ic(ont_short, datasets):
+    """Extract training IC directly from datasets.pkl"""
+    ont_full = _FULL_ONT[ont_short]
+    train_ds = datasets[ont_full]['train']
+    y_train = np.array([train_ds.prot2annot[p][ont_full] for p in train_ds.pdb_split_list])
+    return compute_ic(y_train)
+
 def compute_ic(y_train):
     N = y_train.shape[0]
     counts = np.sum(y_train, axis=0)
