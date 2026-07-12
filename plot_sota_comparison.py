@@ -136,14 +136,6 @@ def _load_valid_mask(ont_short):
         return np.load(mask_file)
     return None
 
-        os.path.join(PROJECT_DIR, f'{ont_short}_train_labels.npy'),
-        os.path.join(PROJECT_DIR, f'{_FULL_ONT[ont_short]}_train_labels.npy'),
-    ]
-    for c in candidates:
-        if os.path.exists(c):
-            return compute_ic(np.load(c))
-    return None
-
 def compute_ic(y_train):
     N = y_train.shape[0]
     counts = np.sum(y_train, axis=0)
