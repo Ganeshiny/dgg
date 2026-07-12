@@ -1,0 +1,15 @@
+SOTA/│   │   ├── cc_results.txt
+SOTA_predictions/│   ├── cc_results.txt
+SOTA_predictions/├── cc_results.txt
+baselines/│   ├── deepfri_cmap_BP_BP_pred_scores.json
+baselines/│   ├── deepfri_cmap_BP_BP_predictions.csv
+baselines/│   ├── deepfri_cmap_CC_CC_pred_scores.json
+baselines/│   ├── deepfri_cmap_CC_CC_predictions.csv
+baselines/│   ├── deepfri_cmap_MF_MF_pred_scores.json
+baselines/│   ├── deepfri_cmap_MF_MF_predictions.csv
+baselines/│   ├── deepfri_seq_BP_BP_pred_scores.json
+baselines/│   ├── deepfri_seq_BP_BP_predictions.csv
+baselines/│   ├── deepfri_seq_CC_CC_pred_scores.json
+baselines/│   ├── deepfri_seq_CC_CC_predictions.csv
+baselines/│   ├── deepfri_seq_MF_MF_pred_scores.json
+baselines/│   ├── deepfri_seq_MF_MF_predictions.csv

@@ -210,6 +210,18 @@ def _coverage_diagnostic(model_name, covered_proteins, prot_list, goterms, y_pre
         'Covered_Mapped': covered_mapped,
     }
 
+def _find_robust(filename_variants, req_dir_part, search_roots):
+    for sdir in search_roots:
+        r = os.path.join(PROJECT_DIR, sdir)
+        if not os.path.isdir(r): continue
+        for root, _, files in os.walk(r):
+            if req_dir_part.lower() in root.lower() or req_dir_part == '':
+                for f in files:
+                    if f in filename_variants:
+                        return os.path.join(root, f)
+    return ""
+
+
 # ── dataset loading ───────────────────────────────────────────────────────────
 
 def load_datasets():
@@ -398,21 +410,23 @@ def main():
 
         # ── TransFun ─────────────────────────────────────────────────────────
         print("  [TransFun] Parsing ...")
-        tf_file = os.path.join(PROJECT_DIR, 'SOTA', 'TransFun', 'data', f'{ont_short}_results.txt')
+        tf_file = _find_robust([f'{ont_short}_results.txt'], 'TransFun', ['SOTA', 'SOTA_predictions'])
+        if not tf_file: tf_file = os.path.join(PROJECT_DIR, 'SOTA', 'TransFun', 'data', f'{ont_short}_results.txt')
         yp_tf, cov_tf = parse_transfun(tf_file, prot_list, goterms)
         print(f"    Coverage: {len(cov_tf)}/{len(prot_list)} proteins")
 
         # ── DeepFRI ──────────────────────────────────────────────────────────
         print("  [DeepFRI] Parsing ...")
-        df_file = os.path.join(PROJECT_DIR, 'baselines', 'deepfri_results',
-                               f'deepfri_seq_{ont_short.upper()}_pred_scores.json')
+        df_seq_variants = [f'deepfri_seq_{ont_short.upper()}_pred_scores.json', f'deepfri_seq_{ont_short.upper()}_{ont_short.upper()}_pred_scores.json']
+        df_file = _find_robust(df_seq_variants, 'deepfri', ['baselines', 'baselines/deepfri_results'])
+        if not df_file: df_file = os.path.join(PROJECT_DIR, 'baselines', 'deepfri_results', f'deepfri_seq_{ont_short.upper()}_pred_scores.json')
         yp_df, cov_df = parse_deepfri_json(df_file, prot_list, goterms)
         print(f"    Coverage: {len(cov_df)}/{len(prot_list)} proteins")
 
         # ── DPFunc ───────────────────────────────────────────────────────────
         print("  [DPFunc] Parsing ...")
-        dpfunc_file = os.path.join(PROJECT_DIR, 'SOTA_predictions', 'DPFunc',
-                                   f'{ont_short}_results.txt')
+        dpfunc_file = _find_robust([f'{ont_short}_results.txt'], 'DPFunc', ['SOTA_predictions', 'SOTA'])
+        if not dpfunc_file: dpfunc_file = os.path.join(PROJECT_DIR, 'SOTA_predictions', 'DPFunc', f'{ont_short}_results.txt')
         yp_dpf, cov_dpf = parse_dpfunc(dpfunc_file, prot_list, goterms)
         print(f"    Coverage: {len(cov_dpf)}/{len(prot_list)} proteins")
 
