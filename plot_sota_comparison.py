@@ -862,23 +862,29 @@ def plot_BDE_pr_curves(datasets):
                 rec, prec = ic_weighted_pr(yt, yp, yt_ic_flat)
                 all_rec.append(rec)
                 all_prec.append(prec)
-            # Interpolate to common recall grid
-            common_rec = np.linspace(0, 1, 200)
-            interp_precs = []
-            for rec, prec in zip(all_rec, all_prec):
-                sort_idx = np.argsort(rec)
-                interp_precs.append(np.interp(common_rec, rec[sort_idx], prec[sort_idx]))
-            mean_prec = np.mean(interp_precs, axis=0)
-            std_prec  = np.std(interp_precs, axis=0)
+            # Interpolate to common recall grid (only for models that output continuous probabilities)
+            if mname in ('BLAST', 'DIAMOND'):
+                mean_prec_point = np.mean([p[0] for p in all_prec])
+                mean_rec_point = np.mean([r[0] for r in all_rec])
+                color = PALETTE.get(mname, '#888888')
+                ax.plot(mean_rec_point, mean_prec_point, marker='X', color=color, markersize=8, linestyle='None', label=mname)
+            else:
+                common_rec = np.linspace(0, 1, 200)
+                interp_precs = []
+                for rec, prec in zip(all_rec, all_prec):
+                    sort_idx = np.argsort(rec)
+                    interp_precs.append(np.interp(common_rec, rec[sort_idx], prec[sort_idx]))
+                mean_prec = np.mean(interp_precs, axis=0)
+                std_prec  = np.std(interp_precs, axis=0)
 
-            color = PALETTE.get(mname, '#888888')
-            ls = '--' if mname == 'Hybrid_JK' else '-'
-            alpha_val = 0.6 if mname == 'Hybrid_JK' else 0.9
-            ax.plot(common_rec, mean_prec, color=color, linewidth=1.8, label=mname, linestyle=ls, alpha=alpha_val)
-            ax.fill_between(common_rec,
-                            np.clip(mean_prec - std_prec, 0, 1),
-                            np.clip(mean_prec + std_prec, 0, 1),
-                            alpha=0.15 if mname != 'Hybrid_JK' else 0.05, color=color)
+                color = PALETTE.get(mname, '#888888')
+                ls = '--' if mname == 'Hybrid_JK' else '-'
+                alpha_val = 0.6 if mname == 'Hybrid_JK' else 0.9
+                ax.plot(common_rec, mean_prec, color=color, linewidth=1.8, label=mname, linestyle=ls, alpha=alpha_val)
+                ax.fill_between(common_rec,
+                                np.clip(mean_prec - std_prec, 0, 1),
+                                np.clip(mean_prec + std_prec, 0, 1),
+                                alpha=0.15 if mname != 'Hybrid_JK' else 0.05, color=color)
 
         ax.set_xlabel('IC-weighted Recall')
         ax.set_ylabel('IC-weighted Precision')
