@@ -541,10 +541,8 @@ def plot_C_ic_bins(datasets):
         preds, mask = load_predictions(ont_full, ont_short, prot_list, goterms, valid_mask=valid_mask)
         if mask is not None:
             y_true = y_true[mask]
-            ic = ic[mask]
-            # Depending on context, ic or prot_identity or ic_bins may need masking.
-            # It's better to mask them directly after this call.
-
+            # When subsetting test proteins, recompute IC from the subset's labels directly
+            ic = compute_ic(y_true)
         x_positions = np.arange(len(bins))
         bar_width   = 0.15
         n_models    = len(MODEL_ORDER)
@@ -597,7 +595,7 @@ def plot_C_ic_bins(datasets):
                    error_kw={'linewidth': 1.0, 'ecolor': '#333333'})
 
         ax.set_xticks(x_positions)
-        ax.set_xticklabels([b[2] for b in bins], rotation=20, ha='right')
+        ax.set_xticklabels([b[2] for b in active_bins], rotation=20, ha='right')
         ax.set_xlabel('GO Term IC Value')
         ax.set_ylabel('Fmax' if ax_idx == 0 else '')
         ax.set_title(f'c   {ont_short.upper()}', loc='left', fontweight='bold')
@@ -708,11 +706,10 @@ def plot_F_depth_bins(datasets):
         preds, mask = load_predictions(ont_full, ont_short, prot_list, goterms, valid_mask=valid_mask)
         if mask is not None:
             y_true = y_true[mask]
-            # Depending on context, ic or prot_identity or ic_bins may need masking.
-            # It's better to mask them directly after this call.
 
-            term_depths = np.array([depths.get(t, 0) for t in goterms])
-        x_positions = np.arange(len(bins))
+        term_depths = np.array([depths.get(t, 0) for t in goterms])
+        active_bins = [b for b in bins if len([i for i, t in enumerate(goterms) if b[0] <= depths.get(t, 0) < b[1]]) > 0]
+        x_positions = np.arange(len(active_bins))
         bar_width   = 0.15
         n_models    = len(MODEL_ORDER)
 
@@ -760,7 +757,7 @@ def plot_F_depth_bins(datasets):
                    error_kw={'linewidth': 1.0, 'ecolor': '#333333'})
 
         ax.set_xticks(x_positions)
-        ax.set_xticklabels([b[2] for b in bins], rotation=20, ha='right')
+        ax.set_xticklabels([b[2] for b in active_bins], rotation=20, ha='right')
         ax.set_xlabel('GO Term Depth')
         ax.set_ylabel('Fmax' if ax_idx == 0 else '')
         ax.set_title(f'f   {ont_short.upper()}', loc='left', fontweight='bold')
