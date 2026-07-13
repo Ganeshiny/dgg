@@ -341,3 +341,239 @@ Loading datasets ...
   [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_BP_pred_scores.json
   [Common Subset] bp: 1248/1722
 4. Running 5-seed Evaluation and Bootstrapping (Mode: baselines_only)
+Loading datasets from /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data/split_files/datasets.pkl ...
+
+============================================================
+  Ontology: BIOLOGICAL_PROCESS
+============================================================
+  Test proteins: 1722, GO terms: 727
+  y_true shape: (1722, 727)
+  [TransFun] Parsing ...
+    Coverage: 1248/1722 proteins
+  [DeepFRI_Seq] Parsing ...
+    Coverage: 1722/1722 proteins
+  [DeepFRI_Cmap] Parsing ...
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_BP_pred_scores.json
+    Coverage: 0/1722 proteins
+  [DPFunc] Parsing ...
+    Coverage: 1722/1722 proteins
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/blast/blast_predictions.json
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/diamond/diamond_predictions.json
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/naive_frequency/naive_predictions.json
+  [BLAST] Bootstrapping ...
+  [DIAMOND] Bootstrapping ...
+  [Naive] Bootstrapping ...
+  [Hybrid] Loading 5-seed predictions ...
+  [Hybrid_JK] Loading 5-seed predictions ...
+
+============================================================
+  Ontology: MOLECULAR_FUNCTION
+============================================================
+  Test proteins: 1722, GO terms: 316
+  y_true shape: (1722, 316)
+  [TransFun] Parsing ...
+    Coverage: 1248/1722 proteins
+  [DeepFRI_Seq] Parsing ...
+    Coverage: 1722/1722 proteins
+  [DeepFRI_Cmap] Parsing ...
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_MF_pred_scores.json
+    Coverage: 0/1722 proteins
+  [DPFunc] Parsing ...
+    Coverage: 1722/1722 proteins
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/blast/blast_predictions.json
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/diamond/diamond_predictions.json
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/naive_frequency/naive_predictions.json
+  [BLAST] Bootstrapping ...
+  [DIAMOND] Bootstrapping ...
+  [Naive] Bootstrapping ...
+  [Hybrid] Loading 5-seed predictions ...
+  [Hybrid_JK] Loading 5-seed predictions ...
+
+============================================================
+  Ontology: CELLULAR_COMPONENT
+============================================================
+  Test proteins: 1722, GO terms: 161
+  y_true shape: (1722, 161)
+  [TransFun] Parsing ...
+    Coverage: 1248/1722 proteins
+  [DeepFRI_Seq] Parsing ...
+    Coverage: 1722/1722 proteins
+  [DeepFRI_Cmap] Parsing ...
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_CC_pred_scores.json
+    Coverage: 0/1722 proteins
+  [DPFunc] Parsing ...
+    Coverage: 1722/1722 proteins
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/blast/blast_predictions.json
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/diamond/diamond_predictions.json
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/naive_frequency/naive_predictions.json
+  [BLAST] Bootstrapping ...
+  [DIAMOND] Bootstrapping ...
+  [Naive] Bootstrapping ...
+  [Hybrid] Loading 5-seed predictions ...
+  [Hybrid_JK] Loading 5-seed predictions ...
+
+✓ Results saved to /home/ganeshiny.sridharan/dgg/deep-green-GO/runs_5seeds/evaluation_results_baselines_only.csv
+    Model Ontology  N_seeds  Micro_Fmax_mean  Micro_Fmax_std  Micro_Fmax_se  Macro_Fmax_mean  Macro_Fmax_std  Macro_Fmax_se  Micro_AUROC_mean  Micro_AUROC_std  Micro_AUROC_se  Micro_AUPRC_mean  Micro_AUPRC_std  Micro_AUPRC_se  Smin_mean  Smin_std  Smin_se
+    BLAST       BP        5         0.040411        0.001075       0.000481         0.042196        0.001305       0.000584          0.500000         0.000000        0.000000          0.510311         0.000280        0.000125  74.639173  2.218653 0.992212
+  DIAMOND       BP        5         0.040622        0.001367       0.000611         0.042253        0.001677       0.000750          0.500000         0.000000        0.000000          0.510366         0.000356        0.000159  74.900195  2.594436 1.160267
+    Naive       BP        5         0.039523        0.001148       0.000513         0.041427        0.001511       0.000676          0.500000         0.000000        0.000000          0.510080         0.000299        0.000134  72.363757  2.585189 1.156132
+   Hybrid       BP        5         0.670232        0.004697       0.002101         0.661932        0.006863       0.003069          0.840094         0.009538        0.004265          0.630543         0.005279        0.002361  35.712528  0.496020 0.221827
+Hybrid_JK       BP        5         0.670872        0.006521       0.002916         0.663013        0.010030       0.004485          0.879360         0.008642        0.003865          0.637804         0.008952        0.004004  35.548513  0.601239 0.268882
+    BLAST       MF        5         0.046742        0.001137       0.000509         0.048658        0.001145       0.000512          0.500000         0.000000        0.000000          0.511965         0.000298        0.000133  36.067160  0.940427 0.420572
+  DIAMOND       MF        5         0.047790        0.000714       0.000320         0.049738        0.000708       0.000317          0.500000         0.000000        0.000000          0.512240         0.000187        0.000084  36.890905  0.658578 0.294525
+    Naive       MF        5         0.047842        0.000512       0.000229         0.049062        0.000532       0.000238          0.500000         0.000000        0.000000          0.512254         0.000134        0.000060  36.768258  0.380742 0.170273
+   Hybrid       MF        5         0.823263        0.005608       0.002508         0.854976        0.004831       0.002161          0.950936         0.008770        0.003922          0.842348         0.001838        0.000822   8.736206  0.268448 0.120054
+Hybrid_JK       MF        5         0.814451        0.009624       0.004304         0.840536        0.005910       0.002643          0.943627         0.009004        0.004027          0.827728         0.007902        0.003534   9.408157  0.422817 0.189089
+    BLAST       CC        5         0.045925        0.000912       0.000408         0.047589        0.001198       0.000536          0.500000         0.000000        0.000000          0.511751         0.000239        0.000107  16.568805  0.300336 0.134314
+  DIAMOND       CC        5         0.046321        0.001948       0.000871         0.048884        0.002962       0.001325          0.500000         0.000000        0.000000          0.511855         0.000510        0.000228  16.622296  0.726457 0.324882
+    Naive       CC        5         0.045473        0.001153       0.000515         0.047425        0.001861       0.000832          0.500000         0.000000        0.000000          0.511633         0.000302        0.000135  16.293176  0.522736 0.233775
+   Hybrid       CC        5         0.613455        0.003848       0.001721         0.618562        0.015452       0.006911          0.882786         0.013864        0.006200          0.602704         0.020300        0.009078   8.824718  0.089322 0.039946
+Hybrid_JK       CC        5         0.603726        0.011471       0.005130         0.625064        0.008991       0.004021          0.875097         0.018181        0.008131          0.576573         0.021462        0.009598   9.019063  0.238640 0.106723
+
+✓ Coverage diagnostic saved to /home/ganeshiny.sridharan/dgg/deep-green-GO/runs_5seeds/coverage_diagnostic.csv
+  Model Ontology  Total_Test  Coverage_Failures  Label_Mismatch  Covered_Mapped
+  BLAST       BP        1722               1722               0               0
+DIAMOND       BP        1722               1722               0               0
+  Naive       BP        1722               1722               0               0
+  BLAST       MF        1722               1722               0               0
+DIAMOND       MF        1722               1722               0               0
+  Naive       MF        1722               1722               0               0
+  BLAST       CC        1722               1722               0               0
+DIAMOND       CC        1722               1722               0               0
+  Naive       CC        1722               1722               0               0
+Loading datasets from /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data/split_files/datasets.pkl ...
+
+============================================================
+  Ontology: BIOLOGICAL_PROCESS
+============================================================
+  Test proteins: 1722, GO terms: 727
+  y_true shape: (1722, 727)
+  [TransFun] Parsing ...
+    Coverage: 1248/1722 proteins
+  [DeepFRI_Seq] Parsing ...
+    Coverage: 1722/1722 proteins
+  [DeepFRI_Cmap] Parsing ...
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_BP_pred_scores.json
+    Coverage: 0/1722 proteins
+  [DPFunc] Parsing ...
+    Coverage: 1722/1722 proteins
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/blast/blast_predictions.json
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/diamond/diamond_predictions.json
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/naive_frequency/naive_predictions.json
+  [BLAST] Bootstrapping ...
+  [DIAMOND] Bootstrapping ...
+  [Naive] Bootstrapping ...
+  [Hybrid] Loading 5-seed predictions ...
+  [Hybrid_JK] Loading 5-seed predictions ...
+
+  [Common Subset] BP: 0/1722 test proteins
+  [WARN] Common subset too small (0), skipping BP
+
+============================================================
+  Ontology: MOLECULAR_FUNCTION
+============================================================
+  Test proteins: 1722, GO terms: 316
+  y_true shape: (1722, 316)
+  [TransFun] Parsing ...
+    Coverage: 1248/1722 proteins
+  [DeepFRI_Seq] Parsing ...
+    Coverage: 1722/1722 proteins
+  [DeepFRI_Cmap] Parsing ...
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_MF_pred_scores.json
+    Coverage: 0/1722 proteins
+  [DPFunc] Parsing ...
+    Coverage: 1722/1722 proteins
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/blast/blast_predictions.json
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/diamond/diamond_predictions.json
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/naive_frequency/naive_predictions.json
+  [BLAST] Bootstrapping ...
+  [DIAMOND] Bootstrapping ...
+  [Naive] Bootstrapping ...
+  [Hybrid] Loading 5-seed predictions ...
+  [Hybrid_JK] Loading 5-seed predictions ...
+
+  [Common Subset] MF: 0/1722 test proteins
+  [WARN] Common subset too small (0), skipping MF
+
+============================================================
+  Ontology: CELLULAR_COMPONENT
+============================================================
+  Test proteins: 1722, GO terms: 161
+  y_true shape: (1722, 161)
+  [TransFun] Parsing ...
+    Coverage: 1248/1722 proteins
+  [DeepFRI_Seq] Parsing ...
+    Coverage: 1722/1722 proteins
+  [DeepFRI_Cmap] Parsing ...
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_CC_pred_scores.json
+    Coverage: 0/1722 proteins
+  [DPFunc] Parsing ...
+    Coverage: 1722/1722 proteins
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/blast/blast_predictions.json
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/diamond/diamond_predictions.json
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/naive_frequency/naive_predictions.json
+  [BLAST] Bootstrapping ...
+  [DIAMOND] Bootstrapping ...
+  [Naive] Bootstrapping ...
+  [Hybrid] Loading 5-seed predictions ...
+  [Hybrid_JK] Loading 5-seed predictions ...
+
+  [Common Subset] CC: 0/1722 test proteins
+  [WARN] Common subset too small (0), skipping CC
+
+✓ Results saved to /home/ganeshiny.sridharan/dgg/deep-green-GO/runs_5seeds/evaluation_results_baselines_only.csv
+    Model Ontology  N_seeds  Micro_Fmax_mean  Micro_Fmax_std  Micro_Fmax_se  Macro_Fmax_mean  Macro_Fmax_std  Macro_Fmax_se  Micro_AUROC_mean  Micro_AUROC_std  Micro_AUROC_se  Micro_AUPRC_mean  Micro_AUPRC_std  Micro_AUPRC_se  Smin_mean  Smin_std  Smin_se
+    BLAST       BP        5         0.040411        0.001075       0.000481         0.042196        0.001305       0.000584          0.500000         0.000000        0.000000          0.510311         0.000280        0.000125  74.639173  2.218653 0.992212
+  DIAMOND       BP        5         0.040622        0.001367       0.000611         0.042253        0.001677       0.000750          0.500000         0.000000        0.000000          0.510366         0.000356        0.000159  74.900195  2.594436 1.160267
+    Naive       BP        5         0.039523        0.001148       0.000513         0.041427        0.001511       0.000676          0.500000         0.000000        0.000000          0.510080         0.000299        0.000134  72.363757  2.585189 1.156132
+   Hybrid       BP        5         0.670232        0.004697       0.002101         0.661932        0.006863       0.003069          0.840094         0.009538        0.004265          0.630543         0.005279        0.002361  35.712528  0.496020 0.221827
+Hybrid_JK       BP        5         0.670872        0.006521       0.002916         0.663013        0.010030       0.004485          0.879360         0.008642        0.003865          0.637804         0.008952        0.004004  35.548513  0.601239 0.268882
+    BLAST       MF        5         0.046742        0.001137       0.000509         0.048658        0.001145       0.000512          0.500000         0.000000        0.000000          0.511965         0.000298        0.000133  36.067160  0.940427 0.420572
+  DIAMOND       MF        5         0.047790        0.000714       0.000320         0.049738        0.000708       0.000317          0.500000         0.000000        0.000000          0.512240         0.000187        0.000084  36.890905  0.658578 0.294525
+    Naive       MF        5         0.047842        0.000512       0.000229         0.049062        0.000532       0.000238          0.500000         0.000000        0.000000          0.512254         0.000134        0.000060  36.768258  0.380742 0.170273
+   Hybrid       MF        5         0.823263        0.005608       0.002508         0.854976        0.004831       0.002161          0.950936         0.008770        0.003922          0.842348         0.001838        0.000822   8.736206  0.268448 0.120054
+Hybrid_JK       MF        5         0.814451        0.009624       0.004304         0.840536        0.005910       0.002643          0.943627         0.009004        0.004027          0.827728         0.007902        0.003534   9.408157  0.422817 0.189089
+    BLAST       CC        5         0.045925        0.000912       0.000408         0.047589        0.001198       0.000536          0.500000         0.000000        0.000000          0.511751         0.000239        0.000107  16.568805  0.300336 0.134314
+  DIAMOND       CC        5         0.046321        0.001948       0.000871         0.048884        0.002962       0.001325          0.500000         0.000000        0.000000          0.511855         0.000510        0.000228  16.622296  0.726457 0.324882
+    Naive       CC        5         0.045473        0.001153       0.000515         0.047425        0.001861       0.000832          0.500000         0.000000        0.000000          0.511633         0.000302        0.000135  16.293176  0.522736 0.233775
+   Hybrid       CC        5         0.613455        0.003848       0.001721         0.618562        0.015452       0.006911          0.882786         0.013864        0.006200          0.602704         0.020300        0.009078   8.824718  0.089322 0.039946
+Hybrid_JK       CC        5         0.603726        0.011471       0.005130         0.625064        0.008991       0.004021          0.875097         0.018181        0.008131          0.576573         0.021462        0.009598   9.019063  0.238640 0.106723
+
+✓ Coverage diagnostic saved to /home/ganeshiny.sridharan/dgg/deep-green-GO/runs_5seeds/coverage_diagnostic.csv
+  Model Ontology  Total_Test  Coverage_Failures  Label_Mismatch  Covered_Mapped
+  BLAST       BP        1722               1722               0               0
+DIAMOND       BP        1722               1722               0               0
+  Naive       BP        1722               1722               0               0
+  BLAST       MF        1722               1722               0               0
+DIAMOND       MF        1722               1722               0               0
+  Naive       MF        1722               1722               0               0
+  BLAST       CC        1722               1722               0               0
+DIAMOND       CC        1722               1722               0               0
+  Naive       CC        1722               1722               0               0
+5. Generating Publication Comparison Plots (Mode: baselines_only)
+Loading datasets ...
+
+[Plot A] Sequence identity bins ...
+  [DeepFRI Debug] deepfri_seq_BP_pred_scores.json -> matched 1722/2606 test proteins, 584/3442 terms. Max score: 0.9998
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_BP_pred_scores.json
+Loading datasets ...
+
+[Plot A] Sequence identity bins ...
+  [DeepFRI Debug] deepfri_seq_BP_pred_scores.json -> matched 1722/2606 test proteins, 584/3442 terms. Max score: 0.9998
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_BP_pred_scores.json
+  [Common Subset] bp: 1248/1722
+Loading datasets ...
+
+[Plot A] Sequence identity bins ...
+  [DeepFRI Debug] deepfri_seq_BP_pred_scores.json -> matched 1722/2606 test proteins, 584/3442 terms. Max score: 0.9998
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_BP_pred_scores.json
+Loading datasets ...
+
+[Plot A] Sequence identity bins ...
+  [DeepFRI Debug] deepfri_seq_BP_pred_scores.json -> matched 1722/2606 test proteins, 584/3442 terms. Max score: 0.9998
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_BP_pred_scores.json
+  [Common Subset] bp: 1248/1722
+========================================================
+  Evaluation and Plotting Complete!
+  End time  : Mon Jul 13 09:33:44 MDT 2026
+========================================================
