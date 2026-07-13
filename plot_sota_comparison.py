@@ -450,7 +450,7 @@ def plot_A_sequence_identity(datasets):
             # We also need to subset prot_identity accordingly — handled per bin below
 
         fmax_means, fmax_sems = [], []
-        for lo, hi, _ in bins:
+        for b_idx, (lo, hi, _) in enumerate(active_bins):
             bin_mask = (prot_identity >= lo) & (prot_identity < hi)
             if bin_mask.sum() < 5:
                 fmax_means.append(np.nan)
@@ -481,8 +481,10 @@ def plot_A_sequence_identity(datasets):
             if bin_fmaxes:
                 fmax_means.append(np.mean(bin_fmaxes))
                 fmax_sems.append(np.std(bin_fmaxes) / np.sqrt(len(bin_fmaxes)))
+                ont_stats[b_idx][mname] = np.mean(bin_fmaxes)
             else:
                 fmax_means.append(np.nan); fmax_sems.append(0.0)
+                ont_stats[b_idx][mname] = np.nan
 
         offset = (mi - n_models/2 + 0.5) * bar_width
         alpha_val = 0.5 if mname == 'Hybrid_JK' else 0.9
@@ -494,8 +496,10 @@ def plot_A_sequence_identity(datasets):
                label=mname, alpha=alpha_val, edgecolor='white', linestyle=edge_ls, hatch=hatch,
                error_kw={'linewidth': 1.0, 'ecolor': '#333333'})
 
+        stats_data.extend(ont_stats)
+    
     ax.set_xticks(x_positions)
-    ax.set_xticklabels([b[2] for b in bins])
+    ax.set_xticklabels([b[2] for b in active_bins])
     ax.set_xlabel('Max Sequence Identity to Training Set')
     ax.set_ylabel('Micro Fmax')
     ax.set_title('a   Performance on Difficult Proteins (Seq Identity Bins)', loc='left', fontweight='bold')
@@ -503,16 +507,13 @@ def plot_A_sequence_identity(datasets):
     ax.legend(frameon=False, loc='upper left')
     style_ax(ax)
     
-    # Explicitly label the memorization regime (>60%)
-    for tick in ax.get_xticklabels():
-        if tick.get_text() in ['>0.6', '>0.8']:
-            tick.set_color('red')
-            tick.set_fontweight('bold')
-    ax.text(0.98, 0.95, '* >0.6 bin: elevated identity due to MMseqs2\nbilateral coverage limitation (see Methods)', 
-            color='red', fontsize=7, ha='right', va='top', transform=ax.transAxes)
+    print("NOTE: >0.6 bin has elevated identity due to MMseqs2 bilateral coverage limitation (see Methods).")
 
     plt.tight_layout()
     save_fig('plot_A_seq_identity')
+    
+    import pandas as pd
+    pd.DataFrame(stats_data).to_csv(os.path.join(OUT_DIR, 'plot_A_seq_identity_stats.csv'), index=False)
 
 
 # ── PLOT C: Fmax vs IC bins ───────────────────────────────────────────────────
@@ -567,7 +568,7 @@ def plot_C_ic_bins(datasets):
                     seed_pairs.append((y_true[idx], preds[mname][idx]))
 
             fmax_means, fmax_sems = [], []
-            for lo, hi, _ in bins:
+            for b_idx, (lo, hi, _) in enumerate(active_bins):
                 term_mask = (ic >= lo) & (ic < hi)
                 n_terms_in_bin = term_mask.sum()
                 if n_terms_in_bin < 3:
@@ -732,7 +733,7 @@ def plot_F_depth_bins(datasets):
                     seed_pairs.append((y_true[idx], preds[mname][idx]))
 
             fmax_means, fmax_sems = [], []
-            for lo, hi, _ in bins:
+            for b_idx, (lo, hi, _) in enumerate(active_bins):
                 term_mask = (term_depths >= lo) & (term_depths < hi)
                 if term_mask.sum() < 3:
                     fmax_means.append(np.nan); fmax_sems.append(0.0); continue
