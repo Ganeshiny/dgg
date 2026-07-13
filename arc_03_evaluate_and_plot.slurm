@@ -47,6 +47,8 @@ python evaluate_sota_5seeds.py --bootstrap_seeds 5 --common_subset
 echo "3. Generating Publication Comparison Plots"
 python plot_sota_comparison.py
 python plot_sota_comparison.py --common_subset
+python plot_sota_comparison.py --supplementary
+python plot_sota_comparison.py --common_subset --supplementary
 
 echo "========================================================"
 echo "  Evaluation and Plotting Complete!"

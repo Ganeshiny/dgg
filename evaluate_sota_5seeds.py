@@ -380,13 +380,21 @@ def main():
         yp_tf, cov_tf = parse_transfun(tf_file, prot_list, goterms)
         print(f"    Coverage: {len(cov_tf)}/{len(prot_list)} proteins")
 
-        # ── DeepFRI ──────────────────────────────────────────────────────────
-        print("  [DeepFRI] Parsing ...")
+        # ── DeepFRI Seq ──────────────────────────────────────────────────────
+        print("  [DeepFRI_Seq] Parsing ...")
         df_seq_variants = [f'deepfri_seq_{ont_short.upper()}_pred_scores.json', f'deepfri_seq_{ont_short.upper()}_{ont_short.upper()}_pred_scores.json']
-        df_file = _find_robust(df_seq_variants, 'deepfri', ['baselines', 'baselines/deepfri_results'])
-        if not df_file: df_file = os.path.join(PROJECT_DIR, 'baselines', 'deepfri_results', f'deepfri_seq_{ont_short.upper()}_pred_scores.json')
-        yp_df, cov_df = parse_deepfri_json(df_file, prot_list, goterms)
-        print(f"    Coverage: {len(cov_df)}/{len(prot_list)} proteins")
+        df_seq_file = _find_robust(df_seq_variants, 'deepfri', ['baselines', 'baselines/deepfri_results'])
+        if not df_seq_file: df_seq_file = os.path.join(PROJECT_DIR, 'baselines', 'deepfri_results', f'deepfri_seq_{ont_short.upper()}_pred_scores.json')
+        yp_df_seq, cov_df_seq = parse_deepfri_json(df_seq_file, prot_list, goterms)
+        print(f"    Coverage: {len(cov_df_seq)}/{len(prot_list)} proteins")
+
+        # ── DeepFRI Cmap ─────────────────────────────────────────────────────
+        print("  [DeepFRI_Cmap] Parsing ...")
+        df_cmap_variants = [f'deepfri_cmap_{ont_short.upper()}_pred_scores.json', f'deepfri_cmap_{ont_short.upper()}_{ont_short.upper()}_pred_scores.json']
+        df_cmap_file = _find_robust(df_cmap_variants, 'deepfri', ['baselines', 'baselines/deepfri_results'])
+        if not df_cmap_file: df_cmap_file = os.path.join(PROJECT_DIR, 'baselines', 'deepfri_results', f'deepfri_cmap_{ont_short.upper()}_pred_scores.json')
+        yp_df_cmap, cov_df_cmap = parse_deepfri_json(df_cmap_file, prot_list, goterms)
+        print(f"    Coverage: {len(cov_df_cmap)}/{len(prot_list)} proteins")
 
         # ── DPFunc ───────────────────────────────────────────────────────────
         print("  [DPFunc] Parsing ...")
@@ -397,7 +405,8 @@ def main():
 
         # ── Coverage diagnostic ──────────────────────────────────────────────
         for mname, yp, cov in [('TransFun', yp_tf, cov_tf),
-                                ('DeepFRI', yp_df, cov_df),
+                                ('DeepFRI_Seq', yp_df_seq, cov_df_seq),
+                                ('DeepFRI_Cmap', yp_df_cmap, cov_df_cmap),
                                 ('DPFunc', yp_dpf, cov_dpf)]:
             diag = _coverage_diagnostic(mname, cov, prot_list, goterms, yp)
             diag['Ontology'] = ont_short.upper()
@@ -409,9 +418,13 @@ def main():
         tf_records = bootstrap_eval(y_true, yp_tf, ic, n=args.bootstrap_seeds, rng=rng)
         all_rows.append(aggregate(tf_records, 'TransFun', ont_short.upper()))
 
-        print("  [DeepFRI] Bootstrapping (full test set) ...")
-        df_records = bootstrap_eval(y_true, yp_df, ic, n=args.bootstrap_seeds, rng=rng)
-        all_rows.append(aggregate(df_records, 'DeepFRI', ont_short.upper()))
+        print("  [DeepFRI_Seq] Bootstrapping (full test set) ...")
+        df_seq_records = bootstrap_eval(y_true, yp_df_seq, ic, n=args.bootstrap_seeds, rng=rng)
+        all_rows.append(aggregate(df_seq_records, 'DeepFRI_Seq', ont_short.upper()))
+
+        print("  [DeepFRI_Cmap] Bootstrapping (full test set) ...")
+        df_cmap_records = bootstrap_eval(y_true, yp_df_cmap, ic, n=args.bootstrap_seeds, rng=rng)
+        all_rows.append(aggregate(df_cmap_records, 'DeepFRI_Cmap', ont_short.upper()))
 
         print("  [DPFunc] Bootstrapping (full test set) ...")
         dpf_records = bootstrap_eval(y_true, yp_dpf, ic, n=args.bootstrap_seeds, rng=rng)
@@ -432,7 +445,7 @@ def main():
             cov_hybrid_jk = set(prot_list)
 
             # Intersection across ALL models
-            common_prots = cov_tf & cov_df & cov_dpf & cov_hybrid & cov_hybrid_jk
+            common_prots = cov_tf & cov_df_seq & cov_df_cmap & cov_dpf & cov_hybrid & cov_hybrid_jk
             n_common = len(common_prots)
             n_total = len(prot_list)
             print(f"\n  [Common Subset] {ont_short.upper()}: {n_common}/{n_total} test proteins")
@@ -447,18 +460,23 @@ def main():
             # Filter
             y_true_cs = y_true[common_mask]
             yp_tf_cs  = yp_tf[common_mask]
-            yp_df_cs  = yp_df[common_mask]
+            yp_df_seq_cs  = yp_df_seq[common_mask]
+            yp_df_cmap_cs = yp_df_cmap[common_mask]
             yp_dpf_cs = yp_dpf[common_mask]
+            
+            rng_cs = np.random.default_rng(100) # diff seed for subset
+            
+            # Recompute IC on common subset if desired, or keep original
+            ic_cs = ic 
 
-            rng_cs = np.random.default_rng(0)
+            tf_cs_records = bootstrap_eval(y_true_cs, yp_tf_cs, ic_cs, n=args.bootstrap_seeds, rng=rng_cs)
+            common_subset_rows.append(aggregate(tf_cs_records, 'TransFun', ont_short.upper()))
 
-            print("  [TransFun] Bootstrapping (common subset) ...")
-            cs_tf_recs = bootstrap_eval(y_true_cs, yp_tf_cs, ic, n=args.bootstrap_seeds, rng=rng_cs)
-            common_subset_rows.append(aggregate(cs_tf_recs, 'TransFun', ont_short.upper()))
-
-            print("  [DeepFRI] Bootstrapping (common subset) ...")
-            cs_df_recs = bootstrap_eval(y_true_cs, yp_df_cs, ic, n=args.bootstrap_seeds, rng=rng_cs)
-            common_subset_rows.append(aggregate(cs_df_recs, 'DeepFRI', ont_short.upper()))
+            df_seq_cs_records = bootstrap_eval(y_true_cs, yp_df_seq_cs, ic_cs, n=args.bootstrap_seeds, rng=rng_cs)
+            common_subset_rows.append(aggregate(df_seq_cs_records, 'DeepFRI_Seq', ont_short.upper()))
+            
+            df_cmap_cs_records = bootstrap_eval(y_true_cs, yp_df_cmap_cs, ic_cs, n=args.bootstrap_seeds, rng=rng_cs)
+            common_subset_rows.append(aggregate(df_cmap_cs_records, 'DeepFRI_Cmap', ont_short.upper()))
 
             print("  [DPFunc] Bootstrapping (common subset) ...")
             cs_dpf_recs = bootstrap_eval(y_true_cs, yp_dpf_cs, ic, n=args.bootstrap_seeds, rng=rng_cs)

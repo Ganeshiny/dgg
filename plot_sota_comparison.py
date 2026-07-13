@@ -67,7 +67,12 @@ PALETTE = {
     'DPFunc':    '#009988',   # teal
     'DeepFRI':   '#EE7733',   # orange
 }
-MODEL_ORDER = ['Hybrid', 'Hybrid_JK', 'DPFunc', 'TransFun', 'DeepFRI_Seq', 'DeepFRI_Cmap']
+MODEL_ORDER_PERFORMANCE = ['Hybrid', 'TransFun', 'DeepFRI_Seq', 'DeepFRI_Cmap']
+MODEL_ORDER_COVERAGE = ['Hybrid', 'DPFunc', 'TransFun', 'DeepFRI_Seq', 'DeepFRI_Cmap']
+MODEL_ORDER_SUPPLEMENTARY = ['Hybrid', 'Hybrid_JK', 'TransFun', 'DeepFRI_Seq', 'DeepFRI_Cmap']
+
+# Will be set in main()
+MODEL_ORDER = MODEL_ORDER_PERFORMANCE
 MODEL_COLORS = {
     'Hybrid': '#1f77b4',
     'Hybrid_JK': '#ff7f0e',
@@ -110,7 +115,13 @@ def save_fig(name):
     global args
     if args and args.common_subset:
         name += '_common_subset' 
-    path = os.path.join(OUT_DIR, f'{name}.png')
+    if args and getattr(args, 'supplementary', False):
+        name += '_supp'
+        out_dir = os.path.join(OUT_DIR, 'supplementary')
+        os.makedirs(out_dir, exist_ok=True)
+    else:
+        out_dir = OUT_DIR
+    path = os.path.join(out_dir, f'{name}.png')
     plt.savefig(path, bbox_inches='tight', dpi=300)
     plt.close()
     print(f'✓ Saved {path}')
@@ -441,10 +452,13 @@ def plot_A_sequence_identity(datasets):
                 fmax_means.append(np.nan); fmax_sems.append(0.0)
 
         offset = (mi - n_models/2 + 0.5) * bar_width
+        alpha_val = 0.5 if mname == 'Hybrid_JK' else 0.9
+        edge_ls = '--' if mname == 'Hybrid_JK' else '-'
+        hatch = '///' if mname == 'DeepFRI_Cmap' else None
         ax.bar(x_positions + offset, fmax_means, bar_width,
                yerr=fmax_sems, capsize=3,
                color=PALETTE.get(mname, '#888888'),
-               label=mname, alpha=0.9,
+               label=mname, alpha=alpha_val, edgecolor='white', linestyle=edge_ls, hatch=hatch,
                error_kw={'linewidth': 1.0, 'ecolor': '#333333'})
 
     ax.set_xticks(x_positions)
@@ -455,6 +469,15 @@ def plot_A_sequence_identity(datasets):
     ax.set_ylim(0, 1.0)
     ax.legend(frameon=False, loc='upper left')
     style_ax(ax)
+    
+    # Explicitly label the memorization regime (>60%)
+    for tick in ax.get_xticklabels():
+        if tick.get_text() in ['>0.6', '>0.8']:
+            tick.set_color('red')
+            tick.set_fontweight('bold')
+    ax.text(0.98, 0.95, '* >0.6 bin is memorization regime\n(random split)', 
+            color='red', fontsize=7, ha='right', va='top', transform=ax.transAxes)
+
     plt.tight_layout()
     save_fig('plot_A_seq_identity')
 
@@ -531,10 +554,13 @@ def plot_C_ic_bins(datasets):
                         fmax_means.append(np.nan); fmax_sems.append(0.0)
 
                 offset = (mi - n_models/2 + 0.5) * bar_width
+                alpha_val = 0.5 if mname == 'Hybrid_JK' else 0.9
+                edge_ls = '--' if mname == 'Hybrid_JK' else '-'
+                hatch = '///' if mname == 'DeepFRI_Cmap' else None
                 ax.bar(x_positions + offset, fmax_means, bar_width,
                        yerr=fmax_sems, capsize=3,
                        color=PALETTE.get(mname, '#888888'),
-                       label=mname, alpha=0.9,
+                       label=mname, alpha=alpha_val, edgecolor='white', linestyle=edge_ls, hatch=hatch,
                        error_kw={'linewidth': 1.0, 'ecolor': '#333333'})
 
             ax.set_xticks(x_positions)
@@ -691,9 +717,13 @@ def plot_F_depth_bins(datasets):
                         fmax_means.append(np.nan); fmax_sems.append(0.0)
 
                 offset = (mi - n_models/2 + 0.5) * bar_width
+                alpha_val = 0.5 if mname == 'Hybrid_JK' else 0.9
+                edge_ls = '--' if mname == 'Hybrid_JK' else '-'
+                hatch = '///' if mname == 'DeepFRI_Cmap' else None
                 ax.bar(x_positions + offset, fmax_means, bar_width,
                        yerr=fmax_sems, capsize=3,
-                       color=PALETTE.get(mname, '#888888'), label=mname, alpha=0.9,
+                       color=PALETTE.get(mname, '#888888'), label=mname, 
+                       alpha=alpha_val, edgecolor='white', linestyle=edge_ls, hatch=hatch,
                        error_kw={'linewidth': 1.0, 'ecolor': '#333333'})
 
             ax.set_xticks(x_positions)
@@ -768,7 +798,7 @@ def plot_BDE_pr_curves(datasets):
 
             fig, ax = plt.subplots(figsize=(5.5, 4.5))
 
-            for mname in MODEL_ORDER:
+            for mname in MODEL_ORDER_COVERAGE:
                 if mname not in preds:
                     continue
                 # Average PR curve over seeds
@@ -799,11 +829,13 @@ def plot_BDE_pr_curves(datasets):
                 std_prec  = np.std(interp_precs, axis=0)
 
                 color = PALETTE.get(mname, '#888888')
-                ax.plot(common_rec, mean_prec, color=color, linewidth=1.8, label=mname)
+                ls = '--' if mname == 'Hybrid_JK' else '-'
+                alpha_val = 0.6 if mname == 'Hybrid_JK' else 0.9
+                ax.plot(common_rec, mean_prec, color=color, linewidth=1.8, label=mname, linestyle=ls, alpha=alpha_val)
                 ax.fill_between(common_rec,
                                 np.clip(mean_prec - std_prec, 0, 1),
                                 np.clip(mean_prec + std_prec, 0, 1),
-                                alpha=0.15, color=color)
+                                alpha=0.15 if mname != 'Hybrid_JK' else 0.05, color=color)
 
             ax.set_xlabel('IC-weighted Recall')
             ax.set_ylabel('IC-weighted Precision')
@@ -845,7 +877,7 @@ def plot_G_coverage(datasets):
         n_total_terms = len(goterms)
         model_names, coverages = [], []
 
-        for mname in MODEL_ORDER:
+        for mname in MODEL_ORDER_COVERAGE:
             if mname not in preds:
                 continue
             yp = preds[mname]
@@ -857,6 +889,15 @@ def plot_G_coverage(datasets):
 
         colors = [PALETTE.get(m, '#888888') for m in model_names]
         bars = ax.bar(model_names, coverages, color=colors, edgecolor='white', linewidth=0.8)
+        
+        for i, mname in enumerate(model_names):
+            if mname == 'DeepFRI_Cmap':
+                bars[i].set_hatch('///')
+            if mname == 'Hybrid_JK':
+                bars[i].set_alpha(0.5)
+                bars[i].set_linestyle('--')
+                bars[i].set_linewidth(1.2)
+                bars[i].set_edgecolor(colors[i])
 
         # Let the bars set the y-limit, but add some headroom
         max_coverage = max(coverages) if coverages else 1
@@ -898,7 +939,7 @@ def plot_summary_fmax(results_csv):
     for ax_idx, ont in enumerate(ont_order):
         ax = axes[ax_idx]
         sub = df[df['Ontology'] == ont]
-        local_order = list(dict.fromkeys([m if not m.startswith('DeepFRI') else 'DeepFRI' for m in MODEL_ORDER]))
+        local_order = MODEL_ORDER_PERFORMANCE
         sub = sub.set_index('Model').reindex(local_order).dropna(subset=[metric])
 
         colors = [PALETTE.get(m, '#888888') for m in sub.index]
@@ -908,6 +949,16 @@ def plot_summary_fmax(results_csv):
         bars = ax.bar(sub.index, vals, color=colors, yerr=errs, capsize=4,
                       edgecolor='white', linewidth=0.8,
                       error_kw={'linewidth': 1.0, 'ecolor': '#333333'})
+                      
+        for i, mname in enumerate(sub.index):
+            if mname == 'DeepFRI_Cmap':
+                bars[i].set_hatch('///')
+            if mname == 'Hybrid_JK':
+                bars[i].set_alpha(0.5)
+                bars[i].set_linestyle('--')
+                bars[i].set_linewidth(1.2)
+                bars[i].set_edgecolor(colors[i])
+                
         for bar, v in zip(bars, vals):
             ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.005,
                     f'{v:.3f}', ha='center', va='bottom', fontsize=8, rotation=90)
@@ -935,10 +986,18 @@ def plot_summary_fmax(results_csv):
 args = None
 
 def main():
-    global args
+    global args, MODEL_ORDER, MODEL_ORDER_COVERAGE
     parser = argparse.ArgumentParser()
     parser.add_argument('--common_subset', action='store_true')
+    parser.add_argument('--supplementary', action='store_true', help="Generate supplementary figures with Hybrid_JK")
     args = parser.parse_args()
+    
+    if args.supplementary:
+        MODEL_ORDER = MODEL_ORDER_SUPPLEMENTARY
+        MODEL_ORDER_COVERAGE = ['Hybrid', 'Hybrid_JK', 'DPFunc', 'TransFun', 'DeepFRI_Seq', 'DeepFRI_Cmap']
+    else:
+        MODEL_ORDER = MODEL_ORDER_PERFORMANCE
+        MODEL_ORDER_COVERAGE = ['Hybrid', 'DPFunc', 'TransFun', 'DeepFRI_Seq', 'DeepFRI_Cmap']
     print(f'Loading datasets ...')
     datasets = load_datasets()
 
@@ -958,7 +1017,10 @@ def main():
     plot_G_coverage(datasets)
 
     print('\n[Summary] Fmax bar chart ...')
-    plot_summary_fmax(os.path.join(RESULTS_DIR, 'evaluation_results.csv'))
+    if args.common_subset:
+        plot_summary_fmax(os.path.join(RESULTS_DIR, 'evaluation_results_common_subset.csv'))
+    else:
+        plot_summary_fmax(os.path.join(RESULTS_DIR, 'evaluation_results.csv'))
 
     print(f'\n✓ All plots saved to: {OUT_DIR}')
 
