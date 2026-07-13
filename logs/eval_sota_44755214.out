@@ -1,0 +1,978 @@
+========================================================
+  Job ID      : 44755214
+  Node        : mc57
+  Start time  : Mon Jul 13 11:05:55 MDT 2026
+========================================================
+1. Generating BLAST maximum sequence identity (for Plot A)
+
+
+Building a new DB, current time: 07/13/2026 11:06:45
+New DB name:   /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data/blast_train_db
+New DB title:  /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data/train_sequences.fasta
+Sequence type: Protein
+Deleted existing Protein BLAST database named /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data/blast_train_db
+Keep MBits: T
+Maximum file size: 3000000000B
+Adding sequences from FASTA; added 12889 sequences in 0.217507 seconds.
+
+
+Loading datasets ...
+  Train: 12889 proteins,  Test: 1722 proteins
+Extracting sequences from .npz files ...
+  Written 12889 sequences to /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data/train_sequences.fasta
+  Written 1722 sequences to /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data/test_sequences.fasta
+Building BLAST database from training sequences ...
+Running blastp ...
+  Running: blastp -query /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data/test_sequences.fasta -db /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data/blast_train_db -out /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data/blast_identity_raw.tsv -outfmt 6 qseqid sseqid pident length -num_threads 8 -evalue 1e-3 -max_hsps 1
+Parsing BLAST output ...
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data/blast_identity.csv  (1722 proteins)
+count    1722.000000
+mean        0.700489
+std         0.384563
+min         0.000000
+25%         0.390620
+50%         0.966045
+75%         1.000000
+max         1.000000
+Name: max_identity, dtype: float64
+2. Running 5-seed Evaluation and Bootstrapping (Mode: all)
+Loading datasets from /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data/split_files/datasets.pkl ...
+
+============================================================
+  Ontology: BIOLOGICAL_PROCESS
+============================================================
+  Test proteins: 1722, GO terms: 727
+  y_true shape: (1722, 727)
+  [TransFun] Parsing ...
+    Coverage: 1248/1722 proteins
+  [DeepFRI_Seq] Parsing ...
+    Coverage: 1722/1722 proteins
+  [DeepFRI_Cmap] Parsing ...
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_BP_pred_scores.json
+    Coverage: 0/1722 proteins
+  [DPFunc] Parsing ...
+    Coverage: 1722/1722 proteins
+  [TransFun] Bootstrapping (full test set) ...
+  [DeepFRI_Seq] Bootstrapping (full test set) ...
+  [DeepFRI_Cmap] Bootstrapping (full test set) ...
+  [DPFunc] Bootstrapping (full test set) ...
+  [BLAST] Bootstrapping ...
+  [DIAMOND] Bootstrapping ...
+  [Naive] Bootstrapping ...
+  [Hybrid] Loading 5-seed predictions ...
+  [Hybrid_JK] Loading 5-seed predictions ...
+
+============================================================
+  Ontology: MOLECULAR_FUNCTION
+============================================================
+  Test proteins: 1722, GO terms: 316
+  y_true shape: (1722, 316)
+  [TransFun] Parsing ...
+    Coverage: 1248/1722 proteins
+  [DeepFRI_Seq] Parsing ...
+    Coverage: 1722/1722 proteins
+  [DeepFRI_Cmap] Parsing ...
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_MF_pred_scores.json
+    Coverage: 0/1722 proteins
+  [DPFunc] Parsing ...
+    Coverage: 1722/1722 proteins
+  [TransFun] Bootstrapping (full test set) ...
+  [DeepFRI_Seq] Bootstrapping (full test set) ...
+  [DeepFRI_Cmap] Bootstrapping (full test set) ...
+  [DPFunc] Bootstrapping (full test set) ...
+  [BLAST] Bootstrapping ...
+  [DIAMOND] Bootstrapping ...
+  [Naive] Bootstrapping ...
+  [Hybrid] Loading 5-seed predictions ...
+  [Hybrid_JK] Loading 5-seed predictions ...
+
+============================================================
+  Ontology: CELLULAR_COMPONENT
+============================================================
+  Test proteins: 1722, GO terms: 161
+  y_true shape: (1722, 161)
+  [TransFun] Parsing ...
+    Coverage: 1248/1722 proteins
+  [DeepFRI_Seq] Parsing ...
+    Coverage: 1722/1722 proteins
+  [DeepFRI_Cmap] Parsing ...
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_CC_pred_scores.json
+    Coverage: 0/1722 proteins
+  [DPFunc] Parsing ...
+    Coverage: 1722/1722 proteins
+  [TransFun] Bootstrapping (full test set) ...
+  [DeepFRI_Seq] Bootstrapping (full test set) ...
+  [DeepFRI_Cmap] Bootstrapping (full test set) ...
+  [DPFunc] Bootstrapping (full test set) ...
+  [BLAST] Bootstrapping ...
+  [DIAMOND] Bootstrapping ...
+  [Naive] Bootstrapping ...
+  [Hybrid] Loading 5-seed predictions ...
+  [Hybrid_JK] Loading 5-seed predictions ...
+
+✓ Results saved to /home/ganeshiny.sridharan/dgg/deep-green-GO/runs_5seeds/evaluation_results_all.csv
+       Model Ontology  N_seeds  Micro_Fmax_mean  Micro_Fmax_std  Micro_Fmax_se  Macro_Fmax_mean  Macro_Fmax_std  Macro_Fmax_se  Micro_AUROC_mean  Micro_AUROC_std  Micro_AUROC_se  Micro_AUPRC_mean  Micro_AUPRC_std  Micro_AUPRC_se  Smin_mean  Smin_std  Smin_se
+    TransFun       BP        5         0.238178        0.009499       0.004248         0.262775        0.004203       0.001880          0.704935         0.013965        0.006245          0.138873         0.010417        0.004659  69.349837  2.641720 1.181413
+ DeepFRI_Seq       BP        5         0.158328        0.005566       0.002489         0.242143        0.007496       0.003352          0.676672         0.004053        0.001812          0.118079         0.007490        0.003350  70.603988  2.432720 1.087946
+DeepFRI_Cmap       BP        5         0.039523        0.001148       0.000513         0.041427        0.001511       0.000676          0.500000         0.000000        0.000000          0.510080         0.000299        0.000134  72.363757  2.585189 1.156132
+      DPFunc       BP        5         0.103501        0.002918       0.001305         0.078984        0.002678       0.001198          0.674856         0.002946        0.001317          0.048091         0.001412        0.000631  72.560373  2.562121 1.145815
+       BLAST       BP        5         0.671423        0.012118       0.005420         0.605277        0.017251       0.007715          0.781208         0.008803        0.003937          0.700983         0.008642        0.003865  35.927014  1.846250 0.825668
+     DIAMOND       BP        5         0.676617        0.009308       0.004162         0.623059        0.009692       0.004335          0.774759         0.005393        0.002412          0.718352         0.007928        0.003546  35.844331  1.877214 0.839516
+       Naive       BP        5         0.149042        0.002288       0.001023         0.041368        0.000750       0.000335          0.786073         0.003991        0.001785          0.086614         0.001725        0.000771  72.142640  1.495290 0.668714
+      Hybrid       BP        5         0.670232        0.004697       0.002101         0.661932        0.006863       0.003069          0.840094         0.009538        0.004265          0.630543         0.005279        0.002361  35.712528  0.496020 0.221827
+   Hybrid_JK       BP        5         0.670872        0.006521       0.002916         0.663013        0.010030       0.004485          0.879360         0.008642        0.003865          0.637804         0.008952        0.004004  35.548513  0.601239 0.268882
+    TransFun       MF        5         0.412567        0.007286       0.003258         0.430248        0.005214       0.002332          0.728417         0.007974        0.003566          0.353642         0.010028        0.004485  26.952041  0.233657 0.104494
+ DeepFRI_Seq       MF        5         0.315136        0.007593       0.003396         0.385275        0.010929       0.004888          0.655931         0.002991        0.001338          0.229024         0.008941        0.003999  28.902001  0.548787 0.245425
+DeepFRI_Cmap       MF        5         0.047330        0.000521       0.000233         0.048676        0.000749       0.000335          0.500000         0.000000        0.000000          0.512119         0.000137        0.000061  36.495025  0.420467 0.188039
+      DPFunc       MF        5         0.104845        0.005490       0.002455         0.078134        0.002363       0.001057          0.620304         0.009486        0.004242          0.053962         0.003721        0.001664  35.375452  0.551524 0.246649
+       BLAST       MF        5         0.827610        0.005549       0.002481         0.799608        0.004985       0.002229          0.882446         0.003963        0.001772          0.835652         0.005205        0.002328   8.518120  0.320419 0.143296
+     DIAMOND       MF        5         0.847666        0.007551       0.003377         0.820891        0.002193       0.000981          0.881420         0.004485        0.002006          0.860890         0.007059        0.003157   8.158191  0.419509 0.187610
+       Naive       MF        5         0.173320        0.003266       0.001461         0.049497        0.000859       0.000384          0.774333         0.002540        0.001136          0.095065         0.002474        0.001107  35.901740  0.513418 0.229607
+      Hybrid       MF        5         0.823263        0.005608       0.002508         0.854976        0.004831       0.002161          0.950936         0.008770        0.003922          0.842348         0.001838        0.000822   8.736206  0.268448 0.120054
+   Hybrid_JK       MF        5         0.814451        0.009624       0.004304         0.840536        0.005910       0.002643          0.943627         0.009004        0.004027          0.827728         0.007902        0.003534   9.408157  0.422817 0.189089
+    TransFun       CC        5         0.281411        0.009514       0.004255         0.341709        0.014570       0.006516          0.728490         0.008772        0.003923          0.167926         0.009059        0.004051  14.295466  0.419919 0.187794
+ DeepFRI_Seq       CC        5         0.230123        0.010148       0.004538         0.234271        0.002387       0.001068          0.765085         0.003269        0.001462          0.153140         0.012658        0.005661  14.781635  0.389675 0.174268
+DeepFRI_Cmap       CC        5         0.046816        0.001185       0.000530         0.048889        0.001031       0.000461          0.500000         0.000000        0.000000          0.511985         0.000310        0.000139  16.774759  0.532769 0.238261
+      DPFunc       CC        5         0.091819        0.004569       0.002043         0.079371        0.003388       0.001515          0.606734         0.003436        0.001537          0.040405         0.002000        0.000894  16.698638  0.733798 0.328165
+       BLAST       CC        5         0.612399        0.003511       0.001570         0.550790        0.018085       0.008088          0.766712         0.001550        0.000693          0.629554         0.005392        0.002412   8.617375  0.377402 0.168779
+     DIAMOND       CC        5         0.602755        0.015794       0.007063         0.565377        0.015487       0.006926          0.751388         0.010807        0.004833          0.631551         0.014146        0.006326   8.930702  0.567119 0.253623
+       Naive       CC        5         0.176266        0.002547       0.001139         0.048148        0.002426       0.001085          0.765471         0.004693        0.002099          0.104891         0.002239        0.001001  16.035783  0.464907 0.207913
+      Hybrid       CC        5         0.613455        0.003848       0.001721         0.618562        0.015452       0.006911          0.882786         0.013864        0.006200          0.602704         0.020300        0.009078   8.824718  0.089322 0.039946
+   Hybrid_JK       CC        5         0.603726        0.011471       0.005130         0.625064        0.008991       0.004021          0.875097         0.018181        0.008131          0.576573         0.021462        0.009598   9.019063  0.238640 0.106723
+
+✓ Coverage diagnostic saved to /home/ganeshiny.sridharan/dgg/deep-green-GO/runs_5seeds/coverage_diagnostic.csv
+       Model Ontology  Total_Test  Coverage_Failures  Label_Mismatch  Covered_Mapped
+    TransFun       BP        1722                474               0            1248
+ DeepFRI_Seq       BP        1722                  0               0            1722
+DeepFRI_Cmap       BP        1722               1722               0               0
+      DPFunc       BP        1722                  0               0            1722
+       BLAST       BP        1722                185             311            1226
+     DIAMOND       BP        1722                326             291            1105
+       Naive       BP        1722                  0               0            1722
+    TransFun       MF        1722                474               0            1248
+ DeepFRI_Seq       MF        1722                  0               0            1722
+DeepFRI_Cmap       MF        1722               1722               0               0
+      DPFunc       MF        1722                  0               0            1722
+       BLAST       MF        1722                185             138            1399
+     DIAMOND       MF        1722                326              75            1321
+       Naive       MF        1722                  0               0            1722
+    TransFun       CC        1722                474               0            1248
+ DeepFRI_Seq       CC        1722                  0               0            1722
+DeepFRI_Cmap       CC        1722               1722               0               0
+      DPFunc       CC        1722                  0               0            1722
+       BLAST       CC        1722                185             801             736
+     DIAMOND       CC        1722                326             721             675
+       Naive       CC        1722                  0               0            1722
+Loading datasets from /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data/split_files/datasets.pkl ...
+
+============================================================
+  Ontology: BIOLOGICAL_PROCESS
+============================================================
+  Test proteins: 1722, GO terms: 727
+  y_true shape: (1722, 727)
+  [TransFun] Parsing ...
+    Coverage: 1248/1722 proteins
+  [DeepFRI_Seq] Parsing ...
+    Coverage: 1722/1722 proteins
+  [DeepFRI_Cmap] Parsing ...
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_BP_pred_scores.json
+    Coverage: 0/1722 proteins
+  [DPFunc] Parsing ...
+    Coverage: 1722/1722 proteins
+  [TransFun] Bootstrapping (full test set) ...
+  [DeepFRI_Seq] Bootstrapping (full test set) ...
+  [DeepFRI_Cmap] Bootstrapping (full test set) ...
+  [DPFunc] Bootstrapping (full test set) ...
+  [BLAST] Bootstrapping ...
+  [DIAMOND] Bootstrapping ...
+  [Naive] Bootstrapping ...
+  [Hybrid] Loading 5-seed predictions ...
+  [Hybrid_JK] Loading 5-seed predictions ...
+
+  [Common Subset] BP: 0/1722 test proteins
+  [WARN] Common subset too small (0), skipping BP
+
+============================================================
+  Ontology: MOLECULAR_FUNCTION
+============================================================
+  Test proteins: 1722, GO terms: 316
+  y_true shape: (1722, 316)
+  [TransFun] Parsing ...
+    Coverage: 1248/1722 proteins
+  [DeepFRI_Seq] Parsing ...
+    Coverage: 1722/1722 proteins
+  [DeepFRI_Cmap] Parsing ...
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_MF_pred_scores.json
+    Coverage: 0/1722 proteins
+  [DPFunc] Parsing ...
+    Coverage: 1722/1722 proteins
+  [TransFun] Bootstrapping (full test set) ...
+  [DeepFRI_Seq] Bootstrapping (full test set) ...
+  [DeepFRI_Cmap] Bootstrapping (full test set) ...
+  [DPFunc] Bootstrapping (full test set) ...
+  [BLAST] Bootstrapping ...
+  [DIAMOND] Bootstrapping ...
+  [Naive] Bootstrapping ...
+  [Hybrid] Loading 5-seed predictions ...
+  [Hybrid_JK] Loading 5-seed predictions ...
+
+  [Common Subset] MF: 0/1722 test proteins
+  [WARN] Common subset too small (0), skipping MF
+
+============================================================
+  Ontology: CELLULAR_COMPONENT
+============================================================
+  Test proteins: 1722, GO terms: 161
+  y_true shape: (1722, 161)
+  [TransFun] Parsing ...
+    Coverage: 1248/1722 proteins
+  [DeepFRI_Seq] Parsing ...
+    Coverage: 1722/1722 proteins
+  [DeepFRI_Cmap] Parsing ...
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_CC_pred_scores.json
+    Coverage: 0/1722 proteins
+  [DPFunc] Parsing ...
+    Coverage: 1722/1722 proteins
+  [TransFun] Bootstrapping (full test set) ...
+  [DeepFRI_Seq] Bootstrapping (full test set) ...
+  [DeepFRI_Cmap] Bootstrapping (full test set) ...
+  [DPFunc] Bootstrapping (full test set) ...
+  [BLAST] Bootstrapping ...
+  [DIAMOND] Bootstrapping ...
+  [Naive] Bootstrapping ...
+  [Hybrid] Loading 5-seed predictions ...
+  [Hybrid_JK] Loading 5-seed predictions ...
+
+  [Common Subset] CC: 0/1722 test proteins
+  [WARN] Common subset too small (0), skipping CC
+
+✓ Results saved to /home/ganeshiny.sridharan/dgg/deep-green-GO/runs_5seeds/evaluation_results_all.csv
+       Model Ontology  N_seeds  Micro_Fmax_mean  Micro_Fmax_std  Micro_Fmax_se  Macro_Fmax_mean  Macro_Fmax_std  Macro_Fmax_se  Micro_AUROC_mean  Micro_AUROC_std  Micro_AUROC_se  Micro_AUPRC_mean  Micro_AUPRC_std  Micro_AUPRC_se  Smin_mean  Smin_std  Smin_se
+    TransFun       BP        5         0.238178        0.009499       0.004248         0.262775        0.004203       0.001880          0.704935         0.013965        0.006245          0.138873         0.010417        0.004659  69.349837  2.641720 1.181413
+ DeepFRI_Seq       BP        5         0.158328        0.005566       0.002489         0.242143        0.007496       0.003352          0.676672         0.004053        0.001812          0.118079         0.007490        0.003350  70.603988  2.432720 1.087946
+DeepFRI_Cmap       BP        5         0.039523        0.001148       0.000513         0.041427        0.001511       0.000676          0.500000         0.000000        0.000000          0.510080         0.000299        0.000134  72.363757  2.585189 1.156132
+      DPFunc       BP        5         0.103501        0.002918       0.001305         0.078984        0.002678       0.001198          0.674856         0.002946        0.001317          0.048091         0.001412        0.000631  72.560373  2.562121 1.145815
+       BLAST       BP        5         0.671423        0.012118       0.005420         0.605277        0.017251       0.007715          0.781208         0.008803        0.003937          0.700983         0.008642        0.003865  35.927014  1.846250 0.825668
+     DIAMOND       BP        5         0.676617        0.009308       0.004162         0.623059        0.009692       0.004335          0.774759         0.005393        0.002412          0.718352         0.007928        0.003546  35.844331  1.877214 0.839516
+       Naive       BP        5         0.149042        0.002288       0.001023         0.041368        0.000750       0.000335          0.786073         0.003991        0.001785          0.086614         0.001725        0.000771  72.142640  1.495290 0.668714
+      Hybrid       BP        5         0.670232        0.004697       0.002101         0.661932        0.006863       0.003069          0.840094         0.009538        0.004265          0.630543         0.005279        0.002361  35.712528  0.496020 0.221827
+   Hybrid_JK       BP        5         0.670872        0.006521       0.002916         0.663013        0.010030       0.004485          0.879360         0.008642        0.003865          0.637804         0.008952        0.004004  35.548513  0.601239 0.268882
+    TransFun       MF        5         0.412567        0.007286       0.003258         0.430248        0.005214       0.002332          0.728417         0.007974        0.003566          0.353642         0.010028        0.004485  26.952041  0.233657 0.104494
+ DeepFRI_Seq       MF        5         0.315136        0.007593       0.003396         0.385275        0.010929       0.004888          0.655931         0.002991        0.001338          0.229024         0.008941        0.003999  28.902001  0.548787 0.245425
+DeepFRI_Cmap       MF        5         0.047330        0.000521       0.000233         0.048676        0.000749       0.000335          0.500000         0.000000        0.000000          0.512119         0.000137        0.000061  36.495025  0.420467 0.188039
+      DPFunc       MF        5         0.104845        0.005490       0.002455         0.078134        0.002363       0.001057          0.620304         0.009486        0.004242          0.053962         0.003721        0.001664  35.375452  0.551524 0.246649
+       BLAST       MF        5         0.827610        0.005549       0.002481         0.799608        0.004985       0.002229          0.882446         0.003963        0.001772          0.835652         0.005205        0.002328   8.518120  0.320419 0.143296
+     DIAMOND       MF        5         0.847666        0.007551       0.003377         0.820891        0.002193       0.000981          0.881420         0.004485        0.002006          0.860890         0.007059        0.003157   8.158191  0.419509 0.187610
+       Naive       MF        5         0.173320        0.003266       0.001461         0.049497        0.000859       0.000384          0.774333         0.002540        0.001136          0.095065         0.002474        0.001107  35.901740  0.513418 0.229607
+      Hybrid       MF        5         0.823263        0.005608       0.002508         0.854976        0.004831       0.002161          0.950936         0.008770        0.003922          0.842348         0.001838        0.000822   8.736206  0.268448 0.120054
+   Hybrid_JK       MF        5         0.814451        0.009624       0.004304         0.840536        0.005910       0.002643          0.943627         0.009004        0.004027          0.827728         0.007902        0.003534   9.408157  0.422817 0.189089
+    TransFun       CC        5         0.281411        0.009514       0.004255         0.341709        0.014570       0.006516          0.728490         0.008772        0.003923          0.167926         0.009059        0.004051  14.295466  0.419919 0.187794
+ DeepFRI_Seq       CC        5         0.230123        0.010148       0.004538         0.234271        0.002387       0.001068          0.765085         0.003269        0.001462          0.153140         0.012658        0.005661  14.781635  0.389675 0.174268
+DeepFRI_Cmap       CC        5         0.046816        0.001185       0.000530         0.048889        0.001031       0.000461          0.500000         0.000000        0.000000          0.511985         0.000310        0.000139  16.774759  0.532769 0.238261
+      DPFunc       CC        5         0.091819        0.004569       0.002043         0.079371        0.003388       0.001515          0.606734         0.003436        0.001537          0.040405         0.002000        0.000894  16.698638  0.733798 0.328165
+       BLAST       CC        5         0.612399        0.003511       0.001570         0.550790        0.018085       0.008088          0.766712         0.001550        0.000693          0.629554         0.005392        0.002412   8.617375  0.377402 0.168779
+     DIAMOND       CC        5         0.602755        0.015794       0.007063         0.565377        0.015487       0.006926          0.751388         0.010807        0.004833          0.631551         0.014146        0.006326   8.930702  0.567119 0.253623
+       Naive       CC        5         0.176266        0.002547       0.001139         0.048148        0.002426       0.001085          0.765471         0.004693        0.002099          0.104891         0.002239        0.001001  16.035783  0.464907 0.207913
+      Hybrid       CC        5         0.613455        0.003848       0.001721         0.618562        0.015452       0.006911          0.882786         0.013864        0.006200          0.602704         0.020300        0.009078   8.824718  0.089322 0.039946
+   Hybrid_JK       CC        5         0.603726        0.011471       0.005130         0.625064        0.008991       0.004021          0.875097         0.018181        0.008131          0.576573         0.021462        0.009598   9.019063  0.238640 0.106723
+
+✓ Coverage diagnostic saved to /home/ganeshiny.sridharan/dgg/deep-green-GO/runs_5seeds/coverage_diagnostic.csv
+       Model Ontology  Total_Test  Coverage_Failures  Label_Mismatch  Covered_Mapped
+    TransFun       BP        1722                474               0            1248
+ DeepFRI_Seq       BP        1722                  0               0            1722
+DeepFRI_Cmap       BP        1722               1722               0               0
+      DPFunc       BP        1722                  0               0            1722
+       BLAST       BP        1722                185             311            1226
+     DIAMOND       BP        1722                326             291            1105
+       Naive       BP        1722                  0               0            1722
+    TransFun       MF        1722                474               0            1248
+ DeepFRI_Seq       MF        1722                  0               0            1722
+DeepFRI_Cmap       MF        1722               1722               0               0
+      DPFunc       MF        1722                  0               0            1722
+       BLAST       MF        1722                185             138            1399
+     DIAMOND       MF        1722                326              75            1321
+       Naive       MF        1722                  0               0            1722
+    TransFun       CC        1722                474               0            1248
+ DeepFRI_Seq       CC        1722                  0               0            1722
+DeepFRI_Cmap       CC        1722               1722               0               0
+      DPFunc       CC        1722                  0               0            1722
+       BLAST       CC        1722                185             801             736
+     DIAMOND       CC        1722                326             721             675
+       Naive       CC        1722                  0               0            1722
+3. Generating Publication Comparison Plots (Mode: all)
+Loading datasets ...
+
+[Plot A] Sequence identity bins ...
+  [DeepFRI Debug] deepfri_seq_BP_pred_scores.json -> matched 1722/2606 test proteins, 584/3442 terms. Max score: 0.9998
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_BP_pred_scores.json
+NOTE: >0.6 bin has elevated identity due to MMseqs2 bilateral coverage limitation (see Methods).
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_all/plot_A_seq_identity.png
+
+[Plot C] IC bins ...
+  [DeepFRI Debug] deepfri_seq_BP_pred_scores.json -> matched 1722/2606 test proteins, 584/3442 terms. Max score: 0.9998
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_BP_pred_scores.json
+  [DeepFRI Debug] deepfri_seq_MF_pred_scores.json -> matched 1722/2606 test proteins, 268/942 terms. Max score: 1.0000
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_MF_pred_scores.json
+  [DeepFRI Debug] deepfri_seq_CC_pred_scores.json -> matched 1722/2606 test proteins, 136/555 terms. Max score: 0.9911
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_CC_pred_scores.json
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_all/plot_C_ic_bins.png
+
+[Plots B/D/E] IC-weighted PR curves ...
+  [DeepFRI Debug] deepfri_seq_BP_pred_scores.json -> matched 1722/2606 test proteins, 584/3442 terms. Max score: 0.9998
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_BP_pred_scores.json
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_all/plot_E_pr_curve_bp.png
+  [DeepFRI Debug] deepfri_seq_MF_pred_scores.json -> matched 1722/2606 test proteins, 268/942 terms. Max score: 1.0000
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_MF_pred_scores.json
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_all/plot_B_pr_curve_mf.png
+  [DeepFRI Debug] deepfri_seq_CC_pred_scores.json -> matched 1722/2606 test proteins, 136/555 terms. Max score: 0.9911
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_CC_pred_scores.json
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_all/plot_D_pr_curve_cc.png
+
+[Plot F] GO depth bins ...
+  [DeepFRI Debug] deepfri_seq_BP_pred_scores.json -> matched 1722/2606 test proteins, 584/3442 terms. Max score: 0.9998
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_BP_pred_scores.json
+  [DeepFRI Debug] deepfri_seq_MF_pred_scores.json -> matched 1722/2606 test proteins, 268/942 terms. Max score: 1.0000
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_MF_pred_scores.json
+  [DeepFRI Debug] deepfri_seq_CC_pred_scores.json -> matched 1722/2606 test proteins, 136/555 terms. Max score: 0.9911
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_CC_pred_scores.json
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_all/plot_F_depth_bins.png
+
+[Plot G] Coverage ...
+  [DeepFRI Debug] deepfri_seq_BP_pred_scores.json -> matched 1722/2606 test proteins, 584/3442 terms. Max score: 0.9998
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_BP_pred_scores.json
+  [DeepFRI Debug] deepfri_seq_MF_pred_scores.json -> matched 1722/2606 test proteins, 268/942 terms. Max score: 1.0000
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_MF_pred_scores.json
+  [DeepFRI Debug] deepfri_seq_CC_pred_scores.json -> matched 1722/2606 test proteins, 136/555 terms. Max score: 0.9911
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_CC_pred_scores.json
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_all/plot_G_coverage.png
+
+[Summary] Fmax bar chart ...
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_all/plot_summary_fmax.png
+
+✓ All plots saved to: /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_all
+Loading datasets ...
+
+[Plot A] Sequence identity bins ...
+  [DeepFRI Debug] deepfri_seq_BP_pred_scores.json -> matched 1722/2606 test proteins, 584/3442 terms. Max score: 0.9998
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_BP_pred_scores.json
+  [Common Subset] bp: 985/1722
+NOTE: >0.6 bin has elevated identity due to MMseqs2 bilateral coverage limitation (see Methods).
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_all/plot_A_seq_identity_common_subset.png
+
+[Plot C] IC bins ...
+  [DeepFRI Debug] deepfri_seq_BP_pred_scores.json -> matched 1722/2606 test proteins, 584/3442 terms. Max score: 0.9998
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_BP_pred_scores.json
+  [Common Subset] bp: 985/1722
+  [DeepFRI Debug] deepfri_seq_MF_pred_scores.json -> matched 1722/2606 test proteins, 268/942 terms. Max score: 1.0000
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_MF_pred_scores.json
+  [Common Subset] mf: 985/1722
+  [DeepFRI Debug] deepfri_seq_CC_pred_scores.json -> matched 1722/2606 test proteins, 136/555 terms. Max score: 0.9911
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_CC_pred_scores.json
+  [Common Subset] cc: 985/1722
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_all/plot_C_ic_bins_common_subset.png
+
+[Plots B/D/E] IC-weighted PR curves ...
+  [DeepFRI Debug] deepfri_seq_BP_pred_scores.json -> matched 1722/2606 test proteins, 584/3442 terms. Max score: 0.9998
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_BP_pred_scores.json
+  [Common Subset] bp: 985/1722
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_all/plot_E_pr_curve_bp_common_subset.png
+  [DeepFRI Debug] deepfri_seq_MF_pred_scores.json -> matched 1722/2606 test proteins, 268/942 terms. Max score: 1.0000
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_MF_pred_scores.json
+  [Common Subset] mf: 985/1722
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_all/plot_B_pr_curve_mf_common_subset.png
+  [DeepFRI Debug] deepfri_seq_CC_pred_scores.json -> matched 1722/2606 test proteins, 136/555 terms. Max score: 0.9911
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_CC_pred_scores.json
+  [Common Subset] cc: 985/1722
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_all/plot_D_pr_curve_cc_common_subset.png
+
+[Plot F] GO depth bins ...
+  [DeepFRI Debug] deepfri_seq_BP_pred_scores.json -> matched 1722/2606 test proteins, 584/3442 terms. Max score: 0.9998
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_BP_pred_scores.json
+  [Common Subset] bp: 985/1722
+  [DeepFRI Debug] deepfri_seq_MF_pred_scores.json -> matched 1722/2606 test proteins, 268/942 terms. Max score: 1.0000
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_MF_pred_scores.json
+  [Common Subset] mf: 985/1722
+  [DeepFRI Debug] deepfri_seq_CC_pred_scores.json -> matched 1722/2606 test proteins, 136/555 terms. Max score: 0.9911
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_CC_pred_scores.json
+  [Common Subset] cc: 985/1722
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_all/plot_F_depth_bins_common_subset.png
+
+[Plot G] Coverage ...
+  [DeepFRI Debug] deepfri_seq_BP_pred_scores.json -> matched 1722/2606 test proteins, 584/3442 terms. Max score: 0.9998
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_BP_pred_scores.json
+  [Common Subset] bp: 985/1722
+  [DeepFRI Debug] deepfri_seq_MF_pred_scores.json -> matched 1722/2606 test proteins, 268/942 terms. Max score: 1.0000
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_MF_pred_scores.json
+  [Common Subset] mf: 985/1722
+  [DeepFRI Debug] deepfri_seq_CC_pred_scores.json -> matched 1722/2606 test proteins, 136/555 terms. Max score: 0.9911
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_CC_pred_scores.json
+  [Common Subset] cc: 985/1722
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_all/plot_G_coverage_common_subset.png
+
+[Summary] Fmax bar chart ...
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_all/plot_summary_fmax_common_subset.png
+
+✓ All plots saved to: /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_all
+Loading datasets ...
+
+[Plot A] Sequence identity bins ...
+  [DeepFRI Debug] deepfri_seq_BP_pred_scores.json -> matched 1722/2606 test proteins, 584/3442 terms. Max score: 0.9998
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_BP_pred_scores.json
+NOTE: >0.6 bin has elevated identity due to MMseqs2 bilateral coverage limitation (see Methods).
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_all/supplementary/plot_A_seq_identity_supp.png
+
+[Plot C] IC bins ...
+  [DeepFRI Debug] deepfri_seq_BP_pred_scores.json -> matched 1722/2606 test proteins, 584/3442 terms. Max score: 0.9998
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_BP_pred_scores.json
+  [DeepFRI Debug] deepfri_seq_MF_pred_scores.json -> matched 1722/2606 test proteins, 268/942 terms. Max score: 1.0000
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_MF_pred_scores.json
+  [DeepFRI Debug] deepfri_seq_CC_pred_scores.json -> matched 1722/2606 test proteins, 136/555 terms. Max score: 0.9911
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_CC_pred_scores.json
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_all/supplementary/plot_C_ic_bins_supp.png
+
+[Plots B/D/E] IC-weighted PR curves ...
+  [DeepFRI Debug] deepfri_seq_BP_pred_scores.json -> matched 1722/2606 test proteins, 584/3442 terms. Max score: 0.9998
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_BP_pred_scores.json
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_all/supplementary/plot_E_pr_curve_bp_supp.png
+  [DeepFRI Debug] deepfri_seq_MF_pred_scores.json -> matched 1722/2606 test proteins, 268/942 terms. Max score: 1.0000
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_MF_pred_scores.json
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_all/supplementary/plot_B_pr_curve_mf_supp.png
+  [DeepFRI Debug] deepfri_seq_CC_pred_scores.json -> matched 1722/2606 test proteins, 136/555 terms. Max score: 0.9911
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_CC_pred_scores.json
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_all/supplementary/plot_D_pr_curve_cc_supp.png
+
+[Plot F] GO depth bins ...
+  [DeepFRI Debug] deepfri_seq_BP_pred_scores.json -> matched 1722/2606 test proteins, 584/3442 terms. Max score: 0.9998
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_BP_pred_scores.json
+  [DeepFRI Debug] deepfri_seq_MF_pred_scores.json -> matched 1722/2606 test proteins, 268/942 terms. Max score: 1.0000
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_MF_pred_scores.json
+  [DeepFRI Debug] deepfri_seq_CC_pred_scores.json -> matched 1722/2606 test proteins, 136/555 terms. Max score: 0.9911
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_CC_pred_scores.json
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_all/supplementary/plot_F_depth_bins_supp.png
+
+[Plot G] Coverage ...
+  [DeepFRI Debug] deepfri_seq_BP_pred_scores.json -> matched 1722/2606 test proteins, 584/3442 terms. Max score: 0.9998
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_BP_pred_scores.json
+  [DeepFRI Debug] deepfri_seq_MF_pred_scores.json -> matched 1722/2606 test proteins, 268/942 terms. Max score: 1.0000
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_MF_pred_scores.json
+  [DeepFRI Debug] deepfri_seq_CC_pred_scores.json -> matched 1722/2606 test proteins, 136/555 terms. Max score: 0.9911
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_CC_pred_scores.json
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_all/supplementary/plot_G_coverage_supp.png
+
+[Summary] Fmax bar chart ...
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_all/supplementary/plot_summary_fmax_supp.png
+
+✓ All plots saved to: /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_all
+Loading datasets ...
+
+[Plot A] Sequence identity bins ...
+  [DeepFRI Debug] deepfri_seq_BP_pred_scores.json -> matched 1722/2606 test proteins, 584/3442 terms. Max score: 0.9998
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_BP_pred_scores.json
+  [Common Subset] bp: 985/1722
+NOTE: >0.6 bin has elevated identity due to MMseqs2 bilateral coverage limitation (see Methods).
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_all/supplementary/plot_A_seq_identity_common_subset_supp.png
+
+[Plot C] IC bins ...
+  [DeepFRI Debug] deepfri_seq_BP_pred_scores.json -> matched 1722/2606 test proteins, 584/3442 terms. Max score: 0.9998
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_BP_pred_scores.json
+  [Common Subset] bp: 985/1722
+  [DeepFRI Debug] deepfri_seq_MF_pred_scores.json -> matched 1722/2606 test proteins, 268/942 terms. Max score: 1.0000
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_MF_pred_scores.json
+  [Common Subset] mf: 985/1722
+  [DeepFRI Debug] deepfri_seq_CC_pred_scores.json -> matched 1722/2606 test proteins, 136/555 terms. Max score: 0.9911
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_CC_pred_scores.json
+  [Common Subset] cc: 985/1722
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_all/supplementary/plot_C_ic_bins_common_subset_supp.png
+
+[Plots B/D/E] IC-weighted PR curves ...
+  [DeepFRI Debug] deepfri_seq_BP_pred_scores.json -> matched 1722/2606 test proteins, 584/3442 terms. Max score: 0.9998
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_BP_pred_scores.json
+  [Common Subset] bp: 985/1722
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_all/supplementary/plot_E_pr_curve_bp_common_subset_supp.png
+  [DeepFRI Debug] deepfri_seq_MF_pred_scores.json -> matched 1722/2606 test proteins, 268/942 terms. Max score: 1.0000
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_MF_pred_scores.json
+  [Common Subset] mf: 985/1722
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_all/supplementary/plot_B_pr_curve_mf_common_subset_supp.png
+  [DeepFRI Debug] deepfri_seq_CC_pred_scores.json -> matched 1722/2606 test proteins, 136/555 terms. Max score: 0.9911
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_CC_pred_scores.json
+  [Common Subset] cc: 985/1722
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_all/supplementary/plot_D_pr_curve_cc_common_subset_supp.png
+
+[Plot F] GO depth bins ...
+  [DeepFRI Debug] deepfri_seq_BP_pred_scores.json -> matched 1722/2606 test proteins, 584/3442 terms. Max score: 0.9998
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_BP_pred_scores.json
+  [Common Subset] bp: 985/1722
+  [DeepFRI Debug] deepfri_seq_MF_pred_scores.json -> matched 1722/2606 test proteins, 268/942 terms. Max score: 1.0000
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_MF_pred_scores.json
+  [Common Subset] mf: 985/1722
+  [DeepFRI Debug] deepfri_seq_CC_pred_scores.json -> matched 1722/2606 test proteins, 136/555 terms. Max score: 0.9911
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_CC_pred_scores.json
+  [Common Subset] cc: 985/1722
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_all/supplementary/plot_F_depth_bins_common_subset_supp.png
+
+[Plot G] Coverage ...
+  [DeepFRI Debug] deepfri_seq_BP_pred_scores.json -> matched 1722/2606 test proteins, 584/3442 terms. Max score: 0.9998
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_BP_pred_scores.json
+  [Common Subset] bp: 985/1722
+  [DeepFRI Debug] deepfri_seq_MF_pred_scores.json -> matched 1722/2606 test proteins, 268/942 terms. Max score: 1.0000
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_MF_pred_scores.json
+  [Common Subset] mf: 985/1722
+  [DeepFRI Debug] deepfri_seq_CC_pred_scores.json -> matched 1722/2606 test proteins, 136/555 terms. Max score: 0.9911
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_CC_pred_scores.json
+  [Common Subset] cc: 985/1722
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_all/supplementary/plot_G_coverage_common_subset_supp.png
+
+[Summary] Fmax bar chart ...
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_all/supplementary/plot_summary_fmax_common_subset_supp.png
+
+✓ All plots saved to: /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_all
+4. Running 5-seed Evaluation and Bootstrapping (Mode: baselines_only)
+Loading datasets from /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data/split_files/datasets.pkl ...
+
+============================================================
+  Ontology: BIOLOGICAL_PROCESS
+============================================================
+  Test proteins: 1722, GO terms: 727
+  y_true shape: (1722, 727)
+  [TransFun] Parsing ...
+    Coverage: 1248/1722 proteins
+  [DeepFRI_Seq] Parsing ...
+    Coverage: 1722/1722 proteins
+  [DeepFRI_Cmap] Parsing ...
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_BP_pred_scores.json
+    Coverage: 0/1722 proteins
+  [DPFunc] Parsing ...
+    Coverage: 1722/1722 proteins
+  [BLAST] Bootstrapping ...
+  [DIAMOND] Bootstrapping ...
+  [Naive] Bootstrapping ...
+  [Hybrid] Loading 5-seed predictions ...
+  [Hybrid_JK] Loading 5-seed predictions ...
+
+============================================================
+  Ontology: MOLECULAR_FUNCTION
+============================================================
+  Test proteins: 1722, GO terms: 316
+  y_true shape: (1722, 316)
+  [TransFun] Parsing ...
+    Coverage: 1248/1722 proteins
+  [DeepFRI_Seq] Parsing ...
+    Coverage: 1722/1722 proteins
+  [DeepFRI_Cmap] Parsing ...
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_MF_pred_scores.json
+    Coverage: 0/1722 proteins
+  [DPFunc] Parsing ...
+    Coverage: 1722/1722 proteins
+  [BLAST] Bootstrapping ...
+  [DIAMOND] Bootstrapping ...
+  [Naive] Bootstrapping ...
+  [Hybrid] Loading 5-seed predictions ...
+  [Hybrid_JK] Loading 5-seed predictions ...
+
+============================================================
+  Ontology: CELLULAR_COMPONENT
+============================================================
+  Test proteins: 1722, GO terms: 161
+  y_true shape: (1722, 161)
+  [TransFun] Parsing ...
+    Coverage: 1248/1722 proteins
+  [DeepFRI_Seq] Parsing ...
+    Coverage: 1722/1722 proteins
+  [DeepFRI_Cmap] Parsing ...
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_CC_pred_scores.json
+    Coverage: 0/1722 proteins
+  [DPFunc] Parsing ...
+    Coverage: 1722/1722 proteins
+  [BLAST] Bootstrapping ...
+  [DIAMOND] Bootstrapping ...
+  [Naive] Bootstrapping ...
+  [Hybrid] Loading 5-seed predictions ...
+  [Hybrid_JK] Loading 5-seed predictions ...
+
+✓ Results saved to /home/ganeshiny.sridharan/dgg/deep-green-GO/runs_5seeds/evaluation_results_baselines_only.csv
+    Model Ontology  N_seeds  Micro_Fmax_mean  Micro_Fmax_std  Micro_Fmax_se  Macro_Fmax_mean  Macro_Fmax_std  Macro_Fmax_se  Micro_AUROC_mean  Micro_AUROC_std  Micro_AUROC_se  Micro_AUPRC_mean  Micro_AUPRC_std  Micro_AUPRC_se  Smin_mean  Smin_std  Smin_se
+    BLAST       BP        5         0.678287        0.017365       0.007766         0.606820        0.017668       0.007901          0.786545         0.009796        0.004381          0.705057         0.015372        0.006875  34.869104  2.671462 1.194714
+  DIAMOND       BP        5         0.675971        0.012448       0.005567         0.617177        0.007527       0.003366          0.776261         0.008086        0.003616          0.715092         0.009271        0.004146  35.578195  2.328517 1.041344
+    Naive       BP        5         0.149083        0.001745       0.000780         0.041427        0.001511       0.000676          0.786215         0.004207        0.001881          0.085924         0.000555        0.000248  71.051840  2.555681 1.142935
+   Hybrid       BP        5         0.670232        0.004697       0.002101         0.661932        0.006863       0.003069          0.840094         0.009538        0.004265          0.630543         0.005279        0.002361  35.712528  0.496020 0.221827
+Hybrid_JK       BP        5         0.670872        0.006521       0.002916         0.663013        0.010030       0.004485          0.879360         0.008642        0.003865          0.637804         0.008952        0.004004  35.548513  0.601239 0.268882
+    BLAST       MF        5         0.829951        0.007621       0.003408         0.797884        0.008148       0.003644          0.882284         0.006114        0.002734          0.838544         0.006732        0.003011   8.395208  0.471267 0.210757
+  DIAMOND       MF        5         0.840968        0.007908       0.003537         0.817835        0.009276       0.004148          0.874657         0.005359        0.002396          0.856568         0.006867        0.003071   8.742810  0.384923 0.172143
+    Naive       MF        5         0.174802        0.004050       0.001811         0.049062        0.000532       0.000238          0.777024         0.002314        0.001035          0.095861         0.002555        0.001143  36.166398  0.365951 0.163658
+   Hybrid       MF        5         0.823263        0.005608       0.002508         0.854976        0.004831       0.002161          0.950936         0.008770        0.003922          0.842348         0.001838        0.000822   8.736206  0.268448 0.120054
+Hybrid_JK       MF        5         0.814451        0.009624       0.004304         0.840536        0.005910       0.002643          0.943627         0.009004        0.004027          0.827728         0.007902        0.003534   9.408157  0.422817 0.189089
+    BLAST       CC        5         0.588031        0.005669       0.002535         0.562790        0.010333       0.004621          0.753535         0.004905        0.002194          0.607003         0.005830        0.002607   9.244343  0.230799 0.103216
+  DIAMOND       CC        5         0.612239        0.011864       0.005306         0.565536        0.014432       0.006454          0.754664         0.007328        0.003277          0.641955         0.011305        0.005056   8.786094  0.336432 0.150457
+    Naive       CC        5         0.169884        0.001722       0.000770         0.047425        0.001861       0.000832          0.762474         0.004210        0.001883          0.101157         0.001346        0.000602  15.916994  0.497282 0.222391
+   Hybrid       CC        5         0.613455        0.003848       0.001721         0.618562        0.015452       0.006911          0.882786         0.013864        0.006200          0.602704         0.020300        0.009078   8.824718  0.089322 0.039946
+Hybrid_JK       CC        5         0.603726        0.011471       0.005130         0.625064        0.008991       0.004021          0.875097         0.018181        0.008131          0.576573         0.021462        0.009598   9.019063  0.238640 0.106723
+
+✓ Coverage diagnostic saved to /home/ganeshiny.sridharan/dgg/deep-green-GO/runs_5seeds/coverage_diagnostic.csv
+  Model Ontology  Total_Test  Coverage_Failures  Label_Mismatch  Covered_Mapped
+  BLAST       BP        1722                185             311            1226
+DIAMOND       BP        1722                326             291            1105
+  Naive       BP        1722                  0               0            1722
+  BLAST       MF        1722                185             138            1399
+DIAMOND       MF        1722                326              75            1321
+  Naive       MF        1722                  0               0            1722
+  BLAST       CC        1722                185             801             736
+DIAMOND       CC        1722                326             721             675
+  Naive       CC        1722                  0               0            1722
+Loading datasets from /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data/split_files/datasets.pkl ...
+
+============================================================
+  Ontology: BIOLOGICAL_PROCESS
+============================================================
+  Test proteins: 1722, GO terms: 727
+  y_true shape: (1722, 727)
+  [TransFun] Parsing ...
+    Coverage: 1248/1722 proteins
+  [DeepFRI_Seq] Parsing ...
+    Coverage: 1722/1722 proteins
+  [DeepFRI_Cmap] Parsing ...
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_BP_pred_scores.json
+    Coverage: 0/1722 proteins
+  [DPFunc] Parsing ...
+    Coverage: 1722/1722 proteins
+  [BLAST] Bootstrapping ...
+  [DIAMOND] Bootstrapping ...
+  [Naive] Bootstrapping ...
+  [Hybrid] Loading 5-seed predictions ...
+  [Hybrid_JK] Loading 5-seed predictions ...
+
+  [Common Subset] BP: 1390/1722 test proteins
+  [DPFunc] Bootstrapping (common subset) ...
+  [Hybrid] Evaluating (common subset) ...
+  [Hybrid_JK] Evaluating (common subset) ...
+
+============================================================
+  Ontology: MOLECULAR_FUNCTION
+============================================================
+  Test proteins: 1722, GO terms: 316
+  y_true shape: (1722, 316)
+  [TransFun] Parsing ...
+    Coverage: 1248/1722 proteins
+  [DeepFRI_Seq] Parsing ...
+    Coverage: 1722/1722 proteins
+  [DeepFRI_Cmap] Parsing ...
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_MF_pred_scores.json
+    Coverage: 0/1722 proteins
+  [DPFunc] Parsing ...
+    Coverage: 1722/1722 proteins
+  [BLAST] Bootstrapping ...
+  [DIAMOND] Bootstrapping ...
+  [Naive] Bootstrapping ...
+  [Hybrid] Loading 5-seed predictions ...
+  [Hybrid_JK] Loading 5-seed predictions ...
+
+  [Common Subset] MF: 1390/1722 test proteins
+  [DPFunc] Bootstrapping (common subset) ...
+  [Hybrid] Evaluating (common subset) ...
+  [Hybrid_JK] Evaluating (common subset) ...
+
+============================================================
+  Ontology: CELLULAR_COMPONENT
+============================================================
+  Test proteins: 1722, GO terms: 161
+  y_true shape: (1722, 161)
+  [TransFun] Parsing ...
+    Coverage: 1248/1722 proteins
+  [DeepFRI_Seq] Parsing ...
+    Coverage: 1722/1722 proteins
+  [DeepFRI_Cmap] Parsing ...
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_CC_pred_scores.json
+    Coverage: 0/1722 proteins
+  [DPFunc] Parsing ...
+    Coverage: 1722/1722 proteins
+  [BLAST] Bootstrapping ...
+  [DIAMOND] Bootstrapping ...
+  [Naive] Bootstrapping ...
+  [Hybrid] Loading 5-seed predictions ...
+  [Hybrid_JK] Loading 5-seed predictions ...
+
+  [Common Subset] CC: 1390/1722 test proteins
+  [DPFunc] Bootstrapping (common subset) ...
+  [Hybrid] Evaluating (common subset) ...
+  [Hybrid_JK] Evaluating (common subset) ...
+
+✓ Results saved to /home/ganeshiny.sridharan/dgg/deep-green-GO/runs_5seeds/evaluation_results_baselines_only.csv
+    Model Ontology  N_seeds  Micro_Fmax_mean  Micro_Fmax_std  Micro_Fmax_se  Macro_Fmax_mean  Macro_Fmax_std  Macro_Fmax_se  Micro_AUROC_mean  Micro_AUROC_std  Micro_AUROC_se  Micro_AUPRC_mean  Micro_AUPRC_std  Micro_AUPRC_se  Smin_mean  Smin_std  Smin_se
+    BLAST       BP        5         0.678287        0.017365       0.007766         0.606820        0.017668       0.007901          0.786545         0.009796        0.004381          0.705057         0.015372        0.006875  34.869104  2.671462 1.194714
+  DIAMOND       BP        5         0.675971        0.012448       0.005567         0.617177        0.007527       0.003366          0.776261         0.008086        0.003616          0.715092         0.009271        0.004146  35.578195  2.328517 1.041344
+    Naive       BP        5         0.149083        0.001745       0.000780         0.041427        0.001511       0.000676          0.786215         0.004207        0.001881          0.085924         0.000555        0.000248  71.051840  2.555681 1.142935
+   Hybrid       BP        5         0.670232        0.004697       0.002101         0.661932        0.006863       0.003069          0.840094         0.009538        0.004265          0.630543         0.005279        0.002361  35.712528  0.496020 0.221827
+Hybrid_JK       BP        5         0.670872        0.006521       0.002916         0.663013        0.010030       0.004485          0.879360         0.008642        0.003865          0.637804         0.008952        0.004004  35.548513  0.601239 0.268882
+    BLAST       MF        5         0.829951        0.007621       0.003408         0.797884        0.008148       0.003644          0.882284         0.006114        0.002734          0.838544         0.006732        0.003011   8.395208  0.471267 0.210757
+  DIAMOND       MF        5         0.840968        0.007908       0.003537         0.817835        0.009276       0.004148          0.874657         0.005359        0.002396          0.856568         0.006867        0.003071   8.742810  0.384923 0.172143
+    Naive       MF        5         0.174802        0.004050       0.001811         0.049062        0.000532       0.000238          0.777024         0.002314        0.001035          0.095861         0.002555        0.001143  36.166398  0.365951 0.163658
+   Hybrid       MF        5         0.823263        0.005608       0.002508         0.854976        0.004831       0.002161          0.950936         0.008770        0.003922          0.842348         0.001838        0.000822   8.736206  0.268448 0.120054
+Hybrid_JK       MF        5         0.814451        0.009624       0.004304         0.840536        0.005910       0.002643          0.943627         0.009004        0.004027          0.827728         0.007902        0.003534   9.408157  0.422817 0.189089
+    BLAST       CC        5         0.588031        0.005669       0.002535         0.562790        0.010333       0.004621          0.753535         0.004905        0.002194          0.607003         0.005830        0.002607   9.244343  0.230799 0.103216
+  DIAMOND       CC        5         0.612239        0.011864       0.005306         0.565536        0.014432       0.006454          0.754664         0.007328        0.003277          0.641955         0.011305        0.005056   8.786094  0.336432 0.150457
+    Naive       CC        5         0.169884        0.001722       0.000770         0.047425        0.001861       0.000832          0.762474         0.004210        0.001883          0.101157         0.001346        0.000602  15.916994  0.497282 0.222391
+   Hybrid       CC        5         0.613455        0.003848       0.001721         0.618562        0.015452       0.006911          0.882786         0.013864        0.006200          0.602704         0.020300        0.009078   8.824718  0.089322 0.039946
+Hybrid_JK       CC        5         0.603726        0.011471       0.005130         0.625064        0.008991       0.004021          0.875097         0.018181        0.008131          0.576573         0.021462        0.009598   9.019063  0.238640 0.106723
+
+✓ Coverage diagnostic saved to /home/ganeshiny.sridharan/dgg/deep-green-GO/runs_5seeds/coverage_diagnostic.csv
+  Model Ontology  Total_Test  Coverage_Failures  Label_Mismatch  Covered_Mapped
+  BLAST       BP        1722                185             311            1226
+DIAMOND       BP        1722                326             291            1105
+  Naive       BP        1722                  0               0            1722
+  BLAST       MF        1722                185             138            1399
+DIAMOND       MF        1722                326              75            1321
+  Naive       MF        1722                  0               0            1722
+  BLAST       CC        1722                185             801             736
+DIAMOND       CC        1722                326             721             675
+  Naive       CC        1722                  0               0            1722
+
+✓ Common subset results saved to /home/ganeshiny.sridharan/dgg/deep-green-GO/runs_5seeds/evaluation_results_baselines_only_common_subset.csv
+       Model Ontology  N_seeds  Micro_Fmax_mean  Micro_Fmax_std  Micro_Fmax_se  Macro_Fmax_mean  Macro_Fmax_std  Macro_Fmax_se  Micro_AUROC_mean  Micro_AUROC_std  Micro_AUROC_se  Micro_AUPRC_mean  Micro_AUPRC_std  Micro_AUPRC_se  Smin_mean  Smin_std  Smin_se
+    TransFun       BP        5         0.241228        0.002342       0.001047         0.261916        0.018748       0.008384          0.703835         0.011069        0.004950          0.133556         0.003617        0.001617  61.420913  2.151092 0.961997
+ DeepFRI_Seq       BP        5         0.168740        0.009105       0.004072         0.274579        0.018308       0.008187          0.676486         0.002364        0.001057          0.128545         0.010714        0.004792  62.685082  1.411712 0.631337
+DeepFRI_Cmap       BP        5         0.036177        0.002051       0.000917         0.039514        0.002603       0.001164          0.500000         0.000000        0.000000          0.509211         0.000532        0.000238  67.042009  4.525670 2.023941
+      DPFunc       BP        5         0.089849        0.002605       0.001165         0.075173        0.002686       0.001201          0.664148         0.003606        0.001613          0.041054         0.001007        0.000451  65.820426  1.294171 0.578771
+      Hybrid       BP        5         0.801861        0.004854       0.002171         0.779577        0.007486       0.003348          0.911648         0.006232        0.002787          0.785804         0.004106        0.001836  21.325453  0.474980 0.212418
+   Hybrid_JK       BP        5         0.804500        0.007127       0.003187         0.786224        0.011472       0.005130          0.948870         0.007517        0.003362          0.799069         0.012356        0.005526  20.726838  0.722408 0.323071
+    TransFun       MF        5         0.428716        0.008001       0.003578         0.445616        0.010446       0.004672          0.727855         0.006408        0.002866          0.366321         0.012434        0.005561  27.718289  0.650232 0.290793
+ DeepFRI_Seq       MF        5         0.332723        0.010753       0.004809         0.430301        0.009967       0.004457          0.637644         0.002136        0.000955          0.237051         0.012217        0.005464  29.514383  0.740293 0.331069
+DeepFRI_Cmap       MF        5         0.047586        0.001052       0.000470         0.050686        0.000869       0.000389          0.500000         0.000000        0.000000          0.512187         0.000276        0.000123  37.435082  0.682233 0.305104
+      DPFunc       MF        5         0.111171        0.005043       0.002255         0.084274        0.003472       0.001553          0.620042         0.006712        0.003002          0.055954         0.002879        0.001287  37.048161  0.478705 0.214084
+      Hybrid       MF        5         0.907597        0.004703       0.002103         0.929737        0.003802       0.001700          0.977846         0.004624        0.002068          0.929409         0.004623        0.002067   4.908722  0.307678 0.137598
+   Hybrid_JK       MF        5         0.899895        0.005579       0.002495         0.919170        0.004092       0.001830          0.977586         0.006459        0.002889          0.919930         0.005638        0.002522   5.455200  0.326673 0.146092
+    TransFun       CC        5         0.250123        0.015128       0.006765         0.323678        0.015476       0.006921          0.709471         0.019307        0.008635          0.137360         0.016736        0.007485  11.905409  0.576691 0.257904
+ DeepFRI_Seq       CC        5         0.262592        0.006171       0.002760         0.274361        0.006850       0.003063          0.770775         0.008231        0.003681          0.166535         0.010209        0.004566  11.946418  0.623224 0.278714
+DeepFRI_Cmap       CC        5         0.038088        0.001929       0.000863         0.043611        0.001806       0.000808          0.500000         0.000000        0.000000          0.509707         0.000501        0.000224  13.509286  0.725514 0.324460
+      DPFunc       CC        5         0.070581        0.005442       0.002434         0.062673        0.003945       0.001764          0.591047         0.006694        0.002993          0.029899         0.002039        0.000912  13.034979  0.799747 0.357658
+      Hybrid       CC        5         0.754208        0.010907       0.004878         0.771307        0.015660       0.007003          0.928192         0.008965        0.004009          0.745027         0.024774        0.011079   5.032079  0.176386 0.078882
+   Hybrid_JK       CC        5         0.736343        0.009958       0.004453         0.784295        0.006154       0.002752          0.933556         0.005830        0.002607          0.721678         0.017980        0.008041   5.274096  0.196912 0.088062
+5. Generating Publication Comparison Plots (Mode: baselines_only)
+Loading datasets ...
+
+[Plot A] Sequence identity bins ...
+  [DeepFRI Debug] deepfri_seq_BP_pred_scores.json -> matched 1722/2606 test proteins, 584/3442 terms. Max score: 0.9998
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_BP_pred_scores.json
+NOTE: >0.6 bin has elevated identity due to MMseqs2 bilateral coverage limitation (see Methods).
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_baselines_only/plot_A_seq_identity.png
+
+[Plot C] IC bins ...
+  [DeepFRI Debug] deepfri_seq_BP_pred_scores.json -> matched 1722/2606 test proteins, 584/3442 terms. Max score: 0.9998
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_BP_pred_scores.json
+  [DeepFRI Debug] deepfri_seq_MF_pred_scores.json -> matched 1722/2606 test proteins, 268/942 terms. Max score: 1.0000
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_MF_pred_scores.json
+  [DeepFRI Debug] deepfri_seq_CC_pred_scores.json -> matched 1722/2606 test proteins, 136/555 terms. Max score: 0.9911
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_CC_pred_scores.json
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_baselines_only/plot_C_ic_bins.png
+
+[Plots B/D/E] IC-weighted PR curves ...
+  [DeepFRI Debug] deepfri_seq_BP_pred_scores.json -> matched 1722/2606 test proteins, 584/3442 terms. Max score: 0.9998
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_BP_pred_scores.json
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_baselines_only/plot_E_pr_curve_bp.png
+  [DeepFRI Debug] deepfri_seq_MF_pred_scores.json -> matched 1722/2606 test proteins, 268/942 terms. Max score: 1.0000
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_MF_pred_scores.json
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_baselines_only/plot_B_pr_curve_mf.png
+  [DeepFRI Debug] deepfri_seq_CC_pred_scores.json -> matched 1722/2606 test proteins, 136/555 terms. Max score: 0.9911
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_CC_pred_scores.json
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_baselines_only/plot_D_pr_curve_cc.png
+
+[Plot F] GO depth bins ...
+  [DeepFRI Debug] deepfri_seq_BP_pred_scores.json -> matched 1722/2606 test proteins, 584/3442 terms. Max score: 0.9998
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_BP_pred_scores.json
+  [DeepFRI Debug] deepfri_seq_MF_pred_scores.json -> matched 1722/2606 test proteins, 268/942 terms. Max score: 1.0000
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_MF_pred_scores.json
+  [DeepFRI Debug] deepfri_seq_CC_pred_scores.json -> matched 1722/2606 test proteins, 136/555 terms. Max score: 0.9911
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_CC_pred_scores.json
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_baselines_only/plot_F_depth_bins.png
+
+[Plot G] Coverage ...
+  [DeepFRI Debug] deepfri_seq_BP_pred_scores.json -> matched 1722/2606 test proteins, 584/3442 terms. Max score: 0.9998
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_BP_pred_scores.json
+  [DeepFRI Debug] deepfri_seq_MF_pred_scores.json -> matched 1722/2606 test proteins, 268/942 terms. Max score: 1.0000
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_MF_pred_scores.json
+  [DeepFRI Debug] deepfri_seq_CC_pred_scores.json -> matched 1722/2606 test proteins, 136/555 terms. Max score: 0.9911
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_CC_pred_scores.json
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_baselines_only/plot_G_coverage.png
+
+[Summary] Fmax bar chart ...
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_baselines_only/plot_summary_fmax.png
+
+✓ All plots saved to: /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_baselines_only
+Loading datasets ...
+
+[Plot A] Sequence identity bins ...
+  [DeepFRI Debug] deepfri_seq_BP_pred_scores.json -> matched 1722/2606 test proteins, 584/3442 terms. Max score: 0.9998
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_BP_pred_scores.json
+  [Common Subset] bp: 985/1722
+NOTE: >0.6 bin has elevated identity due to MMseqs2 bilateral coverage limitation (see Methods).
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_baselines_only/plot_A_seq_identity_common_subset.png
+
+[Plot C] IC bins ...
+  [DeepFRI Debug] deepfri_seq_BP_pred_scores.json -> matched 1722/2606 test proteins, 584/3442 terms. Max score: 0.9998
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_BP_pred_scores.json
+  [Common Subset] bp: 985/1722
+  [DeepFRI Debug] deepfri_seq_MF_pred_scores.json -> matched 1722/2606 test proteins, 268/942 terms. Max score: 1.0000
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_MF_pred_scores.json
+  [Common Subset] mf: 985/1722
+  [DeepFRI Debug] deepfri_seq_CC_pred_scores.json -> matched 1722/2606 test proteins, 136/555 terms. Max score: 0.9911
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_CC_pred_scores.json
+  [Common Subset] cc: 985/1722
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_baselines_only/plot_C_ic_bins_common_subset.png
+
+[Plots B/D/E] IC-weighted PR curves ...
+  [DeepFRI Debug] deepfri_seq_BP_pred_scores.json -> matched 1722/2606 test proteins, 584/3442 terms. Max score: 0.9998
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_BP_pred_scores.json
+  [Common Subset] bp: 985/1722
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_baselines_only/plot_E_pr_curve_bp_common_subset.png
+  [DeepFRI Debug] deepfri_seq_MF_pred_scores.json -> matched 1722/2606 test proteins, 268/942 terms. Max score: 1.0000
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_MF_pred_scores.json
+  [Common Subset] mf: 985/1722
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_baselines_only/plot_B_pr_curve_mf_common_subset.png
+  [DeepFRI Debug] deepfri_seq_CC_pred_scores.json -> matched 1722/2606 test proteins, 136/555 terms. Max score: 0.9911
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_CC_pred_scores.json
+  [Common Subset] cc: 985/1722
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_baselines_only/plot_D_pr_curve_cc_common_subset.png
+
+[Plot F] GO depth bins ...
+  [DeepFRI Debug] deepfri_seq_BP_pred_scores.json -> matched 1722/2606 test proteins, 584/3442 terms. Max score: 0.9998
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_BP_pred_scores.json
+  [Common Subset] bp: 985/1722
+  [DeepFRI Debug] deepfri_seq_MF_pred_scores.json -> matched 1722/2606 test proteins, 268/942 terms. Max score: 1.0000
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_MF_pred_scores.json
+  [Common Subset] mf: 985/1722
+  [DeepFRI Debug] deepfri_seq_CC_pred_scores.json -> matched 1722/2606 test proteins, 136/555 terms. Max score: 0.9911
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_CC_pred_scores.json
+  [Common Subset] cc: 985/1722
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_baselines_only/plot_F_depth_bins_common_subset.png
+
+[Plot G] Coverage ...
+  [DeepFRI Debug] deepfri_seq_BP_pred_scores.json -> matched 1722/2606 test proteins, 584/3442 terms. Max score: 0.9998
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_BP_pred_scores.json
+  [Common Subset] bp: 985/1722
+  [DeepFRI Debug] deepfri_seq_MF_pred_scores.json -> matched 1722/2606 test proteins, 268/942 terms. Max score: 1.0000
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_MF_pred_scores.json
+  [Common Subset] mf: 985/1722
+  [DeepFRI Debug] deepfri_seq_CC_pred_scores.json -> matched 1722/2606 test proteins, 136/555 terms. Max score: 0.9911
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_CC_pred_scores.json
+  [Common Subset] cc: 985/1722
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_baselines_only/plot_G_coverage_common_subset.png
+
+[Summary] Fmax bar chart ...
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_baselines_only/plot_summary_fmax_common_subset.png
+
+✓ All plots saved to: /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_baselines_only
+Loading datasets ...
+
+[Plot A] Sequence identity bins ...
+  [DeepFRI Debug] deepfri_seq_BP_pred_scores.json -> matched 1722/2606 test proteins, 584/3442 terms. Max score: 0.9998
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_BP_pred_scores.json
+NOTE: >0.6 bin has elevated identity due to MMseqs2 bilateral coverage limitation (see Methods).
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_baselines_only/supplementary/plot_A_seq_identity_supp.png
+
+[Plot C] IC bins ...
+  [DeepFRI Debug] deepfri_seq_BP_pred_scores.json -> matched 1722/2606 test proteins, 584/3442 terms. Max score: 0.9998
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_BP_pred_scores.json
+  [DeepFRI Debug] deepfri_seq_MF_pred_scores.json -> matched 1722/2606 test proteins, 268/942 terms. Max score: 1.0000
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_MF_pred_scores.json
+  [DeepFRI Debug] deepfri_seq_CC_pred_scores.json -> matched 1722/2606 test proteins, 136/555 terms. Max score: 0.9911
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_CC_pred_scores.json
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_baselines_only/supplementary/plot_C_ic_bins_supp.png
+
+[Plots B/D/E] IC-weighted PR curves ...
+  [DeepFRI Debug] deepfri_seq_BP_pred_scores.json -> matched 1722/2606 test proteins, 584/3442 terms. Max score: 0.9998
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_BP_pred_scores.json
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_baselines_only/supplementary/plot_E_pr_curve_bp_supp.png
+  [DeepFRI Debug] deepfri_seq_MF_pred_scores.json -> matched 1722/2606 test proteins, 268/942 terms. Max score: 1.0000
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_MF_pred_scores.json
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_baselines_only/supplementary/plot_B_pr_curve_mf_supp.png
+  [DeepFRI Debug] deepfri_seq_CC_pred_scores.json -> matched 1722/2606 test proteins, 136/555 terms. Max score: 0.9911
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_CC_pred_scores.json
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_baselines_only/supplementary/plot_D_pr_curve_cc_supp.png
+
+[Plot F] GO depth bins ...
+  [DeepFRI Debug] deepfri_seq_BP_pred_scores.json -> matched 1722/2606 test proteins, 584/3442 terms. Max score: 0.9998
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_BP_pred_scores.json
+  [DeepFRI Debug] deepfri_seq_MF_pred_scores.json -> matched 1722/2606 test proteins, 268/942 terms. Max score: 1.0000
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_MF_pred_scores.json
+  [DeepFRI Debug] deepfri_seq_CC_pred_scores.json -> matched 1722/2606 test proteins, 136/555 terms. Max score: 0.9911
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_CC_pred_scores.json
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_baselines_only/supplementary/plot_F_depth_bins_supp.png
+
+[Plot G] Coverage ...
+  [DeepFRI Debug] deepfri_seq_BP_pred_scores.json -> matched 1722/2606 test proteins, 584/3442 terms. Max score: 0.9998
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_BP_pred_scores.json
+  [DeepFRI Debug] deepfri_seq_MF_pred_scores.json -> matched 1722/2606 test proteins, 268/942 terms. Max score: 1.0000
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_MF_pred_scores.json
+  [DeepFRI Debug] deepfri_seq_CC_pred_scores.json -> matched 1722/2606 test proteins, 136/555 terms. Max score: 0.9911
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_CC_pred_scores.json
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_baselines_only/supplementary/plot_G_coverage_supp.png
+
+[Summary] Fmax bar chart ...
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_baselines_only/supplementary/plot_summary_fmax_supp.png
+
+✓ All plots saved to: /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_baselines_only
+Loading datasets ...
+
+[Plot A] Sequence identity bins ...
+  [DeepFRI Debug] deepfri_seq_BP_pred_scores.json -> matched 1722/2606 test proteins, 584/3442 terms. Max score: 0.9998
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_BP_pred_scores.json
+  [Common Subset] bp: 985/1722
+NOTE: >0.6 bin has elevated identity due to MMseqs2 bilateral coverage limitation (see Methods).
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_baselines_only/supplementary/plot_A_seq_identity_common_subset_supp.png
+
+[Plot C] IC bins ...
+  [DeepFRI Debug] deepfri_seq_BP_pred_scores.json -> matched 1722/2606 test proteins, 584/3442 terms. Max score: 0.9998
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_BP_pred_scores.json
+  [Common Subset] bp: 985/1722
+  [DeepFRI Debug] deepfri_seq_MF_pred_scores.json -> matched 1722/2606 test proteins, 268/942 terms. Max score: 1.0000
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_MF_pred_scores.json
+  [Common Subset] mf: 985/1722
+  [DeepFRI Debug] deepfri_seq_CC_pred_scores.json -> matched 1722/2606 test proteins, 136/555 terms. Max score: 0.9911
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_CC_pred_scores.json
+  [Common Subset] cc: 985/1722
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_baselines_only/supplementary/plot_C_ic_bins_common_subset_supp.png
+
+[Plots B/D/E] IC-weighted PR curves ...
+  [DeepFRI Debug] deepfri_seq_BP_pred_scores.json -> matched 1722/2606 test proteins, 584/3442 terms. Max score: 0.9998
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_BP_pred_scores.json
+  [Common Subset] bp: 985/1722
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_baselines_only/supplementary/plot_E_pr_curve_bp_common_subset_supp.png
+  [DeepFRI Debug] deepfri_seq_MF_pred_scores.json -> matched 1722/2606 test proteins, 268/942 terms. Max score: 1.0000
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_MF_pred_scores.json
+  [Common Subset] mf: 985/1722
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_baselines_only/supplementary/plot_B_pr_curve_mf_common_subset_supp.png
+  [DeepFRI Debug] deepfri_seq_CC_pred_scores.json -> matched 1722/2606 test proteins, 136/555 terms. Max score: 0.9911
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_CC_pred_scores.json
+  [Common Subset] cc: 985/1722
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_baselines_only/supplementary/plot_D_pr_curve_cc_common_subset_supp.png
+
+[Plot F] GO depth bins ...
+  [DeepFRI Debug] deepfri_seq_BP_pred_scores.json -> matched 1722/2606 test proteins, 584/3442 terms. Max score: 0.9998
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_BP_pred_scores.json
+  [Common Subset] bp: 985/1722
+  [DeepFRI Debug] deepfri_seq_MF_pred_scores.json -> matched 1722/2606 test proteins, 268/942 terms. Max score: 1.0000
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_MF_pred_scores.json
+  [Common Subset] mf: 985/1722
+  [DeepFRI Debug] deepfri_seq_CC_pred_scores.json -> matched 1722/2606 test proteins, 136/555 terms. Max score: 0.9911
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_CC_pred_scores.json
+  [Common Subset] cc: 985/1722
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_baselines_only/supplementary/plot_F_depth_bins_common_subset_supp.png
+
+[Plot G] Coverage ...
+  [DeepFRI Debug] deepfri_seq_BP_pred_scores.json -> matched 1722/2606 test proteins, 584/3442 terms. Max score: 0.9998
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_BP_pred_scores.json
+  [Common Subset] bp: 985/1722
+  [DeepFRI Debug] deepfri_seq_MF_pred_scores.json -> matched 1722/2606 test proteins, 268/942 terms. Max score: 1.0000
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_MF_pred_scores.json
+  [Common Subset] mf: 985/1722
+  [DeepFRI Debug] deepfri_seq_CC_pred_scores.json -> matched 1722/2606 test proteins, 136/555 terms. Max score: 0.9911
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_CC_pred_scores.json
+  [Common Subset] cc: 985/1722
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_baselines_only/supplementary/plot_G_coverage_common_subset_supp.png
+
+[Summary] Fmax bar chart ...
+✓ Saved /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_baselines_only/supplementary/plot_summary_fmax_common_subset_supp.png
+
+✓ All plots saved to: /home/ganeshiny.sridharan/dgg/deep-green-GO/plots_sota_comparison_baselines_only
+========================================================
+  Evaluation and Plotting Complete!
+  End time  : Mon Jul 13 12:09:25 MDT 2026
+========================================================
