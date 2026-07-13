@@ -120,6 +120,32 @@ def all_metrics(y_true, y_pred, ic):
 
 # ── prediction parsers ────────────────────────────────────────────────────────
 
+def parse_json_predictions(json_path, test_prots, go_terms, is_list_format=False):
+    import json
+    import numpy as np
+    y_pred = np.zeros((len(test_prots), len(go_terms)), dtype=np.float32)
+    covered_proteins = set()
+    if not os.path.exists(json_path):
+        print(f"  [MISSING] {json_path}")
+        return y_pred, covered_proteins
+    with open(json_path, 'r') as f:
+        data = json.load(f)
+    term2idx = {g: i for i, g in enumerate(go_terms)}
+    for i, prot in enumerate(test_prots):
+        if prot in data:
+            for ont_key, preds in data[prot].items():
+                if is_list_format:
+                    if len(preds) > 0: covered_proteins.add(prot)
+                    for t in preds:
+                        if t in term2idx:
+                            y_pred[i, term2idx[t]] = 1.0
+                else:
+                    if len(preds) > 0: covered_proteins.add(prot)
+                    for t, score in preds.items():
+                        if t in term2idx:
+                            y_pred[i, term2idx[t]] = score
+    return y_pred, covered_proteins
+
 def parse_transfun(result_file, prot_list, goterms):
     """TransFun format: PROT GOTERM SCORE  (space-separated)
     Returns (y_pred, covered_proteins) where covered_proteins is the set of
@@ -329,6 +355,7 @@ def parse_args():
                    help='Number of bootstrap resamples for deterministic SOTA models')
     p.add_argument('--dry_run', action='store_true',
                    help='Only check file paths, do not compute metrics')
+    p.add_argument('--mode', type=str, default='dl_only', choices=['dl_only', 'baselines_only', 'all'])
     p.add_argument('--common_subset', action='store_true',
                    help='Evaluate only on the common subset of proteins that ALL models '
                         'successfully processed (per ontology). Results saved separately.')
@@ -343,6 +370,11 @@ def main():
     os.makedirs(RESULTS_DIR, exist_ok=True)
 
     datasets = load_datasets()
+    if args.mode != 'dl_only':
+        OUT_CSV = os.path.join(RESULTS_DIR, f'evaluation_results_{args.mode}.csv')
+    else:
+        OUT_CSV = os.path.join(RESULTS_DIR, 'evaluation_results.csv')
+    
     all_rows = []
     common_subset_rows = []  # rows for --common_subset mode
     coverage_diag_rows = []  # coverage diagnostic table
@@ -403,32 +435,47 @@ def main():
         yp_dpf, cov_dpf = parse_dpfunc(dpfunc_file, prot_list, goterms)
         print(f"    Coverage: {len(cov_dpf)}/{len(prot_list)} proteins")
 
+        yp_blast, cov_blast = parse_json_predictions(os.path.join(PROJECT_DIR, 'baselines', 'blast', 'blast_predictions.json'), prot_list, goterms, True)
+        yp_diamond, cov_diamond = parse_json_predictions(os.path.join(PROJECT_DIR, 'baselines', 'diamond', 'diamond_predictions.json'), prot_list, goterms, True)
+        yp_naive, cov_naive = parse_json_predictions(os.path.join(PROJECT_DIR, 'baselines', 'naive_frequency', 'naive_predictions.json'), prot_list, goterms, False)
+
+
         # ── Coverage diagnostic ──────────────────────────────────────────────
-        for mname, yp, cov in [('TransFun', yp_tf, cov_tf),
-                                ('DeepFRI_Seq', yp_df_seq, cov_df_seq),
-                                ('DeepFRI_Cmap', yp_df_cmap, cov_df_cmap),
-                                ('DPFunc', yp_dpf, cov_dpf)]:
+        diag_models = []
+        if args.mode in ('dl_only', 'all'):
+            diag_models += [('TransFun', yp_tf, cov_tf), ('DeepFRI_Seq', yp_df_seq, cov_df_seq), ('DeepFRI_Cmap', yp_df_cmap, cov_df_cmap), ('DPFunc', yp_dpf, cov_dpf)]
+        if args.mode in ('baselines_only', 'all'):
+            diag_models += [('BLAST', yp_blast, cov_blast), ('DIAMOND', yp_diamond, cov_diamond), ('Naive', yp_naive, cov_naive)]
+        for mname, yp, cov in diag_models:
             diag = _coverage_diagnostic(mname, cov, prot_list, goterms, yp)
             diag['Ontology'] = ont_short.upper()
             coverage_diag_rows.append(diag)
 
         # ── Full test set evaluation (Mode 1 — always runs) ──────────────────
         rng_full = np.random.default_rng(0)  # reset per ontology for consistency
-        print("  [TransFun] Bootstrapping (full test set) ...")
-        tf_records = bootstrap_eval(y_true, yp_tf, ic, n=args.bootstrap_seeds, rng=rng)
-        all_rows.append(aggregate(tf_records, 'TransFun', ont_short.upper()))
+        
+        if args.mode in ('dl_only', 'all'):
+            print("  [TransFun] Bootstrapping (full test set) ...")
+            tf_records = bootstrap_eval(y_true, yp_tf, ic, n=args.bootstrap_seeds, rng=rng)
+            all_rows.append(aggregate(tf_records, 'TransFun', ont_short.upper()))
 
-        print("  [DeepFRI_Seq] Bootstrapping (full test set) ...")
-        df_seq_records = bootstrap_eval(y_true, yp_df_seq, ic, n=args.bootstrap_seeds, rng=rng)
-        all_rows.append(aggregate(df_seq_records, 'DeepFRI_Seq', ont_short.upper()))
+            print("  [DeepFRI_Seq] Bootstrapping (full test set) ...")
+            df_seq_records = bootstrap_eval(y_true, yp_df_seq, ic, n=args.bootstrap_seeds, rng=rng)
+            all_rows.append(aggregate(df_seq_records, 'DeepFRI_Seq', ont_short.upper()))
 
-        print("  [DeepFRI_Cmap] Bootstrapping (full test set) ...")
-        df_cmap_records = bootstrap_eval(y_true, yp_df_cmap, ic, n=args.bootstrap_seeds, rng=rng)
-        all_rows.append(aggregate(df_cmap_records, 'DeepFRI_Cmap', ont_short.upper()))
+            print("  [DeepFRI_Cmap] Bootstrapping (full test set) ...")
+            df_cmap_records = bootstrap_eval(y_true, yp_df_cmap, ic, n=args.bootstrap_seeds, rng=rng)
+            all_rows.append(aggregate(df_cmap_records, 'DeepFRI_Cmap', ont_short.upper()))
 
-        print("  [DPFunc] Bootstrapping (full test set) ...")
-        dpf_records = bootstrap_eval(y_true, yp_dpf, ic, n=args.bootstrap_seeds, rng=rng)
-        all_rows.append(aggregate(dpf_records, 'DPFunc', ont_short.upper()))
+            print("  [DPFunc] Bootstrapping (full test set) ...")
+            dpf_records = bootstrap_eval(y_true, yp_dpf, ic, n=args.bootstrap_seeds, rng=rng)
+            all_rows.append(aggregate(dpf_records, 'DPFunc', ont_short.upper()))
+
+        if args.mode in ('baselines_only', 'all'):
+            for name, yp in [('BLAST', yp_blast), ('DIAMOND', yp_diamond), ('Naive', yp_naive)]:
+                print(f"  [{name}] Bootstrapping ...")
+                recs = bootstrap_eval(y_true, yp, ic, n=args.bootstrap_seeds, rng=rng)
+                all_rows.append(aggregate(recs, name, ont_short.upper()))
 
         print("  [Hybrid] Loading 5-seed predictions ...")
         hybrid_recs = eval_your_model('Hybrid', ont_full, ont_short, y_true, ic)
@@ -444,8 +491,12 @@ def main():
             cov_hybrid = set(prot_list)
             cov_hybrid_jk = set(prot_list)
 
-            # Intersection across ALL models
-            common_prots = cov_tf & cov_df_seq & cov_df_cmap & cov_dpf & cov_hybrid & cov_hybrid_jk
+            # Intersection across active models
+            common_prots = cov_hybrid & cov_hybrid_jk
+            if args.mode in ('dl_only', 'all'):
+                common_prots &= cov_tf & cov_df_seq & cov_df_cmap & cov_dpf
+            if args.mode in ('baselines_only', 'all'):
+                common_prots &= cov_blast & cov_diamond & cov_naive
             n_common = len(common_prots)
             n_total = len(prot_list)
             print(f"\n  [Common Subset] {ont_short.upper()}: {n_common}/{n_total} test proteins")
@@ -531,7 +582,7 @@ def main():
 
     # ── save common subset results (when --common_subset) ────────────────────
     if args.common_subset and common_subset_rows:
-        cs_csv = os.path.join(RESULTS_DIR, 'evaluation_results_common_subset.csv')
+        cs_csv = OUT_CSV.replace('.csv', '_common_subset.csv')
         df_cs = pd.DataFrame([r for r in common_subset_rows if r])
         df_cs.to_csv(cs_csv, index=False)
         print(f"\n✓ Common subset results saved to {cs_csv}")

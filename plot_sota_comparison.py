@@ -61,11 +61,14 @@ ONTOLOGIES = {
 
 # ── colour palette (Paul Tol vibrant, high-contrast) ──────────────────────────
 PALETTE = {
-    'Hybrid_JK': '#EE3377',   # magenta  — your best model
+    'Hybrid_JK': '#EE3377',   # magenta
     'Hybrid':    '#CC3311',   # red
     'TransFun':  '#0077BB',   # blue
     'DPFunc':    '#009988',   # teal
     'DeepFRI':   '#EE7733',   # orange
+    'BLAST':     '#882255',   # wine
+    'DIAMOND':   '#44AA99',   # dark teal
+    'Naive':     '#999933',   # olive
 }
 MODEL_ORDER_PERFORMANCE = ['Hybrid', 'TransFun', 'DeepFRI_Seq', 'DeepFRI_Cmap']
 MODEL_ORDER_COVERAGE = ['Hybrid', 'DPFunc', 'TransFun', 'DeepFRI_Seq', 'DeepFRI_Cmap']
@@ -79,7 +82,10 @@ MODEL_COLORS = {
     'DPFunc': '#2ca02c',
     'TransFun': '#9467bd',
     'DeepFRI_Seq': '#d62728',
-    'DeepFRI_Cmap': '#8c564b'
+    'DeepFRI_Cmap': '#8c564b',
+    'BLAST': '#882255',
+    'DIAMOND': '#44AA99',
+    'Naive': '#999933'
 }
 
 # ── matplotlib config ─────────────────────────────────────────────────────────
@@ -170,6 +176,33 @@ def compute_ic(y_train):
 
 
 # ── prediction loaders ────────────────────────────────────────────────────────
+
+def _json_to_matrix(json_path, prot_list, goterms, is_list_format=False):
+    import json
+    y_pred = np.zeros((len(prot_list), len(goterms)), dtype=np.float32)
+    cov_sets = set()
+    if not os.path.exists(json_path):
+        print(f"  [MISSING] {json_path}")
+        return y_pred, cov_sets
+    with open(json_path, 'r') as f:
+        data = json.load(f)
+    prot_idx = {p: i for i, p in enumerate(prot_list)}
+    term_idx = {t: i for i, t in enumerate(goterms)}
+    
+    for p in prot_list:
+        if p in data:
+            for ont_key, preds in data[p].items():
+                if is_list_format:
+                    if len(preds) > 0: cov_sets.add(p)
+                    for t in preds:
+                        if t in term_idx:
+                            y_pred[prot_idx[p], term_idx[t]] = 1.0
+                else:
+                    if len(preds) > 0: cov_sets.add(p)
+                    for t, score in preds.items():
+                        if t in term_idx:
+                            y_pred[prot_idx[p], term_idx[t]] = float(score)
+    return y_pred, cov_sets
 
 def _txt_to_matrix(path, prot_list, goterms):
     """Load space-separated 'PROT TERM SCORE' file."""
@@ -453,7 +486,7 @@ def plot_A_sequence_identity(datasets):
 
         offset = (mi - n_models/2 + 0.5) * bar_width
         alpha_val = 0.5 if mname == 'Hybrid_JK' else 0.9
-        edge_ls = '--' if mname == 'Hybrid_JK' else '-'
+        edge_ls = '--' if mname in ('Hybrid_JK', 'BLAST', 'DIAMOND') else '-'
         hatch = '///' if mname == 'DeepFRI_Cmap' else None
         ax.bar(x_positions + offset, fmax_means, bar_width,
                yerr=fmax_sems, capsize=3,

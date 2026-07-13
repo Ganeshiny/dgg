@@ -40,15 +40,25 @@ echo "1. Generating BLAST maximum sequence identity (for Plot A)"
 # module load blast+  # Uncomment this line if ARC requires it
 python preprocessing/calc_blast_identity.py
 
-echo "2. Running 5-seed Evaluation and Bootstrapping"
-python evaluate_sota_5seeds.py --bootstrap_seeds 5
-python evaluate_sota_5seeds.py --bootstrap_seeds 5 --common_subset
+echo "2. Running 5-seed Evaluation and Bootstrapping (Mode: all)"
+python evaluate_sota_5seeds.py --bootstrap_seeds 5 --mode all
+python evaluate_sota_5seeds.py --bootstrap_seeds 5 --mode all --common_subset
 
-echo "3. Generating Publication Comparison Plots"
-python plot_sota_comparison.py
-python plot_sota_comparison.py --common_subset
-python plot_sota_comparison.py --supplementary
-python plot_sota_comparison.py --common_subset --supplementary
+echo "3. Generating Publication Comparison Plots (Mode: all)"
+python plot_sota_comparison.py --mode all
+python plot_sota_comparison.py --mode all --common_subset
+python plot_sota_comparison.py --mode all --supplementary
+python plot_sota_comparison.py --mode all --common_subset --supplementary
+
+echo "4. Running 5-seed Evaluation and Bootstrapping (Mode: baselines_only)"
+python evaluate_sota_5seeds.py --bootstrap_seeds 5 --mode baselines_only
+python evaluate_sota_5seeds.py --bootstrap_seeds 5 --mode baselines_only --common_subset
+
+echo "5. Generating Publication Comparison Plots (Mode: baselines_only)"
+python plot_sota_comparison.py --mode baselines_only
+python plot_sota_comparison.py --mode baselines_only --common_subset
+python plot_sota_comparison.py --mode baselines_only --supplementary
+python plot_sota_comparison.py --mode baselines_only --common_subset --supplementary
 
 echo "========================================================"
 echo "  Evaluation and Plotting Complete!"
