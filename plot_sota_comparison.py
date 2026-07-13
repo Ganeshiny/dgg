@@ -427,7 +427,8 @@ def plot_A_sequence_identity(datasets):
             ic = ic[mask]
 
     fig, ax = plt.subplots(figsize=(7, 4.5))
-    x_positions = np.arange(len(bins))
+    active_bins = [b for b in bins if ((prot_identity >= b[0]) & (prot_identity < b[1])).sum() > 0]
+    x_positions = np.arange(len(active_bins))
     bar_width   = 0.15
     n_models    = len(MODEL_ORDER)
 
@@ -543,7 +544,8 @@ def plot_C_ic_bins(datasets):
             y_true = y_true[mask]
             # When subsetting test proteins, recompute IC from the subset's labels directly
             ic = compute_ic(y_true)
-        x_positions = np.arange(len(bins))
+        active_bins = [b for b in bins if ((ic >= b[0]) & (ic < b[1])).sum() > 0]
+        x_positions = np.arange(len(active_bins))
         bar_width   = 0.15
         n_models    = len(MODEL_ORDER)
 
