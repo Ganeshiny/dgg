@@ -1,0 +1,16 @@
+usage: plot_sota_comparison.py [-h] [--common_subset] [--supplementary]
+plot_sota_comparison.py: error: unrecognized arguments: --mode all
+usage: plot_sota_comparison.py [-h] [--common_subset] [--supplementary]
+plot_sota_comparison.py: error: unrecognized arguments: --mode all
+usage: plot_sota_comparison.py [-h] [--common_subset] [--supplementary]
+plot_sota_comparison.py: error: unrecognized arguments: --mode all
+usage: plot_sota_comparison.py [-h] [--common_subset] [--supplementary]
+plot_sota_comparison.py: error: unrecognized arguments: --mode all
+usage: plot_sota_comparison.py [-h] [--common_subset] [--supplementary]
+plot_sota_comparison.py: error: unrecognized arguments: --mode baselines_only
+usage: plot_sota_comparison.py [-h] [--common_subset] [--supplementary]
+plot_sota_comparison.py: error: unrecognized arguments: --mode baselines_only
+usage: plot_sota_comparison.py [-h] [--common_subset] [--supplementary]
+plot_sota_comparison.py: error: unrecognized arguments: --mode baselines_only
+usage: plot_sota_comparison.py [-h] [--common_subset] [--supplementary]
+plot_sota_comparison.py: error: unrecognized arguments: --mode baselines_only

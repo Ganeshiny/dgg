@@ -1,0 +1,32 @@
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/plot_sota_comparison.py", line 1031, in <module>
+    MODEL_ORDER = MODEL_ORDER_SUPPLEMENTARY
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/plot_sota_comparison.py", line 1016, in main
+    save_fig('plot_summary_fmax')
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/plot_sota_comparison.py", line 703, in plot_F_depth_bins
+    goterms = [gt for gt, v in zip(goterms, valid_mask) if v]
+UnboundLocalError: local variable 'term_depths' referenced before assignment
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/plot_sota_comparison.py", line 1064, in <module>
+    main()
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/plot_sota_comparison.py", line 1043, in main
+    plot_C_ic_bins(datasets)
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/plot_sota_comparison.py", line 545, in plot_C_ic_bins
+    ic = ic[mask]
+IndexError: boolean index did not match indexed array along axis 0; size of axis is 727 but size of corresponding boolean axis is 1722
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/plot_sota_comparison.py", line 1064, in <module>
+    main()
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/plot_sota_comparison.py", line 1049, in main
+    plot_F_depth_bins(datasets)
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/plot_sota_comparison.py", line 736, in plot_F_depth_bins
+    term_mask = (term_depths >= lo) & (term_depths < hi)
+UnboundLocalError: local variable 'term_depths' referenced before assignment
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/plot_sota_comparison.py", line 1064, in <module>
+    main()
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/plot_sota_comparison.py", line 1043, in main
+    plot_C_ic_bins(datasets)
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/plot_sota_comparison.py", line 545, in plot_C_ic_bins
+    ic = ic[mask]
+IndexError: boolean index did not match indexed array along axis 0; size of axis is 727 but size of corresponding boolean axis is 1722
