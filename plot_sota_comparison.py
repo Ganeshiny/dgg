@@ -511,8 +511,6 @@ def plot_A_sequence_identity(datasets):
 
     plt.tight_layout()
     save_fig('plot_A_seq_identity')
-    
-    import pandas as pd
     pd.DataFrame(stats_data).to_csv(os.path.join(OUT_DIR, 'plot_A_seq_identity_stats.csv'), index=False)
 
 
