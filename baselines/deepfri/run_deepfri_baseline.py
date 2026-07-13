@@ -73,6 +73,12 @@ def main():
     for mode in ['seq', 'cmap']:
         for ont in ontologies:
             out_prefix = os.path.join(out_dir, f"deepfri_{mode}_{ont.upper()}")
+            
+            # Skip if already generated to save massive amounts of time
+            if os.path.exists(f"{out_prefix}_pred_scores.json"):
+                print(f"=== Skipping DeepFRI {mode.upper()} for {ont.upper()} (Already exists) ===")
+                continue
+                
             print(f"=== Running DeepFRI {mode.upper()} mode for {ont.upper()} ===")
             
             import sys
