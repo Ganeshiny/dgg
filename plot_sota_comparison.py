@@ -1026,14 +1026,32 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--common_subset', action='store_true')
     parser.add_argument('--supplementary', action='store_true', help="Generate supplementary figures with Hybrid_JK")
+    parser.add_argument('--mode', type=str, default='dl_only', choices=['dl_only', 'baselines_only', 'all'])
     args = parser.parse_args()
     
+    global OUT_DIR
+    if args.mode != 'dl_only':
+        OUT_DIR = os.path.join(PROJECT_DIR, f'plots_sota_comparison_{args.mode}')
+    else:
+        OUT_DIR = os.path.join(PROJECT_DIR, 'plots_sota_comparison')
+    os.makedirs(OUT_DIR, exist_ok=True)
+
+    
+    if args.mode == 'baselines_only':
+        MODEL_ORDER = ['Hybrid_JK', 'Hybrid', 'BLAST', 'DIAMOND', 'Naive']
+    elif args.mode == 'all':
+        MODEL_ORDER = ['Hybrid_JK', 'Hybrid', 'TransFun', 'DeepFRI_Seq', 'DeepFRI_Cmap', 'BLAST', 'DIAMOND', 'Naive']
+    else:
+        if args.supplementary:
+            MODEL_ORDER = MODEL_ORDER_SUPPLEMENTARY
+        else:
+            MODEL_ORDER = MODEL_ORDER_PERFORMANCE
+
     if args.supplementary:
-        MODEL_ORDER = MODEL_ORDER_SUPPLEMENTARY
         MODEL_ORDER_COVERAGE = ['Hybrid', 'Hybrid_JK', 'DPFunc', 'TransFun', 'DeepFRI_Seq', 'DeepFRI_Cmap']
     else:
-        MODEL_ORDER = MODEL_ORDER_PERFORMANCE
         MODEL_ORDER_COVERAGE = ['Hybrid', 'DPFunc', 'TransFun', 'DeepFRI_Seq', 'DeepFRI_Cmap']
+
     print(f'Loading datasets ...')
     datasets = load_datasets()
 
