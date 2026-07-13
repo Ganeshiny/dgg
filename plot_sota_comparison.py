@@ -303,6 +303,18 @@ def load_predictions(ont_full, ont_short, prot_list, goterms, valid_mask=None):
     if not dpf_file: dpf_file = os.path.join(PROJECT_DIR, 'SOTA_predictions', 'DPFunc', f'{ont_short}_results.txt')
     preds['DPFunc'], cov_sets['DPFunc'] = _txt_to_matrix(dpf_file, prot_list, goterms)
 
+    # BLAST
+    blast_file = os.path.join(PROJECT_DIR, 'baselines', 'blast', 'blast_predictions.json')
+    preds['BLAST'], cov_sets['BLAST'] = _json_to_matrix(blast_file, prot_list, goterms, is_list_format=True)
+    
+    # DIAMOND
+    diamond_file = os.path.join(PROJECT_DIR, 'baselines', 'diamond', 'diamond_predictions.json')
+    preds['DIAMOND'], cov_sets['DIAMOND'] = _json_to_matrix(diamond_file, prot_list, goterms, is_list_format=True)
+    
+    # Naive Frequency
+    naive_file = os.path.join(PROJECT_DIR, 'baselines', 'naive_frequency', 'naive_predictions.json')
+    preds['Naive'], cov_sets['Naive'] = _json_to_matrix(naive_file, prot_list, goterms, is_list_format=False)
+
     # Your models — average over available seeds
     for mname in ('Hybrid', 'Hybrid_JK'):
         cov_sets[mname] = set(prot_list)
