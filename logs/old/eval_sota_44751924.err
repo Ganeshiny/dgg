@@ -30,3 +30,35 @@ Traceback (most recent call last):
   File "/home/ganeshiny.sridharan/dgg/deep-green-GO/plot_sota_comparison.py", line 397, in plot_A_sequence_identity
     id_df = pd.read_csv(blast_csv)   # columns: prot, max_identity
 UnboundLocalError: local variable 'pd' referenced before assignment
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/plot_sota_comparison.py", line 1083, in <module>
+    main()
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/plot_sota_comparison.py", line 1059, in main
+    plot_A_sequence_identity(datasets)
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/plot_sota_comparison.py", line 397, in plot_A_sequence_identity
+    id_df = pd.read_csv(blast_csv)   # columns: prot, max_identity
+UnboundLocalError: local variable 'pd' referenced before assignment
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/plot_sota_comparison.py", line 1083, in <module>
+    main()
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/plot_sota_comparison.py", line 1059, in main
+    plot_A_sequence_identity(datasets)
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/plot_sota_comparison.py", line 397, in plot_A_sequence_identity
+    id_df = pd.read_csv(blast_csv)   # columns: prot, max_identity
+UnboundLocalError: local variable 'pd' referenced before assignment
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/plot_sota_comparison.py", line 1083, in <module>
+    main()
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/plot_sota_comparison.py", line 1059, in main
+    plot_A_sequence_identity(datasets)
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/plot_sota_comparison.py", line 397, in plot_A_sequence_identity
+    id_df = pd.read_csv(blast_csv)   # columns: prot, max_identity
+UnboundLocalError: local variable 'pd' referenced before assignment
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/plot_sota_comparison.py", line 1083, in <module>
+    main()
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/plot_sota_comparison.py", line 1059, in main
+    plot_A_sequence_identity(datasets)
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/plot_sota_comparison.py", line 397, in plot_A_sequence_identity
+    id_df = pd.read_csv(blast_csv)   # columns: prot, max_identity
+UnboundLocalError: local variable 'pd' referenced before assignment

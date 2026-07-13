@@ -1,19 +1,19 @@
 ========================================================
-  Job ID      : 44751924
+  Job ID      : 44752389
   Node        : mc67
-  Start time  : Mon Jul 13 07:54:37 MDT 2026
+  Start time  : Mon Jul 13 09:11:55 MDT 2026
 ========================================================
 1. Generating BLAST maximum sequence identity (for Plot A)
 
 
-Building a new DB, current time: 07/13/2026 07:56:52
+Building a new DB, current time: 07/13/2026 09:12:39
 New DB name:   /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data/blast_train_db
 New DB title:  /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data/train_sequences.fasta
 Sequence type: Protein
 Deleted existing Protein BLAST database named /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data/blast_train_db
 Keep MBits: T
 Maximum file size: 3000000000B
-Adding sequences from FASTA; added 12889 sequences in 0.219146 seconds.
+Adding sequences from FASTA; added 12889 sequences in 0.1958 seconds.
 
 
 Loading datasets ...
@@ -48,7 +48,8 @@ Loading datasets from /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/
   [DeepFRI_Seq] Parsing ...
     Coverage: 1722/1722 proteins
   [DeepFRI_Cmap] Parsing ...
-    Coverage: 1722/1722 proteins
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_BP_pred_scores.json
+    Coverage: 0/1722 proteins
   [DPFunc] Parsing ...
     Coverage: 1722/1722 proteins
   [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/blast/blast_predictions.json
@@ -74,7 +75,8 @@ Loading datasets from /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/
   [DeepFRI_Seq] Parsing ...
     Coverage: 1722/1722 proteins
   [DeepFRI_Cmap] Parsing ...
-    Coverage: 1722/1722 proteins
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_MF_pred_scores.json
+    Coverage: 0/1722 proteins
   [DPFunc] Parsing ...
     Coverage: 1722/1722 proteins
   [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/blast/blast_predictions.json
@@ -100,7 +102,8 @@ Loading datasets from /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/
   [DeepFRI_Seq] Parsing ...
     Coverage: 1722/1722 proteins
   [DeepFRI_Cmap] Parsing ...
-    Coverage: 1722/1722 proteins
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_CC_pred_scores.json
+    Coverage: 0/1722 proteins
   [DPFunc] Parsing ...
     Coverage: 1722/1722 proteins
   [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/blast/blast_predictions.json
@@ -120,7 +123,7 @@ Loading datasets from /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/
        Model Ontology  N_seeds  Micro_Fmax_mean  Micro_Fmax_std  Micro_Fmax_se  Macro_Fmax_mean  Macro_Fmax_std  Macro_Fmax_se  Micro_AUROC_mean  Micro_AUROC_std  Micro_AUROC_se  Micro_AUPRC_mean  Micro_AUPRC_std  Micro_AUPRC_se  Smin_mean  Smin_std  Smin_se
     TransFun       BP        5         0.238178        0.009499       0.004248         0.262775        0.004203       0.001880          0.704935         0.013965        0.006245          0.138873         0.010417        0.004659  69.349837  2.641720 1.181413
  DeepFRI_Seq       BP        5         0.158328        0.005566       0.002489         0.242143        0.007496       0.003352          0.676672         0.004053        0.001812          0.118079         0.007490        0.003350  70.603988  2.432720 1.087946
-DeepFRI_Cmap       BP        5         0.346647        0.016050       0.007178         0.356761        0.010543       0.004715          0.726955         0.005671        0.002536          0.293826         0.014672        0.006562  56.833148  3.201163 1.431604
+DeepFRI_Cmap       BP        5         0.039523        0.001148       0.000513         0.041427        0.001511       0.000676          0.500000         0.000000        0.000000          0.510080         0.000299        0.000134  72.363757  2.585189 1.156132
       DPFunc       BP        5         0.103501        0.002918       0.001305         0.078984        0.002678       0.001198          0.674856         0.002946        0.001317          0.048091         0.001412        0.000631  72.560373  2.562121 1.145815
        BLAST       BP        5         0.041036        0.001173       0.000524         0.042917        0.001040       0.000465          0.500000         0.000000        0.000000          0.510474         0.000306        0.000137  75.556832  2.080690 0.930513
      DIAMOND       BP        5         0.040789        0.001034       0.000463         0.042266        0.001126       0.000503          0.500000         0.000000        0.000000          0.510410         0.000270        0.000121  75.088600  2.120774 0.948439
@@ -128,8 +131,8 @@ DeepFRI_Cmap       BP        5         0.346647        0.016050       0.007178  
       Hybrid       BP        5         0.670232        0.004697       0.002101         0.661932        0.006863       0.003069          0.840094         0.009538        0.004265          0.630543         0.005279        0.002361  35.712528  0.496020 0.221827
    Hybrid_JK       BP        5         0.670872        0.006521       0.002916         0.663013        0.010030       0.004485          0.879360         0.008642        0.003865          0.637804         0.008952        0.004004  35.548513  0.601239 0.268882
     TransFun       MF        5         0.412567        0.007286       0.003258         0.430248        0.005214       0.002332          0.728417         0.007974        0.003566          0.353642         0.010028        0.004485  26.952041  0.233657 0.104494
- DeepFRI_Seq       MF        5         0.315136        0.007593       0.003396         0.385274        0.010928       0.004887          0.655936         0.002991        0.001338          0.229105         0.008946        0.004001  28.902001  0.548787 0.245425
-DeepFRI_Cmap       MF        5         0.581165        0.006390       0.002858         0.613176        0.006531       0.002921          0.723782         0.004748        0.002124          0.468340         0.009786        0.004377  18.741006  0.245797 0.109924
+ DeepFRI_Seq       MF        5         0.315136        0.007593       0.003396         0.385275        0.010929       0.004888          0.655931         0.002991        0.001338          0.229024         0.008941        0.003999  28.902001  0.548787 0.245425
+DeepFRI_Cmap       MF        5         0.047330        0.000521       0.000233         0.048676        0.000749       0.000335          0.500000         0.000000        0.000000          0.512119         0.000137        0.000061  36.495025  0.420467 0.188039
       DPFunc       MF        5         0.104845        0.005490       0.002455         0.078134        0.002363       0.001057          0.620304         0.009486        0.004242          0.053962         0.003721        0.001664  35.375452  0.551524 0.246649
        BLAST       MF        5         0.047178        0.001101       0.000492         0.048829        0.001344       0.000601          0.500000         0.000000        0.000000          0.512080         0.000289        0.000129  36.357230  0.736675 0.329451
      DIAMOND       MF        5         0.047288        0.001217       0.000544         0.049308        0.001137       0.000509          0.500000         0.000000        0.000000          0.512109         0.000319        0.000143  36.392666  0.983305 0.439747
@@ -137,8 +140,8 @@ DeepFRI_Cmap       MF        5         0.581165        0.006390       0.002858  
       Hybrid       MF        5         0.823263        0.005608       0.002508         0.854976        0.004831       0.002161          0.950936         0.008770        0.003922          0.842348         0.001838        0.000822   8.736206  0.268448 0.120054
    Hybrid_JK       MF        5         0.814451        0.009624       0.004304         0.840536        0.005910       0.002643          0.943627         0.009004        0.004027          0.827728         0.007902        0.003534   9.408157  0.422817 0.189089
     TransFun       CC        5         0.281411        0.009514       0.004255         0.341709        0.014570       0.006516          0.728490         0.008772        0.003923          0.167926         0.009059        0.004051  14.295466  0.419919 0.187794
- DeepFRI_Seq       CC        5         0.230128        0.010142       0.004536         0.234428        0.002412       0.001079          0.765119         0.003261        0.001458          0.153162         0.012656        0.005660  14.781481  0.389547 0.174211
-DeepFRI_Cmap       CC        5         0.367542        0.012114       0.005417         0.367290        0.017457       0.007807          0.810013         0.003292        0.001472          0.305321         0.015741        0.007039  13.088262  0.507984 0.227177
+ DeepFRI_Seq       CC        5         0.230123        0.010148       0.004538         0.234271        0.002387       0.001068          0.765085         0.003269        0.001462          0.153140         0.012658        0.005661  14.781635  0.389675 0.174268
+DeepFRI_Cmap       CC        5         0.046816        0.001185       0.000530         0.048889        0.001031       0.000461          0.500000         0.000000        0.000000          0.511985         0.000310        0.000139  16.774759  0.532769 0.238261
       DPFunc       CC        5         0.091819        0.004569       0.002043         0.079371        0.003388       0.001515          0.606734         0.003436        0.001537          0.040405         0.002000        0.000894  16.698638  0.733798 0.328165
        BLAST       CC        5         0.045293        0.001366       0.000611         0.048320        0.002823       0.001262          0.500000         0.000000        0.000000          0.511586         0.000357        0.000160  16.199279  0.562866 0.251721
      DIAMOND       CC        5         0.045613        0.001360       0.000608         0.048267        0.000964       0.000431          0.500000         0.000000        0.000000          0.511670         0.000356        0.000159  16.416641  0.581509 0.260059
@@ -150,21 +153,21 @@ DeepFRI_Cmap       CC        5         0.367542        0.012114       0.005417  
        Model Ontology  Total_Test  Coverage_Failures  Label_Mismatch  Covered_Mapped
     TransFun       BP        1722                474               0            1248
  DeepFRI_Seq       BP        1722                  0               0            1722
-DeepFRI_Cmap       BP        1722                  0               0            1722
+DeepFRI_Cmap       BP        1722               1722               0               0
       DPFunc       BP        1722                  0               0            1722
        BLAST       BP        1722               1722               0               0
      DIAMOND       BP        1722               1722               0               0
        Naive       BP        1722               1722               0               0
     TransFun       MF        1722                474               0            1248
  DeepFRI_Seq       MF        1722                  0               0            1722
-DeepFRI_Cmap       MF        1722                  0               0            1722
+DeepFRI_Cmap       MF        1722               1722               0               0
       DPFunc       MF        1722                  0               0            1722
        BLAST       MF        1722               1722               0               0
      DIAMOND       MF        1722               1722               0               0
        Naive       MF        1722               1722               0               0
     TransFun       CC        1722                474               0            1248
  DeepFRI_Seq       CC        1722                  0               0            1722
-DeepFRI_Cmap       CC        1722                  0               0            1722
+DeepFRI_Cmap       CC        1722               1722               0               0
       DPFunc       CC        1722                  0               0            1722
        BLAST       CC        1722               1722               0               0
      DIAMOND       CC        1722               1722               0               0
@@ -181,7 +184,8 @@ Loading datasets from /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/
   [DeepFRI_Seq] Parsing ...
     Coverage: 1722/1722 proteins
   [DeepFRI_Cmap] Parsing ...
-    Coverage: 1722/1722 proteins
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_BP_pred_scores.json
+    Coverage: 0/1722 proteins
   [DPFunc] Parsing ...
     Coverage: 1722/1722 proteins
   [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/blast/blast_predictions.json
@@ -210,7 +214,8 @@ Loading datasets from /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/
   [DeepFRI_Seq] Parsing ...
     Coverage: 1722/1722 proteins
   [DeepFRI_Cmap] Parsing ...
-    Coverage: 1722/1722 proteins
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_MF_pred_scores.json
+    Coverage: 0/1722 proteins
   [DPFunc] Parsing ...
     Coverage: 1722/1722 proteins
   [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/blast/blast_predictions.json
@@ -239,7 +244,8 @@ Loading datasets from /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/
   [DeepFRI_Seq] Parsing ...
     Coverage: 1722/1722 proteins
   [DeepFRI_Cmap] Parsing ...
-    Coverage: 1722/1722 proteins
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_CC_pred_scores.json
+    Coverage: 0/1722 proteins
   [DPFunc] Parsing ...
     Coverage: 1722/1722 proteins
   [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/blast/blast_predictions.json
@@ -262,7 +268,7 @@ Loading datasets from /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/
        Model Ontology  N_seeds  Micro_Fmax_mean  Micro_Fmax_std  Micro_Fmax_se  Macro_Fmax_mean  Macro_Fmax_std  Macro_Fmax_se  Micro_AUROC_mean  Micro_AUROC_std  Micro_AUROC_se  Micro_AUPRC_mean  Micro_AUPRC_std  Micro_AUPRC_se  Smin_mean  Smin_std  Smin_se
     TransFun       BP        5         0.238178        0.009499       0.004248         0.262775        0.004203       0.001880          0.704935         0.013965        0.006245          0.138873         0.010417        0.004659  69.349837  2.641720 1.181413
  DeepFRI_Seq       BP        5         0.158328        0.005566       0.002489         0.242143        0.007496       0.003352          0.676672         0.004053        0.001812          0.118079         0.007490        0.003350  70.603988  2.432720 1.087946
-DeepFRI_Cmap       BP        5         0.346647        0.016050       0.007178         0.356761        0.010543       0.004715          0.726955         0.005671        0.002536          0.293826         0.014672        0.006562  56.833148  3.201163 1.431604
+DeepFRI_Cmap       BP        5         0.039523        0.001148       0.000513         0.041427        0.001511       0.000676          0.500000         0.000000        0.000000          0.510080         0.000299        0.000134  72.363757  2.585189 1.156132
       DPFunc       BP        5         0.103501        0.002918       0.001305         0.078984        0.002678       0.001198          0.674856         0.002946        0.001317          0.048091         0.001412        0.000631  72.560373  2.562121 1.145815
        BLAST       BP        5         0.041036        0.001173       0.000524         0.042917        0.001040       0.000465          0.500000         0.000000        0.000000          0.510474         0.000306        0.000137  75.556832  2.080690 0.930513
      DIAMOND       BP        5         0.040789        0.001034       0.000463         0.042266        0.001126       0.000503          0.500000         0.000000        0.000000          0.510410         0.000270        0.000121  75.088600  2.120774 0.948439
@@ -270,8 +276,8 @@ DeepFRI_Cmap       BP        5         0.346647        0.016050       0.007178  
       Hybrid       BP        5         0.670232        0.004697       0.002101         0.661932        0.006863       0.003069          0.840094         0.009538        0.004265          0.630543         0.005279        0.002361  35.712528  0.496020 0.221827
    Hybrid_JK       BP        5         0.670872        0.006521       0.002916         0.663013        0.010030       0.004485          0.879360         0.008642        0.003865          0.637804         0.008952        0.004004  35.548513  0.601239 0.268882
     TransFun       MF        5         0.412567        0.007286       0.003258         0.430248        0.005214       0.002332          0.728417         0.007974        0.003566          0.353642         0.010028        0.004485  26.952041  0.233657 0.104494
- DeepFRI_Seq       MF        5         0.315136        0.007593       0.003396         0.385274        0.010928       0.004887          0.655936         0.002991        0.001338          0.229105         0.008946        0.004001  28.902001  0.548787 0.245425
-DeepFRI_Cmap       MF        5         0.581165        0.006390       0.002858         0.613176        0.006531       0.002921          0.723782         0.004748        0.002124          0.468340         0.009786        0.004377  18.741006  0.245797 0.109924
+ DeepFRI_Seq       MF        5         0.315136        0.007593       0.003396         0.385275        0.010929       0.004888          0.655931         0.002991        0.001338          0.229024         0.008941        0.003999  28.902001  0.548787 0.245425
+DeepFRI_Cmap       MF        5         0.047330        0.000521       0.000233         0.048676        0.000749       0.000335          0.500000         0.000000        0.000000          0.512119         0.000137        0.000061  36.495025  0.420467 0.188039
       DPFunc       MF        5         0.104845        0.005490       0.002455         0.078134        0.002363       0.001057          0.620304         0.009486        0.004242          0.053962         0.003721        0.001664  35.375452  0.551524 0.246649
        BLAST       MF        5         0.047178        0.001101       0.000492         0.048829        0.001344       0.000601          0.500000         0.000000        0.000000          0.512080         0.000289        0.000129  36.357230  0.736675 0.329451
      DIAMOND       MF        5         0.047288        0.001217       0.000544         0.049308        0.001137       0.000509          0.500000         0.000000        0.000000          0.512109         0.000319        0.000143  36.392666  0.983305 0.439747
@@ -279,8 +285,8 @@ DeepFRI_Cmap       MF        5         0.581165        0.006390       0.002858  
       Hybrid       MF        5         0.823263        0.005608       0.002508         0.854976        0.004831       0.002161          0.950936         0.008770        0.003922          0.842348         0.001838        0.000822   8.736206  0.268448 0.120054
    Hybrid_JK       MF        5         0.814451        0.009624       0.004304         0.840536        0.005910       0.002643          0.943627         0.009004        0.004027          0.827728         0.007902        0.003534   9.408157  0.422817 0.189089
     TransFun       CC        5         0.281411        0.009514       0.004255         0.341709        0.014570       0.006516          0.728490         0.008772        0.003923          0.167926         0.009059        0.004051  14.295466  0.419919 0.187794
- DeepFRI_Seq       CC        5         0.230128        0.010142       0.004536         0.234428        0.002412       0.001079          0.765119         0.003261        0.001458          0.153162         0.012656        0.005660  14.781481  0.389547 0.174211
-DeepFRI_Cmap       CC        5         0.367542        0.012114       0.005417         0.367290        0.017457       0.007807          0.810013         0.003292        0.001472          0.305321         0.015741        0.007039  13.088262  0.507984 0.227177
+ DeepFRI_Seq       CC        5         0.230123        0.010148       0.004538         0.234271        0.002387       0.001068          0.765085         0.003269        0.001462          0.153140         0.012658        0.005661  14.781635  0.389675 0.174268
+DeepFRI_Cmap       CC        5         0.046816        0.001185       0.000530         0.048889        0.001031       0.000461          0.500000         0.000000        0.000000          0.511985         0.000310        0.000139  16.774759  0.532769 0.238261
       DPFunc       CC        5         0.091819        0.004569       0.002043         0.079371        0.003388       0.001515          0.606734         0.003436        0.001537          0.040405         0.002000        0.000894  16.698638  0.733798 0.328165
        BLAST       CC        5         0.045293        0.001366       0.000611         0.048320        0.002823       0.001262          0.500000         0.000000        0.000000          0.511586         0.000357        0.000160  16.199279  0.562866 0.251721
      DIAMOND       CC        5         0.045613        0.001360       0.000608         0.048267        0.000964       0.000431          0.500000         0.000000        0.000000          0.511670         0.000356        0.000159  16.416641  0.581509 0.260059
@@ -292,21 +298,21 @@ DeepFRI_Cmap       CC        5         0.367542        0.012114       0.005417  
        Model Ontology  Total_Test  Coverage_Failures  Label_Mismatch  Covered_Mapped
     TransFun       BP        1722                474               0            1248
  DeepFRI_Seq       BP        1722                  0               0            1722
-DeepFRI_Cmap       BP        1722                  0               0            1722
+DeepFRI_Cmap       BP        1722               1722               0               0
       DPFunc       BP        1722                  0               0            1722
        BLAST       BP        1722               1722               0               0
      DIAMOND       BP        1722               1722               0               0
        Naive       BP        1722               1722               0               0
     TransFun       MF        1722                474               0            1248
  DeepFRI_Seq       MF        1722                  0               0            1722
-DeepFRI_Cmap       MF        1722                  0               0            1722
+DeepFRI_Cmap       MF        1722               1722               0               0
       DPFunc       MF        1722                  0               0            1722
        BLAST       MF        1722               1722               0               0
      DIAMOND       MF        1722               1722               0               0
        Naive       MF        1722               1722               0               0
     TransFun       CC        1722                474               0            1248
  DeepFRI_Seq       CC        1722                  0               0            1722
-DeepFRI_Cmap       CC        1722                  0               0            1722
+DeepFRI_Cmap       CC        1722               1722               0               0
       DPFunc       CC        1722                  0               0            1722
        BLAST       CC        1722               1722               0               0
      DIAMOND       CC        1722               1722               0               0
@@ -315,13 +321,23 @@ DeepFRI_Cmap       CC        1722                  0               0            
 Loading datasets ...
 
 [Plot A] Sequence identity bins ...
+  [DeepFRI Debug] deepfri_seq_BP_pred_scores.json -> matched 1722/2606 test proteins, 584/3442 terms. Max score: 0.9998
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_BP_pred_scores.json
 Loading datasets ...
 
 [Plot A] Sequence identity bins ...
+  [DeepFRI Debug] deepfri_seq_BP_pred_scores.json -> matched 1722/2606 test proteins, 584/3442 terms. Max score: 0.9998
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_BP_pred_scores.json
+  [Common Subset] bp: 1248/1722
 Loading datasets ...
 
 [Plot A] Sequence identity bins ...
+  [DeepFRI Debug] deepfri_seq_BP_pred_scores.json -> matched 1722/2606 test proteins, 584/3442 terms. Max score: 0.9998
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_BP_pred_scores.json
 Loading datasets ...
 
 [Plot A] Sequence identity bins ...
+  [DeepFRI Debug] deepfri_seq_BP_pred_scores.json -> matched 1722/2606 test proteins, 584/3442 terms. Max score: 0.9998
+  [MISSING] /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/deepfri_results/deepfri_cmap_BP_pred_scores.json
+  [Common Subset] bp: 1248/1722
 4. Running 5-seed Evaluation and Bootstrapping (Mode: baselines_only)
