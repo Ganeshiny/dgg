@@ -431,6 +431,7 @@ def plot_A_sequence_identity(datasets):
     x_positions = np.arange(len(active_bins))
     bar_width   = 0.15
     n_models    = len(MODEL_ORDER)
+    ont_stats   = [{'bin': b[2]} for b in active_bins]
 
     for mi, mname in enumerate(MODEL_ORDER):
         if mname not in preds:
@@ -496,8 +497,6 @@ def plot_A_sequence_identity(datasets):
                color=PALETTE.get(mname, '#888888'),
                label=mname, alpha=alpha_val, edgecolor='white', linestyle=edge_ls, hatch=hatch,
                error_kw={'linewidth': 1.0, 'ecolor': '#333333'})
-
-        stats_data.extend(ont_stats)
     
     ax.set_xticks(x_positions)
     ax.set_xticklabels([b[2] for b in active_bins])
@@ -512,7 +511,7 @@ def plot_A_sequence_identity(datasets):
 
     plt.tight_layout()
     save_fig('plot_A_seq_identity')
-    pd.DataFrame(stats_data).to_csv(os.path.join(OUT_DIR, 'plot_A_seq_identity_stats.csv'), index=False)
+    pd.DataFrame(ont_stats).to_csv(os.path.join(OUT_DIR, 'plot_A_seq_identity_stats.csv'), index=False)
 
 
 # ── PLOT C: Fmax vs IC bins ───────────────────────────────────────────────────
