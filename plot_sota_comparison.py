@@ -65,7 +65,8 @@ PALETTE = {
     'Hybrid':    '#CC3311',   # red
     'TransFun':  '#0077BB',   # blue
     'DPFunc':    '#009988',   # teal
-    'DeepFRI':   '#EE7733',   # orange
+    'DeepFRI_Seq': '#EE7733', # orange
+    'DeepFRI_Cmap': '#8c564b', # brown
     'BLAST':     '#882255',   # wine
     'DIAMOND':   '#44AA99',   # dark teal
     'Naive':     '#999933',   # olive
@@ -423,7 +424,7 @@ def plot_A_sequence_identity(datasets):
         
     ic_raw    = _load_ic(ont_short, datasets)
     if ic_raw is not None and valid_mask is not None:
-        ic_raw = ic_raw[:, valid_mask]
+        ic_raw = ic_raw[valid_mask]
     ic        = ic_raw if ic_raw is not None else compute_ic(y_true)
     preds, mask = load_predictions(ont_full, ont_short, prot_list, goterms, valid_mask=valid_mask)
     if mask is not None:
@@ -439,15 +440,20 @@ def plot_A_sequence_identity(datasets):
             ic = ic[mask]
 
     fig, ax = plt.subplots(figsize=(7, 4.5))
-    active_bins = [b for b in bins if ((prot_identity >= b[0]) & (prot_identity < b[1])).sum() > 0]
+    active_bins = []
+    for b in bins:
+        n = ((prot_identity >= b[0]) & (prot_identity < b[1])).sum()
+        if n > 0:
+            active_bins.append((b[0], b[1], f"{b[2]}\n(n={n})", b[2]))
+            
     x_positions = np.arange(len(active_bins))
     bar_width   = 0.15
-    n_models    = len(MODEL_ORDER)
-    ont_stats   = [{'bin': b[2]} for b in active_bins]
+    
+    plotted_models = [m for m in MODEL_ORDER if m in preds]
+    n_models    = len(plotted_models)
+    ont_stats   = [{'bin': b[3]} for b in active_bins]
 
-    for mi, mname in enumerate(MODEL_ORDER):
-        if mname not in preds:
-            continue
+    for mi, mname in enumerate(plotted_models):
         # per-seed runs for your models, bootstrap for SOTA
         seed_preds_list = []
         if mname in ('Hybrid', 'Hybrid_JK'):
@@ -464,7 +470,7 @@ def plot_A_sequence_identity(datasets):
             # We also need to subset prot_identity accordingly — handled per bin below
 
         fmax_means, fmax_sems = [], []
-        for b_idx, (lo, hi, _) in enumerate(active_bins):
+        for b_idx, (lo, hi, _, _) in enumerate(active_bins):
             bin_mask = (prot_identity >= lo) & (prot_identity < hi)
             if bin_mask.sum() < 5:
                 fmax_means.append(np.nan)
@@ -548,28 +554,33 @@ def plot_C_ic_bins(datasets):
 
         ic_raw    = _load_ic(ont_short, datasets)
         if ic_raw is not None and valid_mask is not None:
-            ic_raw = ic_raw[:, valid_mask]
+            ic_raw = ic_raw[valid_mask]
         ic = ic_raw if ic_raw is not None else compute_ic(y_true)
         preds, mask = load_predictions(ont_full, ont_short, prot_list, goterms, valid_mask=valid_mask)
         if mask is not None:
             y_true = y_true[mask]
             # When subsetting test proteins, recompute IC from the subset's labels directly
-            ic = compute_ic(y_true)
-        active_bins = [b for b in bins if ((ic >= b[0]) & (ic < b[1])).sum() > 0]
+        ic = compute_ic(y_true)
+        active_bins = []
+        for b in bins:
+            n = ((ic >= b[0]) & (ic < b[1])).sum()
+            if n > 0:
+                active_bins.append((b[0], b[1], f"{b[2]}\n(n={n})", b[2]))
+        
         x_positions = np.arange(len(active_bins))
         bar_width   = 0.15
-        n_models    = len(MODEL_ORDER)
+        
+        plotted_models = [m for m in MODEL_ORDER if m in preds]
+        n_models    = len(plotted_models)
 
-        for mi, mname in enumerate(MODEL_ORDER):
-            if mname not in preds:
-                continue
+        for mi, mname in enumerate(plotted_models):
             # Build per-seed predictions list
             if mname in ('Hybrid', 'Hybrid_JK'):
                 seed_pairs = [(y_true, sp) for _, sp in load_per_seed_preds(ont_short, mname, len(goterms), len(prot_list), mask=mask, valid_mask=valid_mask)]
                 if not seed_pairs:
                     seed_pairs = [(y_true, preds[mname])]
             else:
-                rng = np.random.default_rng(mi * 7)
+                rng = np.random.default_rng(abs(hash(mname)) % (10**9))
                 N = y_true.shape[0]
                 seed_pairs = []
                 for _ in range(5):
@@ -577,7 +588,7 @@ def plot_C_ic_bins(datasets):
                     seed_pairs.append((y_true[idx], preds[mname][idx]))
 
             fmax_means, fmax_sems = [], []
-            for b_idx, (lo, hi, _) in enumerate(active_bins):
+            for b_idx, (lo, hi, _, _) in enumerate(active_bins):
                 term_mask = (ic >= lo) & (ic < hi)
                 n_terms_in_bin = term_mask.sum()
                 if n_terms_in_bin < 3:
@@ -615,11 +626,12 @@ def plot_C_ic_bins(datasets):
         # Dynamic y-axis: fit to data with a small margin
         ax.autoscale(axis='y')
         ax.set_ylim(bottom=0)
-        if ax_idx == 0:
-            ax.legend(frameon=False, loc='upper right', fontsize=7)
+        # Legend is moved to the figure level at the end
         style_ax(ax)
 
-    plt.suptitle('c   Performance on Rare GO Terms (IC Bins)', fontsize=12, fontweight='bold', y=1.01)
+    plt.suptitle('c   Performance on Rare GO Terms (IC Bins)', fontsize=12, fontweight='bold', y=1.05)
+    handles, labels = axes[0].get_legend_handles_labels()
+    fig.legend(handles, labels, loc='upper center', bbox_to_anchor=(0.5, 1.0), ncol=len(plotted_models), frameon=False, fontsize=8)
     plt.tight_layout()
     save_fig('plot_C_ic_bins')
 
@@ -714,26 +726,31 @@ def plot_F_depth_bins(datasets):
 
         ic_raw    = _load_ic(ont_short, datasets)
         if ic_raw is not None and valid_mask is not None:
-            ic_raw = ic_raw[:, valid_mask]
+            ic_raw = ic_raw[valid_mask]
         ic = ic_raw if ic_raw is not None else compute_ic(y_true)
         preds, mask = load_predictions(ont_full, ont_short, prot_list, goterms, valid_mask=valid_mask)
         if mask is not None:
             y_true = y_true[mask]
 
         term_depths = np.array([depths.get(t, 0) for t in goterms])
-        active_bins = [b for b in bins if len([i for i, t in enumerate(goterms) if b[0] <= depths.get(t, 0) < b[1]]) > 0]
+        active_bins = []
+        for b in bins:
+            n = ((term_depths >= b[0]) & (term_depths < b[1])).sum()
+            if n > 0:
+                active_bins.append((b[0], b[1], f"{b[2]}\n(n={n})", b[2]))
+                
         x_positions = np.arange(len(active_bins))
         bar_width   = 0.15
-        n_models    = len(MODEL_ORDER)
+        
+        plotted_models = [m for m in MODEL_ORDER if m in preds]
+        n_models    = len(plotted_models)
 
-        for mi, mname in enumerate(MODEL_ORDER):
-            if mname not in preds:
-                continue
+        for mi, mname in enumerate(plotted_models):
             if mname in ('Hybrid', 'Hybrid_JK'):
                 seed_pairs = [(y_true, sp) for _, sp in load_per_seed_preds(ont_short, mname, len(goterms), len(prot_list), mask=mask, valid_mask=valid_mask)]
                 if not seed_pairs: seed_pairs = [(y_true, preds[mname])]
             else:
-                rng = np.random.default_rng(mi * 13)
+                rng = np.random.default_rng(abs(hash(mname)) % (10**9))
                 N = y_true.shape[0]
                 seed_pairs = []
                 for _ in range(5):
@@ -741,7 +758,7 @@ def plot_F_depth_bins(datasets):
                     seed_pairs.append((y_true[idx], preds[mname][idx]))
 
             fmax_means, fmax_sems = [], []
-            for b_idx, (lo, hi, _) in enumerate(active_bins):
+            for b_idx, (lo, hi, _, _) in enumerate(active_bins):
                 term_mask = (term_depths >= lo) & (term_depths < hi)
                 if term_mask.sum() < 3:
                     fmax_means.append(np.nan); fmax_sems.append(0.0); continue
@@ -831,7 +848,7 @@ def plot_BDE_pr_curves(datasets):
 
         ic_raw    = _load_ic(ont_short, datasets)
         if ic_raw is not None and valid_mask is not None:
-            ic_raw = ic_raw[:, valid_mask]
+            ic_raw = ic_raw[valid_mask]
         ic = ic_raw if ic_raw is not None else compute_ic(y_true)
         ic_flat   = np.tile(ic, (len(prot_list), 1))  # broadcast for vectorised ops
         preds, mask = load_predictions(ont_full, ont_short, prot_list, goterms, valid_mask=valid_mask)
@@ -843,6 +860,8 @@ def plot_BDE_pr_curves(datasets):
 
         for mname in MODEL_ORDER:
             if mname not in preds:
+                continue
+            if mname in ('DeepFRI_Cmap', 'DeepFRI_Seq'):
                 continue
             # Average PR curve over seeds
             if mname in ('Hybrid', 'Hybrid_JK'):
@@ -944,12 +963,13 @@ def plot_G_coverage(datasets):
                 bars[i].set_linewidth(1.2)
                 bars[i].set_edgecolor(colors[i])
 
-        # Let the bars set the y-limit, but add some headroom
+        # Use log scale so low-coverage models (e.g. DPFunc) remain visible
+        ax.set_yscale('log')
         max_coverage = max(coverages) if coverages else 1
-        ax.set_ylim(0, max_coverage * 1.2)
+        ax.set_ylim(1, max_coverage * 2.0)
 
         for bar, val in zip(bars, coverages):
-            ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + max_coverage * 0.02,
+            ax.text(bar.get_x() + bar.get_width()/2, val * 1.1,
                     str(val), ha='center', va='bottom', fontsize=8)
 
         ax.set_title(f'{ont_short.upper()}', loc='left')
@@ -1010,12 +1030,13 @@ def plot_summary_fmax(results_csv):
 
         ax.set_title(ont, fontweight='bold')
         ax.set_ylabel('Micro Fmax' if ax_idx == 0 else '')
-        # Dynamic y-axis fitted to data range with margin
+        # Start y-axis at 0 for accurate visual comparison
         if len(vals) > 0:
-            lo = max(0, vals.min() - 0.05)
             hi = min(1.0, vals.max() + 0.08)
-            ax.set_ylim(lo, hi)
-        ax.set_xticklabels(sub.index, rotation=30, ha='right')
+            ax.set_ylim(0.0, hi)
+            
+        labels = [f"{m}*" if (m == 'DeepFRI_Cmap' and ont == 'MF') else m for m in sub.index]
+        ax.set_xticklabels(labels, rotation=30, ha='right')
         style_ax(ax)
 
     plt.tight_layout()
@@ -1032,6 +1053,9 @@ def plot_summary_fmax(results_csv):
 args = None
 
 def main():
+    import random
+    np.random.seed(42)
+    random.seed(42)
     global args, MODEL_ORDER, MODEL_ORDER_COVERAGE
     parser = argparse.ArgumentParser()
     parser.add_argument('--common_subset', action='store_true')

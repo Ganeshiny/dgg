@@ -366,6 +366,9 @@ def parse_args():
 _FULL_ONT = {'bp': 'biological_process', 'mf': 'molecular_function', 'cc': 'cellular_component'}
 
 def main():
+    import random
+    np.random.seed(42)
+    random.seed(42)
     args = parse_args()
     os.makedirs(RESULTS_DIR, exist_ok=True)
 
@@ -452,7 +455,7 @@ def main():
             coverage_diag_rows.append(diag)
 
         # ── Full test set evaluation (Mode 1 — always runs) ──────────────────
-        rng_full = np.random.default_rng(0)  # reset per ontology for consistency
+        rng = np.random.default_rng(0)  # reset per ontology for consistency
         
         if args.mode in ('dl_only', 'all'):
             print("  [TransFun] Bootstrapping (full test set) ...")
