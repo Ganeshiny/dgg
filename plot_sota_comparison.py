@@ -447,10 +447,11 @@ def plot_A_sequence_identity(datasets):
             active_bins.append((b[0], b[1], f"{b[2]}\n(n={n})", b[2]))
             
     x_positions = np.arange(len(active_bins))
-    bar_width   = 0.15
     
     plotted_models = [m for m in MODEL_ORDER if m in preds]
     n_models    = len(plotted_models)
+    bar_width   = 0.8 / max(1, n_models)
+    
     ont_stats   = [{'bin': b[3]} for b in active_bins]
 
     for mi, mname in enumerate(plotted_models):
@@ -520,16 +521,22 @@ def plot_A_sequence_identity(datasets):
     ax.set_xticklabels([b[2] for b in active_bins])
     ax.set_xlabel('Max Sequence Identity to Training Set')
     ax.set_ylabel('Micro Fmax')
-    ax.set_title('a   Performance on Difficult Proteins (Seq Identity Bins)', loc='left', fontweight='bold')
+    ax.set_title('Performance on Difficult Proteins (Seq Identity Bins)', loc='left', fontweight='bold')
     ax.set_ylim(0, 1.0)
-    ax.legend(frameon=False, loc='upper left')
+    
     style_ax(ax)
     
     print("NOTE: >0.6 bin has elevated identity due to MMseqs2 bilateral coverage limitation (see Methods).")
-
+    
+    handles, labels = ax.get_legend_handles_labels()
+    fig.legend(handles, labels, loc='upper center', bbox_to_anchor=(0.5, 1.05), ncol=min(n_models, 5), frameon=False, fontsize=9)
     plt.tight_layout()
-    save_fig('plot_A_seq_identity')
-    pd.DataFrame(ont_stats).to_csv(os.path.join(OUT_DIR, 'plot_A_seq_identity_stats.csv'), index=False)
+    
+    out_dir_A = os.path.join(OUT_DIR, 'plot_A_seq_identity')
+    os.makedirs(out_dir_A, exist_ok=True)
+    fig.savefig(os.path.join(out_dir_A, 'BP.png'), dpi=300, bbox_inches='tight')
+    plt.close(fig)
+    pd.DataFrame(ont_stats).to_csv(os.path.join(out_dir_A, 'plot_A_seq_identity_stats.csv'), index=False)
 
 
 # ── PLOT C: Fmax vs IC bins ───────────────────────────────────────────────────
@@ -537,11 +544,13 @@ def plot_A_sequence_identity(datasets):
 def plot_C_ic_bins(datasets):
     """Per-GO-term IC bins: shows which methods handle rare (high-IC) terms."""
     bins = [(0, 2, 'IC 0–2'), (2, 4, 'IC 2–4'), (4, 6, 'IC 4–6'), (6, 99, 'IC >6')]
+    
+    out_dir_C = os.path.join(OUT_DIR, 'plot_C_ic_bins')
+    os.makedirs(out_dir_C, exist_ok=True)
 
-    fig, axes = plt.subplots(1, 3, figsize=(15, 5), sharey=False)
-
-    for ax_idx, (ont_full, ont_short) in enumerate(ONTOLOGIES.items()):
-        ax = axes[ax_idx]
+    for ont_full, ont_short in ONTOLOGIES.items():
+        fig, ax = plt.subplots(figsize=(7, 5))
+        
         test_ds  = datasets[ont_full]['test']
         prot_list = test_ds.pdb_split_list
         goterms   = test_ds.y_labels
@@ -568,10 +577,10 @@ def plot_C_ic_bins(datasets):
                 active_bins.append((b[0], b[1], f"{b[2]}\n(n={n})", b[2]))
         
         x_positions = np.arange(len(active_bins))
-        bar_width   = 0.15
         
         plotted_models = [m for m in MODEL_ORDER if m in preds]
         n_models    = len(plotted_models)
+        bar_width   = 0.8 / max(1, n_models)
 
         for mi, mname in enumerate(plotted_models):
             # Build per-seed predictions list
@@ -621,19 +630,18 @@ def plot_C_ic_bins(datasets):
         ax.set_xticks(x_positions)
         ax.set_xticklabels([b[2] for b in active_bins], rotation=20, ha='right')
         ax.set_xlabel('GO Term IC Value')
-        ax.set_ylabel('Fmax' if ax_idx == 0 else '')
-        ax.set_title(f'c   {ont_short.upper()}', loc='left', fontweight='bold')
+        ax.set_ylabel('Fmax')
+        ax.set_title(f'Performance on Rare GO Terms ({ont_short.upper()})', loc='left', fontweight='bold')
         # Dynamic y-axis: fit to data with a small margin
         ax.autoscale(axis='y')
         ax.set_ylim(bottom=0)
-        # Legend is moved to the figure level at the end
         style_ax(ax)
-
-    plt.suptitle('c   Performance on Rare GO Terms (IC Bins)', fontsize=12, fontweight='bold', y=1.05)
-    handles, labels = axes[0].get_legend_handles_labels()
-    fig.legend(handles, labels, loc='upper center', bbox_to_anchor=(0.5, 1.0), ncol=len(plotted_models), frameon=False, fontsize=8)
-    plt.tight_layout()
-    save_fig('plot_C_ic_bins')
+        
+        handles, labels = ax.get_legend_handles_labels()
+        fig.legend(handles, labels, loc='upper center', bbox_to_anchor=(0.5, 1.05), ncol=min(n_models, 5), frameon=False, fontsize=9)
+        plt.tight_layout()
+        fig.savefig(os.path.join(out_dir_C, f'{ont_short.upper()}.png'), dpi=300, bbox_inches='tight')
+        plt.close(fig)
 
 
 # ── PLOT F: Fmax vs GO depth bins ─────────────────────────────────────────────
@@ -710,10 +718,11 @@ def plot_F_depth_bins(datasets):
     bins = [(0, 4, 'depth ≤3'), (4, 6, 'depth 4–5'),
             (6, 8, 'depth 6–7'), (8, 999, 'depth ≥8')]
 
-    fig, axes = plt.subplots(1, 3, figsize=(15, 5), sharey=False)
+    out_dir_F = os.path.join(OUT_DIR, 'plot_F_depth_bins')
+    os.makedirs(out_dir_F, exist_ok=True)
 
-    for ax_idx, (ont_full, ont_short) in enumerate(ONTOLOGIES.items()):
-        ax = axes[ax_idx]
+    for ont_full, ont_short in ONTOLOGIES.items():
+        fig, ax = plt.subplots(figsize=(7, 5))
         test_ds  = datasets[ont_full]['test']
         prot_list = test_ds.pdb_split_list
         goterms   = test_ds.y_labels
@@ -740,10 +749,10 @@ def plot_F_depth_bins(datasets):
                 active_bins.append((b[0], b[1], f"{b[2]}\n(n={n})", b[2]))
                 
         x_positions = np.arange(len(active_bins))
-        bar_width   = 0.15
         
         plotted_models = [m for m in MODEL_ORDER if m in preds]
         n_models    = len(plotted_models)
+        bar_width   = 0.8 / max(1, n_models)
 
         for mi, mname in enumerate(plotted_models):
             if mname in ('Hybrid', 'Hybrid_JK'):
@@ -788,18 +797,20 @@ def plot_F_depth_bins(datasets):
 
         ax.set_xticks(x_positions)
         ax.set_xticklabels([b[2] for b in active_bins], rotation=20, ha='right')
+        ax.set_xticks(x_positions)
+        ax.set_xticklabels([b[2] for b in active_bins], rotation=20, ha='right')
         ax.set_xlabel('GO Term Depth')
-        ax.set_ylabel('Fmax' if ax_idx == 0 else '')
-        ax.set_title(f'f   {ont_short.upper()}', loc='left', fontweight='bold')
+        ax.set_ylabel('Fmax')
+        ax.set_title(f'Performance on Deep GO Terms ({ont_short.upper()})', loc='left', fontweight='bold')
         ax.autoscale(axis='y')
         ax.set_ylim(bottom=0)
-        if ax_idx == 0:
-            ax.legend(frameon=False, loc='upper right', fontsize=7)
         style_ax(ax)
-
-    plt.suptitle('f   Performance on Deep GO Terms', fontsize=12, fontweight='bold', y=1.01)
-    plt.tight_layout()
-    save_fig('plot_F_depth_bins')
+        
+        handles, labels = ax.get_legend_handles_labels()
+        fig.legend(handles, labels, loc='upper center', bbox_to_anchor=(0.5, 1.05), ncol=min(n_models, 5), frameon=False, fontsize=9)
+        plt.tight_layout()
+        fig.savefig(os.path.join(out_dir_F, f'{ont_short.upper()}.png'), dpi=300, bbox_inches='tight')
+        plt.close(fig)
 
 
 # ── PLOTS B/D/E: IC-weighted PR curves per ontology ──────────────────────────
@@ -904,7 +915,7 @@ def plot_BDE_pr_curves(datasets):
         ax.set_xlabel('IC-weighted Recall')
         ax.set_ylabel('IC-weighted Precision')
         ax.set_xlim(0, 1); ax.set_ylim(0, 1.05)
-        ax.set_title(f'{panel}   IC-weighted PR — {ont_short.upper()}', loc='left', fontweight='bold')
+        ax.set_title(f'IC-weighted PR — {ont_short.upper()}', loc='left', fontweight='bold')
         ax.legend(frameon=False, loc='upper right')
         style_ax(ax)
         ax.spines['left'].set_visible(True)
@@ -918,12 +929,13 @@ def plot_BDE_pr_curves(datasets):
 def plot_G_coverage(datasets):
     """Number of unique GO terms each method predicts (at t=0.5)."""
     threshold = 0.5
+    
+    out_dir_G = os.path.join(OUT_DIR, 'plot_G_coverage')
+    os.makedirs(out_dir_G, exist_ok=True)
 
-    fig, axes = plt.subplots(1, 3, figsize=(15, 5))
-    fig.suptitle('g   Coverage of Predicted Functions', fontsize=12, fontweight='bold')
-
-    for ax_idx, (ont_full, ont_short) in enumerate(ONTOLOGIES.items()):
-        ax = axes[ax_idx]
+    for ont_full, ont_short in ONTOLOGIES.items():
+        fig, ax = plt.subplots(figsize=(7, 5))
+        
         test_ds  = datasets[ont_full]['test']
         prot_list = test_ds.pdb_split_list
         goterms   = test_ds.y_labels
@@ -972,8 +984,9 @@ def plot_G_coverage(datasets):
             ax.text(bar.get_x() + bar.get_width()/2, val * 1.1,
                     str(val), ha='center', va='bottom', fontsize=8)
 
-        ax.set_title(f'{ont_short.upper()}', loc='left')
-        ax.set_ylabel('Unique GO terms predicted' if ax_idx == 0 else '')
+        ax.set_title(f'Coverage of Predicted Functions ({ont_short.upper()})', loc='left', fontweight='bold')
+        ax.set_ylabel('Unique GO terms predicted')
+        ax.set_xticks(np.arange(len(model_names)))
         ax.set_xticklabels(model_names, rotation=30, ha='right')
         
         # Display total terms in the legend instead of a horizontal line
@@ -981,9 +994,9 @@ def plot_G_coverage(datasets):
         ax.legend(frameon=False, fontsize=8, loc='upper left')
         
         style_ax(ax)
-
-    plt.tight_layout()
-    save_fig('plot_G_coverage')
+        plt.tight_layout()
+        fig.savefig(os.path.join(out_dir_G, f'{ont_short.upper()}.png'), dpi=300, bbox_inches='tight')
+        plt.close(fig)
 
 
 # ── BONUS: Summary bar chart (Micro Fmax, all models, all ontologies) ─────────
