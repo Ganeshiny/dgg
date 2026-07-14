@@ -10,10 +10,10 @@ source ~/miniconda3/etc/profile.d/conda.sh
 conda activate deepgreengo
 
 # Run the evaluation and plotting
-# 1. Standard full evaluation
+# 1. Standard full evaluation (All Models)
 python evaluate_sota_5seeds.py
-python plot_sota_comparison.py
+python plot_sota_comparison.py --mode all
 
-# 2. Fair "Common Subset" evaluation
+# 2. Fair "Common Subset" evaluation (Baselines Only)
 python evaluate_sota_5seeds.py --common_subset
-python plot_sota_comparison.py --common_subset
+python plot_sota_comparison.py --mode baselines_only --common_subset
