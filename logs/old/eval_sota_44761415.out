@@ -11,7 +11,7 @@ New DB name:   /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data/bl
 New DB title:  /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data/train_sequences.fasta
 Sequence type: Protein
 Deleted existing Protein BLAST database named /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data/blast_train_db
-Keep MBits: T
+Keep MBits: T0
 Maximum file size: 3000000000B
 Adding sequences from FASTA; added 12889 sequences in 0.292835 seconds.
 
