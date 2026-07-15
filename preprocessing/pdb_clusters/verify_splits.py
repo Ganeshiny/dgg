@@ -52,8 +52,11 @@ def main():
         components = defaultdict(set)
         for chain in fasta: components[uf.find(chain)].add(labels[chain])
         crossing = sum(len(groups) > 1 for groups in components.values())
-        train_sequences = {fasta[item] for item in split['train']}
-        exact_duplicates = sum(fasta[item] in train_sequences for item in split['test'])
+        sequence_sets = {name: {fasta[item] for item in ids} for name, ids in split.items()}
+        exact_duplicates = sum(
+            len(sequence_sets[left] & sequence_sets[right])
+            for left, right in (('train', 'valid'), ('train', 'test'), ('valid', 'test'))
+        )
         report[str(threshold)] = {
             'n_train': len(split['train']), 'n_valid': len(split['valid']), 'n_test': len(split['test']),
             'components': len(components), 'components_crossing_splits': crossing,

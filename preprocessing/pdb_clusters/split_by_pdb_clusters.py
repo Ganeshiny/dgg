@@ -179,7 +179,18 @@ def run_split(
     for cid in all_chain_ids:
         uf.find(cid)
 
-    # (a) Pre-seed: all chains of the same PDB ID union together
+    # (a) Union exact duplicate sequences so identical proteins cannot cross splits.
+    sequence_to_first: dict[str, str] = {}
+    exact_duplicate_chains = 0
+    for cid in all_chain_ids:
+        sequence = seqs[cid]
+        first = sequence_to_first.setdefault(sequence, cid)
+        if first != cid:
+            uf.union(first, cid)
+            exact_duplicate_chains += 1
+    print(f'  Exact duplicate chains joined: {exact_duplicate_chains:,}')
+
+    # (b) Pre-seed: all chains of the same PDB ID union together
     pdb_to_chains: dict[str, list[str]] = defaultdict(list)
     for cid in all_chain_ids:
         pdb_to_chains[cid.split('_')[0].upper()].append(cid)
@@ -188,7 +199,7 @@ def run_split(
         for c in chains[1:]:
             uf.union(chains[0], c)
 
-    # (b) Merge via cluster membership: if two chain IDs map to the same entity
+    # (c) Merge via cluster membership: if two chain IDs map to the same entity
     #     cluster, they must be in the same super-cluster.
     cluster_to_first_chain: dict[int, str] = {}   # cluster_idx -> representative chain
     unclustered: list[str] = []
