@@ -1,0 +1,51 @@
+Data root: /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14
+Using python3: /home/ganeshiny.sridharan/miniconda3/envs/deepgreengo/bin/python3
+Using blastp: /home/ganeshiny.sridharan/miniconda3/envs/deepgreengo/bin/blastp
+Using makeblastdb: /home/ganeshiny.sridharan/miniconda3/envs/deepgreengo/bin/makeblastdb
+Downloading GO ontology: https://purl.obolibrary.org/obo/go/go-basic.obo
+Downloading SIFTS annotations: https://ftp.ebi.ac.uk/pub/databases/msd/sifts/flatfiles/tsv/pdb_chain_go.tsv.gz
+Querying RCSB for Viridiplantae polymer entities (NCBI taxonomy lineage 33090)
+Downloading 30% PDB entity clusters: https://cdn.rcsb.org/resources/sequence/clusters/clusters-by-entity-30.txt
+Downloading 40% PDB entity clusters: https://cdn.rcsb.org/resources/sequence/clusters/clusters-by-entity-40.txt
+Downloading 50% PDB entity clusters: https://cdn.rcsb.org/resources/sequence/clusters/clusters-by-entity-50.txt
+Downloading 70% PDB entity clusters: https://cdn.rcsb.org/resources/sequence/clusters/clusters-by-entity-70.txt
+Downloading 90% PDB entity clusters: https://cdn.rcsb.org/resources/sequence/clusters/clusters-by-entity-90.txt
+Downloading 95% PDB entity clusters: https://cdn.rcsb.org/resources/sequence/clusters/clusters-by-entity-95.txt
+Downloading/checking 8,795 PDB structure files with 4 workers
+  checked 250/8,795; failures=0
+  checked 500/8,795; failures=0
+  checked 750/8,795; failures=0
+  checked 1,000/8,795; failures=0
+  checked 1,250/8,795; failures=0
+  checked 1,500/8,795; failures=0
+  checked 1,750/8,795; failures=0
+  checked 2,000/8,795; failures=0
+  checked 2,250/8,795; failures=0
+  checked 2,500/8,795; failures=0
+  checked 2,750/8,795; failures=0
+  checked 3,000/8,795; failures=0
+  checked 3,250/8,795; failures=0
+  checked 3,500/8,795; failures=0
+  checked 3,750/8,795; failures=0
+  checked 4,000/8,795; failures=0
+  checked 4,250/8,795; failures=0
+  checked 4,500/8,795; failures=0
+  checked 4,750/8,795; failures=0
+  checked 5,000/8,795; failures=0
+  checked 5,250/8,795; failures=0
+  checked 5,500/8,795; failures=0
+  checked 5,750/8,795; failures=0
+  checked 6,000/8,795; failures=0
+  checked 6,250/8,795; failures=0
+  checked 6,500/8,795; failures=0
+  checked 6,750/8,795; failures=0
+  checked 7,000/8,795; failures=0
+  checked 7,250/8,795; failures=0
+  checked 7,500/8,795; failures=0
+  checked 7,750/8,795; failures=0
+  checked 8,000/8,795; failures=0
+  checked 8,250/8,795; failures=0
+  checked 8,500/8,795; failures=0
+  checked 8,750/8,795; failures=0
+  checked 8,795/8,795; failures=0
+Data retrieval completed and checksummed.
