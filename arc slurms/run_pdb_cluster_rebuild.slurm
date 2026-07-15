@@ -51,6 +51,29 @@ require_command makeblastdb
 
 mkdir -p "${DATA_ROOT}"
 
+# Lightweight modes for an already-built data directory. These never download
+# data, rebuild CIF-derived contact maps, or rerun dataset preparation.
+if [[ "${DGG_PLOTS_ONLY:-0}" == "1" ]]; then
+  for required in "${DATA_ROOT}/all_sequences.fasta" "${DATA_ROOT}/pdb2go.tsv" "${DATA_ROOT}/entity_map.json" "${DATA_ROOT}/pdb_splits" "${DATA_ROOT}/datasets"; do
+    [[ -e "${required}" ]] || { echo "ERROR: plot-only input missing: ${required}" >&2; exit 2; }
+  done
+  python3 preprocessing/pdb_clusters/verify_splits.py
+  python3 preprocessing/pdb_clusters/analyse_and_plot.py
+  echo "Plot-only run completed: $(date --iso-8601=seconds)"
+  exit 0
+fi
+
+if [[ "${DGG_SPLITS_ONLY:-0}" == "1" ]]; then
+  for required in "${DATA_ROOT}/all_sequences.fasta" "${DATA_ROOT}/pdb2go.tsv" "${DATA_ROOT}/entity_map.json" "${DATA_ROOT}/pdb_clusters" "${DATA_ROOT}/structure_files"; do
+    [[ -e "${required}" ]] || { echo "ERROR: split-only input missing: ${required}" >&2; exit 2; }
+  done
+  python3 preprocessing/pdb_clusters/split_by_pdb_clusters.py --all
+  python3 preprocessing/pdb_clusters/verify_splits.py
+  python3 preprocessing/pdb_clusters/analyse_and_plot.py
+  echo "Split-and-plot-only run completed: $(date --iso-8601=seconds)"
+  exit 0
+fi
+
 # Retrieve external inputs unless an existing, complete data directory is explicitly reused.
 if [[ "${DGG_SKIP_RETRIEVAL:-0}" == "1" ]]; then
   required_inputs=(
