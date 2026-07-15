@@ -12,8 +12,9 @@ set -euo pipefail
 
 PROJECT_DIR="$(git -C "${SLURM_SUBMIT_DIR}" rev-parse --show-toplevel)"
 cd "${PROJECT_DIR}"
-DATA_ROOT="${DGG_DATA_ROOT:-${PROJECT_DIR}/preprocessing/data}"
+DATA_ROOT="${DGG_DATA_ROOT:-${PROJECT_DIR}/preprocessing/data_arc_rebuild_2026_07_14}"
 export DGG_DATA_ROOT="${DATA_ROOT}"
+echo "Data root: ${DGG_DATA_ROOT}"
 export MPLBACKEND=Agg
 export OMP_NUM_THREADS="${SLURM_CPUS_PER_TASK}"
 export OPENBLAS_NUM_THREADS="${SLURM_CPUS_PER_TASK}"
