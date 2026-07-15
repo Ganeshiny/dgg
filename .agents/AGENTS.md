@@ -41,3 +41,18 @@ Positive findings may be stated plainly without hedging. Sycophancy and accuracy
 are not the same thing. "Your model outperforms TransFun at >40% identity bins by
 X points" is accurate and acceptable. "Your analysis is incredibly sharp" is not
 a finding and must never appear in a response.
+
+Project rules:
+
+- ARC root: /home/ganeshiny.sridharan/dgg/deep-green-GO
+- Use only /home; never use /work/long_lab.
+- Never run heavy computation on the login node.
+- All long jobs must use Slurm.
+- GPU jobs must request and actually use a GPU.
+- Put Slurm output and error files in logs/.
+- Never download or recluster data during model tuning.
+- Use the nominal 30% identity / 80% coverage split for the tuning ablation.
+- Do not call the split leakage-free; report residual similarity.
+- Never use the test set during hyperparameter selection.
+- Do not commit datasets, model checkpoints, plots, or logs unless explicitly requested.
+- Use the arc-rebuild branch.
