@@ -25,7 +25,7 @@ run_exp() {
     echo "  Testing $param_name = $param_val"
     echo "------------------------------------------------------"
 
-    python3 train.py \
+    python3 src/train.py \
         --model "$MODEL" \
         --loss "$LOSS" \
         --seed "$SEED" \

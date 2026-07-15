@@ -130,7 +130,7 @@ cd "${PROJECT_DIR}"
 
 export CMAP_THREADS=${SLURM_CPUS_PER_TASK}
 
-python3 train.py \
+python3 src/train.py \
     --model          "${MODEL}"    \
     --loss           "Focal"       \
     --seed           "${SEED}"     \

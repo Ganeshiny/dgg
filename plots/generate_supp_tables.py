@@ -1,3 +1,6 @@
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
 """
 generate_supp_tables.py
 Generates comprehensive supplementary tables (CSV and LaTeX format)
@@ -65,7 +68,7 @@ def generate_hardware_table(configs, out_dir):
 
 if __name__ == "__main__":
     runs_dir = "runs/"
-    out_dir = "supp_material/"
+    out_dir = "plots/supplementary/"
     os.makedirs(out_dir, exist_ok=True)
     
     configs = gather_configs(runs_dir)

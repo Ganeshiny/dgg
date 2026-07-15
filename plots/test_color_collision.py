@@ -1,3 +1,6 @@
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
 def test_color_collision():
     import plot_sota_comparison as psc
     current_deepfri_seq = psc.PALETTE.get("DeepFRI_Seq", psc.PALETTE.get("DeepFRI", "#888888"))

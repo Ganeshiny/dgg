@@ -1,3 +1,6 @@
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -85,7 +88,8 @@ if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(description="Plot tuning results from CSV")
     parser.add_argument("--csv_path", type=str, default="tuning_runs/tuning_results_summary.csv", help="Path to tuning summary CSV")
-    parser.add_argument("--out_path", type=str, default="tuning_runs/tuning_visualization.pdf", help="Path to output plot PDF")
+    parser.add_argument("--out_path", type=str, default="plots/tuning/tuning_visualization.pdf", help="Path to output plot PDF")
     args = parser.parse_args()
     
+    os.makedirs(os.path.dirname(args.out_path), exist_ok=True)
     plot_tuning_summary(csv_path=args.csv_path, out_path=args.out_path)

@@ -29,7 +29,7 @@ FAILED=0
 mkdir -p "$OUT_DIR"
 
 for ont in "${ONTOLOGIES[@]}"; do
-    BEST_PARAMS=$(python3 get_best_hyperparams.py --ontology "$ont" --summary_file "tuning_runs_jk/tuning_results_summary.csv")
+    BEST_PARAMS=$(python3 scripts/get_best_hyperparams.py --ontology "$ont" --summary_file "tuning_runs_jk/tuning_results_summary.csv")
     if [ -n "$BEST_PARAMS" ]; then
         eval "$BEST_PARAMS"
         echo "  [✓] Found Tuned Params: LR=$LR | Dropout=$DROPOUT | BatchSize=$BATCH_SIZE"
@@ -46,9 +46,10 @@ for ont in "${ONTOLOGIES[@]}"; do
             echo "  Run $RUN / $TOTAL | $ont | modality=$mod | s$seed"
             echo "------------------------------------------------------"
 
-            python3 train.py \
+            python3 src/train.py \
                 --model "$MODEL" \
                 --loss  "$LOSS" \
+                    --focal_gamma "${GAMMA:-4.0}" \
                 --input_modality "$mod" \
                 --seed  "$seed" \
                 --ontology "$ont" \

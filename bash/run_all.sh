@@ -22,7 +22,7 @@ warn()    { echo "  ${YELLOW}⚠${RESET}  $*"; }
 die()     { echo "  ${RED}✘ $*${RESET}"; exit 1; }
 
 # Ensure we are in the project root (directory that contains this file)
-cd "$(dirname "$0")"
+cd "$(dirname "$0")/.."
 PROJECT_ROOT="$(pwd)"
 info "Project root: $PROJECT_ROOT"
 
@@ -119,7 +119,7 @@ if [ "$RUN_TUNING" = true ]; then
     section "Step 2.5: Hyperparameter Tuning"
     info "Running grid search over LR, Dropout, and Batch Size for all 3 ontologies."
     EPOCHS="$EPOCHS" DATASET_PATH="$DATASET_PKL" bash run_tuning.sh
-    python3 aggregate_tuning.py
+    python3 scripts/aggregate_tuning.py
 else
     warn "Skipping hyperparameter tuning (pass --tune to run)"
 fi
@@ -134,7 +134,7 @@ if [ "$SKIP_ABLATIONS" = false ]; then
 else
     warn "Skipping ablations (--skip-ablations)"
     info "If you only want one quick training run, execute:"
-    info "  python3 train.py --model $MAIN_MODEL --loss $MAIN_LOSS --seed $MAIN_SEED --ontology $MAIN_ONT --epochs $EPOCHS"
+    info "  python3 src/train.py --model $MAIN_MODEL --loss $MAIN_LOSS --seed $MAIN_SEED --ontology $MAIN_ONT --epochs $EPOCHS"
 fi
 
 # ─── Step 4: Per-cluster evaluation ──────────────────────────────────────────
@@ -152,7 +152,7 @@ if [ "$SKIP_EVAL" = false ]; then
 
         if [ -f "$BEST_MODEL_PATH" ]; then
             info "Per-cluster eval: $ONT"
-            python3 per_cluster_eval.py \
+            python3 scripts/per_cluster_eval.py \
                 --model_path "$BEST_MODEL_PATH" \
                 --model      "$MAIN_MODEL" \
                 --ontology   "$ONT" \
@@ -209,8 +209,8 @@ fi
 if [ "$SKIP_PLOTS" = false ]; then
     section "Step 6: Aggregate Results and Generate Plots"
 
-    python3 aggregate_results.py
-    python3 plot_results.py
+    python3 scripts/aggregate_results.py
+    python3 plots/plot_results.py
     success "Plots saved to plots/"
 else
     warn "Skipping plots (--skip-plots)"

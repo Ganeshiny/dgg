@@ -24,16 +24,17 @@ MODELS=("Hybrid_JK")
 LOSSES=("BCE" "Focal")
 SEEDS=(42 123 456)
 
-BEST_PARAMS=$(python3 get_best_hyperparams.py --ontology "$ONT" --summary_file "tuning_runs_jk/tuning_results_summary.csv")
+BEST_PARAMS=$(python3 scripts/get_best_hyperparams.py --ontology "$ONT" --summary_file "tuning_runs_jk/tuning_results_summary.csv")
 eval "$BEST_PARAMS"
 
 for model in "${MODELS[@]}"; do
     for loss in "${LOSSES[@]}"; do
         for seed in "${SEEDS[@]}"; do
             echo "Running: ${ONT}_${model}_${loss}_s${seed}"
-            python3 train.py \
+            python3 src/train.py \
                 --model "$model" \
                 --loss "$loss" \
+                    --focal_gamma "${GAMMA:-4.0}" \
                 --seed "$seed" \
                 --ontology "$ONT" \
                 --epochs 1000 \

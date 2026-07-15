@@ -1,3 +1,6 @@
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
 import os
 import subprocess
 import json
@@ -8,7 +11,7 @@ import pandas as pd
 def run_experiment(model, loss, seed=12345):
     print(f"=== Running Experiment: Model={model}, Loss={loss} ===")
     cmd = [
-        "python", "train.py",
+        sys.executable, "src/train.py",
         "--model", model,
         "--loss", loss,
         "--epochs", "50",

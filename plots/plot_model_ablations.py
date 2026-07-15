@@ -1,5 +1,8 @@
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
 """
-Publication-quality plotting for DeepGreenGO extended ablations (Input & Loss).
+Publication-quality plotting for DeepGreenGO results.
 Generates multi-metric figures with clear value annotations and professional styling.
 """
 
@@ -10,6 +13,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 import seaborn as sns
+from sklearn.metrics import precision_recall_curve, auc
 import warnings
 
 warnings.filterwarnings("ignore")
@@ -18,29 +22,22 @@ warnings.filterwarnings("ignore")
 # CONFIGURATION
 # ─────────────────────────────────────────────────────────────────────────────
 
-INPUT_DIR = 'runs_ablation_input'
-LOSS_DIR = 'runs_ablation_loss'
-OUT_DIR = 'plots_publication'
+RUNS_DIR = 'runs'
+OUT_DIR = 'plots/ablations'
 os.makedirs(OUT_DIR, exist_ok=True)
 
 ONTOLOGIES = ['mf', 'bp', 'cc']
 ONT_LABELS = {'mf': 'Molecular Function', 'bp': 'Biological Process', 'cc': 'Cellular Component'}
+MODELS = ['MLP', 'GCN', 'GAT', 'Hybrid', 'Hybrid_JK']
 
-# High-contrast palettes (Paul Tol vibrant-inspired)
-COLORS_INPUT = {
-    'Full (Seq + Struct)': '#EE3377',    # Magenta
-    'Sequence Only': '#0077BB',          # Blue
-    'Structure Only': '#EE7733',         # Orange
+# High-contrast palette (Paul Tol vibrant)
+COLORS = {
+    'MLP': '#EE7733',       # Orange
+    'GCN': '#0077BB',       # Blue
+    'GAT': '#33BBEE',       # Cyan
+    'Hybrid': '#EE3377',    # Magenta
+    'Hybrid_JK': '#CC3311'  # Red
 }
-ORDER_INPUT = ['Full (Seq + Struct)', 'Sequence Only', 'Structure Only']
-
-COLORS_LOSS = {
-    'BCE': '#33BBEE',                 # Cyan
-    'Focal (γ=1.0)': '#EE7733',       # Orange
-    'Focal (γ=2.0)': '#CC3311',       # Red
-    'Focal (γ=3.0)': '#009988',       # Teal
-}
-ORDER_LOSS = ['BCE', 'Focal (γ=1.0)', 'Focal (γ=2.0)', 'Focal (γ=3.0)']
 
 # Matplotlib configuration
 plt.style.use('seaborn-v0_8-whitegrid')
@@ -65,6 +62,8 @@ plt.rcParams.update({
 # ─────────────────────────────────────────────────────────────────────────────
 # UTILITIES
 # ─────────────────────────────────────────────────────────────────────────────
+
+import matplotlib.patheffects as pe
 
 def annotate_bars(ax, metric_name, decimals=3):
     """Add value labels above bars."""
@@ -119,10 +118,10 @@ def style_ax(ax, remove_spines=['top', 'right']):
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# PLOTTING FUNCTIONS
+# PROTEIN-CENTRIC PLOTS (Micro-averaged)
 # ─────────────────────────────────────────────────────────────────────────────
 
-def plot_micro_metrics(df, hue_col, order, colors, prefix='input'):
+def plot_micro_metrics(df):
     """Plot protein-centric (micro-averaged) metrics across ontologies."""
     
     metrics = [
@@ -132,12 +131,13 @@ def plot_micro_metrics(df, hue_col, order, colors, prefix='input'):
     ]
     
     fig, axes = plt.subplots(1, 3, figsize=(15, 5), sharey=False)
-    fig.suptitle(f'Protein-Centric Performance ({prefix.title()} Ablation)', 
+    fig.suptitle('Protein-Centric Performance (Micro-averaged)', 
                  fontsize=14, fontweight='normal', y=1.00)
     
     for idx, (metric_col, metric_label, decimals) in enumerate(metrics):
         ax = axes[idx]
         
+        # Prepare data
         plot_df = df.copy()
         plot_df['Ontology_Label'] = plot_df['Ontology'].str.lower().map(ONT_LABELS)
         
@@ -146,14 +146,15 @@ def plot_micro_metrics(df, hue_col, order, colors, prefix='input'):
                    ha='center', va='center', transform=ax.transAxes)
             continue
         
+        # Create plot
         sns.barplot(
             data=plot_df,
             x='Ontology_Label',
             y=metric_col,
-            hue=hue_col,
-            hue_order=order,
+            hue='Model',
+            hue_order=MODELS,
             order=[ONT_LABELS[o] for o in ONTOLOGIES],
-            palette=colors,
+            palette=COLORS,
             errorbar='sd',
             capsize=0.08,
             err_kws={'linewidth': 1.0, 'color': 'black'},
@@ -162,6 +163,7 @@ def plot_micro_metrics(df, hue_col, order, colors, prefix='input'):
             ax=ax
         )
         
+        # Styling
         ax.set_title(metric_label, fontweight='normal', fontsize=11)
         ax.set_xlabel('')
         ax.set_ylabel(metric_label if idx == 0 else '')
@@ -180,14 +182,21 @@ def plot_micro_metrics(df, hue_col, order, colors, prefix='input'):
         else:
             ax.get_legend().remove() if ax.get_legend() else None
         
+        # Rotate labels
         ax.set_xticklabels(ax.get_xticklabels(), rotation=15, ha='right')
+        
+        # Annotations
         annotate_bars(ax, metric_label, decimals)
     
     plt.tight_layout(rect=[0, 0, 1, 0.97])
-    save_fig(f'{prefix}_micro_metrics', OUT_DIR)
+    save_fig('micro_metrics_combined', OUT_DIR)
 
 
-def plot_macro_metrics(df, hue_col, order, colors, prefix='input'):
+# ─────────────────────────────────────────────────────────────────────────────
+# LABEL-CENTRIC PLOTS (Macro-averaged)
+# ─────────────────────────────────────────────────────────────────────────────
+
+def plot_macro_metrics(df):
     """Plot label-centric (macro-averaged) metrics across ontologies."""
     
     metrics = [
@@ -197,12 +206,13 @@ def plot_macro_metrics(df, hue_col, order, colors, prefix='input'):
     ]
     
     fig, axes = plt.subplots(1, 3, figsize=(15, 5), sharey=False)
-    fig.suptitle(f'Label-Centric Performance ({prefix.title()} Ablation)',
+    fig.suptitle('Label-Centric Performance (Macro-averaged)',
                  fontsize=14, fontweight='normal', y=1.00)
     
     for idx, (metric_col, metric_label, decimals) in enumerate(metrics):
         ax = axes[idx]
         
+        # Prepare data
         plot_df = df.copy()
         plot_df['Ontology_Label'] = plot_df['Ontology'].str.lower().map(ONT_LABELS)
         
@@ -211,14 +221,15 @@ def plot_macro_metrics(df, hue_col, order, colors, prefix='input'):
                    ha='center', va='center', transform=ax.transAxes)
             continue
         
+        # Create plot
         sns.barplot(
             data=plot_df,
             x='Ontology_Label',
             y=metric_col,
-            hue=hue_col,
-            hue_order=order,
+            hue='Model',
+            hue_order=MODELS,
             order=[ONT_LABELS[o] for o in ONTOLOGIES],
-            palette=colors,
+            palette=COLORS,
             errorbar='sd',
             capsize=0.08,
             err_kws={'linewidth': 1.0, 'color': 'black'},
@@ -227,6 +238,7 @@ def plot_macro_metrics(df, hue_col, order, colors, prefix='input'):
             ax=ax
         )
         
+        # Styling
         ax.set_title(metric_label, fontweight='normal', fontsize=11)
         ax.set_xlabel('')
         ax.set_ylabel(metric_label if idx == 0 else '')
@@ -245,23 +257,31 @@ def plot_macro_metrics(df, hue_col, order, colors, prefix='input'):
         else:
             ax.get_legend().remove() if ax.get_legend() else None
         
+        # Rotate labels
         ax.set_xticklabels(ax.get_xticklabels(), rotation=15, ha='right')
+        
+        # Annotations
         annotate_bars(ax, metric_label, decimals)
     
     plt.tight_layout(rect=[0, 0, 1, 0.97])
-    save_fig(f'{prefix}_macro_metrics', OUT_DIR)
+    save_fig('macro_metrics_combined', OUT_DIR)
 
 
-def plot_smin(df, hue_col, order, colors, prefix='input'):
+# ─────────────────────────────────────────────────────────────────────────────
+# SEMANTIC DISTANCE (SMIN)
+# ─────────────────────────────────────────────────────────────────────────────
+
+def plot_smin(df):
     """Plot Smin (semantic distance) — lower is better."""
     
     fig, axes = plt.subplots(1, 3, figsize=(15, 5), sharey=False)
-    fig.suptitle(f'Semantic Distance (Smin) ({prefix.title()} Ablation)',
+    fig.suptitle('Semantic Distance (Smin)',
                  fontsize=14, fontweight='normal', y=1.00)
     
     for idx, ont in enumerate(ONTOLOGIES):
         ax = axes[idx]
         
+        # Prepare data
         ont_data = df[df['Ontology'] == ont.upper()]
         
         if ont_data.empty or 'Smin' not in ont_data.columns:
@@ -269,12 +289,13 @@ def plot_smin(df, hue_col, order, colors, prefix='input'):
                    transform=ax.transAxes)
             continue
         
+        # Create plot
         sns.barplot(
             data=ont_data,
-            x=hue_col,
+            x='Model',
             y='Smin',
-            order=order,
-            palette=colors,
+            order=MODELS,
+            palette=COLORS,
             errorbar='sd',
             capsize=0.08,
             err_kws={'linewidth': 1.0, 'color': 'black'},
@@ -283,42 +304,101 @@ def plot_smin(df, hue_col, order, colors, prefix='input'):
             ax=ax
         )
         
+        # Styling
         ax.set_title(ONT_LABELS[ont], fontweight='normal', fontsize=11)
         ax.set_xlabel('')
         ax.set_ylabel('Smin' if idx == 0 else '')
-        ax.set_xticklabels(ax.get_xticklabels(), rotation=25, ha='right')
+        ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha='right')
         
         style_ax(ax)
+        
+        # Annotations
         annotate_bars(ax, "Smin", 1)
     
     plt.tight_layout(rect=[0, 0, 1, 0.97])
-    save_fig(f'{prefix}_smin', OUT_DIR)
+    save_fig('smin_across_ontologies', OUT_DIR)
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# PR CURVES (Example for best model)
+# ─────────────────────────────────────────────────────────────────────────────
+
+def plot_pr_curves(runs_dir):
+    """Generate PR curves for each ontology."""
+    
+    fig, axes = plt.subplots(1, 3, figsize=(15, 4.5))
+    fig.suptitle('Precision-Recall Curves (Micro-averaged)',
+                 fontsize=14, fontweight='normal', y=0.98)
+    
+    for idx, ont in enumerate(['mf', 'bp', 'cc']):
+        ax = axes[idx]
+        
+        # This is a template — adapt to your actual test_y_true.npy, test_y_pred.npy files
+        # For each model, compute and plot PR curve
+        
+        ax.set_xlabel('Recall', fontweight='normal')
+        ax.set_ylabel('Precision' if idx == 0 else '', fontweight='normal')
+        ax.set_title(ONT_LABELS[ont], fontweight='normal', fontsize=11)
+        ax.set_xlim(0, 1)
+        ax.set_ylim(0, 1.05)
+        
+        style_ax(ax)
+        ax.legend(fontsize=8, loc='lower left', framealpha=0.95, edgecolor='#CCCCCC')
+    
+    plt.tight_layout(rect=[0, 0, 1, 0.96])
+    save_fig('pr_curves_combined', OUT_DIR)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
 # MAIN
 # ─────────────────────────────────────────────────────────────────────────────
 
-def load_input_ablations():
+def load_results(runs_dir='runs', best_by_fmax=True):
+    """
+    Load and aggregate results from run directories.
+    
+    Parameters:
+    -----------
+    runs_dir : str
+        Directory containing run subdirectories with test_metrics.json
+    best_by_fmax : bool
+        If True, select best config per model+ontology by Macro Fmax
+    
+    Returns:
+    --------
+    pd.DataFrame
+        Aggregated metrics
+    """
+    
     records = []
-    if not os.path.exists(INPUT_DIR):
-        return pd.DataFrame()
-        
-    for folder in os.listdir(INPUT_DIR):
-        metrics_path = os.path.join(INPUT_DIR, folder, 'test_metrics.json')
+    
+    for folder in os.listdir(runs_dir):
+        metrics_path = os.path.join(runs_dir, folder, 'test_metrics.json')
         if not os.path.exists(metrics_path):
             continue
         
+        # Parse folder name: {ont}_{model}_{loss}_lr{lr}_dp{dp}_bs{bs}_s{seed}
         parts = folder.split('_')
+        if len(parts) < 3:
+            continue
+        
         ont = parts[0].upper()
         
-        if 'seq' in parts and 'only' in parts:
-            modality = 'Sequence Only'
-        elif 'struct' in parts and 'only' in parts:
-            modality = 'Structure Only'
+        # Identify model
+        model = None
+        if 'Hybrid' in parts and 'JK' in parts:
+            model = 'Hybrid_JK'
+        elif 'Hybrid' in parts:
+            model = 'Hybrid'
+        elif 'GAT' in parts:
+            model = 'GAT'
+        elif 'GCN' in parts:
+            model = 'GCN'
+        elif 'MLP' in parts:
+            model = 'MLP'
         else:
-            modality = 'Full (Seq + Struct)'
-            
+            continue
+        
         try:
             with open(metrics_path, 'r') as f:
                 metrics = json.load(f)
@@ -327,73 +407,33 @@ def load_input_ablations():
         
         record = {
             'Ontology': ont,
-            'Modality': modality,
+            'Model': model,
             'Folder': folder
         }
         record.update(metrics)
         records.append(record)
     
-    return pd.DataFrame(records)
-
-
-def load_loss_ablations():
-    records = []
-    if not os.path.exists(LOSS_DIR):
-        return pd.DataFrame()
-        
-    for folder in os.listdir(LOSS_DIR):
-        metrics_path = os.path.join(LOSS_DIR, folder, 'test_metrics.json')
-        if not os.path.exists(metrics_path):
-            continue
-        
-        parts = folder.split('_')
-        ont = parts[0].upper()
-        
-        if 'BCE' in parts:
-            loss = 'BCE'
-        elif 'Focal' in parts:
-            gamma = parts[-1].replace('g', '')
-            loss = f'Focal (γ={gamma})'
-        else:
-            continue
-            
-        try:
-            with open(metrics_path, 'r') as f:
-                metrics = json.load(f)
-        except:
-            continue
-        
-        record = {
-            'Ontology': ont,
-            'Loss': loss,
-            'Folder': folder
-        }
-        record.update(metrics)
-        records.append(record)
-    
-    return pd.DataFrame(records)
+    df = pd.DataFrame(records)
+    return df if not df.empty else pd.DataFrame()
 
 
 def main():
-    print("Loading Input Ablations...")
-    df_input = load_input_ablations()
-    if not df_input.empty:
-        print(f"✓ Loaded {len(df_input)} input ablation records")
-        plot_micro_metrics(df_input, hue_col='Modality', order=ORDER_INPUT, colors=COLORS_INPUT, prefix='input')
-        plot_macro_metrics(df_input, hue_col='Modality', order=ORDER_INPUT, colors=COLORS_INPUT, prefix='input')
-        plot_smin(df_input, hue_col='Modality', order=ORDER_INPUT, colors=COLORS_INPUT, prefix='input')
-    else:
-        print("⚠ No input ablation results found.")
-        
-    print("\nLoading Loss Ablations...")
-    df_loss = load_loss_ablations()
-    if not df_loss.empty:
-        print(f"✓ Loaded {len(df_loss)} loss ablation records")
-        plot_micro_metrics(df_loss, hue_col='Loss', order=ORDER_LOSS, colors=COLORS_LOSS, prefix='loss')
-        plot_macro_metrics(df_loss, hue_col='Loss', order=ORDER_LOSS, colors=COLORS_LOSS, prefix='loss')
-        plot_smin(df_loss, hue_col='Loss', order=ORDER_LOSS, colors=COLORS_LOSS, prefix='loss')
-    else:
-        print("⚠ No loss ablation results found.")
+    print(f"Loading results from: {RUNS_DIR}")
+    df = load_results(RUNS_DIR)
+    
+    if df.empty:
+        print("⚠ No results found. Ensure test_metrics.json files exist in run directories.")
+        return
+    
+    print(f"✓ Loaded {len(df)} run records\n")
+    
+    print("Generating plots...")
+    plot_micro_metrics(df)
+    plot_macro_metrics(df)
+    plot_smin(df)
+    
+    print(f"\n✓ All plots saved to: {OUT_DIR}")
+
 
 if __name__ == "__main__":
     main()

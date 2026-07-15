@@ -1,3 +1,6 @@
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
 """
 aggregate_results.py
 Scans runs/ for completed experiments and prints mean±std tables.

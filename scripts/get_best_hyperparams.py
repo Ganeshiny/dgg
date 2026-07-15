@@ -1,3 +1,6 @@
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
 import pandas as pd
 import argparse
 import os
@@ -11,9 +14,11 @@ def get_best(ontology, summary_file="tuning_runs/tuning_results_summary.csv"):
         df = df[(df['Ontology'] == ontology) & (df['Status'] == 'Completed')]
         if df.empty:
             return None
-        # Sort by Val_Macro_Fmax descending and get the top row
         best = df.sort_values('Val_Macro_Fmax', ascending=False).iloc[0]
-        return best['LR'], best['Dropout'], int(best['BatchSize'])
+        # Include Loss and Gamma if they exist, otherwise fallback
+        loss = best.get('Loss', 'Focal')
+        gamma = best.get('Gamma', 4.0)
+        return best['LR'], best['Dropout'], int(best['BatchSize']), loss, gamma
     except Exception as e:
         return None
 
@@ -26,7 +31,7 @@ if __name__ == "__main__":
     best = get_best(args.ontology, args.summary_file)
     if best:
         # Output as bash-evaluable variables
-        print(f"export LR={best[0]} DROPOUT={best[1]} BATCH_SIZE={best[2]}")
+        print(f"export LR={best[0]} DROPOUT={best[1]} BATCH_SIZE={best[2]} LOSS={best[3]} GAMMA={best[4]}")
     else:
         # Print nothing or export empty variables so bash knows it failed
         pass

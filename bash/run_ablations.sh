@@ -33,7 +33,7 @@ FAILED=0
 
 for ont in "${ONTOLOGIES[@]}"; do
     # Dynamically fetch the best hyperparameters for this specific ontology from the JK tuning runs
-    BEST_PARAMS=$(python3 get_best_hyperparams.py --ontology "$ont" --summary_file "tuning_runs_jk/tuning_results_summary.csv")
+    BEST_PARAMS=$(python3 scripts/get_best_hyperparams.py --ontology "$ont" --summary_file "tuning_runs_jk/tuning_results_summary.csv")
     if [ -n "$BEST_PARAMS" ]; then
         eval "$BEST_PARAMS"
         echo "  [✓] Found Tuned Params: LR=$LR | Dropout=$DROPOUT | BatchSize=$BATCH_SIZE"
@@ -56,9 +56,10 @@ for ont in "${ONTOLOGIES[@]}"; do
                 echo "  Run: $RUN_NAME"
                 echo "------------------------------------------------------"
 
-                python3 train.py \
+                python3 src/train.py \
                     --model "$model" \
                     --loss  "$loss" \
+                    --focal_gamma "${GAMMA:-4.0}" \
                     --seed  "$seed" \
                     --ontology "$ont" \
                     --epochs "$EPOCHS" \

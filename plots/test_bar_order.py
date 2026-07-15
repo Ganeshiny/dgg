@@ -1,3 +1,6 @@
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
 def test_bar_position_calculation():
     MODEL_SET = ["Hybrid_JK", "Hybrid", "BLAST", "DIAMOND", "Naive"]
     FULL_MODEL_ORDER = ["Hybrid", "TransFun", "DeepFRI_Seq", "DeepFRI_Cmap"]

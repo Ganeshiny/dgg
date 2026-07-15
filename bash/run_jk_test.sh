@@ -11,7 +11,7 @@ fi
 ONTOLOGY="$1"
 echo "Fetching best hyperparameters for $ONTOLOGY..."
 
-BEST_PARAMS=$(python3 get_best_hyperparams.py --ontology "$ONTOLOGY")
+BEST_PARAMS=$(python3 scripts/get_best_hyperparams.py --ontology "$ONTOLOGY")
 
 if [ -z "$BEST_PARAMS" ]; then
     echo "Error: Could not find best parameters for $ONTOLOGY in tuning summary."
@@ -26,9 +26,10 @@ OUT_DIR="runs_jk_test/${ONTOLOGY}"
 mkdir -p "$OUT_DIR"
 
 echo "Running HybridGNN_JK training test..."
-python3 train.py \
+python3 src/train.py \
     --model "Hybrid_JK" \
-    --loss "Focal" \
+    --loss "${LOSS:-Focal}" \
+                    --focal_gamma "${GAMMA:-4.0}" \
     --seed 42 \
     --ontology "$ONTOLOGY" \
     --epochs 1000 \

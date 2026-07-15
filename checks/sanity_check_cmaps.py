@@ -1,3 +1,6 @@
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
 import numpy as np, os, glob
 
 npz_dir = 'preprocessing/data/structure_files/tmp_cmap_files'

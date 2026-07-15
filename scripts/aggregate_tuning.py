@@ -1,3 +1,6 @@
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
 """
 aggregate_tuning.py
 Scans tuning_runs/ for completed hyperparameter tuning runs and prints/saves
@@ -24,16 +27,22 @@ def aggregate_tuning(runs_dir: str, output_file: str):
         ontology = ont_map.get(parts[0], 'Unknown')
         
         # Parse params from dir name
-        lr = 'Unknown'
-        dp = 'Unknown'
-        bs = 'Unknown'
-        seed = 'Unknown'
-        for part in parts:
-            if part.startswith('lr'): lr = part[2:]
-            elif part.startswith('dp'): dp = part[2:]
-            elif part.startswith('bs'): bs = part[2:]
-            elif part.startswith('s') and part[1:].isdigit(): seed = part[1:]
-            
+        # Parse hyperparameters from config.json
+        config_file = os.path.join(run_dir, 'config.json')
+        lr, dp, bs, seed, loss, gamma = 'Unknown', 'Unknown', 'Unknown', 'Unknown', 'Unknown', 'Unknown'
+        if os.path.exists(config_file):
+            try:
+                with open(config_file) as f:
+                    cfg = json.load(f)
+                lr = cfg.get('lr', 'Unknown')
+                dp = cfg.get('dropout', 'Unknown')
+                bs = cfg.get('batch_size', 'Unknown')
+                seed = cfg.get('seed', 'Unknown')
+                loss = cfg.get('loss', 'Unknown')
+                gamma = cfg.get('focal_gamma', 'Unknown')
+            except Exception:
+                pass
+
         row = {
             'Ontology': ontology,
             'Model':    'Hybrid_JK' if 'JK' in dir_name else 'Hybrid',
@@ -41,6 +50,8 @@ def aggregate_tuning(runs_dir: str, output_file: str):
             'Dropout':  dp,
             'BatchSize': bs,
             'Seed':     seed,
+            'Loss':     loss,
+            'Gamma':    gamma,
         }
 
         # Get best metrics from training_log.csv

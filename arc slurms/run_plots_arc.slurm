@@ -23,7 +23,7 @@ cd ${PROJECT_DIR}
 
 echo "Starting plotting script (Common Subset)..."
 # Corrected argument: uses underscore instead of dash!
-python plot_sota_comparison.py --common_subset
+python plots/plot_sota_comparison.py --common_subset
 
 echo "========================================================"
 echo "  Plotting Complete!"

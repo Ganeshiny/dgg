@@ -1,3 +1,6 @@
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
 """
 plot_results.py
 Generate publication-quality figures for DeepGreenGO manuscript.
@@ -352,7 +355,7 @@ def plot_baseline_comparison(dgg_csv: str, baseline_csv: str, out_dir: str):
 
 
 if __name__ == "__main__":
-    out_dir = "plots/"
+    out_dir = "plots/main/"
     os.makedirs(out_dir, exist_ok=True)
 
     print("Generating publication-quality figures...")

@@ -1,4 +1,7 @@
 import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
+import sys
 
 def fix_file(path):
     with open(path, "r", encoding="utf-8") as f:

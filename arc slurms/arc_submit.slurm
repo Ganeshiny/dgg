@@ -79,7 +79,7 @@ if [ -n "$SLURM_ARRAY_TASK_ID" ]; then
     
     # Run hyperparameter tuning first for this ontology
     bash run_tuning.sh "$CURRENT_ONT"
-    python3 aggregate_tuning.py
+    python3 scripts/aggregate_tuning.py
 
     # Run ablations for just this ontology
     bash run_ablations.sh "$CURRENT_ONT"

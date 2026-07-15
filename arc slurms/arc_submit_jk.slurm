@@ -64,7 +64,7 @@ if [ -n "$SLURM_ARRAY_TASK_ID" ]; then
     
     # 3. Aggregate the tuning results
     echo "--- Aggregating JK Tuning Results ---"
-    python3 aggregate_tuning.py --runs_dir "tuning_runs_jk/" --output_file "tuning_runs_jk/tuning_results_summary.csv"
+    python3 scripts/aggregate_tuning.py --runs_dir "tuning_runs_jk/" --output_file "tuning_runs_jk/tuning_results_summary.csv"
     
     # 4. Start the full ablation sweep (which now includes Hybrid_JK)
     echo "--- Starting Full Ablations ---"
