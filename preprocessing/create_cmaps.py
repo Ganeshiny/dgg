@@ -41,7 +41,26 @@ import numpy as np
 
 # ── need read_seqs_file from same package dir ─────────────────────────────────
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from extract_seqs_from_cif import read_seqs_file
+def read_seqs_file(path: str) -> dict[str, str]:
+    """Read the canonical FASTA produced by prepare_dataset.py."""
+    sequences: dict[str, str] = {}
+    current: str | None = None
+    with open(path) as handle:
+        for raw in handle:
+            line = raw.strip()
+            if not line:
+                continue
+            if line.startswith(">"):
+                current = line[1:].split()[0]
+                if current in sequences:
+                    raise ValueError(f"Duplicate FASTA identifier: {current}")
+                sequences[current] = ""
+            elif current is None:
+                raise ValueError(f"Sequence before FASTA header in {path}")
+            else:
+                sequences[current] += line
+    return sequences
+
 
 
 # ─────────────────────────────────────────────────────────────────────────────
