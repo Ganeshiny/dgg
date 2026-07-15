@@ -5,8 +5,8 @@
 #SBATCH --cpus-per-task=16
 #SBATCH --time=48:00:00
 #SBATCH --mem=64G
-#SBATCH --output=pdb_rebuild_%j.out
-#SBATCH --error=pdb_rebuild_%j.err
+#SBATCH --output=logs/pdb_rebuild_%j.out
+#SBATCH --error=logs/pdb_rebuild_%j.err
 
 set -euo pipefail
 
@@ -20,8 +20,12 @@ export OMP_NUM_THREADS="${SLURM_CPUS_PER_TASK}"
 export OPENBLAS_NUM_THREADS="${SLURM_CPUS_PER_TASK}"
 export MKL_NUM_THREADS="${SLURM_CPUS_PER_TASK}"
 
+# Some ARC Conda activation hooks reference optional variables while nounset
+# is enabled. Temporarily disable nounset for activation, then restore it.
+set +u
 source "$(conda info --base)/etc/profile.d/conda.sh"
 conda activate "${DGG_CONDA_ENV:-deepgreengo}"
+set -u
 
 command -v python3 >/dev/null
 command -v blastp >/dev/null
