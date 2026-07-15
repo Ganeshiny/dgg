@@ -1,0 +1,18 @@
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/build_arc_tuning_dataset.py", line 263, in <module>
+    main()
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/build_arc_tuning_dataset.py", line 230, in main
+    graph_dir = build_graph_cache(data_root, sorted(sequences))
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/build_arc_tuning_dataset.py", line 154, in build_graph_cache
+    build_graph(protein_id, cmap_dir / f"{protein_id}.npz", graph_dir / f"{protein_id}.pt")
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/build_arc_tuning_dataset.py", line 109, in build_graph
+    protbert = torch.tensor(seq2protbert(sequence), dtype=torch.float32).squeeze(0)
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/create_batch_dataset.py", line 83, in seq2protbert
+    tokenizer, bert_model, bert_device = _get_protbert()
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/create_batch_dataset.py", line 34, in _get_protbert
+    _bert_model = BertModel.from_pretrained(
+  File "/home/ganeshiny.sridharan/miniconda3/envs/deepgreengo/lib/python3.10/site-packages/transformers/modeling_utils.py", line 4267, in from_pretrained
+    checkpoint_files, sharded_metadata = _get_resolved_checkpoint_files(
+  File "/home/ganeshiny.sridharan/miniconda3/envs/deepgreengo/lib/python3.10/site-packages/transformers/modeling_utils.py", line 701, in _get_resolved_checkpoint_files
+    raise OSError(
+OSError: Rostlab/prot_bert_bfd does not appear to have a file named model.safetensors or model.safetensors.index.json and thus cannot be loaded with `safetensors`. Please do not set `use_safetensors=True`.
