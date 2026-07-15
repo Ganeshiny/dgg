@@ -33,7 +33,10 @@ def _get_protbert():
         print("Loading ProtBERT model…")
         _bert_model = BertModel.from_pretrained(
             'Rostlab/prot_bert_bfd',
-            use_safetensors=True,   # avoids torch.load CVE-2025-32434 (needs torch<2.6 fix)
+            # Rostlab/prot_bert_bfd currently publishes a PyTorch checkpoint
+            # (pytorch_model.bin), not a SafeTensors checkpoint. The safety
+            # check is explicitly handled above for this trusted model source.
+            use_safetensors=False,
             token=hf_token
         )
         _bert_model.gradient_checkpointing_enable()
