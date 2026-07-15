@@ -50,11 +50,5 @@ dependencies:
     - transformers>=4.30.0
     - sentencepiece
 
-    # PyTorch Geometric dependencies (installed via pip to guarantee version match)
-    - torch-scatter
-    - torch-sparse
-    - torch-cluster
-    - torch-spline-conv
-
     # Optional: baseline tools
     - biopython   # already in conda, pin here for safety
