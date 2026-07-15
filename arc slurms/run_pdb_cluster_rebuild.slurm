@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 #SBATCH --job-name=dgg_pdb_rebuild
+#SBATCH --partition=cpu2022
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=16
+#SBATCH --cpus-per-task=4
 #SBATCH --time=48:00:00
 #SBATCH --mem=64G
 #SBATCH --output=logs/pdb_rebuild_%j.out
