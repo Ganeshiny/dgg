@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Build a strict MMseqs2 similarity cluster file for split_by_pdb_clusters."""
 from __future__ import annotations
-import argparse, json, subprocess
+import argparse, json, subprocess, shutil
 from pathlib import Path
 from common import DATA_DIR, read_fasta
 
@@ -13,6 +13,15 @@ def main():
     args=ap.parse_args()
     fasta=DATA_DIR/'all_sequences.fasta'; root=DATA_DIR/'strict_mmseqs'; root.mkdir(parents=True,exist_ok=True)
     db=root/'seqdb'; clu=root/f'cluster_{args.threshold}'; tmp=root/'tmp'; tsv=root/f'cluster_{args.threshold}.tsv'; out=root/f'clusters-by-entity-{args.threshold}.txt'
+    # MMseqs databases are prefix-based; remove only this mode's generated outputs
+    # so a rerun after verification failure cannot collide with stale artifacts.
+    for path in root.glob(f'cluster_{args.threshold}*'):
+        if path.is_dir(): shutil.rmtree(path, ignore_errors=True)
+        else: path.unlink(missing_ok=True)
+    for path in root.glob('seqdb*'):
+        if path.is_dir(): shutil.rmtree(path, ignore_errors=True)
+        else: path.unlink(missing_ok=True)
+    shutil.rmtree(tmp, ignore_errors=True)
     subprocess.run(['mmseqs','createdb',str(fasta),str(db)],check=True)
     subprocess.run(['mmseqs','cluster',str(db),str(clu),str(tmp),'--min-seq-id',str(args.threshold/100),'-c',str(args.coverage),'--cov-mode','0','--cluster-mode','1','--threads',str(args.threads)],check=True)
     subprocess.run(['mmseqs','createtsv',str(db),str(db),str(clu),str(tsv)],check=True)
