@@ -55,3 +55,8 @@ epoch=29 loss=0.004859 valid_micro_fmax=0.281503
 epoch=30 loss=0.005068 valid_micro_fmax=0.280768
 epoch=31 loss=0.004890 valid_micro_fmax=0.277826
 epoch=32 loss=0.003528 valid_micro_fmax=0.306334
+epoch=33 loss=0.003502 valid_micro_fmax=0.288183
+epoch=34 loss=0.003023 valid_micro_fmax=0.287784
+epoch=35 loss=0.002917 valid_micro_fmax=0.288239
+Early stopping after 35 epochs (patience=9)
+GPU completion: NVIDIA L40S, 24415, 46068, 0

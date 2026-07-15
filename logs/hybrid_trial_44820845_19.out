@@ -1,0 +1,68 @@
+GPU: NVIDIA L40S
+CUDA tensor check: 8.0
+Wed Jul 15 15:46:38 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 560.35.03              Driver Version: 560.35.03      CUDA Version: 12.6     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA L40S                    On  |   00000000:B5:00.0 Off |                    0 |
+| N/A   39C    P0             38W /  350W |     503MiB /  46068MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|    0   N/A  N/A      2610      C   python3                                       494MiB |
++-----------------------------------------------------------------------------------------+
+CUDA verified: NVIDIA L40S; tensor dot product=8.0
+GPU startup: NVIDIA L40S, 533, 46068, 1
+Loaded train=6026, valid=754; reserved test set is not loaded
+epoch=1 loss=1.248200 valid_micro_fmax=0.010603
+epoch=2 loss=1.188434 valid_micro_fmax=0.010799
+epoch=3 loss=1.148359 valid_micro_fmax=0.011656
+epoch=4 loss=1.110667 valid_micro_fmax=0.012041
+epoch=5 loss=1.078707 valid_micro_fmax=0.012630
+epoch=6 loss=1.054029 valid_micro_fmax=0.014214
+epoch=7 loss=1.027678 valid_micro_fmax=0.018445
+epoch=8 loss=1.033486 valid_micro_fmax=0.019982
+epoch=9 loss=0.987446 valid_micro_fmax=0.021686
+epoch=10 loss=0.967720 valid_micro_fmax=0.026476
+epoch=11 loss=0.951350 valid_micro_fmax=0.030783
+epoch=12 loss=0.934298 valid_micro_fmax=0.033804
+epoch=13 loss=0.920661 valid_micro_fmax=0.039796
+epoch=14 loss=0.909691 valid_micro_fmax=0.038208
+epoch=15 loss=0.897279 valid_micro_fmax=0.042363
+epoch=16 loss=0.881364 valid_micro_fmax=0.054410
+epoch=17 loss=0.870854 valid_micro_fmax=0.053117
+epoch=18 loss=0.859818 valid_micro_fmax=0.057564
+epoch=19 loss=0.849751 valid_micro_fmax=0.064730
+epoch=20 loss=0.841108 valid_micro_fmax=0.065454
+epoch=21 loss=0.834386 valid_micro_fmax=0.071706
+epoch=22 loss=0.823583 valid_micro_fmax=0.077159
+epoch=23 loss=0.816112 valid_micro_fmax=0.085890
+epoch=24 loss=0.807387 valid_micro_fmax=0.084817
+epoch=25 loss=0.800101 valid_micro_fmax=0.094470
+epoch=26 loss=0.792810 valid_micro_fmax=0.101663
+epoch=27 loss=0.787295 valid_micro_fmax=0.102496
+epoch=28 loss=0.779518 valid_micro_fmax=0.095972
+epoch=29 loss=0.771832 valid_micro_fmax=0.104511
+epoch=30 loss=0.766500 valid_micro_fmax=0.096533
+epoch=31 loss=0.761055 valid_micro_fmax=0.111661
+epoch=32 loss=0.754346 valid_micro_fmax=0.103597
+epoch=33 loss=0.745955 valid_micro_fmax=0.123964
+epoch=34 loss=0.739363 valid_micro_fmax=0.100973
+epoch=35 loss=0.733430 valid_micro_fmax=0.113166
+epoch=36 loss=0.726794 valid_micro_fmax=0.111033
+epoch=37 loss=0.720563 valid_micro_fmax=0.108472
+epoch=38 loss=0.713527 valid_micro_fmax=0.115200
+epoch=39 loss=0.707425 valid_micro_fmax=0.111819
+epoch=40 loss=0.699126 valid_micro_fmax=0.106724
+epoch=41 loss=0.691998 valid_micro_fmax=0.106303
+Early stopping after 41 epochs (patience=8)
+GPU completion: NVIDIA L40S, 35821, 46068, 0
