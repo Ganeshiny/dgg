@@ -10,6 +10,12 @@
 
 set -euo pipefail
 
+report_exit() {
+  rc=$?
+  echo "Job exiting with status ${rc} at $(date --iso-8601=seconds)" >&2
+}
+trap report_exit EXIT
+
 PROJECT_DIR="$(git -C "${SLURM_SUBMIT_DIR}" rev-parse --show-toplevel)"
 cd "${PROJECT_DIR}"
 DATA_ROOT="${DGG_DATA_ROOT:-${PROJECT_DIR}/preprocessing/data_arc_rebuild_2026_07_14}"
@@ -27,9 +33,19 @@ source "$(conda info --base)/etc/profile.d/conda.sh"
 conda activate "${DGG_CONDA_ENV:-deepgreengo}"
 set -u
 
-command -v python3 >/dev/null
-command -v blastp >/dev/null
-command -v makeblastdb >/dev/null
+require_command() {
+  local name="$1"
+  if ! command -v "${name}" >/dev/null 2>&1; then
+    echo "ERROR: required command '${name}' is not available in environment '${CONDA_DEFAULT_ENV:-unknown}'." >&2
+    echo "Install/update the environment from environment.yml, then resubmit." >&2
+    exit 127
+  fi
+  echo "Using ${name}: $(command -v "${name}")"
+}
+
+require_command python3
+require_command blastp
+require_command makeblastdb
 
 mkdir -p "${DATA_ROOT}"
 
