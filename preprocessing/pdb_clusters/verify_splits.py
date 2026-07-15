@@ -45,7 +45,8 @@ def main():
             pdb, auth_chain = chain.split('_', 1)
             entity = entity_map.get(pdb, {}).get(auth_chain)
             if entity is not None: entity_to_chain.setdefault(f'{pdb}_{entity}', chain)
-        cluster_file = PDB_CLUSTER_DIR / f'clusters-by-entity-{threshold}.txt'
+        override = __import__('os').environ.get(f'DGG_CLUSTER_FILE_{threshold}')
+        cluster_file = Path(override).expanduser().resolve() if override else PDB_CLUSTER_DIR / f'clusters-by-entity-{threshold}.txt'
         for line in cluster_file.read_text().splitlines():
             members = [entity_to_chain[e] for e in line.split() if e in entity_to_chain]
             for chain in members[1:]: uf.union(members[0], chain)
