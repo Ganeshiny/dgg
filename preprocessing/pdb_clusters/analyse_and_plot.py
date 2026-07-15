@@ -37,10 +37,11 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
 
-PROJECT_DIR = Path(__file__).resolve().parent.parent.parent
-DATA_DIR    = PROJECT_DIR / 'preprocessing' / 'data'
-PLOTS_DIR   = PROJECT_DIR / 'preprocessing' / 'pdb_clusters' / 'plots'
-THRESHOLDS  = [30, 40, 50, 70, 90, 95]
+try:
+    from common import DATA_DIR, SPLIT_ROOT, THRESHOLDS
+except ImportError:
+    from preprocessing.pdb_clusters.common import DATA_DIR, SPLIT_ROOT, THRESHOLDS
+PLOTS_DIR = Path(__file__).resolve().parent / 'plots'
 ONT_LABELS  = {
     'molecular_function': 'MF',
     'biological_process': 'BP',
@@ -54,7 +55,7 @@ PLOTS_DIR.mkdir(parents=True, exist_ok=True)
 # ── Helpers ──────────────────────────────────────────────────────────────────
 
 def load_log(t: int) -> dict | None:
-    p = DATA_DIR / f'pdb_split_{t}' / 'split_log.json'
+    p = SPLIT_ROOT / f'threshold_{t}' / 'split_log.json'
     if not p.exists():
         return None
     with open(p) as fh:
@@ -62,7 +63,7 @@ def load_log(t: int) -> dict | None:
 
 
 def load_go_coverage(t: int) -> dict | None:
-    p = DATA_DIR / f'pdb_split_{t}' / 'go_coverage_full.pkl'
+    p = SPLIT_ROOT / f'threshold_{t}' / 'go_coverage_full.pkl'
     if not p.exists():
         return None
     with open(p, 'rb') as fh:
@@ -70,7 +71,7 @@ def load_go_coverage(t: int) -> dict | None:
 
 
 def load_split_ids(t: int, split: str) -> list[str]:
-    p = DATA_DIR / f'pdb_split_{t}' / f'_{split}.txt'
+    p = SPLIT_ROOT / f'threshold_{t}' / f'_{split}.txt'
     if not p.exists():
         return []
     with open(p) as fh:
@@ -434,7 +435,7 @@ def run_blast_analysis(available: list[int], skip_blast: bool = False) -> None:
     blast_results: dict[int, list[float]] = {}
 
     for t in available:
-        split_dir = DATA_DIR / f'pdb_split_{t}'
+        split_dir = SPLIT_ROOT / f'threshold_{t}'
         train_fa  = split_dir / '_train_sequences.fasta'
         test_fa   = split_dir / '_test_sequences.fasta'
         blast_db  = split_dir / 'blast_train_db'
@@ -531,7 +532,7 @@ def plot_deepgreengo_comparison(available: list[int]) -> None:
     colours = ['#C44E52']
 
     for t in available:
-        blast_out = DATA_DIR / f'pdb_split_{t}' / 'blast_te_vs_tr.tsv'
+        blast_out = SPLIT_ROOT / f'threshold_{t}' / 'blast_te_vs_tr.tsv'
         if not blast_out.exists():
             continue
         max_id: dict[str, float] = {}

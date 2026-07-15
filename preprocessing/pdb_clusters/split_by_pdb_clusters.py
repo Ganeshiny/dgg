@@ -17,7 +17,7 @@ using PDB's weekly DIAMOND sequence clusters, with the following guarantees:
      they fill valid/test).
 
   4. Does NOT touch existing split files or data.  Outputs go to a dedicated
-     subdirectory: preprocessing/data/pdb_split_<threshold>/
+     subdirectory: preprocessing/data/pdb_splits/threshold_<threshold>/
 
   5. Runs for thresholds in {30, 40, 50, 70, 90, 95}.  100 is excluded as it
      provides no meaningful separation.
@@ -40,13 +40,13 @@ from pathlib import Path
 
 import numpy as np
 
-PROJECT_DIR = Path(__file__).resolve().parent.parent.parent
-DATA_DIR    = PROJECT_DIR / 'preprocessing' / 'data'
-ENTITY_MAP  = DATA_DIR / 'entity_map.json'
-CSV_IDS     = PROJECT_DIR / 'preprocessing' / 'viridiplantae_pdb_ids_2024-06-25.csv'
-FASTA_IN    = DATA_DIR / 'all_sequences.fasta'
+try:
+    from common import DATA_DIR, DATASET_ROOT, PDB_CLUSTER_DIR, SPLIT_ROOT, THRESHOLDS
+except ImportError:
+    from preprocessing.pdb_clusters.common import DATA_DIR, DATASET_ROOT, PDB_CLUSTER_DIR, SPLIT_ROOT, THRESHOLDS
 
-THRESHOLDS  = [30, 40, 50, 70, 90, 95]
+ENTITY_MAP = DATA_DIR / 'entity_map.json'
+FASTA_IN = DATA_DIR / 'all_sequences.fasta'
 CLUSTER_URL = 'https://cdn.rcsb.org/resources/sequence/clusters/clusters-by-entity-{t}.txt'
 
 TRAIN_FRAC = 0.80
@@ -106,10 +106,17 @@ def write_fasta_subset(seqs: dict, ids: list[str], path: Path) -> None:
 
 def download_cluster_file(threshold: int) -> list[list[str]]:
     """Download the cluster file and return list-of-lists of entity IDs."""
-    url = CLUSTER_URL.format(t=threshold)
-    print(f'  Downloading: {url}')
+    cached = PDB_CLUSTER_DIR / f'clusters-by-entity-{threshold}.txt'
+    if cached.exists() and cached.stat().st_size:
+        print(f'  Reading cached cluster file: {cached}')
+    else:
+        url = CLUSTER_URL.format(t=threshold)
+        print(f'  Downloading: {url}')
+        cached.parent.mkdir(parents=True, exist_ok=True)
+        with urllib.request.urlopen(url) as resp, cached.open('wb') as target:
+            target.write(resp.read())
     clusters: list[list[str]] = []
-    with urllib.request.urlopen(url) as resp:
+    with cached.open('rb') as resp:
         for line in resp:
             members = line.decode('utf-8').strip().split()
             if members:
@@ -131,7 +138,7 @@ def run_split(
     Build a train/valid/test split using PDB clusters at `threshold`% identity.
     Returns a dict with split lists and diagnostic stats.
     """
-    out_dir = DATA_DIR / f'pdb_split_{threshold}'
+    out_dir = SPLIT_ROOT / f'threshold_{threshold}'
     out_dir.mkdir(parents=True, exist_ok=True)
 
     # ── Step 1: Map chain IDs -> entity IDs ─────────────────────────────────
@@ -168,6 +175,9 @@ def run_split(
     #   a) All chains of the same PDB ID share at least the PDB-entry constraint.
     #   b) Additionally merge via the PDB cluster membership (by entity ID).
     uf = UnionFind()
+    # Register every chain so singleton components are retained.
+    for cid in all_chain_ids:
+        uf.find(cid)
 
     # (a) Pre-seed: all chains of the same PDB ID union together
     pdb_to_chains: dict[str, list[str]] = defaultdict(list)
@@ -210,24 +220,19 @@ def run_split(
 
     # ── Step 5: Bin-pack by protein count ────────────────────────────────────
     total_prots = sum(len(g) for g in super_clusters)
-    train_target = int(total_prots * TRAIN_FRAC)
-    valid_target = int(total_prots * VALID_FRAC)
-
+    targets = {'train': total_prots * TRAIN_FRAC, 'valid': total_prots * VALID_FRAC,
+               'test': total_prots * (1 - TRAIN_FRAC - VALID_FRAC)}
     rng = np.random.default_rng(SEED)
-    order = rng.permutation(len(super_clusters)).tolist()
+    rng.shuffle(super_clusters)
+    super_clusters.sort(key=len, reverse=True)
 
     train_list: list[str] = []
     valid_list: list[str] = []
-    test_list:  list[str] = []
-
-    for idx in order:
-        g = super_clusters[idx]
-        if len(test_list) < (total_prots - train_target - valid_target):
-            test_list.extend(g)
-        elif len(valid_list) < valid_target:
-            valid_list.extend(g)
-        else:
-            train_list.extend(g)
+    test_list: list[str] = []
+    split_lists = {'train': train_list, 'valid': valid_list, 'test': test_list}
+    for group in super_clusters:
+        split = min(split_lists, key=lambda name: len(split_lists[name]) / max(targets[name], 1))
+        split_lists[split].extend(group)
 
     ach_tr = len(train_list) / total_prots
     ach_va = len(valid_list) / total_prots
@@ -306,6 +311,20 @@ def run_split(
     with open(cov_pkl, 'wb') as fh:
         pickle.dump(go_coverage, fh)
 
+    for ontology in ('molecular_function', 'biological_process', 'cellular_component'):
+        for split_name, split_ids in [('train', train_list), ('valid', valid_list), ('test', test_list)]:
+            records = [{
+                'id': protein_id,
+                'sequence': seqs[protein_id],
+                'labels': list(go_table.get(protein_id, {}).get(ontology, [])),
+                'ontology': ontology, 'threshold': threshold, 'split': split_name,
+                'contact_map_path': str(DATA_DIR / 'structure_files' / 'tmp_cmap_files' / f'{protein_id}.npz'),
+            } for protein_id in split_ids if protein_id in seqs]
+            dataset_path = DATASET_ROOT / f'threshold_{threshold}' / f'{ontology}_{split_name}.pkl'
+            dataset_path.parent.mkdir(parents=True, exist_ok=True)
+            with open(dataset_path, 'wb') as fh:
+                pickle.dump(records, fh, protocol=pickle.HIGHEST_PROTOCOL)
+
     return {
         'threshold': threshold,
         'train': train_list,
@@ -366,7 +385,7 @@ def main() -> None:
         parser.error('Specify --threshold N or --all')
 
     # Validate prerequisite files
-    for p in [ENTITY_MAP, CSV_IDS, FASTA_IN]:
+    for p in [ENTITY_MAP, FASTA_IN]:
         if not p.exists():
             sys.exit(f'[ERROR] Required file not found: {p}\n'
                      f'Run build_entity_map.py first if entity_map.json is missing.')
@@ -377,20 +396,19 @@ def main() -> None:
         entity_map: dict[str, dict[str, str]] = json.load(fh)
     print(f'  Entity map covers {len(entity_map):,} PDB IDs.')
 
-    print('Loading Viridiplantae chain IDs from split files …')
-    all_chain_ids: list[str] = []
-    for split_file in ['_train.txt', '_valid.txt', '_test.txt']:
-        p = DATA_DIR / 'split_files' / split_file
-        with open(p) as fh:
-            all_chain_ids.extend(line.strip() for line in fh if line.strip())
-    print(f'  Total chain IDs: {len(all_chain_ids):,}')
-
-    print('Loading GO table …')
-    go_table = load_go_table()
-
-    print('Loading FASTA sequences …')
+    print('Loading FASTA sequences ...')
     seqs = read_fasta(FASTA_IN)
     print(f'  Loaded {len(seqs):,} sequences.')
+    all_chain_ids = sorted(seqs)
+
+    print('Loading GO table ...')
+    records_path = DATA_DIR / 'protein_records.pkl'
+    if records_path.exists():
+        with open(records_path, 'rb') as fh:
+            records = pickle.load(fh)
+        go_table = {protein_id: record.get('annotations', {}) for protein_id, record in records.items()}
+    else:
+        go_table = load_go_table()
 
     thresholds = THRESHOLDS if args.all else [args.threshold]
     for t in thresholds:

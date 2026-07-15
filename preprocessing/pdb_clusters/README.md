@@ -62,7 +62,7 @@ Fixed seed = 42. Logged in `split_log.json`.
 ## Output per threshold
 
 ```
-preprocessing/data/pdb_split_<threshold>/
+preprocessing/data/pdb_splits/threshold_<threshold>/
 ├── _train.txt
 ├── _valid.txt
 ├── _test.txt
@@ -74,6 +74,10 @@ preprocessing/data/pdb_split_<threshold>/
 ```
 
 ## Non-destructive
-All outputs go to `preprocessing/data/pdb_split_<threshold>/`.
+All outputs go to `preprocessing/data/pdb_splits/threshold_<threshold>/`.
 The existing split files in `preprocessing/data/split_files/` are **not modified**.
 To revert: delete the `pdb_split_*` directories.
+
+## ARC rebuild
+
+Run `arc slurms/run_pdb_cluster_rebuild.slurm` from the repository root. It retrieves fresh inputs, builds canonical sequences and annotations, regenerates contact maps, creates all PDB-cluster thresholds, writes ontology/threshold/split pickle datasets under `preprocessing/data/datasets/`, validates every split, and then generates plots. Set `DGG_DATA_ROOT` to a `/work/...` or `/scratch/...` location when the home quota is insufficient.

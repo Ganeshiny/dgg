@@ -32,7 +32,10 @@ import multiprocessing as mp
 from pathlib import Path
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from utils import PLDDT_THRESHOLD
+try:
+    from src.utils import PLDDT_THRESHOLD
+except ImportError:
+    from utils import PLDDT_THRESHOLD
 
 import numpy as np
 
@@ -110,7 +113,8 @@ def make_distance_maps(file_path: str, is_alphafold: bool = False) -> dict:
 
                 try:
                     atom_name = parts[columns['_atom_site.label_atom_id']]
-                    chain_id  = parts[columns['_atom_site.label_asym_id']]
+                    chain_column = '_atom_site.auth_asym_id' if '_atom_site.auth_asym_id' in columns else '_atom_site.label_asym_id'
+                    chain_id  = parts[columns[chain_column]]
                     res_seq   = parts[columns['_atom_site.label_seq_id']]
 
                     if res_seq in ('.', '?'):
@@ -246,7 +250,6 @@ def write_annot_npz(prot: str, prot2seq: dict, struct_dir: str) -> None:
             out_path,
             C_alpha = dmaps[chain]['C_alpha'],
             C_beta  = dmaps[chain]['C_beta'],
-            plddt   = dmaps[chain]['plddt'],
             seqres  = prot2seq[prot],
         )
     except Exception as exc:
@@ -293,7 +296,7 @@ if __name__ == '__main__':
         import sys; sys.exit(0)
 
     # Cap workers: WSL crashes if too many heavy workers run simultaneously
-    nprocs = min(args.num_threads, multiprocessing.cpu_count(), len(to_do))
+    nprocs = min(args.num_threads, mp.cpu_count(), len(to_do))
     # Safety guard: never use more than 4 workers on WSL by default
     nprocs = min(nprocs, 4)
     print(f"### workers            : {nprocs}")
@@ -314,7 +317,7 @@ if __name__ == '__main__':
                 write_annot_npz(prot, prot2seq, struct_dir)
         else:
             # Parallel with a context manager — pool is ALWAYS closed+joined
-            with multiprocessing.Pool(processes=nprocs) as pool:
+            with mp.Pool(processes=nprocs) as pool:
                 pool.starmap(write_annot_npz, args_batch)
             # Pool is fully joined here; memory is released before next batch
 
