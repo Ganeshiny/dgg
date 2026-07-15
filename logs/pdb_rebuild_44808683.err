@@ -1,0 +1,9 @@
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/pdb_clusters/strict_similarity_clusters.py", line 35, in <module>
+    if __name__=='__main__': main()
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/pdb_clusters/strict_similarity_clusters.py", line 17, in main
+    subprocess.run(['mmseqs','cluster',str(db),str(clu),str(tmp),'--min-seq-id',str(args.threshold/100),'-c',str(args.coverage),'--cov-mode','0','--cluster-mode','1','--threads',str(args.threads)],check=True)
+  File "/home/ganeshiny.sridharan/miniconda3/envs/deepgreengo/lib/python3.10/subprocess.py", line 526, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['mmseqs', 'cluster', '/home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/seqdb', '/home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/cluster_30', '/home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp', '--min-seq-id', '0.3', '-c', '0.8', '--cov-mode', '0', '--cluster-mode', '1', '--threads', '4']' returned non-zero exit status 1.
+Job exiting with status 1 at 2026-07-15T09:50:19-06:00
