@@ -106,7 +106,8 @@ def write_fasta_subset(seqs: dict, ids: list[str], path: Path) -> None:
 
 def download_cluster_file(threshold: int) -> list[list[str]]:
     """Download the cluster file and return list-of-lists of entity IDs."""
-    cached = PDB_CLUSTER_DIR / f'clusters-by-entity-{threshold}.txt'
+    override = os.environ.get(f'DGG_CLUSTER_FILE_{threshold}')
+    cached = Path(override).expanduser().resolve() if override else PDB_CLUSTER_DIR / f'clusters-by-entity-{threshold}.txt'
     if cached.exists() and cached.stat().st_size:
         print(f'  Reading cached cluster file: {cached}')
     else:

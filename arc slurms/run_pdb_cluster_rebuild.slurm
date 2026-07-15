@@ -51,6 +51,20 @@ require_command makeblastdb
 
 mkdir -p "${DATA_ROOT}"
 
+if [[ "${DGG_STRICT_30:-0}" == "1" ]]; then
+  require_command mmseqs
+  for required in "${DATA_ROOT}/all_sequences.fasta" "${DATA_ROOT}/entity_map.json" "${DATA_ROOT}/pdb2go.tsv"; do
+    [[ -e "${required}" ]] || { echo "ERROR: strict split input missing: ${required}" >&2; exit 2; }
+  done
+  python3 preprocessing/pdb_clusters/strict_similarity_clusters.py --threshold 30 --coverage 0.80 --threads "${SLURM_CPUS_PER_TASK}"
+  export DGG_CLUSTER_FILE_30="${DATA_ROOT}/strict_mmseqs/clusters-by-entity-30.txt"
+  python3 preprocessing/pdb_clusters/split_by_pdb_clusters.py --threshold 30
+  python3 preprocessing/pdb_clusters/verify_splits.py
+  python3 preprocessing/pdb_clusters/analyse_and_plot.py
+  echo "Strict 30% split-and-plot run completed: $(date --iso-8601=seconds)"
+  exit 0
+fi
+
 # Lightweight modes for an already-built data directory. These never download
 # data, rebuild CIF-derived contact maps, or rerun dataset preparation.
 if [[ "${DGG_PLOTS_ONLY:-0}" == "1" ]]; then
