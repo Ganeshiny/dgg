@@ -49,10 +49,26 @@ require_command makeblastdb
 
 mkdir -p "${DATA_ROOT}"
 
-# Fresh retrieval: GO, SIFTS, RCSB entity query, cluster files, and CIF files.
-python3 preprocessing/pdb_clusters/fetch_data.py \
-  --data-dir "${DATA_ROOT}" \
-  --workers "${DGG_DOWNLOAD_WORKERS:-${SLURM_CPUS_PER_TASK}}"
+# Retrieve external inputs unless an existing, complete data directory is explicitly reused.
+if [[ "${DGG_SKIP_RETRIEVAL:-0}" == "1" ]]; then
+  required_inputs=(
+    "${DATA_ROOT}/go-basic.obo"
+    "${DATA_ROOT}/pdb_chain_go.tsv"
+    "${DATA_ROOT}/structure_files"
+    "${DATA_ROOT}/pdb_clusters"
+  )
+  for input_path in "${required_inputs[@]}"; do
+    if [[ ! -e "${input_path}" ]]; then
+      echo "ERROR: DGG_SKIP_RETRIEVAL=1 but required input is missing: ${input_path}" >&2
+      exit 2
+    fi
+  done
+  echo "Skipping retrieval; reusing existing data under ${DATA_ROOT}"
+else
+  python3 preprocessing/pdb_clusters/fetch_data.py \
+    --data-dir "${DATA_ROOT}" \
+    --workers "${DGG_DOWNLOAD_WORKERS:-${SLURM_CPUS_PER_TASK}}"
+fi
 
 # Build the canonical eligible chain universe from the fresh CIF/SIFTS/GO inputs.
 python3 preprocessing/pdb_clusters/prepare_dataset.py \

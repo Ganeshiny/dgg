@@ -46,7 +46,7 @@ def query_viridiplantae_entities(session: requests.Session) -> tuple[list[str], 
             "type": "terminal",
             "service": "text",
             "parameters": {
-                "attribute": "rcsb_entity_source_organism.ncbi_taxonomy_lineage.id",
+                "attribute": "rcsb_entity_source_organism.taxonomy_lineage.id",
                 "operator": "exact_match",
                 "value": "33090",
             },
