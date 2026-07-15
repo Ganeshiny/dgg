@@ -429,73 +429,87 @@ def plot_supercluster_sizes(available: list[int]) -> None:
 def run_blast_analysis(available: list[int], skip_blast: bool = False) -> None:
     import shutil
     if not shutil.which('blastp') or not shutil.which('makeblastdb'):
-        print('  [SKIP] blastp not found. Install blast+ to enable BLAST analysis.')
+        print('  [SKIP] blastp/makeblastdb not found; leakage report unavailable.')
         return
 
     blast_results: dict[int, list[float]] = {}
+    leakage_report: dict[str, dict] = {}
 
     for t in available:
         split_dir = SPLIT_ROOT / f'threshold_{t}'
-        train_fa  = split_dir / '_train_sequences.fasta'
-        test_fa   = split_dir / '_test_sequences.fasta'
-        blast_db  = split_dir / 'blast_train_db'
+        train_fa = split_dir / '_train_sequences.fasta'
+        test_fa = split_dir / '_test_sequences.fasta'
+        blast_db = split_dir / 'blast_train_db'
         blast_out = split_dir / 'blast_te_vs_tr.tsv'
-
         if not train_fa.exists() or not test_fa.exists():
             print(f'  [SKIP] Missing FASTA for threshold {t}%')
             continue
 
         if not skip_blast or not blast_out.exists():
-            print(f'  Building BLAST DB for {t}% …')
             subprocess.run([
-                'makeblastdb', '-in', str(train_fa),
-                '-dbtype', 'prot', '-out', str(blast_db),
+                'makeblastdb', '-in', str(train_fa), '-dbtype', 'prot', '-out', str(blast_db),
             ], check=True, capture_output=True)
-            print(f'  Running BLAST for {t}% …')
             subprocess.run([
                 'blastp', '-query', str(test_fa), '-db', str(blast_db),
                 '-out', str(blast_out),
-                '-outfmt', '6 qseqid sseqid pident',
-                '-num_threads', '4', '-evalue', '1e-3', '-max_hsps', '1',
+                '-outfmt', '6 qseqid sseqid pident length qlen slen',
+                '-num_threads', '4', '-evalue', '1e-3', '-max_hsps', '1', '-qcov_hsp_perc', '80',
             ], check=True, capture_output=True)
 
-        if not blast_out.exists():
-            continue
-
         max_id: dict[str, float] = {}
+        qualified_id: dict[str, float] = {}
+        best_cov: dict[str, float] = {}
         with open(blast_out) as fh:
             for line in fh:
                 parts = line.strip().split('\t')
-                if len(parts) >= 3:
-                    q, pident = parts[0], float(parts[2])
-                    if q not in max_id or pident > max_id[q]:
-                        max_id[q] = pident
+                if len(parts) < 6:
+                    continue
+                query, pident = parts[0], float(parts[2])
+                aln_len, qlen, slen = map(float, parts[3:6])
+                coverage = aln_len / max(min(qlen, slen), 1.0)
+                if query not in max_id or pident > max_id[query]:
+                    max_id[query] = pident
+                    best_cov[query] = coverage
+                if coverage >= 0.80 and (query not in qualified_id or pident > qualified_id[query]):
+                    qualified_id[query] = pident
 
         test_ids = load_split_ids(t, 'test')
-        blast_results[t] = [max_id.get(pid, 0.0) for pid in test_ids]
+        values = [max_id.get(pid, 0.0) for pid in test_ids]
+        qualified_values = [qualified_id.get(pid, 0.0) for pid in test_ids]
+        blast_results[t] = values
+        leakage_report[str(t)] = {
+            'threshold_percent': t,
+            'n_test_sequences': len(test_ids),
+            'n_test_queries_with_hits': len(max_id),
+            'max_identity_percent': max(values) if values else 0.0,
+            'mean_max_identity_percent': float(np.mean(values)) if values else 0.0,
+            'fraction_at_or_above_60_percent': (
+                sum(v >= 60.0 for v in values) / len(values) if values else 0.0
+            ),
+            'fraction_at_or_above_cluster_threshold': (
+                sum(v >= t for v in values) / len(values) if values else 0.0
+            ),
+            'fraction_at_or_above_threshold_and_80pct_coverage': (
+                sum(v >= t for v in qualified_values) / len(qualified_values) if qualified_values else 0.0
+            ),
+            'max_query_subject_coverage': max(best_cov.values()) if best_cov else 0.0,
+        }
 
     if not blast_results:
         return
+    (DATA_DIR / 'blast_leakage.json').write_text(json.dumps(leakage_report, indent=2) + '\n')
 
-    fig, axes = plt.subplots(1, len(blast_results), figsize=(5 * len(blast_results), 5),
-                              squeeze=False)
-    for ax, (t, ids) in zip(axes[0], blast_results.items()):
-        ax.hist(ids, bins=50, color=plt.cm.plasma(t / 100), edgecolor='white', linewidth=0.5)
-        mean_id = np.mean(ids)
-        ax.axvline(mean_id, color='red', linestyle='--', linewidth=1.5,
-                   label=f'Mean: {mean_id:.1f}%')
-        ax.axvline(60, color='orange', linestyle=':', linewidth=1.5,
-                   label='60% (DeepGreenGO)')
-        over60 = sum(1 for v in ids if v >= 60.0) / len(ids) if ids else 0
-        ax.set_title(f'{t}% Cluster\n{over60:.1%} test≥60% vs train',
-                     fontsize=10, fontweight='bold')
-        ax.set_xlabel('Max BLAST identity to train (%)', fontsize=9)
-        ax.set_ylabel('Count', fontsize=9)
+    fig, axes = plt.subplots(1, len(blast_results), figsize=(5 * len(blast_results), 5), squeeze=False)
+    for ax, (t, values) in zip(axes[0], blast_results.items()):
+        ax.hist(values, bins=50, color=plt.cm.plasma(t / 100), edgecolor='white', linewidth=0.5)
+        ax.axvline(t, color='black', linestyle='--', linewidth=1.3, label=f'Cluster threshold: {t}%')
+        ax.axvline(60, color='orange', linestyle=':', linewidth=1.3, label='60% reference')
+        ax.set_title(f'{t}% cluster\n{sum(v >= t for v in values) / len(values):.2%} ? threshold', fontsize=10, fontweight='bold')
+        ax.set_xlabel('Maximum BLAST identity to training (%)', fontsize=9)
+        ax.set_ylabel('Test sequences', fontsize=9)
         ax.legend(fontsize=8)
         spine_clean(ax)
-
-    fig.suptitle('BLAST Sequence Identity: Test → Train\n(compare to DeepGreenGO: >60% leakage)',
-                 fontsize=12, fontweight='bold')
+    fig.suptitle('Independent BLAST check: test ? train sequence identity', fontsize=12, fontweight='bold')
     out = PLOTS_DIR / '09_blast_identity.png'
     plt.tight_layout()
     plt.savefig(out, dpi=150)
@@ -505,64 +519,31 @@ def run_blast_analysis(available: list[int], skip_blast: bool = False) -> None:
 
 # ── Figure 10: Comparison bar — DeepGreenGO vs PDB splits ───────────────────
 
-def plot_deepgreengo_comparison(available: list[int]) -> None:
-    orig_csv = DATA_DIR / 'blast_identity.csv'
-    if not orig_csv.exists():
-        print('  [SKIP] blast_identity.csv not found. Skipping comparison plot.')
+def plot_leakage_verification(available: list[int]) -> None:
+    report_path = DATA_DIR / 'blast_leakage.json'
+    verification_path = DATA_DIR / 'split_verification.json'
+    if not report_path.exists():
+        print('  [SKIP] blast_leakage.json not found.')
         return
-
-    import csv
-    orig_ids: list[float] = []
-    with open(orig_csv) as fh:
-        reader = csv.DictReader(fh)
-        for row in reader:
-            try:
-                orig_ids.append(float(row['max_identity']) * 100)
-            except (KeyError, ValueError):
-                pass
-
-    if not orig_ids:
-        print('  [SKIP] blast_identity.csv is empty.')
-        return
+    report = json.loads(report_path.read_text())
+    verification = json.loads(verification_path.read_text()) if verification_path.exists() else {}
+    thresholds = [t for t in available if str(t) in report]
+    vals = [report[str(t)]['fraction_at_or_above_threshold_and_80pct_coverage'] for t in thresholds]
+    overlaps = [verification.get(str(t), {}).get('components_crossing_splits', None) for t in thresholds]
 
     fig, ax = plt.subplots(figsize=(10, 5))
-    over60_orig = sum(1 for v in orig_ids if v >= 60) / len(orig_ids)
-    bars_x  = ['DeepGreenGO\n(MMseqs2 30%)']
-    bars_y  = [over60_orig]
-    colours = ['#C44E52']
-
-    for t in available:
-        blast_out = SPLIT_ROOT / f'threshold_{t}' / 'blast_te_vs_tr.tsv'
-        if not blast_out.exists():
-            continue
-        max_id: dict[str, float] = {}
-        with open(blast_out) as fh:
-            for line in fh:
-                parts = line.strip().split('\t')
-                if len(parts) >= 3:
-                    q, pident = parts[0], float(parts[2])
-                    if q not in max_id or pident > max_id[q]:
-                        max_id[q] = pident
-        test_ids = load_split_ids(t, 'test')
-        ids = [max_id.get(pid, 0.0) for pid in test_ids]
-        over60 = sum(1 for v in ids if v >= 60) / len(ids) if ids else 0
-        bars_x.append(f'PDB Cluster\n{t}%')
-        bars_y.append(over60)
-        colours.append(SPLIT_COLORS['test'])
-
-    bar_objs = ax.bar(bars_x, bars_y, color=colours, alpha=0.85, edgecolor='white')
-    for bar, val in zip(bar_objs, bars_y):
-        ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 0.005,
-                f'{val:.1%}', ha='center', va='bottom', fontsize=9, fontweight='bold')
-
-    ax.set_ylabel('Fraction of test proteins with ≥60% BLAST identity to train', fontsize=10)
-    ax.set_title('Sequence Leakage Comparison:\nDeepGreenGO Original vs PDB-Cluster Splits',
-                 fontsize=12, fontweight='bold')
+    bars = ax.bar([f'{t}%' for t in thresholds], vals, color=SPLIT_COLORS['test'], alpha=0.85)
+    for bar, val, overlap in zip(bars, vals, overlaps):
+        label = f'{val:.2%}' if overlap is None else f'{val:.2%}\ncomponents crossing={overlap}'
+        ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 0.005, label,
+                ha='center', va='bottom', fontsize=8)
+    ax.set_ylabel('Fraction with identity ? threshold and ?80% aligned coverage')
+    ax.set_xlabel('PDB entity-cluster threshold')
+    ax.set_title('Leakage verification: cluster assignment plus independent BLAST check', fontsize=12, fontweight='bold')
     ax.yaxis.set_major_formatter(mticker.PercentFormatter(xmax=1))
-    ax.set_ylim(0, min(1.1, max(bars_y) * 1.3 + 0.05))
+    ax.set_ylim(0, min(1.1, max(vals, default=0) * 1.35 + 0.05))
     spine_clean(ax)
-
-    out = PLOTS_DIR / '10_leakage_comparison.png'
+    out = PLOTS_DIR / '10_leakage_verification.png'
     plt.tight_layout()
     plt.savefig(out, dpi=150)
     plt.close()
@@ -731,11 +712,11 @@ def main() -> None:
     print('── Plot 8: Super-cluster counts ───────────────────────────────────')
     plot_supercluster_sizes(available)
 
-    print('── Plot 9: BLAST identity distributions ───────────────────────────')
+    print('── Plot 9: BLAST identity distributions (?80% coverage) ───────────────────────────')
     run_blast_analysis(available, skip_blast=args.skip_blast)
 
-    print('── Plot 10: DeepGreenGO leakage comparison ────────────────────────')
-    plot_deepgreengo_comparison(available)
+    print('── Plot 10: Leakage verification ────────────────────────')
+    plot_leakage_verification(available)
 
     print('── Plot 11: Dataset deep-dive ─────────────────────────────────────')
     plot_dataset_deepdive()

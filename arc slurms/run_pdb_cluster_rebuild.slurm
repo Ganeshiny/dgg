@@ -49,6 +49,9 @@ python3 preprocessing/create_cmaps.py \
 # Generate all PDB-cluster thresholds. This does not read the legacy split_files.
 python3 preprocessing/pdb_clusters/split_by_pdb_clusters.py --all
 
+# Prove disjoint cluster components and exact-sequence non-leakage.
+python3 preprocessing/pdb_clusters/verify_splits.py
+
 # Fail before plotting if a split is incomplete, overlapping, or lacks its pickle.
 python3 - <<'PY'
 import pickle

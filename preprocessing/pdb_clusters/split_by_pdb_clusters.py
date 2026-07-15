@@ -7,7 +7,7 @@ using PDB's weekly DIAMOND sequence clusters, with the following guarantees:
   1. UNION-FIND over chain-level IDs before assigning to splits, so that every
      chain belonging to the same PDB entry that spans multiple entity clusters
      is transitively merged into one super-cluster.  Uses entity_map.json built
-     by build_entity_map.py.
+     by prepare_dataset.py.
 
   2. BIN-PACKING by protein *count* (not cluster count) using a greedy shuffle
      + fill approach, with a fixed seed.  Achieved vs target ratios are logged.
@@ -388,7 +388,7 @@ def main() -> None:
     for p in [ENTITY_MAP, FASTA_IN]:
         if not p.exists():
             sys.exit(f'[ERROR] Required file not found: {p}\n'
-                     f'Run build_entity_map.py first if entity_map.json is missing.')
+                     f'Run prepare_dataset.py first if entity_map.json is missing.')
 
     # Load shared data once
     print('Loading entity map …')

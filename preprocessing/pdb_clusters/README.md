@@ -8,7 +8,6 @@ original MMseqs2-based split approach.
 
 | Script | Purpose |
 |---|---|
-| `build_entity_map.py` | Parse all local CIF.gz files to build `entity_map.json`: auth_chain → entity_id |
 | `split_by_pdb_clusters.py` | Download PDB cluster files, union-find merge, bin-pack split, GO diagnostics |
 | `analyse_and_plot.py` | Generate all 12 diagnostic plots |
 | `plots/` | Output directory for all generated figures |
@@ -16,17 +15,16 @@ original MMseqs2-based split approach.
 ## Usage (in order)
 
 ```bash
-# Step 1: build the auth-chain → entity-number map (run once, ~2-3 min)
-python3 preprocessing/pdb_clusters/build_entity_map.py
+# Fresh ARC run: use the Slurm orchestrator from the repository root.
+sbatch "arc slurms/run_pdb_cluster_rebuild.slurm"
 
-# Step 2: generate splits for all thresholds (downloads 6 cluster files)
+# Equivalent manual order for debugging:
+python3 preprocessing/pdb_clusters/fetch_data.py --data-dir "$DGG_DATA_ROOT"
+python3 preprocessing/pdb_clusters/prepare_dataset.py --data-dir "$DGG_DATA_ROOT"
+python3 preprocessing/create_cmaps.py -annot "$DGG_DATA_ROOT/pdb2go.tsv" -seqs "$DGG_DATA_ROOT/all_sequences.fasta" -struc_dir "$DGG_DATA_ROOT/structure_files"
 python3 preprocessing/pdb_clusters/split_by_pdb_clusters.py --all
-
-# Step 3: generate all diagnostic plots
+python3 preprocessing/pdb_clusters/verify_splits.py
 python3 preprocessing/pdb_clusters/analyse_and_plot.py
-
-# Step 4 (optional, requires blastp): BLAST identity analysis + comparison plots
-python3 preprocessing/pdb_clusters/analyse_and_plot.py --skip_blast  # parse cached TSV
 ```
 
 ## Design Decisions
@@ -75,8 +73,7 @@ preprocessing/data/pdb_splits/threshold_<threshold>/
 
 ## Non-destructive
 All outputs go to `preprocessing/data/pdb_splits/threshold_<threshold>/`.
-The existing split files in `preprocessing/data/split_files/` are **not modified**.
-To revert: delete the `pdb_split_*` directories.
+The legacy `split_files/` tree is not read by this pipeline. Outputs are isolated under `pdb_splits/` and `datasets/`.
 
 ## ARC rebuild
 
