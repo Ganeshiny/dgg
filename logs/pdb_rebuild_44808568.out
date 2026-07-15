@@ -1,0 +1,523 @@
+Data root: /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14
+Using python3: /home/ganeshiny.sridharan/miniconda3/envs/deepgreengo/bin/python3
+Using blastp: /home/ganeshiny.sridharan/miniconda3/envs/deepgreengo/bin/blastp
+Using makeblastdb: /home/ganeshiny.sridharan/miniconda3/envs/deepgreengo/bin/makeblastdb
+Using mmseqs: /home/ganeshiny.sridharan/miniconda3/envs/deepgreengo/bin/mmseqs
+createdb /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/all_sequences.fasta /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/seqdb 
+
+MMseqs Version:                    	18.8cc5c
+Database type                      	0
+Shuffle input database             	true
+Createdb mode                      	0
+Write lookup file                  	1
+Offset of numeric ids              	0
+Threads                            	52
+Compressed                         	0
+Mask residues                      	0
+Mask residues probability          	0.9
+Mask lower case residues           	0
+Mask lower letter repeating N times	0
+Use GPU                            	0
+Verbosity                          	3
+
+Converting sequences
+[
+Time for merging to seqdb_h: 0h 0m 0s 98ms
+Time for merging to seqdb: 0h 0m 0s 132ms
+Database type: Aminoacid
+Time for processing: 0h 0m 0s 550ms
+Create directory /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp
+cluster /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/seqdb /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/cluster_30 /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp --min-seq-id 0.3 -c 0.8 --cov-mode 0 --cluster-mode 1 --threads 4 
+
+MMseqs Version:                     	18.8cc5c
+Substitution matrix                 	aa:blosum62.out,nucl:nucleotide.out
+Seed substitution matrix            	aa:VTML80.out,nucl:nucleotide.out
+Sensitivity                         	4
+k-mer length                        	0
+Target search mode                  	0
+k-score                             	seq:2147483647,prof:2147483647
+Alphabet size                       	aa:21,nucl:5
+Max sequence length                 	65535
+Max results per query               	20
+Split database                      	0
+Split mode                          	2
+Split memory limit                  	0
+Coverage threshold                  	0.8
+Coverage mode                       	0
+Compositional bias                  	1
+Compositional bias scale            	1
+Diagonal scoring                    	true
+Exact k-mer matching                	0
+Mask residues                       	1
+Mask residues probability           	0.9
+Mask lower case residues            	0
+Mask lower letter repeating N times 	0
+Minimum diagonal score              	15
+Selected taxa                       	
+Include identical seq. id.          	false
+Spaced k-mers                       	1
+Preload mode                        	0
+Pseudo count a                      	substitution:1.100,context:1.400
+Pseudo count b                      	substitution:4.100,context:5.800
+Spaced k-mer pattern                	
+Local temporary path                	
+Threads                             	4
+Compressed                          	0
+Verbosity                           	3
+Add backtrace                       	false
+Alignment mode                      	3
+Alignment mode                      	0
+Allow wrapped scoring               	false
+E-value threshold                   	0.001
+Seq. id. threshold                  	0.3
+Min alignment length                	0
+Seq. id. mode                       	0
+Alternative alignments              	0
+Max reject                          	2147483647
+Max accept                          	2147483647
+Score bias                          	0
+Realign hits                        	false
+Realign score bias                  	-0.2
+Realign max seqs                    	2147483647
+Correlation score weight            	0
+Gap open cost                       	aa:11,nucl:5
+Gap extension cost                  	aa:1,nucl:2
+Zdrop                               	40
+Rescore mode                        	0
+Remove hits by seq. id. and coverage	false
+Sort results                        	0
+Cluster mode                        	1
+Max connected component depth       	1000
+Similarity type                     	2
+Weight file name                    	
+Cluster Weight threshold            	0.9
+Single step clustering              	false
+Cascaded clustering steps           	3
+Cluster reassign                    	false
+Remove temporary files              	false
+Force restart with latest tmp       	false
+MPI runner                          	
+k-mers per sequence                 	21
+Scale k-mers per sequence           	aa:0.000,nucl:0.200
+Adjust k-mer length                 	false
+Shift hash                          	67
+Include only extendable             	false
+Skip repeating k-mers               	false
+
+Set cluster sensitivity to -s 5.000000
+Connected component clustering produces less clusters in a single step clustering.
+Please use --single-step-clusteringSet cluster iterations to 3
+linclust /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/seqdb /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/clu_redundancy /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/linclust --cluster-mode 1 --max-iterations 1000 --similarity-type 2 --threads 4 --compressed 0 -v 3 --cluster-weight-threshold 0.9 --sub-mat 'aa:blosum62.out,nucl:nucleotide.out' -a 0 --alignment-mode 3 --alignment-output-mode 0 --wrapped-scoring 0 -e 0.001 --min-seq-id 0.3 --min-aln-len 0 --seq-id-mode 0 --alt-ali 0 -c 0.8 --cov-mode 0 --max-seq-len 65535 --comp-bias-corr 1 --comp-bias-corr-scale 1 --max-rejected 2147483647 --max-accept 2147483647 --add-self-matches 0 --db-load-mode 0 --pca substitution:1.100,context:1.400 --pcb substitution:4.100,context:5.800 --score-bias 0 --realign 0 --realign-score-bias -0.2 --realign-max-seqs 2147483647 --corr-score-weight 0 --gap-open aa:11,nucl:5 --gap-extend aa:1,nucl:2 --zdrop 40 --alph-size aa:13,nucl:5 --kmer-per-seq 21 --spaced-kmer-mode 1 --kmer-per-seq-scale aa:0.000,nucl:0.200 --adjust-kmer-len 0 --mask 0 --mask-prob 0.9 --mask-lower-case 0 --mask-n-repeat 0 -k 0 --hash-shift 67 --split-memory-limit 0 --include-only-extendable 0 --ignore-multi-kmer 0 --rescore-mode 0 --filter-hits 0 --sort-results 0 --remove-tmp-files 0 --force-reuse 0 
+
+kmermatcher /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/seqdb /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/linclust/125845705096348881/pref --sub-mat 'aa:blosum62.out,nucl:nucleotide.out' --alph-size aa:13,nucl:5 --min-seq-id 0.3 --kmer-per-seq 21 --spaced-kmer-mode 1 --kmer-per-seq-scale aa:0.000,nucl:0.200 --adjust-kmer-len 0 --mask 0 --mask-prob 0.9 --mask-lower-case 0 --mask-n-repeat 0 --cov-mode 0 -k 0 -c 0.8 --max-seq-len 65535 --hash-shift 67 --split-memory-limit 0 --include-only-extendable 0 --ignore-multi-kmer 0 --threads 4 --compressed 0 -v 3 --cluster-weight-threshold 0.9 
+
+kmermatcher /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/seqdb /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/linclust/125845705096348881/pref --sub-mat 'aa:blosum62.out,nucl:nucleotide.out' --alph-size aa:13,nucl:5 --min-seq-id 0.3 --kmer-per-seq 21 --spaced-kmer-mode 1 --kmer-per-seq-scale aa:0.000,nucl:0.200 --adjust-kmer-len 0 --mask 0 --mask-prob 0.9 --mask-lower-case 0 --mask-n-repeat 0 --cov-mode 0 -k 0 -c 0.8 --max-seq-len 65535 --hash-shift 67 --split-memory-limit 0 --include-only-extendable 0 --ignore-multi-kmer 0 --threads 4 --compressed 0 -v 3 --cluster-weight-threshold 0.9 
+
+Database size: 7534 type: Aminoacid
+Reduced amino acid alphabet: (A S T) (C) (D B N) (E Q Z) (F Y) (G) (H) (I V) (K R) (L J M) (P) (W) (X) 
+
+Generate k-mers list for 1 split
+[=================================================================] 7.53K 0s 29ms
+Sort kmer 0h 0m 0s 7ms
+Sort by rep. sequence 0h 0m 0s 4ms
+Time for fill: 0h 0m 0s 1ms
+Time for merging to pref: 0h 0m 0s 2ms
+Time for processing: 0h 0m 0s 74ms
+rescorediagonal /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/seqdb /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/seqdb /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/linclust/125845705096348881/pref /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/linclust/125845705096348881/pref_rescore1 --sub-mat 'aa:blosum62.out,nucl:nucleotide.out' --rescore-mode 0 --wrapped-scoring 0 --filter-hits 0 -e 0.001 -c 0.8 -a 0 --cov-mode 0 --min-seq-id 0.5 --min-aln-len 0 --seq-id-mode 0 --add-self-matches 0 --sort-results 0 --db-load-mode 0 --threads 4 --compressed 0 -v 3 
+
+[=================================================================] 7.53K 0s 2ms
+Time for merging to pref_rescore1: 0h 0m 0s 14ms
+Time for processing: 0h 0m 0s 38ms
+clust /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/seqdb /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/linclust/125845705096348881/pref_rescore1 /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/linclust/125845705096348881/pre_clust --cluster-mode 1 --max-iterations 1000 --similarity-type 2 --threads 4 --compressed 0 -v 3 --cluster-weight-threshold 0.9 
+
+Clustering mode: Connected Component
+[=================================================================] 7.53K 0s 0ms
+Sort entries
+Find missing connections
+Found 9935 new connections.
+Reconstruct initial order
+[=================================================================] 7.53K 0s 1ms
+Add missing connections
+[=================================================================] 7.53K 0s 0ms
+
+Time for read in: 0h 0m 0s 9ms
+connected component mode
+Total time: 0h 0m 0s 12ms
+
+Size of the sequence database: 7534
+Size of the alignment database: 7534
+Number of clusters: 956
+
+Writing results 0h 0m 0s 0ms
+Time for merging to pre_clust: 0h 0m 0s 3ms
+Time for processing: 0h 0m 0s 24ms
+createsubdb /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/linclust/125845705096348881/order_redundancy /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/seqdb /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/linclust/125845705096348881/input_step_redundancy -v 3 --subdb-mode 1 
+
+Time for merging to input_step_redundancy: 0h 0m 0s 4ms
+Time for processing: 0h 0m 0s 23ms
+createsubdb /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/linclust/125845705096348881/order_redundancy /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/linclust/125845705096348881/pref /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/linclust/125845705096348881/pref_filter1 -v 3 --subdb-mode 1 
+
+Time for merging to pref_filter1: 0h 0m 0s 3ms
+Time for processing: 0h 0m 0s 17ms
+filterdb /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/linclust/125845705096348881/pref_filter1 /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/linclust/125845705096348881/pref_filter2 --filter-file /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/linclust/125845705096348881/order_redundancy --threads 4 --compressed 0 -v 3 
+
+Filtering using file(s)
+[=================================================================] 956 0s 0ms
+Time for merging to pref_filter2: 0h 0m 0s 15ms
+Time for processing: 0h 0m 0s 43ms
+rescorediagonal /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/linclust/125845705096348881/input_step_redundancy /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/linclust/125845705096348881/input_step_redundancy /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/linclust/125845705096348881/pref_filter2 /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/linclust/125845705096348881/pref_rescore2 --sub-mat 'aa:blosum62.out,nucl:nucleotide.out' --rescore-mode 1 --wrapped-scoring 0 --filter-hits 1 -e 0.001 -c 0.8 -a 0 --cov-mode 0 --min-seq-id 0.3 --min-aln-len 0 --seq-id-mode 0 --add-self-matches 0 --sort-results 0 --db-load-mode 0 --threads 4 --compressed 0 -v 3 
+
+[=================================================================] 956 0s 0ms
+Time for merging to pref_rescore2: 0h 0m 0s 12ms
+Time for processing: 0h 0m 0s 40ms
+align /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/linclust/125845705096348881/input_step_redundancy /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/linclust/125845705096348881/input_step_redundancy /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/linclust/125845705096348881/pref_rescore2 /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/linclust/125845705096348881/aln --sub-mat 'aa:blosum62.out,nucl:nucleotide.out' -a 0 --alignment-mode 3 --alignment-output-mode 0 --wrapped-scoring 0 -e 0.001 --min-seq-id 0.3 --min-aln-len 0 --seq-id-mode 0 --alt-ali 0 -c 0.8 --cov-mode 0 --max-seq-len 65535 --comp-bias-corr 1 --comp-bias-corr-scale 1 --max-rejected 2147483647 --max-accept 2147483647 --add-self-matches 0 --db-load-mode 0 --pca substitution:1.100,context:1.400 --pcb substitution:4.100,context:5.800 --score-bias 0 --realign 0 --realign-score-bias -0.2 --realign-max-seqs 2147483647 --corr-score-weight 0 --gap-open aa:11,nucl:5 --gap-extend aa:1,nucl:2 --zdrop 40 --threads 4 --compressed 0 -v 3 
+
+Compute score, coverage and sequence identity
+Query database size: 956 type: Aminoacid
+Target database size: 956 type: Aminoacid
+Calculation of alignments
+[=================================================================] 956 0s 31ms
+Time for merging to aln: 0h 0m 0s 11ms
+1020 alignments calculated
+1013 sequence pairs passed the thresholds (0.993137 of overall calculated)
+1.059623 hits per query sequence
+Time for processing: 0h 0m 0s 68ms
+clust /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/linclust/125845705096348881/input_step_redundancy /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/linclust/125845705096348881/aln /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/linclust/125845705096348881/clust --cluster-mode 1 --max-iterations 1000 --similarity-type 2 --threads 4 --compressed 0 -v 3 --cluster-weight-threshold 0.9 
+
+Clustering mode: Connected Component
+[=================================================================] 956 0s 0ms
+Sort entries
+Find missing connections
+Found 57 new connections.
+Reconstruct initial order
+[=================================================================] 956 0s 0ms
+Add missing connections
+[=================================================================] 956 0s 0ms
+
+Time for read in: 0h 0m 0s 5ms
+connected component mode
+Total time: 0h 0m 0s 7ms
+
+Size of the sequence database: 956
+Size of the alignment database: 956
+Number of clusters: 904
+
+Writing results 0h 0m 0s 0ms
+Time for merging to clust: 0h 0m 0s 3ms
+Time for processing: 0h 0m 0s 17ms
+mergeclusters /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/seqdb /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/clu_redundancy /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/linclust/125845705096348881/pre_clust /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/linclust/125845705096348881/clust --threads 4 --compressed 0 -v 3 
+
+Clustering step 1
+[=================================================================] 956 0s 0ms
+Clustering step 2
+[=================================================================] 904 0s 3ms
+Write merged clustering
+[=================================================================] 7.53K 0s 12ms
+Time for merging to clu_redundancy: 0h 0m 0s 12ms
+Time for processing: 0h 0m 0s 37ms
+createsubdb /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/clu_redundancy /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/seqdb /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/input_step_redundancy -v 3 --subdb-mode 1 
+
+Time for merging to input_step_redundancy: 0h 0m 0s 4ms
+Time for processing: 0h 0m 0s 16ms
+prefilter /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/input_step_redundancy /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/input_step_redundancy /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/pref_step0 --sub-mat 'aa:blosum62.out,nucl:nucleotide.out' --seed-sub-mat 'aa:VTML80.out,nucl:nucleotide.out' -s 1 -k 0 --target-search-mode 0 --k-score seq:2147483647,prof:2147483647 --alph-size aa:21,nucl:5 --max-seq-len 65535 --max-seqs 20 --split 0 --split-mode 2 --split-memory-limit 0 -c 0.8 --cov-mode 0 --comp-bias-corr 0 --comp-bias-corr-scale 1 --diag-score 0 --exact-kmer-matching 0 --mask 1 --mask-prob 0.9 --mask-lower-case 0 --mask-n-repeat 0 --min-ungapped-score 0 --add-self-matches 0 --spaced-kmer-mode 1 --db-load-mode 0 --pca substitution:1.100,context:1.400 --pcb substitution:4.100,context:5.800 --threads 4 --compressed 0 -v 3 
+
+Query database size: 904 type: Aminoacid
+Estimated memory consumption: 980M
+Target database size: 904 type: Aminoacid
+Index table k-mer threshold: 154 at k-mer size 6 
+Index table: counting k-mers
+[=================================================================] 904 0s 17ms
+Index table: Masked residues: 5543
+Index table: fill
+[=================================================================] 904 0s 31ms
+Index statistics
+Entries:          168873
+DB size:          489 MB
+Avg k-mer size:   0.002639
+Top 10 k-mers
+    SGVRHM	25
+    GLPGMA	15
+    GDGDGL	9
+    MAMGQM	8
+    SMGQGR	8
+    HCWSEA	7
+    SHQEGG	6
+    WSPFGG	6
+    FEGGGG	6
+    GSMSGG	6
+Time for index table init: 0h 0m 0s 627ms
+Process prefiltering step 1 of 1
+
+k-mer similarity threshold: 154
+Starting prefiltering scores calculation (step 1 of 1)
+Query db start 1 to 904
+Target db start 1 to 904
+[=================================================================] 904 0s 28ms
+
+2.016375 k-mers per position
+200 DB matches per sequence
+0 overflows
+2 sequences passed prefiltering per query sequence
+1 median result list length
+0 sequences with 0 size result lists
+Time for merging to pref_step0: 0h 0m 0s 12ms
+Time for processing: 0h 0m 1s 372ms
+align /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/input_step_redundancy /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/input_step_redundancy /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/pref_step0 /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/aln_step0 --sub-mat 'aa:blosum62.out,nucl:nucleotide.out' -a 0 --alignment-mode 3 --alignment-output-mode 0 --wrapped-scoring 0 -e 0.001 --min-seq-id 0.3 --min-aln-len 0 --seq-id-mode 0 --alt-ali 0 -c 0.8 --cov-mode 0 --max-seq-len 65535 --comp-bias-corr 0 --comp-bias-corr-scale 1 --max-rejected 2147483647 --max-accept 2147483647 --add-self-matches 0 --db-load-mode 0 --pca substitution:1.100,context:1.400 --pcb substitution:4.100,context:5.800 --score-bias 0 --realign 0 --realign-score-bias -0.2 --realign-max-seqs 2147483647 --corr-score-weight 0 --gap-open aa:11,nucl:5 --gap-extend aa:1,nucl:2 --zdrop 40 --threads 4 --compressed 0 -v 3 
+
+Compute score, coverage and sequence identity
+Query database size: 904 type: Aminoacid
+Target database size: 904 type: Aminoacid
+Calculation of alignments
+[=================================================================] 904 0s 83ms
+Time for merging to aln_step0: 0h 0m 0s 14ms
+1492 alignments calculated
+1189 sequence pairs passed the thresholds (0.796917 of overall calculated)
+1.315265 hits per query sequence
+Time for processing: 0h 0m 0s 298ms
+clust /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/input_step_redundancy /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/aln_step0 /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/clu_step0 --cluster-mode 1 --max-iterations 1000 --similarity-type 2 --threads 4 --compressed 0 -v 3 --cluster-weight-threshold 0.9 
+
+Clustering mode: Connected Component
+[=================================================================] 904 0s 0ms
+Sort entries
+Find missing connections
+Found 1 new connections.
+Reconstruct initial order
+[=================================================================] 904 0s 0ms
+Add missing connections
+[=================================================================] 904 0s 0ms
+
+Time for read in: 0h 0m 0s 6ms
+connected component mode
+Total time: 0h 0m 0s 8ms
+
+Size of the sequence database: 904
+Size of the alignment database: 904
+Number of clusters: 795
+
+Writing results 0h 0m 0s 0ms
+Time for merging to clu_step0: 0h 0m 0s 4ms
+Time for processing: 0h 0m 0s 19ms
+createsubdb /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/clu_step0 /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/input_step_redundancy /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/input_step1 -v 3 --subdb-mode 1 
+
+Time for merging to input_step1: 0h 0m 0s 3ms
+Time for processing: 0h 0m 0s 24ms
+prefilter /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/input_step1 /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/input_step1 /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/pref_step1 --sub-mat 'aa:blosum62.out,nucl:nucleotide.out' --seed-sub-mat 'aa:VTML80.out,nucl:nucleotide.out' -s 3 -k 0 --target-search-mode 0 --k-score seq:2147483647,prof:2147483647 --alph-size aa:21,nucl:5 --max-seq-len 65535 --max-seqs 20 --split 0 --split-mode 2 --split-memory-limit 0 -c 0.8 --cov-mode 0 --comp-bias-corr 1 --comp-bias-corr-scale 1 --diag-score 1 --exact-kmer-matching 0 --mask 1 --mask-prob 0.9 --mask-lower-case 0 --mask-n-repeat 0 --min-ungapped-score 15 --add-self-matches 0 --spaced-kmer-mode 1 --db-load-mode 0 --pca substitution:1.100,context:1.400 --pcb substitution:4.100,context:5.800 --threads 4 --compressed 0 -v 3 
+
+Query database size: 795 type: Aminoacid
+Estimated memory consumption: 980M
+Target database size: 795 type: Aminoacid
+Index table k-mer threshold: 136 at k-mer size 6 
+Index table: counting k-mers
+[=================================================================] 795 0s 16ms
+Index table: Masked residues: 5134
+Index table: fill
+[=================================================================] 795 0s 32ms
+Index statistics
+Entries:          296722
+DB size:          489 MB
+Avg k-mer size:   0.004636
+Top 10 k-mers
+    SSLPSH	22
+    SGVRHM	20
+    GLPGMA	12
+    ASTGMG	7
+    MAMGQM	7
+    SMGQGR	7
+    LLGPGK	6
+    IFADGG	5
+    GSMSGG	5
+    RGHATG	5
+Time for index table init: 0h 0m 0s 631ms
+Process prefiltering step 1 of 1
+
+k-mer similarity threshold: 136
+Starting prefiltering scores calculation (step 1 of 1)
+Query db start 1 to 795
+Target db start 1 to 795
+[=================================================================] 795 0s 122ms
+
+22.923955 k-mers per position
+389 DB matches per sequence
+0 overflows
+2 sequences passed prefiltering per query sequence
+1 median result list length
+0 sequences with 0 size result lists
+Time for merging to pref_step1: 0h 0m 0s 11ms
+Time for processing: 0h 0m 1s 453ms
+align /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/input_step1 /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/input_step1 /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/pref_step1 /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/aln_step1 --sub-mat 'aa:blosum62.out,nucl:nucleotide.out' -a 0 --alignment-mode 3 --alignment-output-mode 0 --wrapped-scoring 0 -e 0.001 --min-seq-id 0.3 --min-aln-len 0 --seq-id-mode 0 --alt-ali 0 -c 0.8 --cov-mode 0 --max-seq-len 65535 --comp-bias-corr 1 --comp-bias-corr-scale 1 --max-rejected 2147483647 --max-accept 2147483647 --add-self-matches 0 --db-load-mode 0 --pca substitution:1.100,context:1.400 --pcb substitution:4.100,context:5.800 --score-bias 0 --realign 0 --realign-score-bias -0.2 --realign-max-seqs 2147483647 --corr-score-weight 0 --gap-open aa:11,nucl:5 --gap-extend aa:1,nucl:2 --zdrop 40 --threads 4 --compressed 0 -v 3 
+
+Compute score, coverage and sequence identity
+Query database size: 795 type: Aminoacid
+Target database size: 795 type: Aminoacid
+Calculation of alignments
+[=================================================================] 795 0s 43ms
+Time for merging to aln_step1: 0h 0m 0s 13ms
+1105 alignments calculated
+844 sequence pairs passed the thresholds (0.763801 of overall calculated)
+1.061635 hits per query sequence
+Time for processing: 0h 0m 0s 91ms
+clust /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/input_step1 /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/aln_step1 /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/clu_step1 --cluster-mode 1 --max-iterations 1000 --similarity-type 2 --threads 4 --compressed 0 -v 3 --cluster-weight-threshold 0.9 
+
+Clustering mode: Connected Component
+[=================================================================] 795 0s 0ms
+Sort entries
+Find missing connections
+Found 5 new connections.
+Reconstruct initial order
+[=================================================================] 795 0s 0ms
+Add missing connections
+[=================================================================] 795 0s 0ms
+
+Time for read in: 0h 0m 0s 4ms
+connected component mode
+Total time: 0h 0m 0s 6ms
+
+Size of the sequence database: 795
+Size of the alignment database: 795
+Number of clusters: 768
+
+Writing results 0h 0m 0s 0ms
+Time for merging to clu_step1: 0h 0m 0s 4ms
+Time for processing: 0h 0m 0s 17ms
+createsubdb /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/clu_step1 /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/input_step1 /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/input_step2 -v 3 --subdb-mode 1 
+
+Time for merging to input_step2: 0h 0m 0s 10ms
+Time for processing: 0h 0m 0s 34ms
+prefilter /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/input_step2 /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/input_step2 /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/pref_step2 --sub-mat 'aa:blosum62.out,nucl:nucleotide.out' --seed-sub-mat 'aa:VTML80.out,nucl:nucleotide.out' -s 5 -k 0 --target-search-mode 0 --k-score seq:2147483647,prof:2147483647 --alph-size aa:21,nucl:5 --max-seq-len 65535 --max-seqs 20 --split 0 --split-mode 2 --split-memory-limit 0 -c 0.8 --cov-mode 0 --comp-bias-corr 1 --comp-bias-corr-scale 1 --diag-score 1 --exact-kmer-matching 0 --mask 1 --mask-prob 0.9 --mask-lower-case 0 --mask-n-repeat 0 --min-ungapped-score 15 --add-self-matches 0 --spaced-kmer-mode 1 --db-load-mode 0 --pca substitution:1.100,context:1.400 --pcb substitution:4.100,context:5.800 --threads 4 --compressed 0 -v 3 
+
+Query database size: 768 type: Aminoacid
+Estimated memory consumption: 980M
+Target database size: 768 type: Aminoacid
+Index table k-mer threshold: 118 at k-mer size 6 
+Index table: counting k-mers
+[=================================================================] 768 0s 15ms
+Index table: Masked residues: 5003
+Index table: fill
+[=================================================================] 768 0s 32ms
+Index statistics
+Entries:          303992
+DB size:          490 MB
+Avg k-mer size:   0.004750
+Top 10 k-mers
+    SSLPSH	19
+    SGVRHM	17
+    GLPGMA	10
+    ASTGMG	6
+    LLGPGK	6
+    MAMGQM	6
+    SMGQGR	6
+    IFADGG	5
+    GIFENI	5
+    YNLEKK	5
+Time for index table init: 0h 0m 0s 625ms
+Process prefiltering step 1 of 1
+
+k-mer similarity threshold: 118
+Starting prefiltering scores calculation (step 1 of 1)
+Query db start 1 to 768
+Target db start 1 to 768
+[=================================================================] 768 0s 557ms
+
+173.716861 k-mers per position
+703 DB matches per sequence
+0 overflows
+4 sequences passed prefiltering per query sequence
+3 median result list length
+0 sequences with 0 size result lists
+Time for merging to pref_step2: 0h 0m 0s 23ms
+Time for processing: 0h 0m 1s 896ms
+align /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/input_step2 /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/input_step2 /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/pref_step2 /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/aln_step2 --sub-mat 'aa:blosum62.out,nucl:nucleotide.out' -a 0 --alignment-mode 3 --alignment-output-mode 0 --wrapped-scoring 0 -e 0.001 --min-seq-id 0.3 --min-aln-len 0 --seq-id-mode 0 --alt-ali 0 -c 0.8 --cov-mode 0 --max-seq-len 65535 --comp-bias-corr 1 --comp-bias-corr-scale 1 --max-rejected 2147483647 --max-accept 2147483647 --add-self-matches 0 --db-load-mode 0 --pca substitution:1.100,context:1.400 --pcb substitution:4.100,context:5.800 --score-bias 0 --realign 0 --realign-score-bias -0.2 --realign-max-seqs 2147483647 --corr-score-weight 0 --gap-open aa:11,nucl:5 --gap-extend aa:1,nucl:2 --zdrop 40 --threads 4 --compressed 0 -v 3 
+
+Compute score, coverage and sequence identity
+Query database size: 768 type: Aminoacid
+Target database size: 768 type: Aminoacid
+Calculation of alignments
+[=================================================================] 768 0s 58ms
+Time for merging to aln_step2: 0h 0m 0s 9ms
+1359 alignments calculated
+775 sequence pairs passed the thresholds (0.570272 of overall calculated)
+1.009115 hits per query sequence
+Time for processing: 0h 0m 0s 85ms
+clust /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/input_step2 /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/aln_step2 /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/clu_step2 --cluster-mode 1 --max-iterations 1000 --similarity-type 2 --threads 4 --compressed 0 -v 3 --cluster-weight-threshold 0.9 
+
+Clustering mode: Connected Component
+[=================================================================] 768 0s 0ms
+Sort entries
+Find missing connections
+Found 1 new connections.
+Reconstruct initial order
+[=================================================================] 768 0s 0ms
+Add missing connections
+[=================================================================] 768 0s 0ms
+
+Time for read in: 0h 0m 0s 4ms
+connected component mode
+Total time: 0h 0m 0s 5ms
+
+Size of the sequence database: 768
+Size of the alignment database: 768
+Number of clusters: 764
+
+Writing results 0h 0m 0s 0ms
+Time for merging to clu_step2: 0h 0m 0s 3ms
+Time for processing: 0h 0m 0s 14ms
+mergeclusters /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/seqdb /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/cluster_30 /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/clu_redundancy /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/clu_step0 /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/clu_step1 /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/tmp/14113766235313100989/clu_step2 --threads 4 --compressed 0 -v 3 
+
+Clustering step 1
+[=================================================================] 904 0s 0ms
+Clustering step 2
+[=================================================================] 795 0s 2ms
+Clustering step 3
+[=================================================================] 768 0s 4ms
+Clustering step 4
+[=================================================================] 764 0s 6ms
+Write merged clustering
+[=================================================================] 7.53K 0s 16ms
+Time for merging to cluster_30: 0h 0m 0s 12ms
+Time for processing: 0h 0m 0s 41ms
+createtsv /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/seqdb /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/seqdb /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/cluster_30 /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/cluster_30.tsv 
+
+MMseqs Version:                 	18.8cc5c
+First sequence as representative	false
+Target column                   	1
+Add full header                 	false
+Sequence source                 	0
+Database output                 	false
+Threads                         	52
+Compressed                      	0
+Verbosity                       	3
+
+Time for merging to cluster_30.tsv: 0h 0m 0s 429ms
+Time for processing: 0h 0m 0s 576ms
+Wrote strict cluster file: /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/clusters-by-entity-30.txt (764 groups)
+DGG_CLUSTER_FILE_30=/home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/clusters-by-entity-30.txt
+Loading entity map …
+  Entity map covers 8,795 PDB IDs.
+Loading FASTA sequences ...
+  Loaded 7,534 sequences.
+Loading GO table ...
+
+============================================================
+  Running split at 30% sequence identity
+============================================================
+  Chain IDs with entity mapping: 7,534
+  Chain IDs without entity mapping: 0
+  Reading cached cluster file: /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/clusters-by-entity-30.txt
+  Downloaded 764 clusters.
+  Exact duplicate chains joined: 5,799
+  Chains with no cluster assignment (treated as singletons): 0
+  Super-clusters after union-find: 471
+  Largest super-cluster: 841 chains
+  Median super-cluster size: 6
+  Singletons: 65
+  Split sizes (target  80%/10%/10%):
+    Train:  6,026  (80.0%)
+    Valid:    754  (10.0%)
+    Test:     754  (10.0%)
+  Wrote _train.txt: 6,026 IDs
+  Wrote _valid.txt: 754 IDs
+  Wrote _test.txt: 754 IDs
+  Wrote per-split FASTA files.
+  Wrote split log → /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/pdb_splits/threshold_30/split_log.json
+
+Done.
