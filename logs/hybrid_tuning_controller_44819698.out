@@ -1,0 +1,133 @@
+Mode: tune
+Project: /home/ganeshiny.sridharan/dgg/deep-green-GO
+Data: /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14
+Logs: /home/ganeshiny.sridharan/dgg/deep-green-GO/logs
+Split: nominal 30% identity / 80% coverage split
+Independent residual-similarity audit: 116/754 test sequences (15.38%).
+Building 7,534 shared ProtBERT graph files on CPU (cached files are reused).
+Loading ProtBERT tokenizer…
+Loading ProtBERT model…
+ProtBERT loaded on cpu
+  built 100/7,534
+  built 200/7,534
+  built 300/7,534
+  built 400/7,534
+  built 500/7,534
+  built 600/7,534
+  built 700/7,534
+  built 800/7,534
+  built 900/7,534
+  built 1,000/7,534
+  built 1,100/7,534
+  built 1,200/7,534
+  built 1,300/7,534
+  built 1,400/7,534
+  built 1,500/7,534
+  built 1,600/7,534
+  built 1,700/7,534
+  built 1,800/7,534
+  built 1,900/7,534
+  built 2,000/7,534
+  built 2,100/7,534
+  built 2,200/7,534
+  built 2,300/7,534
+  built 2,400/7,534
+  built 2,500/7,534
+  built 2,600/7,534
+  built 2,700/7,534
+  built 2,800/7,534
+  built 2,900/7,534
+  built 3,000/7,534
+  built 3,100/7,534
+  built 3,200/7,534
+  built 3,300/7,534
+  built 3,400/7,534
+  built 3,500/7,534
+  built 3,600/7,534
+  built 3,700/7,534
+  built 3,800/7,534
+  built 3,900/7,534
+  built 4,000/7,534
+  built 4,100/7,534
+  built 4,200/7,534
+  built 4,300/7,534
+  built 4,400/7,534
+  built 4,500/7,534
+  built 4,600/7,534
+  built 4,700/7,534
+  built 4,800/7,534
+  built 4,900/7,534
+  built 5,000/7,534
+  built 5,100/7,534
+  built 5,200/7,534
+  built 5,300/7,534
+  built 5,400/7,534
+  built 5,500/7,534
+  built 5,600/7,534
+  built 5,700/7,534
+  built 5,800/7,534
+  built 5,900/7,534
+  built 6,000/7,534
+  built 6,100/7,534
+  built 6,200/7,534
+  built 6,300/7,534
+  built 6,400/7,534
+  built 6,500/7,534
+  built 6,600/7,534
+  built 6,700/7,534
+  built 6,800/7,534
+  built 6,900/7,534
+  built 7,000/7,534
+  built 7,100/7,534
+  built 7,200/7,534
+  built 7,300/7,534
+  built 7,400/7,534
+  built 7,500/7,534
+  built 7,534/7,534
+{
+  "schema_version": 1,
+  "description": "nominal 30% identity / 80% coverage split",
+  "threshold_percent": 30,
+  "coverage": 0.8,
+  "split_counts": {
+    "train": 6026,
+    "valid": 754,
+    "test": 754
+  },
+  "strict_cluster_manifest": "/home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/manifest_30.json",
+  "strict_cluster_file": "/home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/strict_mmseqs/clusters-by-entity-30.txt",
+  "residual_test_to_train_similarity": {
+    "count": 116,
+    "denominator_all_test_sequences": 754,
+    "percentage": 15.384615384615385
+  },
+  "ontologies": {
+    "molecular_function": {
+      "label_dimension": 1052,
+      "train_positive_terms": 947
+    },
+    "biological_process": {
+      "label_dimension": 2193,
+      "train_positive_terms": 2027
+    },
+    "cellular_component": {
+      "label_dimension": 318,
+      "train_positive_terms": 278
+    }
+  },
+  "dataset_dir": "/home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/arc_tuning/datasets",
+  "graph_dir": "/home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/arc_tuning/graphs_protbert",
+  "source_sha256": {
+    "all_sequences.fasta": "1591fcdca5d9e04f764e71e6205b669893279614b092bd5def95457e00cb049e",
+    "strict_manifest": "7443e325952d540f34f854b6d3acb54f308307a4c85a1f08eb17fd1176cf887a"
+  },
+  "tuning_loads": [
+    "train",
+    "valid"
+  ],
+  "test_set_policy": "not loaded by tuning; reserved for final evaluation only"
+}
+Wrote 40 random-search trials to /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/arc_tuning/hybrid_random_trials.jsonl
+Submitted Hybrid search array: 44820845 (40 configurations x 3 ontologies)
+Submitted validation-only selection: 44820846
+Submitted five-seed Hybrid repeats: 44820847
