@@ -8,9 +8,8 @@ from pathlib import Path
 
 
 PROJECT_DIR = Path(__file__).resolve().parents[2]
-DATA_DIR = Path(
-    os.environ.get("DGG_DATA_ROOT", PROJECT_DIR / "preprocessing" / "data")
-).expanduser().resolve()
+DEFAULT_DATA_DIR = PROJECT_DIR / "preprocessing" / "data_arc_rebuild_2026_07_14"
+DATA_DIR = Path(os.environ.get("DGG_DATA_ROOT", DEFAULT_DATA_DIR)).expanduser().resolve()
 PDB_CLUSTER_DIR = DATA_DIR / "pdb_clusters"
 STRUCTURE_DIR = DATA_DIR / "structure_files"
 SPLIT_ROOT = DATA_DIR / "pdb_splits"
