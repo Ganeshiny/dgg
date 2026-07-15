@@ -37,3 +37,13 @@ epoch=11 loss=0.011428 valid_micro_fmax=0.344795
 epoch=12 loss=0.009142 valid_micro_fmax=0.357570
 epoch=13 loss=0.012509 valid_micro_fmax=0.288329
 epoch=14 loss=0.099329 valid_micro_fmax=0.203065
+epoch=15 loss=0.062419 valid_micro_fmax=0.212600
+epoch=16 loss=0.025676 valid_micro_fmax=0.241721
+epoch=17 loss=0.015848 valid_micro_fmax=0.313612
+epoch=18 loss=0.011708 valid_micro_fmax=0.311494
+epoch=19 loss=0.008425 valid_micro_fmax=0.303421
+epoch=20 loss=0.007244 valid_micro_fmax=0.327132
+epoch=21 loss=0.011806 valid_micro_fmax=0.301626
+epoch=22 loss=0.006475 valid_micro_fmax=0.273416
+Early stopping after 22 epochs (patience=10)
+GPU completion: NVIDIA L40S, 37249, 46068, 0

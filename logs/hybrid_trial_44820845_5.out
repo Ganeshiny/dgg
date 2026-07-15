@@ -23,3 +23,32 @@ Wed Jul 15 14:46:03 2026
 CUDA verified: NVIDIA L40S; tensor dot product=8.0
 GPU startup: NVIDIA L40S, 533, 46068, 5
 Loaded train=6026, valid=754; reserved test set is not loaded
+epoch=1 loss=0.811311 valid_micro_fmax=0.265596
+epoch=2 loss=0.419156 valid_micro_fmax=0.256677
+epoch=3 loss=0.208243 valid_micro_fmax=0.359516
+epoch=4 loss=0.126861 valid_micro_fmax=0.368823
+epoch=5 loss=0.087343 valid_micro_fmax=0.381213
+epoch=6 loss=0.069168 valid_micro_fmax=0.426382
+epoch=7 loss=0.061058 valid_micro_fmax=0.394848
+epoch=8 loss=0.059024 valid_micro_fmax=0.404054
+epoch=9 loss=0.049749 valid_micro_fmax=0.379177
+epoch=10 loss=0.035889 valid_micro_fmax=0.420775
+epoch=11 loss=0.046187 valid_micro_fmax=0.352722
+epoch=12 loss=0.147732 valid_micro_fmax=0.324080
+epoch=13 loss=0.050823 valid_micro_fmax=0.382073
+epoch=14 loss=0.032726 valid_micro_fmax=0.406354
+epoch=15 loss=0.025245 valid_micro_fmax=0.430488
+epoch=16 loss=0.018787 valid_micro_fmax=0.430772
+epoch=17 loss=0.018709 valid_micro_fmax=0.439495
+epoch=18 loss=0.018632 valid_micro_fmax=0.401838
+epoch=19 loss=0.036015 valid_micro_fmax=0.387362
+epoch=20 loss=0.040379 valid_micro_fmax=0.405100
+epoch=21 loss=0.021366 valid_micro_fmax=0.406874
+epoch=22 loss=0.015613 valid_micro_fmax=0.387861
+epoch=23 loss=0.016346 valid_micro_fmax=0.429519
+epoch=24 loss=0.031024 valid_micro_fmax=0.427130
+epoch=25 loss=0.018572 valid_micro_fmax=0.436501
+epoch=26 loss=0.096874 valid_micro_fmax=0.369545
+epoch=27 loss=0.090554 valid_micro_fmax=0.403961
+Early stopping after 27 epochs (patience=10)
+GPU completion: NVIDIA L40S, 25765, 46068, 81
