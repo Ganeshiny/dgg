@@ -24,7 +24,12 @@ def _get_protbert():
     global _tokenizer, _bert_model, _bert_device
     if _bert_model is None:
         import transformers.utils.import_utils
-        transformers.utils.import_utils.check_torch_load_is_safe = lambda: None
+        import transformers.modeling_utils
+        # transformers.modeling_utils keeps its own reference to the safety
+        # check, so patch both module references for the trusted local model.
+        _allow_local_checkpoint_load = lambda: None
+        transformers.utils.import_utils.check_torch_load_is_safe = _allow_local_checkpoint_load
+        transformers.modeling_utils.check_torch_load_is_safe = _allow_local_checkpoint_load
         from transformers import BertTokenizer, BertModel
         _bert_device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         print("Loading ProtBERT tokenizer…")
