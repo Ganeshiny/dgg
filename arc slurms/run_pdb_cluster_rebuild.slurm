@@ -54,6 +54,8 @@ if [[ "${DGG_SKIP_RETRIEVAL:-0}" == "1" ]]; then
   required_inputs=(
     "${DATA_ROOT}/go-basic.obo"
     "${DATA_ROOT}/pdb_chain_go.tsv"
+    "${DATA_ROOT}/viridiplantae_pdb_ids.csv"
+    "${DATA_ROOT}/retrieval_manifest.json"
     "${DATA_ROOT}/structure_files"
     "${DATA_ROOT}/pdb_clusters"
   )
@@ -63,6 +65,24 @@ if [[ "${DGG_SKIP_RETRIEVAL:-0}" == "1" ]]; then
       exit 2
     fi
   done
+  python3 - "${DATA_ROOT}" <<'PY'
+import json
+import sys
+from pathlib import Path
+
+root = Path(sys.argv[1])
+manifest = json.loads((root / "retrieval_manifest.json").read_text())
+expected = [x.strip() for x in (root / "viridiplantae_pdb_ids.csv").read_text().replace("\n", "").split(",") if x.strip()]
+missing = [pdb for pdb in expected if not (root / "structure_files" / f"{pdb}.cif.gz").is_file()]
+clusters = [root / "pdb_clusters" / f"clusters-by-entity-{threshold}.txt" for threshold in (30, 40, 50, 70, 90, 95)]
+missing_clusters = [str(path) for path in clusters if not path.is_file() or path.stat().st_size == 0]
+if missing or missing_clusters:
+    raise SystemExit(f"incomplete retrieval: missing CIFs={len(missing)}, missing cluster files={missing_clusters}")
+failures = manifest.get("counts", {}).get("structure_download_failures", 0)
+if failures:
+    raise SystemExit(f"retrieval manifest records {failures} failed structures; do not skip retrieval")
+print(f"Validated complete retrieval: {len(expected)} structures and all cluster files present")
+PY
   echo "Skipping retrieval; reusing existing data under ${DATA_ROOT}"
 else
   python3 preprocessing/pdb_clusters/fetch_data.py \
