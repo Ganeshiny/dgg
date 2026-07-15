@@ -1,0 +1,4 @@
+Data root: /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14
+Using python3: /home/ganeshiny.sridharan/miniconda3/envs/deepgreengo/bin/python3
+Using blastp: /home/ganeshiny.sridharan/miniconda3/envs/deepgreengo/bin/blastp
+Using makeblastdb: /home/ganeshiny.sridharan/miniconda3/envs/deepgreengo/bin/makeblastdb
