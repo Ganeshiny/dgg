@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/src/tune_hybrid.py", line 279, in <module>
+    main()
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/src/tune_hybrid.py", line 251, in main
+    improved = score > best_score + 1e-8 if maximize_selection else score < best_score - 1e-8
+NameError: name 'maximize_selection' is not defined
