@@ -17,6 +17,10 @@ from pathlib import Path
 import numpy as np
 import torch
 
+PROJECT_DIR = Path(__file__).resolve().parents[1]
+import sys
+sys.path.insert(0, str(PROJECT_DIR))
+
 from src.arc_dataset import ArcGraphDataset, make_dataloader
 from src.model import HybridGNN, HybridGNN_JK
 from src.tune_hybrid import micro_fmax
@@ -29,6 +33,7 @@ ONTOLOGIES = ("molecular_function", "biological_process", "cellular_component")
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--data-root", type=Path, required=True)
+    parser.add_argument("--tuning-root", type=Path, required=True)
     parser.add_argument("--checkpoints-root", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--model", choices=("Hybrid", "Hybrid_JK"), default="Hybrid")
@@ -86,6 +91,7 @@ def evaluate_checkpoint(model, loader, device: torch.device, threshold: float):
 def main() -> None:
     args = parse_args()
     data_root = args.data_root.expanduser().resolve()
+    tuning_root = args.tuning_root.expanduser().resolve()
     checkpoints_root = args.checkpoints_root.expanduser().resolve()
     output_dir = args.output_dir.expanduser().resolve()
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -94,7 +100,7 @@ def main() -> None:
 
     rows = []
     for ontology in ONTOLOGIES:
-        dataset_path = data_root / "arc_tuning" / "datasets" / f"{ontology}_test.pkl"
+        dataset_path = tuning_root / "datasets" / f"{ontology}_test.pkl"
         with dataset_path.open("rb") as handle:
             dataset = pickle.load(handle)
         if not isinstance(dataset, ArcGraphDataset) or dataset.split != "test":

@@ -35,6 +35,7 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         default=DEFAULT_ARC_ROOT / "preprocessing" / "data_arc_rebuild_2026_07_14",
     )
+    parser.add_argument("--tuning-root", type=Path, default=None, help="Project-level ARC tuning artifact directory (default: <project>/arc_tuning).")
     parser.add_argument("--validate-only", action="store_true")
     parser.add_argument("--smoke-batches", type=int, default=1)
     return parser.parse_args()
@@ -136,9 +137,9 @@ def build_graph(protein_id: str, cmap_path: Path, graph_path: Path) -> None:
     temporary.replace(graph_path)
 
 
-def build_graph_cache(data_root: Path, protein_ids: list[str]) -> Path:
+def build_graph_cache(data_root: Path, tuning_root: Path, protein_ids: list[str]) -> Path:
     cmap_dir = data_root / "structure_files" / "tmp_cmap_files"
-    graph_dir = data_root / "arc_tuning" / "graphs_protbert"
+    graph_dir = tuning_root / "graphs_protbert"
     missing_cmaps = [protein_id for protein_id in protein_ids if not (cmap_dir / f"{protein_id}.npz").is_file()]
     if missing_cmaps:
         raise SystemExit(
@@ -157,8 +158,8 @@ def build_graph_cache(data_root: Path, protein_ids: list[str]) -> Path:
     return graph_dir
 
 
-def build_pkls(data_root: Path, graph_dir: Path, records: dict, splits: dict) -> Path:
-    output_dir = data_root / "arc_tuning" / "datasets"
+def build_pkls(tuning_root: Path, graph_dir: Path, records: dict, splits: dict) -> Path:
+    output_dir = tuning_root / "datasets"
     output_dir.mkdir(parents=True, exist_ok=True)
     vocabularies = {
         ontology: sorted(
@@ -223,12 +224,13 @@ def validate_pkls(output_dir: Path, graph_dir: Path, splits: dict, smoke_batches
 def main() -> None:
     args = parse_args()
     data_root = args.data_root.expanduser().resolve()
+    tuning_root = (args.tuning_root or data_root.parent.parent / "arc_tuning").expanduser().resolve()
     sequences, records, splits, strict, verification, residual_count = load_inputs(data_root)
-    graph_dir = data_root / "arc_tuning" / "graphs_protbert"
-    output_dir = data_root / "arc_tuning" / "datasets"
+    graph_dir = tuning_root / "graphs_protbert"
+    output_dir = tuning_root / "datasets"
     if not args.validate_only:
-        graph_dir = build_graph_cache(data_root, sorted(sequences))
-        output_dir = build_pkls(data_root, graph_dir, records, splits)
+        graph_dir = build_graph_cache(data_root, tuning_root, sorted(sequences))
+        output_dir = build_pkls(tuning_root, graph_dir, records, splits)
     summary = validate_pkls(output_dir, graph_dir, splits, args.smoke_batches)
     manifest = {
         "schema_version": 1,
@@ -253,7 +255,7 @@ def main() -> None:
         "tuning_loads": ["train", "valid"],
         "test_set_policy": "not loaded by tuning; reserved for final evaluation only",
     }
-    manifest_path = data_root / "arc_tuning" / "tuning_dataset_manifest.json"
+    manifest_path = tuning_root / "tuning_dataset_manifest.json"
     manifest_path.parent.mkdir(parents=True, exist_ok=True)
     manifest_path.write_text(json.dumps(manifest, indent=2) + "\n")
     print(json.dumps(manifest, indent=2))

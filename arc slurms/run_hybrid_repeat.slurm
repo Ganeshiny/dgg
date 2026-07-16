@@ -13,7 +13,7 @@
 set -euo pipefail
 PROJECT_DIR="${DGG_PROJECT_ROOT:-/home/ganeshiny.sridharan/dgg/deep-green-GO}"
 DATA_ROOT="${DGG_DATA_ROOT:-${PROJECT_DIR}/preprocessing/data_arc_rebuild_2026_07_14}"
-TUNING_ROOT="${DGG_TUNING_ROOT:-${DATA_ROOT}/arc_tuning}"
+TUNING_ROOT="${DGG_TUNING_ROOT:-${PROJECT_DIR}/arc_tuning}"
 MODEL="${DGG_REPEAT_MODEL:-Hybrid}"
 ONTOLOGIES=(molecular_function biological_process cellular_component)
 SEEDS=(1103 2207 3301 4409 5501)

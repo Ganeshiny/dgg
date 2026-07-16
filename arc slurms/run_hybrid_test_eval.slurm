@@ -13,7 +13,7 @@
 set -euo pipefail
 PROJECT_DIR="${DGG_PROJECT_ROOT:-/home/ganeshiny.sridharan/dgg/deep-green-GO}"
 DATA_ROOT="${DGG_DATA_ROOT:-${PROJECT_DIR}/preprocessing/data_arc_rebuild_2026_07_14}"
-TUNING_ROOT="${DATA_ROOT}/arc_tuning"
+TUNING_ROOT="${DGG_TUNING_ROOT:-${PROJECT_DIR}/arc_tuning}"
 MODEL="${DGG_EVAL_MODEL:-Hybrid}"
 CHECKPOINT_ROOT="${TUNING_ROOT}/five_seed_$(echo "${MODEL}" | tr '[:upper:]' '[:lower:]')"
 OUTPUT_DIR="${TUNING_ROOT}/test_evaluation/$(echo "${MODEL}" | tr '[:upper:]' '[:lower:]')"

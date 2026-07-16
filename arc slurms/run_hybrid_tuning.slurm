@@ -17,7 +17,7 @@ LOG_DIR="${PROJECT_DIR}/logs"
 MODE="${DGG_MODE:-tune}"
 TRIALS="${DGG_TUNING_TRIALS:-40}"
 CONCURRENCY="${DGG_TUNING_CONCURRENCY:-4}"
-TUNING_ROOT="${DATA_ROOT}/arc_tuning"
+TUNING_ROOT="${DGG_TUNING_ROOT:-${PROJECT_DIR}/arc_tuning}"
 TRIAL_CONFIGS="${TUNING_ROOT}/hybrid_random_trials.jsonl"
 SELECTED_CONFIG="${TUNING_ROOT}/selected_hybrid.json"
 
@@ -40,7 +40,7 @@ echo "Logs: ${LOG_DIR}"
 echo "Split: nominal 30% identity / 80% coverage split"
 
 if [[ "${MODE}" == "tune" ]]; then
-  python3 preprocessing/build_arc_tuning_dataset.py --data-root "${DATA_ROOT}" --smoke-batches 1
+  python3 preprocessing/build_arc_tuning_dataset.py --data-root "${DATA_ROOT}" --tuning-root "${TUNING_ROOT}" --smoke-batches 1
   python3 scripts/generate_hybrid_trials.py --trials "${TRIALS}" --output "${TRIAL_CONFIGS}"
   unset CUDA_VISIBLE_DEVICES
   LAST_TASK=$((TRIALS * 3 - 1))
@@ -61,7 +61,7 @@ if [[ "${MODE}" == "tune" ]]; then
   echo "Submitted validation-only selection: ${SELECT_JOB}"
   echo "Submitted five-seed Hybrid repeats: ${REPEAT_JOB}"
 elif [[ "${MODE}" == "confirm_jk" ]]; then
-  python3 preprocessing/build_arc_tuning_dataset.py --data-root "${DATA_ROOT}" --validate-only --smoke-batches 1
+  python3 preprocessing/build_arc_tuning_dataset.py --data-root "${DATA_ROOT}" --tuning-root "${TUNING_ROOT}" --validate-only --smoke-batches 1
   [[ -f "${SELECTED_CONFIG}" ]] || { echo "Missing selected Hybrid parameters: ${SELECTED_CONFIG}" >&2; exit 2; }
   unset CUDA_VISIBLE_DEVICES
   JK_JOB=$(sbatch --parsable \

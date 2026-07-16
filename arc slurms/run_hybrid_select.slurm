@@ -12,7 +12,7 @@
 set -euo pipefail
 PROJECT_DIR="${DGG_PROJECT_ROOT:-/home/ganeshiny.sridharan/dgg/deep-green-GO}"
 DATA_ROOT="${DGG_DATA_ROOT:-${PROJECT_DIR}/preprocessing/data_arc_rebuild_2026_07_14}"
-TUNING_ROOT="${DGG_TUNING_ROOT:-${DATA_ROOT}/arc_tuning}"
+TUNING_ROOT="${DGG_TUNING_ROOT:-${PROJECT_DIR}/arc_tuning}"
 cd "${PROJECT_DIR}"
 mkdir -p "${PROJECT_DIR}/logs"
 python3 scripts/select_hybrid_trials.py \

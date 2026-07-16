@@ -20,7 +20,7 @@ That CPU controller performs the following gated sequence:
    FASTA/record sequence agreement, ontology keys, contact-map availability,
    label dimensions, and the residual-similarity denominator;
 2. builds shared ProtBERT/PyG graph files on CPU and ontology/split PKLs under
-   `preprocessing/data_arc_rebuild_2026_07_14/arc_tuning/`;
+   `arc_tuning/`;
 3. runs a PKL/dataloader smoke batch;
 4. generates 40 seeded random-search configurations and submits them to
    `gpu-l40`, with at most four concurrent tasks;
