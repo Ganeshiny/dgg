@@ -24,6 +24,7 @@ sys.path.insert(0, str(PROJECT_DIR))
 from src.arc_dataset import ArcGraphDataset, make_dataloader
 from src.model import HybridGNN, HybridGNN_JK
 from src.tune_hybrid import micro_fmax
+from src.evals import compute_ic, evaluate_all
 
 
 SEEDS = (1103, 2207, 3301, 4409, 5501)
@@ -63,7 +64,7 @@ def build_model(checkpoint: dict, sample, num_classes: int, model_name: str, dev
     return model, config
 
 
-def evaluate_checkpoint(model, loader, device: torch.device, threshold: float):
+def evaluate_checkpoint(model, loader, device: torch.device, threshold: float, ic: np.ndarray):
     labels, probabilities = [], []
     with torch.inference_mode():
         for batch in loader:
@@ -78,8 +79,16 @@ def evaluate_checkpoint(model, loader, device: torch.device, threshold: float):
     fn = float(np.logical_and(~y_pred, y_true == 1).sum())
     fixed_f1 = 2 * tp / (2 * tp + fp + fn + 1e-12)
     test_fmax, test_fmax_threshold = micro_fmax(y_true, y_prob)
+    cafa = evaluate_all(y_true, y_prob, ic)
     return {
         "test_micro_f1_at_validation_threshold": float(fixed_f1),
+        "test_micro_fmax": float(cafa["Micro_Fmax"]),
+        "test_macro_fmax": float(cafa["Macro_Fmax"]),
+        "test_micro_aupr": float(cafa["Micro_AUPRC"]),
+        "test_macro_aupr": float(cafa["Macro_AUPRC"]),
+        "test_micro_auroc": float(cafa["Micro_AUROC"]),
+        "test_macro_auroc": float(cafa["Macro_AUROC"]),
+        "test_smin": float(cafa["Smin"]),
         "validation_threshold": float(threshold),
         "test_micro_fmax_diagnostic": float(test_fmax),
         "test_micro_fmax_threshold_diagnostic": float(test_fmax_threshold),
@@ -109,6 +118,12 @@ def main() -> None:
             raise SystemExit(f"Unexpected test dataset schema: {dataset_path}")
         # Relocate legacy pickles whose embedded graph_dir predates project-level arc_tuning.
         dataset.graph_dir = str(tuning_root / "graphs_protbert")
+        train_path = tuning_root / "datasets" / f"{ontology}_train.pkl"
+        with train_path.open("rb") as handle:
+            train_dataset = pickle.load(handle)
+        if not isinstance(train_dataset, ArcGraphDataset) or train_dataset.split != "train":
+            raise SystemExit(f"Unexpected train dataset schema: {train_path}")
+        ic = compute_ic(train_dataset.labels)
         loader = make_dataloader(dataset, args.batch_size, shuffle=False, workers=args.workers)
         sample = dataset[0]
         for seed in SEEDS:
@@ -120,6 +135,7 @@ def main() -> None:
             metrics = evaluate_checkpoint(
                 model, loader, device,
                 float(checkpoint["metrics"]["validation_micro_fmax_threshold"]),
+                ic,
             )
             row = {"ontology": ontology, "seed": seed, **metrics, **{
                 "learning_rate": config.get("learning_rate"),
@@ -142,15 +158,20 @@ def main() -> None:
         writer.writeheader()
         writer.writerows(rows)
     summary = {}
+    aggregate_metrics = (
+        "test_micro_f1_at_validation_threshold", "test_micro_fmax", "test_macro_fmax",
+        "test_micro_aupr", "test_macro_aupr", "test_micro_auroc", "test_macro_auroc", "test_smin",
+    )
     for ontology in ONTOLOGIES:
-        values = [r["test_micro_f1_at_validation_threshold"] for r in rows if r["ontology"] == ontology]
-        summary[ontology] = {
-            "seeds": len(values),
-            "mean_test_micro_f1": float(np.mean(values)),
-            "std_test_micro_f1": float(np.std(values, ddof=1)),
-            "min_test_micro_f1": float(np.min(values)),
-            "max_test_micro_f1": float(np.max(values)),
-        }
+        subset = [r for r in rows if r["ontology"] == ontology]
+        summary[ontology] = {"seeds": len(subset)}
+        for metric in aggregate_metrics:
+            values = np.asarray([r[metric] for r in subset], dtype=float)
+            key = metric.removeprefix("test_")
+            summary[ontology][f"mean_{key}"] = float(np.mean(values))
+            summary[ontology][f"std_{key}"] = float(np.std(values, ddof=1))
+            summary[ontology][f"min_{key}"] = float(np.min(values))
+            summary[ontology][f"max_{key}"] = float(np.max(values))
     (output_dir / "summary.json").write_text(json.dumps({"model": args.model, "summary": summary}, indent=2) + "\n")
     print(json.dumps(summary, indent=2))
 
