@@ -23,6 +23,7 @@ sys.path.insert(0, str(PROJECT_DIR))
 
 from src.arc_dataset import ArcGraphDataset, make_dataloader
 from src.model import HybridGNN, HybridGNN_JK
+from src.evals import compute_ic, evaluate_all
 
 
 def parse_args() -> argparse.Namespace:
@@ -37,6 +38,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--epochs", type=int, default=200)
     parser.add_argument("--workers", type=int, default=0)
+    parser.add_argument("--selection-metric", choices=("validation_micro_fmax", "validation_macro_fmax", "validation_micro_aupr", "validation_macro_aupr", "validation_micro_auroc", "validation_macro_auroc", "validation_smin"), default="validation_micro_fmax")
     return parser.parse_args()
 
 
@@ -132,8 +134,9 @@ def micro_fmax(y_true: np.ndarray, y_probability: np.ndarray) -> tuple[float, fl
     return float(scores[index]), threshold
 
 
-def summarize_validation(y_true: np.ndarray, probabilities: np.ndarray, train_counts: np.ndarray) -> dict:
+def summarize_validation(y_true: np.ndarray, probabilities: np.ndarray, train_counts: np.ndarray, ic: np.ndarray) -> dict:
     overall, best_threshold = micro_fmax(y_true, probabilities)
+    cafa = evaluate_all(y_true, probabilities, ic)
     rare_mask = (train_counts > 0) & (train_counts <= 10)
     rare = None
     if rare_mask.any() and y_true[:, rare_mask].sum() > 0:
@@ -156,6 +159,12 @@ def summarize_validation(y_true: np.ndarray, probabilities: np.ndarray, train_co
             ece += mask.mean() * abs(confidence[mask].mean() - truth[mask].mean())
     return {
         "validation_micro_fmax": overall,
+        "validation_macro_fmax": float(cafa["Macro_Fmax"]),
+        "validation_micro_aupr": float(cafa["Micro_AUPRC"]),
+        "validation_macro_aupr": float(cafa["Macro_AUPRC"]),
+        "validation_micro_auroc": float(cafa["Micro_AUROC"]),
+        "validation_macro_auroc": float(cafa["Macro_AUROC"]),
+        "validation_smin": float(cafa["Smin"]),
         "validation_micro_fmax_threshold": best_threshold,
         "validation_rare_term_micro_fmax_train_count_1_to_10": rare,
         "rare_term_count": int(rare_mask.sum()),
@@ -165,7 +174,7 @@ def summarize_validation(y_true: np.ndarray, probabilities: np.ndarray, train_co
     }
 
 
-def evaluate(model, loader, device, train_counts):
+def evaluate(model, loader, device, train_counts, ic):
     model.eval()
     labels, probabilities = [], []
     with torch.no_grad():
@@ -176,7 +185,7 @@ def evaluate(model, loader, device, train_counts):
             probabilities.append(torch.sigmoid(logits).cpu().numpy())
     y_true = np.vstack(labels)
     y_probability = np.vstack(probabilities)
-    return summarize_validation(y_true, y_probability, train_counts)
+    return summarize_validation(y_true, y_probability, train_counts, ic)
 
 
 def main() -> None:
@@ -188,6 +197,7 @@ def main() -> None:
     train_loader = make_dataloader(train_dataset, int(config["batch_size"]), True, args.workers)
     valid_loader = make_dataloader(valid_dataset, int(config["batch_size"]), False, args.workers)
     pos_weight, train_counts = positive_weights(train_dataset.labels)
+    ic = compute_ic(train_dataset.labels)
     pos_weight = pos_weight.to(device)
 
     sample = train_dataset[0]
@@ -234,11 +244,12 @@ def main() -> None:
             torch.nn.utils.clip_grad_norm_(model.parameters(), float(config["gradient_clip"]))
             optimizer.step()
             losses.append(float(loss.detach().cpu()))
-        metrics = evaluate(model, valid_loader, device, train_counts)
-        score = metrics["validation_micro_fmax"]
+        metrics = evaluate(model, valid_loader, device, train_counts, ic)
+        score = metrics[args.selection_metric]
         history.append({"epoch": epoch, "train_loss": float(np.mean(losses)), **metrics})
-        print(f"epoch={epoch} loss={np.mean(losses):.6f} valid_micro_fmax={score:.6f}")
-        if score > best_score + 1e-8:
+        print(f'epoch={epoch} loss={np.mean(losses):.6f} {args.selection_metric}={score:.6f} valid_micro_fmax={metrics["validation_micro_fmax"]:.6f}')
+        improved = score > best_score + 1e-8 if maximize_selection else score < best_score - 1e-8
+        if improved:
             best_score = score
             epochs_without_improvement = 0
             torch.save(
@@ -255,7 +266,7 @@ def main() -> None:
     with (run_dir / "history.csv").open("w", newline="") as handle:
         writer = csv.DictWriter(
             handle,
-            fieldnames=["epoch", "train_loss", "validation_micro_fmax", "validation_micro_fmax_threshold",
+            fieldnames=["epoch", "train_loss", "validation_micro_fmax", "validation_macro_fmax", "validation_micro_aupr", "validation_macro_aupr", "validation_micro_auroc", "validation_macro_auroc", "validation_smin", "validation_micro_fmax_threshold",
                         "validation_rare_term_micro_fmax_train_count_1_to_10", "rare_term_count",
                         "brier_score", "expected_calibration_error_10_bins", "threshold_sensitivity"],
         )

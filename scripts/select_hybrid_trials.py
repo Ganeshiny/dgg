@@ -15,6 +15,7 @@ def main() -> None:
     parser.add_argument("--runs-dir", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--expected-trials", type=int, default=40)
+    parser.add_argument("--metric", choices=("validation_micro_fmax", "validation_macro_fmax", "validation_micro_aupr", "validation_macro_aupr", "validation_micro_auroc", "validation_macro_auroc", "validation_smin"), default="validation_micro_fmax")
     args = parser.parse_args()
     selected = {}
     for ontology in ONTOLOGIES:
@@ -26,24 +27,29 @@ def main() -> None:
                 continue
             config = json.loads(config_path.read_text())
             metrics = json.loads(metrics_path.read_text())
-            candidates.append((float(metrics["validation_micro_fmax"]), trial_dir.name, config, metrics))
+            candidates.append((float(metrics[args.metric]), trial_dir.name, config, metrics))
         if len(candidates) != args.expected_trials:
             raise SystemExit(
                 f"{ontology}: expected {args.expected_trials} completed validation results, found {len(candidates)}"
             )
-        score, trial_name, config, metrics = max(candidates, key=lambda item: (item[0], item[1]))
+        if args.metric == "validation_smin":
+            score, trial_name, config, metrics = min(candidates, key=lambda item: (item[0], item[1]))
+        else:
+            score, trial_name, config, metrics = max(candidates, key=lambda item: (item[0], item[1]))
         search_keys = (
             "learning_rate", "weight_decay", "dropout", "hidden_dim", "batch_size",
             "gradient_clip", "patience", "loss", "focal_gamma",
         )
         selected[ontology] = {
             "trial": trial_name,
-            "validation_micro_fmax": score,
+            "selection_metric": args.metric,
+            args.metric: score,
             "config": {key: config[key] for key in search_keys},
             "validation_metrics": metrics,
         }
     payload = {
         "selection_data": "validation only",
+        "selection_metric": args.metric,
         "split": "nominal 30% identity / 80% coverage split",
         "ontologies": selected,
     }

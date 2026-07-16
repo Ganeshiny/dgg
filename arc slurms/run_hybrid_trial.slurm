@@ -15,6 +15,7 @@ PROJECT_DIR="${DGG_PROJECT_ROOT:-/home/ganeshiny.sridharan/dgg/deep-green-GO}"
 DATA_ROOT="${DGG_DATA_ROOT:-${PROJECT_DIR}/preprocessing/data_arc_rebuild_2026_07_14}"
 TUNING_ROOT="${DGG_TUNING_ROOT:-${PROJECT_DIR}/arc_tuning}"
 TRIAL_CONFIGS="${DGG_TRIAL_CONFIGS:-${TUNING_ROOT}/hybrid_random_trials.jsonl}"
+SELECTION_METRIC="${DGG_SELECTION_METRIC:-validation_micro_fmax}"
 ONTOLOGIES=(molecular_function biological_process cellular_component)
 TASK_ID="${SLURM_ARRAY_TASK_ID:?Submit this script as an array}"
 TRIAL_ID=$((TASK_ID / 3))
@@ -49,4 +50,5 @@ python3 src/tune_hybrid.py \
   --model Hybrid \
   --seed 42 \
   --workers "${SLURM_CPUS_PER_TASK}" \
+  --selection-metric "${SELECTION_METRIC}" \
   --output-dir "${RUN_DIR}"

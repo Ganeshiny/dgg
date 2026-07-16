@@ -35,7 +35,8 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         default=DEFAULT_ARC_ROOT / "preprocessing" / "data_arc_rebuild_2026_07_14",
     )
-    parser.add_argument("--tuning-root", type=Path, default=None, help="Project-level ARC tuning artifact directory (default: <project>/arc_tuning).")
+    parser.add_argument("--tuning-root", type=Path, default=None, help="ARC tuning artifact directory (default: <project>/arc_tuning).")
+    parser.add_argument("--graph-root", type=Path, default=None, help="Shared graph cache directory (default: <tuning-root>/graphs_protbert).")
     parser.add_argument("--validate-only", action="store_true")
     parser.add_argument("--smoke-batches", type=int, default=1)
     return parser.parse_args()
@@ -137,9 +138,9 @@ def build_graph(protein_id: str, cmap_path: Path, graph_path: Path) -> None:
     temporary.replace(graph_path)
 
 
-def build_graph_cache(data_root: Path, tuning_root: Path, protein_ids: list[str]) -> Path:
+def build_graph_cache(data_root: Path, graph_root: Path, protein_ids: list[str]) -> Path:
     cmap_dir = data_root / "structure_files" / "tmp_cmap_files"
-    graph_dir = tuning_root / "graphs_protbert"
+    graph_dir = graph_root
     missing_cmaps = [protein_id for protein_id in protein_ids if not (cmap_dir / f"{protein_id}.npz").is_file()]
     if missing_cmaps:
         raise SystemExit(
@@ -225,11 +226,12 @@ def main() -> None:
     args = parse_args()
     data_root = args.data_root.expanduser().resolve()
     tuning_root = (args.tuning_root or data_root.parent.parent / "arc_tuning").expanduser().resolve()
+    graph_root = (args.graph_root or tuning_root / "graphs_protbert").expanduser().resolve()
     sequences, records, splits, strict, verification, residual_count = load_inputs(data_root)
-    graph_dir = tuning_root / "graphs_protbert"
+    graph_dir = graph_root
     output_dir = tuning_root / "datasets"
     if not args.validate_only:
-        graph_dir = build_graph_cache(data_root, tuning_root, sorted(sequences))
+        graph_dir = build_graph_cache(data_root, graph_root, sorted(sequences))
         output_dir = build_pkls(tuning_root, graph_dir, records, splits)
     summary = validate_pkls(output_dir, graph_dir, splits, args.smoke_batches)
     manifest = {
