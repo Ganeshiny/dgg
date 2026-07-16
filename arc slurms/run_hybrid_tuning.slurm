@@ -52,11 +52,11 @@ if [[ "${MODE}" == "tune" || "${MODE}" == "tune_cafa" ]]; then
   LAST_TASK=$((TRIALS * 3 - 1))
   ARRAY_JOB=$(sbatch --parsable \
     --array="0-${LAST_TASK}%${CONCURRENCY}" \
-    --export="ALL,DGG_PROJECT_ROOT=${PROJECT_DIR},DGG_DATA_ROOT=${DATA_ROOT},DGG_TRIAL_CONFIGS=${TRIAL_CONFIGS},DGG_TUNING_ROOT=${TUNING_ROOT},DGG_SELECTION_METRIC=${SELECTION_METRIC}" \
+    --export="ALL,DGG_PROJECT_ROOT=${PROJECT_DIR},DGG_DATA_ROOT=${DATA_ROOT},DGG_TRIAL_CONFIGS=${TRIAL_CONFIGS},DGG_TUNING_ROOT=${TUNING_ROOT},DGG_GRAPH_ROOT=${PROJECT_DIR}/arc_tuning/graphs_protbert,DGG_SELECTION_METRIC=${SELECTION_METRIC}" \
     "arc slurms/run_hybrid_trial.slurm")
   SELECT_JOB=$(sbatch --parsable \
     --dependency="afterok:${ARRAY_JOB}" \
-    --export="ALL,DGG_PROJECT_ROOT=${PROJECT_DIR},DGG_DATA_ROOT=${DATA_ROOT},DGG_TUNING_ROOT=${TUNING_ROOT},DGG_EXPECTED_TRIALS=${TRIALS},DGG_SELECTION_METRIC=${SELECTION_METRIC}" \
+    --export="ALL,DGG_PROJECT_ROOT=${PROJECT_DIR},DGG_DATA_ROOT=${DATA_ROOT},DGG_TUNING_ROOT=${TUNING_ROOT},DGG_EXPECTED_TRIALS=${TRIALS},DGG_GRAPH_ROOT=${PROJECT_DIR}/arc_tuning/graphs_protbert,DGG_SELECTION_METRIC=${SELECTION_METRIC}" \
     "arc slurms/run_hybrid_select.slurm")
   REPEAT_JOB=$(sbatch --parsable \
     --dependency="afterok:${SELECT_JOB}" \

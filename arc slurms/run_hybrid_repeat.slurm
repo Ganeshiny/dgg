@@ -14,6 +14,7 @@ set -euo pipefail
 PROJECT_DIR="${DGG_PROJECT_ROOT:-/home/ganeshiny.sridharan/dgg/deep-green-GO}"
 DATA_ROOT="${DGG_DATA_ROOT:-${PROJECT_DIR}/preprocessing/data_arc_rebuild_2026_07_14}"
 TUNING_ROOT="${DGG_TUNING_ROOT:-${PROJECT_DIR}/arc_tuning}"
+GRAPH_ROOT="${DGG_GRAPH_ROOT:-${PROJECT_DIR}/arc_tuning/graphs_protbert}"
 MODEL="${DGG_REPEAT_MODEL:-Hybrid}"
 ONTOLOGIES=(molecular_function biological_process cellular_component)
 SEEDS=(1103 2207 3301 4409 5501)
@@ -31,6 +32,7 @@ conda activate "${DGG_CONDA_ENV:-deepgreengo}"
 set -u
 export PYTHONUNBUFFERED=1
 export OMP_NUM_THREADS="${SLURM_CPUS_PER_TASK}"
+export DGG_GRAPH_ROOT="${GRAPH_ROOT}"
 
 python3 src/tune_hybrid.py \
   --dataset-dir "${TUNING_ROOT}/datasets" \

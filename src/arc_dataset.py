@@ -7,6 +7,7 @@ from typing import Sequence
 
 import numpy as np
 import torch
+import os
 from torch.utils.data import Dataset
 
 
@@ -48,6 +49,12 @@ class ArcGraphDataset(Dataset):
     def __getitem__(self, index: int):
         protein_id = self.protein_ids[index]
         path = Path(self.graph_dir) / f"{protein_id}.pt"
+        if not path.is_file():
+            override = os.environ.get("DGG_GRAPH_ROOT")
+            if override:
+                path = Path(override).expanduser().resolve() / f"{protein_id}.pt"
+        if not path.is_file():
+            raise FileNotFoundError(f"Graph file not found for {protein_id}; checked {path}. Set DGG_GRAPH_ROOT to the shared graph cache.")
         try:
             graph = torch.load(path, map_location="cpu", weights_only=False)
         except TypeError:  # PyTorch < 2.0

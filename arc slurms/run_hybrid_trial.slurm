@@ -14,6 +14,7 @@ set -euo pipefail
 PROJECT_DIR="${DGG_PROJECT_ROOT:-/home/ganeshiny.sridharan/dgg/deep-green-GO}"
 DATA_ROOT="${DGG_DATA_ROOT:-${PROJECT_DIR}/preprocessing/data_arc_rebuild_2026_07_14}"
 TUNING_ROOT="${DGG_TUNING_ROOT:-${PROJECT_DIR}/arc_tuning}"
+GRAPH_ROOT="${DGG_GRAPH_ROOT:-${PROJECT_DIR}/arc_tuning/graphs_protbert}"
 TRIAL_CONFIGS="${DGG_TRIAL_CONFIGS:-${TUNING_ROOT}/hybrid_random_trials.jsonl}"
 SELECTION_METRIC="${DGG_SELECTION_METRIC:-validation_micro_fmax}"
 ONTOLOGIES=(molecular_function biological_process cellular_component)
@@ -30,8 +31,10 @@ conda activate "${DGG_CONDA_ENV:-deepgreengo}"
 set -u
 export PYTHONUNBUFFERED=1
 export OMP_NUM_THREADS="${SLURM_CPUS_PER_TASK}"
+export DGG_GRAPH_ROOT="${GRAPH_ROOT}"
 export OPENBLAS_NUM_THREADS="${SLURM_CPUS_PER_TASK}"
 export MKL_NUM_THREADS="${SLURM_CPUS_PER_TASK}"
+export DGG_GRAPH_ROOT="${GRAPH_ROOT}"
 
 python3 - <<'PY'
 import subprocess, torch

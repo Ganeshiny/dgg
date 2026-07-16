@@ -99,7 +99,7 @@ def load_training_data(dataset_dir: Path, ontology: str):
         if not isinstance(dataset, ArcGraphDataset) or dataset.split != split:
             raise SystemExit(f"Unexpected dataset schema: {path}")
         # Pickles may predate the project-level arc_tuning move; relocate graph files by dataset root.
-        dataset.graph_dir = str(dataset_dir.parent / "graphs_protbert")
+        dataset.graph_dir = os.environ.get("DGG_GRAPH_ROOT", str(dataset_dir.parent / "graphs_protbert"))
         loaded[split] = dataset
     if loaded["train"].terms != loaded["valid"].terms:
         raise SystemExit("Train/validation ontology vocabularies differ")
