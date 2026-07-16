@@ -27,11 +27,4 @@ set -u
 export PYTHONUNBUFFERED=1
 export OMP_NUM_THREADS="${SLURM_CPUS_PER_TASK}"
 
-python3 scripts/evaluate_arc_test.py \
-  --data-root "${DATA_ROOT}" \\
-  --tuning-root "${TUNING_ROOT}" \\
-  --checkpoints-root "${CHECKPOINT_ROOT}" \
-  --output-dir "${OUTPUT_DIR}" \
-  --model "${MODEL}" \
-  --batch-size 16 \
-  --workers "${SLURM_CPUS_PER_TASK}"
+python3 scripts/evaluate_arc_test.py --data-root "${DATA_ROOT}" --tuning-root "${TUNING_ROOT}" --checkpoints-root "${CHECKPOINT_ROOT}" --output-dir "${OUTPUT_DIR}" --model "${MODEL}" --batch-size 16 --workers "${SLURM_CPUS_PER_TASK}"
