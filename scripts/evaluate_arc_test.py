@@ -32,10 +32,10 @@ ONTOLOGIES = ("molecular_function", "biological_process", "cellular_component")
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--data-root", type=Path, required=True)
-    parser.add_argument("--tuning-root", type=Path, required=True)
-    parser.add_argument("--checkpoints-root", type=Path, required=True)
-    parser.add_argument("--output-dir", type=Path, required=True)
+    parser.add_argument("--data-root", type=Path, default=None)
+    parser.add_argument("--tuning-root", type=Path, default=None)
+    parser.add_argument("--checkpoints-root", type=Path, default=None)
+    parser.add_argument("--output-dir", type=Path, default=None)
     parser.add_argument("--model", choices=("Hybrid", "Hybrid_JK"), default="Hybrid")
     parser.add_argument("--batch-size", type=int, default=16)
     parser.add_argument("--workers", type=int, default=0)
@@ -90,10 +90,12 @@ def evaluate_checkpoint(model, loader, device: torch.device, threshold: float):
 
 def main() -> None:
     args = parse_args()
-    data_root = args.data_root.expanduser().resolve()
-    tuning_root = args.tuning_root.expanduser().resolve()
-    checkpoints_root = args.checkpoints_root.expanduser().resolve()
-    output_dir = args.output_dir.expanduser().resolve()
+    project_dir = Path(__file__).resolve().parents[1]
+    data_root = Path(args.data_root or os.environ.get("DGG_DATA_ROOT", project_dir / "preprocessing" / "data_arc_rebuild_2026_07_14")).expanduser().resolve()
+    tuning_root = Path(args.tuning_root or os.environ.get("DGG_TUNING_ROOT", project_dir / "arc_tuning")).expanduser().resolve()
+    model_name = args.model.lower()
+    checkpoints_root = Path(args.checkpoints_root or (tuning_root / f"five_seed_{model_name}")).expanduser().resolve()
+    output_dir = Path(args.output_dir or (tuning_root / "test_evaluation" / model_name)).expanduser().resolve()
     output_dir.mkdir(parents=True, exist_ok=True)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Evaluating on {device}")
