@@ -107,6 +107,8 @@ def main() -> None:
             dataset = pickle.load(handle)
         if not isinstance(dataset, ArcGraphDataset) or dataset.split != "test":
             raise SystemExit(f"Unexpected test dataset schema: {dataset_path}")
+        # Relocate legacy pickles whose embedded graph_dir predates project-level arc_tuning.
+        dataset.graph_dir = str(tuning_root / "graphs_protbert")
         loader = make_dataloader(dataset, args.batch_size, shuffle=False, workers=args.workers)
         sample = dataset[0]
         for seed in SEEDS:
