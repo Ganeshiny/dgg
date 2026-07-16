@@ -224,10 +224,8 @@ def main() -> None:
         "positive_weight_source": "training labels only",
     }
     (run_dir / "config.json").write_text(json.dumps(run_config, indent=2) + "\n")
-    with (run_dir / "training_positive_weights.json").open("w") as handle:
-        json.dump({"counts": train_counts.astype(int).tolist(), "weights": pos_weight.cpu().tolist()}, handle)
-
-    best_score = -1.0
+    maximize_selection = args.selection_metric != "validation_smin"
+    best_score = -1.0 if maximize_selection else float("inf")
     epochs_without_improvement = 0
     history = []
     patience = int(config["patience"])
