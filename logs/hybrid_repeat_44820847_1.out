@@ -1,0 +1,41 @@
+CUDA verified: NVIDIA L40S; tensor dot product=8.0
+GPU startup: NVIDIA L40S, 533, 46068, 1
+Loaded train=6026, valid=754; reserved test set is not loaded
+epoch=1 loss=0.286755 valid_micro_fmax=0.038713
+epoch=2 loss=0.220205 valid_micro_fmax=0.068491
+epoch=3 loss=0.201445 valid_micro_fmax=0.117768
+epoch=4 loss=0.187523 valid_micro_fmax=0.129305
+epoch=5 loss=0.173237 valid_micro_fmax=0.166507
+epoch=6 loss=0.155607 valid_micro_fmax=0.165649
+epoch=7 loss=0.134731 valid_micro_fmax=0.181194
+epoch=8 loss=0.112510 valid_micro_fmax=0.216105
+epoch=9 loss=0.090770 valid_micro_fmax=0.229739
+epoch=10 loss=0.071448 valid_micro_fmax=0.276931
+epoch=11 loss=0.055271 valid_micro_fmax=0.283417
+epoch=12 loss=0.042600 valid_micro_fmax=0.285608
+epoch=13 loss=0.032951 valid_micro_fmax=0.318998
+epoch=14 loss=0.025608 valid_micro_fmax=0.317613
+epoch=15 loss=0.020158 valid_micro_fmax=0.300699
+epoch=16 loss=0.016152 valid_micro_fmax=0.310943
+epoch=17 loss=0.013041 valid_micro_fmax=0.312814
+epoch=18 loss=0.010598 valid_micro_fmax=0.319276
+epoch=19 loss=0.008760 valid_micro_fmax=0.328340
+epoch=20 loss=0.007371 valid_micro_fmax=0.327924
+epoch=21 loss=0.006236 valid_micro_fmax=0.337435
+epoch=22 loss=0.005331 valid_micro_fmax=0.329327
+epoch=23 loss=0.004465 valid_micro_fmax=0.337836
+epoch=24 loss=0.003916 valid_micro_fmax=0.328422
+epoch=25 loss=0.003387 valid_micro_fmax=0.335170
+epoch=26 loss=0.002918 valid_micro_fmax=0.343127
+epoch=27 loss=0.002588 valid_micro_fmax=0.348849
+epoch=28 loss=0.002375 valid_micro_fmax=0.329443
+epoch=29 loss=0.002146 valid_micro_fmax=0.337902
+epoch=30 loss=0.001825 valid_micro_fmax=0.333378
+epoch=31 loss=0.001604 valid_micro_fmax=0.338545
+epoch=32 loss=0.001498 valid_micro_fmax=0.318793
+epoch=33 loss=0.001374 valid_micro_fmax=0.324946
+epoch=34 loss=0.001265 valid_micro_fmax=0.342009
+epoch=35 loss=0.001122 valid_micro_fmax=0.335718
+epoch=36 loss=0.000951 valid_micro_fmax=0.332731
+Early stopping after 36 epochs (patience=9)
+GPU completion: NVIDIA L40S, 35581, 46068, 0

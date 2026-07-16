@@ -1,0 +1,189 @@
+{
+  "selection_data": "validation only",
+  "split": "nominal 30% identity / 80% coverage split",
+  "ontologies": {
+    "molecular_function": {
+      "trial": "trial_004",
+      "validation_micro_fmax": 0.43203163618339263,
+      "config": {
+        "learning_rate": 7.674123976937732e-05,
+        "weight_decay": 0.005313431835380474,
+        "dropout": 0.0,
+        "hidden_dim": 256,
+        "batch_size": 32,
+        "gradient_clip": 1.0,
+        "patience": 9,
+        "loss": "Focal",
+        "focal_gamma": 2
+      },
+      "validation_metrics": {
+        "validation_micro_fmax": 0.43203163618339263,
+        "validation_micro_fmax_threshold": 0.4550567865371704,
+        "validation_rare_term_micro_fmax_train_count_1_to_10": 0.06338028168985994,
+        "rare_term_count": 495,
+        "brier_score": 0.0072557940147817135,
+        "expected_calibration_error_10_bins": 0.03742643391844607,
+        "threshold_sensitivity": [
+          {
+            "threshold": 0.1,
+            "micro_f1": 0.0979544994261797
+          },
+          {
+            "threshold": 0.2,
+            "micro_f1": 0.2628937533368927
+          },
+          {
+            "threshold": 0.3,
+            "micro_f1": 0.3800213295414148
+          },
+          {
+            "threshold": 0.4,
+            "micro_f1": 0.419073507758523
+          },
+          {
+            "threshold": 0.5,
+            "micro_f1": 0.42154445165476956
+          },
+          {
+            "threshold": 0.6,
+            "micro_f1": 0.41128117913832196
+          },
+          {
+            "threshold": 0.7,
+            "micro_f1": 0.37571274464478344
+          },
+          {
+            "threshold": 0.8,
+            "micro_f1": 0.3403403403403403
+          },
+          {
+            "threshold": 0.9,
+            "micro_f1": 0.2144905371821831
+          }
+        ]
+      }
+    },
+    "biological_process": {
+      "trial": "trial_013",
+      "validation_micro_fmax": 0.34882058613250094,
+      "config": {
+        "learning_rate": 2.0306852485333567e-05,
+        "weight_decay": 2.8063391884062294e-06,
+        "dropout": 0.0,
+        "hidden_dim": 512,
+        "batch_size": 16,
+        "gradient_clip": 5.0,
+        "patience": 9,
+        "loss": "BCE",
+        "focal_gamma": null
+      },
+      "validation_metrics": {
+        "validation_micro_fmax": 0.34882058613250094,
+        "validation_micro_fmax_threshold": 0.7785354852676392,
+        "validation_rare_term_micro_fmax_train_count_1_to_10": 0.5738161559884487,
+        "rare_term_count": 979,
+        "brier_score": 0.006458698306232691,
+        "expected_calibration_error_10_bins": 0.010436520222583642,
+        "threshold_sensitivity": [
+          {
+            "threshold": 0.1,
+            "micro_f1": 0.14459053343350864
+          },
+          {
+            "threshold": 0.2,
+            "micro_f1": 0.19868611787928322
+          },
+          {
+            "threshold": 0.3,
+            "micro_f1": 0.23937433461632954
+          },
+          {
+            "threshold": 0.4,
+            "micro_f1": 0.2716356932888247
+          },
+          {
+            "threshold": 0.5,
+            "micro_f1": 0.29740600408044304
+          },
+          {
+            "threshold": 0.6,
+            "micro_f1": 0.3164765609547043
+          },
+          {
+            "threshold": 0.7,
+            "micro_f1": 0.33957828227169196
+          },
+          {
+            "threshold": 0.8,
+            "micro_f1": 0.34568902587395567
+          },
+          {
+            "threshold": 0.9,
+            "micro_f1": 0.33921941501403596
+          }
+        ]
+      }
+    },
+    "cellular_component": {
+      "trial": "trial_010",
+      "validation_micro_fmax": 0.499062918339527,
+      "config": {
+        "learning_rate": 7.281839130793804e-05,
+        "weight_decay": 0.003763327697269404,
+        "dropout": 0.1,
+        "hidden_dim": 256,
+        "batch_size": 32,
+        "gradient_clip": 5.0,
+        "patience": 10,
+        "loss": "Focal",
+        "focal_gamma": 2
+      },
+      "validation_metrics": {
+        "validation_micro_fmax": 0.499062918339527,
+        "validation_micro_fmax_threshold": 0.5140767693519592,
+        "validation_rare_term_micro_fmax_train_count_1_to_10": 0.8695652173908129,
+        "rare_term_count": 95,
+        "brier_score": 0.0424371212720871,
+        "expected_calibration_error_10_bins": 0.06311223869626073,
+        "threshold_sensitivity": [
+          {
+            "threshold": 0.1,
+            "micro_f1": 0.2266415909727502
+          },
+          {
+            "threshold": 0.2,
+            "micro_f1": 0.3859135030480626
+          },
+          {
+            "threshold": 0.3,
+            "micro_f1": 0.45717181956411557
+          },
+          {
+            "threshold": 0.4,
+            "micro_f1": 0.48254491252843806
+          },
+          {
+            "threshold": 0.5,
+            "micro_f1": 0.49841577187114944
+          },
+          {
+            "threshold": 0.6,
+            "micro_f1": 0.4907880775537764
+          },
+          {
+            "threshold": 0.7,
+            "micro_f1": 0.4781687155574396
+          },
+          {
+            "threshold": 0.8,
+            "micro_f1": 0.4386690752287163
+          },
+          {
+            "threshold": 0.9,
+            "micro_f1": 0.3713541666666666
+          }
+        ]
+      }
+    }
+  }
+}

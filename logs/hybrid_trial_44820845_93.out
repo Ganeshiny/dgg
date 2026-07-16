@@ -43,3 +43,35 @@ epoch=17 loss=0.112118 valid_micro_fmax=0.244326
 epoch=18 loss=0.101589 valid_micro_fmax=0.263573
 epoch=19 loss=0.090864 valid_micro_fmax=0.256062
 epoch=20 loss=0.080918 valid_micro_fmax=0.254001
+epoch=21 loss=0.072180 valid_micro_fmax=0.289173
+epoch=22 loss=0.063946 valid_micro_fmax=0.304305
+epoch=23 loss=0.056737 valid_micro_fmax=0.291919
+epoch=24 loss=0.050365 valid_micro_fmax=0.300754
+epoch=25 loss=0.044968 valid_micro_fmax=0.302527
+epoch=26 loss=0.039790 valid_micro_fmax=0.343398
+epoch=27 loss=0.035948 valid_micro_fmax=0.329725
+epoch=28 loss=0.031928 valid_micro_fmax=0.338253
+epoch=29 loss=0.028516 valid_micro_fmax=0.336844
+epoch=30 loss=0.025552 valid_micro_fmax=0.349578
+epoch=31 loss=0.023274 valid_micro_fmax=0.350138
+epoch=32 loss=0.021066 valid_micro_fmax=0.337701
+epoch=33 loss=0.018951 valid_micro_fmax=0.357306
+epoch=34 loss=0.017536 valid_micro_fmax=0.367964
+epoch=35 loss=0.016249 valid_micro_fmax=0.363972
+epoch=36 loss=0.014889 valid_micro_fmax=0.380079
+epoch=37 loss=0.013808 valid_micro_fmax=0.374957
+epoch=38 loss=0.012220 valid_micro_fmax=0.358375
+epoch=39 loss=0.011312 valid_micro_fmax=0.368354
+epoch=40 loss=0.010446 valid_micro_fmax=0.360662
+epoch=41 loss=0.009775 valid_micro_fmax=0.373413
+epoch=42 loss=0.009131 valid_micro_fmax=0.389900
+epoch=43 loss=0.008807 valid_micro_fmax=0.385943
+epoch=44 loss=0.008171 valid_micro_fmax=0.379446
+epoch=45 loss=0.007371 valid_micro_fmax=0.379615
+epoch=46 loss=0.006858 valid_micro_fmax=0.377023
+epoch=47 loss=0.006407 valid_micro_fmax=0.372785
+epoch=48 loss=0.006045 valid_micro_fmax=0.379862
+epoch=49 loss=0.005721 valid_micro_fmax=0.369427
+epoch=50 loss=0.005372 valid_micro_fmax=0.385414
+Early stopping after 50 epochs (patience=8)
+GPU completion: NVIDIA L40S, 44885, 46068, 0
