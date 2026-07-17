@@ -11,7 +11,7 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=48G
 #SBATCH --time=24:00:00
-#SBATCH --array=0-44%6
+#SBATCH --array=0-224%6
 #SBATCH --output=/home/ganeshiny.sridharan/dgg/deep-green-GO/logs/arc_ablation_%A_%a.out
 #SBATCH --error=/home/ganeshiny.sridharan/dgg/deep-green-GO/logs/arc_ablation_%A_%a.err
 
@@ -26,11 +26,14 @@ SPLIT_LABEL="${DGG_SPLIT_LABEL:-nominal_30_identity_80_coverage}"
 ONTOLOGIES=(molecular_function biological_process cellular_component)
 MODELS=(MLP GCN GAT Hybrid Hybrid_JK)
 MODALITIES=(full seq_only struct_only)
+SEEDS=(1103 2207 3301 4409 5501)
 TASK_ID="${SLURM_ARRAY_TASK_ID:?array required}"
-ONTOLOGY="${ONTOLOGIES[$((TASK_ID / 15))]}"
-MODEL="${MODELS[$(((TASK_ID / 3) % 5))]}"
-MODALITY="${MODALITIES[$((TASK_ID % 3))]}"
-OUT="${TUNING_ROOT}/ablations/${SPLIT_LABEL}/${ONTOLOGY}/${MODEL}/${MODALITY}"
+COMBO_ID=$((TASK_ID / 5))
+SEED="${SEEDS[$((TASK_ID % 5))]}"
+ONTOLOGY="${ONTOLOGIES[$((COMBO_ID / 15))]}"
+MODEL="${MODELS[$(((COMBO_ID / 3) % 5))]}"
+MODALITY="${MODALITIES[$((COMBO_ID % 3))]}"
+OUT="${TUNING_ROOT}/ablations/${SPLIT_LABEL}/${ONTOLOGY}/${MODEL}/${MODALITY}/seed_${SEED}"
 
 cd "${PROJECT_DIR}"
 mkdir -p "${PROJECT_DIR}/logs" "${OUT}"
@@ -44,4 +47,4 @@ python3 src/train_arc_ablation.py \
   --dataset-dir "${DATASET_DIR}" --graph-root "${GRAPH_ROOT}" \
   --ontology "${ONTOLOGY}" --model "${MODEL}" --input-modality "${MODALITY}" \
   --split-label "${SPLIT_LABEL}" --config-json "${CONFIG_JSON}" \
-  --output-dir "${OUT}" --workers "${SLURM_CPUS_PER_TASK}"
+  --output-dir "${OUT}" --seed "${SEED}" --workers "${SLURM_CPUS_PER_TASK}"
