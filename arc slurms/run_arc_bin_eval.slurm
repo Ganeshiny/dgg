@@ -23,8 +23,10 @@ OUTPUT_DIR="${DGG_BIN_OUTPUT:-${ABLATIONS_ROOT}/bin_evaluation}"
 
 cd "${PROJECT_DIR}"
 mkdir -p "${PROJECT_DIR}/logs" "${OUTPUT_DIR}"
+set +u
 source "$(conda info --base)/etc/profile.d/conda.sh"
 conda activate "${DGG_CONDA_ENV:-deepgreengo}"
+set -u
 export PYTHONUNBUFFERED=1 OMP_NUM_THREADS="${SLURM_CPUS_PER_TASK}" DGG_GRAPH_ROOT="${GRAPH_ROOT}"
 
 python3 scripts/evaluate_arc_bins.py \

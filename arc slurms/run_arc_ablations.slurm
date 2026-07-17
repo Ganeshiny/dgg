@@ -34,8 +34,10 @@ OUT="${TUNING_ROOT}/ablations/${SPLIT_LABEL}/${ONTOLOGY}/${MODEL}/${MODALITY}"
 
 cd "${PROJECT_DIR}"
 mkdir -p "${PROJECT_DIR}/logs" "${OUT}"
+set +u
 source "$(conda info --base)/etc/profile.d/conda.sh"
 conda activate "${DGG_CONDA_ENV:-deepgreengo}"
+set -u
 export PYTHONUNBUFFERED=1 OMP_NUM_THREADS="${SLURM_CPUS_PER_TASK}" DGG_GRAPH_ROOT="${GRAPH_ROOT}"
 
 python3 src/train_arc_ablation.py \
