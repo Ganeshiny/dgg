@@ -5,6 +5,10 @@ import argparse, json, pickle, random
 from pathlib import Path
 import numpy as np
 import torch
+import sys
+
+PROJECT_DIR = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(PROJECT_DIR))
 from src.arc_dataset import ArcGraphDataset, make_dataloader
 from src.model import MLPModel, GCNModel, GATModel, HybridGNN, HybridGNN_JK
 from src.evals import compute_ic, evaluate_all
