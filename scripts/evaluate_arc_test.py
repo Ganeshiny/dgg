@@ -11,6 +11,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import os
 import pickle
 from pathlib import Path
 
@@ -117,7 +118,7 @@ def main() -> None:
         if not isinstance(dataset, ArcGraphDataset) or dataset.split != "test":
             raise SystemExit(f"Unexpected test dataset schema: {dataset_path}")
         # Relocate legacy pickles whose embedded graph_dir predates project-level arc_tuning.
-        dataset.graph_dir = str(tuning_root / "graphs_protbert")
+        dataset.graph_dir = str(Path(os.environ.get("DGG_GRAPH_ROOT", project_dir / "arc_tuning" / "graphs_protbert")).expanduser().resolve())
         train_path = tuning_root / "datasets" / f"{ontology}_train.pkl"
         with train_path.open("rb") as handle:
             train_dataset = pickle.load(handle)

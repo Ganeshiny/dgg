@@ -14,6 +14,7 @@ set -euo pipefail
 PROJECT_DIR="${DGG_PROJECT_ROOT:-/home/ganeshiny.sridharan/dgg/deep-green-GO}"
 DATA_ROOT="${DGG_DATA_ROOT:-${PROJECT_DIR}/preprocessing/data_arc_rebuild_2026_07_14}"
 TUNING_ROOT="${DGG_TUNING_ROOT:-${PROJECT_DIR}/arc_tuning}"
+GRAPH_ROOT="${DGG_GRAPH_ROOT:-${PROJECT_DIR}/arc_tuning/graphs_protbert}"
 MODEL="${DGG_EVAL_MODEL:-Hybrid}"
 CHECKPOINT_ROOT="${TUNING_ROOT}/five_seed_$(echo "${MODEL}" | tr '[:upper:]' '[:lower:]')"
 OUTPUT_DIR="${TUNING_ROOT}/test_evaluation/$(echo "${MODEL}" | tr '[:upper:]' '[:lower:]')"
@@ -26,5 +27,6 @@ conda activate "${DGG_CONDA_ENV:-deepgreengo}"
 set -u
 export PYTHONUNBUFFERED=1
 export OMP_NUM_THREADS="${SLURM_CPUS_PER_TASK}"
+export DGG_GRAPH_ROOT="${GRAPH_ROOT}"
 
 python3 scripts/evaluate_arc_test.py --data-root "${DATA_ROOT}" --tuning-root "${TUNING_ROOT}" --checkpoints-root "${CHECKPOINT_ROOT}" --output-dir "${OUTPUT_DIR}" --model "${MODEL}" --batch-size 16 --workers "${SLURM_CPUS_PER_TASK}"
