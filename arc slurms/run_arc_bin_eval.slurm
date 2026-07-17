@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+# Evaluate every completed model/input ablation in homology and IC bins.
+# Submit after run_arc_ablations.slurm with --dependency=afterok:<jobid>.
+#SBATCH --job-name=dgg_arc_bins
+#SBATCH --partition=gpu-l40
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --gpus-per-task=1
+#SBATCH --cpus-per-task=8
+#SBATCH --mem=48G
+#SBATCH --time=12:00:00
+#SBATCH --output=/home/ganeshiny.sridharan/dgg/deep-green-GO/logs/arc_bin_eval_%j.out
+#SBATCH --error=/home/ganeshiny.sridharan/dgg/deep-green-GO/logs/arc_bin_eval_%j.err
+
+set -euo pipefail
+PROJECT_DIR="${DGG_PROJECT_ROOT:-/home/ganeshiny.sridharan/dgg/deep-green-GO}"
+DATA_ROOT="${DGG_DATA_ROOT:-${PROJECT_DIR}/preprocessing/data_arc_rebuild_2026_07_14}"
+TUNING_ROOT="${DGG_TUNING_ROOT:-${PROJECT_DIR}/arc_tuning}"
+GRAPH_ROOT="${DGG_GRAPH_ROOT:-${PROJECT_DIR}/arc_tuning/graphs_protbert}"
+SPLIT_LABEL="${DGG_SPLIT_LABEL:-nominal_30_identity_80_coverage}"
+ABLATIONS_ROOT="${DGG_ABLATIONS_ROOT:-${TUNING_ROOT}/ablations/${SPLIT_LABEL}}"
+OUTPUT_DIR="${DGG_BIN_OUTPUT:-${ABLATIONS_ROOT}/bin_evaluation}"
+
+cd "${PROJECT_DIR}"
+mkdir -p "${PROJECT_DIR}/logs" "${OUTPUT_DIR}"
+source "$(conda info --base)/etc/profile.d/conda.sh"
+conda activate "${DGG_CONDA_ENV:-deepgreengo}"
+export PYTHONUNBUFFERED=1 OMP_NUM_THREADS="${SLURM_CPUS_PER_TASK}" DGG_GRAPH_ROOT="${GRAPH_ROOT}"
+
+python3 scripts/evaluate_arc_bins.py \
+  --data-root "${DATA_ROOT}" --tuning-root "${TUNING_ROOT}" \
+  --ablations-root "${ABLATIONS_ROOT}" --graph-root "${GRAPH_ROOT}" \
+  --output-dir "${OUTPUT_DIR}" --workers "${SLURM_CPUS_PER_TASK}"
