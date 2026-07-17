@@ -12,14 +12,15 @@ PROJECT_DIR="${DGG_PROJECT_ROOT:-/home/ganeshiny.sridharan/dgg/deep-green-GO}"
 REPEAT_JOB="$1"
 TUNING_ROOT="${2:-${DGG_TUNING_ROOT:-${PROJECT_DIR}/arc_tuning_cafa}}"
 GRAPH_ROOT="${DGG_GRAPH_ROOT:-${PROJECT_DIR}/arc_tuning/graphs_protbert}"
+DEPENDENCY_TYPE="${DGG_DEPENDENCY_TYPE:-afterok}"
 
 cd "${PROJECT_DIR}"
 
-TEST_JOB=$(sbatch --parsable --dependency="afterok:${REPEAT_JOB}" \
+TEST_JOB=$(sbatch --parsable --dependency="${DEPENDENCY_TYPE}:${REPEAT_JOB}" \
   --export="ALL,DGG_TUNING_ROOT=${TUNING_ROOT},DGG_GRAPH_ROOT=${GRAPH_ROOT}" \
   "arc slurms/run_hybrid_test_eval.slurm")
 
-ABLATION_JOB=$(sbatch --parsable --dependency="afterok:${REPEAT_JOB}" \
+ABLATION_JOB=$(sbatch --parsable --dependency="${DEPENDENCY_TYPE}:${REPEAT_JOB}" \
   --export="ALL,DGG_TUNING_ROOT=${TUNING_ROOT},DGG_GRAPH_ROOT=${GRAPH_ROOT}" \
   "arc slurms/run_arc_ablations.slurm")
 
