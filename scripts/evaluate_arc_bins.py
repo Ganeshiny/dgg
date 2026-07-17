@@ -128,8 +128,7 @@ def main():
         hgroups = homology_bins(homology_path, test.protein_ids)
         igroups = ic_bins(test.labels, ic)
         loader = make_dataloader(test, args.batch_size, False, args.workers)
-        checkpoint_paths = sorted(ablations_root.joinpath(ontology).glob("*/ */best_checkpoint.pt"))
-        checkpoint_paths += sorted(ablations_root.joinpath(ontology).glob("*/*/best_checkpoint.pt"))
+        checkpoint_paths = sorted(ablations_root.joinpath(ontology).rglob("best_checkpoint.pt"))
         for checkpoint_path in sorted(set(checkpoint_paths)):
             checkpoint = torch.load(checkpoint_path, map_location=device, weights_only=False)
             config = checkpoint["config"]
