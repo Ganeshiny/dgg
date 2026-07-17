@@ -1,0 +1,52 @@
+GPU: NVIDIA L40S
+CUDA tensor check: 8.0
+Thu Jul 16 23:27:08 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 560.35.03              Driver Version: 560.35.03      CUDA Version: 12.6     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA L40S                    On  |   00000000:0D:00.0 Off |                    0 |
+| N/A   52C    P0             48W /  350W |     503MiB /  46068MiB |      5%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|    0   N/A  N/A   1610422      C   python3                                       494MiB |
++-----------------------------------------------------------------------------------------+
+CUDA verified: NVIDIA L40S; tensor dot product=8.0
+GPU startup: NVIDIA L40S, 533, 46068, 0
+Loaded train=6026, valid=754; reserved test set is not loaded
+epoch=1 loss=0.316850 validation_macro_fmax=0.275053 valid_micro_fmax=0.178687
+epoch=2 loss=0.251822 validation_macro_fmax=0.302998 valid_micro_fmax=0.226863
+epoch=3 loss=0.227390 validation_macro_fmax=0.309540 valid_micro_fmax=0.263023
+epoch=4 loss=0.206169 validation_macro_fmax=0.310552 valid_micro_fmax=0.267156
+epoch=5 loss=0.185481 validation_macro_fmax=0.321720 valid_micro_fmax=0.284173
+epoch=6 loss=0.159950 validation_macro_fmax=0.325053 valid_micro_fmax=0.348583
+epoch=7 loss=0.131458 validation_macro_fmax=0.333405 valid_micro_fmax=0.328340
+epoch=8 loss=0.103859 validation_macro_fmax=0.338736 valid_micro_fmax=0.364900
+epoch=9 loss=0.080029 validation_macro_fmax=0.339622 valid_micro_fmax=0.426640
+epoch=10 loss=0.060114 validation_macro_fmax=0.329252 valid_micro_fmax=0.435566
+epoch=11 loss=0.046165 validation_macro_fmax=0.337512 valid_micro_fmax=0.425564
+epoch=12 loss=0.036705 validation_macro_fmax=0.342720 valid_micro_fmax=0.419571
+epoch=13 loss=0.028644 validation_macro_fmax=0.346839 valid_micro_fmax=0.439573
+epoch=14 loss=0.024018 validation_macro_fmax=0.354596 valid_micro_fmax=0.468372
+epoch=15 loss=0.019632 validation_macro_fmax=0.362400 valid_micro_fmax=0.441710
+epoch=16 loss=0.017822 validation_macro_fmax=0.335686 valid_micro_fmax=0.457517
+epoch=17 loss=0.015494 validation_macro_fmax=0.334569 valid_micro_fmax=0.462741
+epoch=18 loss=0.013753 validation_macro_fmax=0.359878 valid_micro_fmax=0.433258
+epoch=19 loss=0.011844 validation_macro_fmax=0.343271 valid_micro_fmax=0.468140
+epoch=20 loss=0.009985 validation_macro_fmax=0.349989 valid_micro_fmax=0.470718
+epoch=21 loss=0.009315 validation_macro_fmax=0.351651 valid_micro_fmax=0.458019
+epoch=22 loss=0.009042 validation_macro_fmax=0.350416 valid_micro_fmax=0.453586
+epoch=23 loss=0.008181 validation_macro_fmax=0.359646 valid_micro_fmax=0.469375
+epoch=24 loss=0.007018 validation_macro_fmax=0.349649 valid_micro_fmax=0.478774
+epoch=25 loss=0.006536 validation_macro_fmax=0.357544 valid_micro_fmax=0.452753
+Early stopping after 25 epochs (patience=10)
+GPU completion: NVIDIA L40S, 21089, 46068, 0

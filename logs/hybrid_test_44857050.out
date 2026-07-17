@@ -1,0 +1,123 @@
+Evaluating on cuda
+{"batch_size": 16, "checkpoint": "/home/ganeshiny.sridharan/dgg/deep-green-GO/arc_tuning_cafa/five_seed_hybrid/molecular_function/seed_1103/best_checkpoint.pt", "dropout": 0.4, "hidden_dim": 512, "learning_rate": 0.0003377348785134729, "loss": "BCE", "ontology": "molecular_function", "seed": 1103, "test_classes": 1052, "test_examples": 754, "test_macro_aupr": 0.29872657731902186, "test_macro_auroc": 0.6991369850525326, "test_macro_fmax": 0.3608883315695565, "test_micro_aupr": 0.3749082682774505, "test_micro_auroc": 0.8399020281788634, "test_micro_f1_at_validation_threshold": 0.49471052125408727, "test_micro_fmax": 0.5115212405311008, "test_micro_fmax_diagnostic": 0.5115212405804775, "test_micro_fmax_threshold_diagnostic": 0.861790657043457, "test_smin": 16.640860852432024, "validation_threshold": 0.6737324595451355, "weight_decay": 8.266805481657407e-06}
+{"batch_size": 16, "checkpoint": "/home/ganeshiny.sridharan/dgg/deep-green-GO/arc_tuning_cafa/five_seed_hybrid/molecular_function/seed_2207/best_checkpoint.pt", "dropout": 0.4, "hidden_dim": 512, "learning_rate": 0.0003377348785134729, "loss": "BCE", "ontology": "molecular_function", "seed": 2207, "test_classes": 1052, "test_examples": 754, "test_macro_aupr": 0.2595166277894132, "test_macro_auroc": 0.6812086832825774, "test_macro_fmax": 0.32621314365279397, "test_micro_aupr": 0.3442917443972979, "test_micro_auroc": 0.8589184317494186, "test_micro_f1_at_validation_threshold": 0.47958410050904354, "test_micro_fmax": 0.49119170979513166, "test_micro_fmax_diagnostic": 0.4911917098440653, "test_micro_fmax_threshold_diagnostic": 0.8508263230323792, "test_smin": 16.799736250337812, "validation_threshold": 0.7474039793014526, "weight_decay": 8.266805481657407e-06}
+{"batch_size": 16, "checkpoint": "/home/ganeshiny.sridharan/dgg/deep-green-GO/arc_tuning_cafa/five_seed_hybrid/molecular_function/seed_3301/best_checkpoint.pt", "dropout": 0.4, "hidden_dim": 512, "learning_rate": 0.0003377348785134729, "loss": "BCE", "ontology": "molecular_function", "seed": 3301, "test_classes": 1052, "test_examples": 754, "test_macro_aupr": 0.25651187744539283, "test_macro_auroc": 0.7095630470529123, "test_macro_fmax": 0.3268920601924449, "test_micro_aupr": 0.3594352136319817, "test_micro_auroc": 0.8712111012711771, "test_micro_f1_at_validation_threshold": 0.4341637010676156, "test_micro_fmax": 0.4596564932175513, "test_micro_fmax_diagnostic": 0.45965649326530295, "test_micro_fmax_threshold_diagnostic": 0.945715606212616, "test_smin": 16.691408076342114, "validation_threshold": 0.49953165650367737, "weight_decay": 8.266805481657407e-06}
+{"batch_size": 16, "checkpoint": "/home/ganeshiny.sridharan/dgg/deep-green-GO/arc_tuning_cafa/five_seed_hybrid/molecular_function/seed_4409/best_checkpoint.pt", "dropout": 0.4, "hidden_dim": 512, "learning_rate": 0.0003377348785134729, "loss": "BCE", "ontology": "molecular_function", "seed": 4409, "test_classes": 1052, "test_examples": 754, "test_macro_aupr": 0.2557410581321725, "test_macro_auroc": 0.6547818260445476, "test_macro_fmax": 0.3214204111677874, "test_micro_aupr": 0.30410919984993323, "test_micro_auroc": 0.8391024321231312, "test_micro_f1_at_validation_threshold": 0.42438386855862575, "test_micro_fmax": 0.43587350954046183, "test_micro_fmax_diagnostic": 0.43587350958996135, "test_micro_fmax_threshold_diagnostic": 0.7614132165908813, "test_smin": 19.404116093523264, "validation_threshold": 0.5732699036598206, "weight_decay": 8.266805481657407e-06}
+{"batch_size": 16, "checkpoint": "/home/ganeshiny.sridharan/dgg/deep-green-GO/arc_tuning_cafa/five_seed_hybrid/molecular_function/seed_5501/best_checkpoint.pt", "dropout": 0.4, "hidden_dim": 512, "learning_rate": 0.0003377348785134729, "loss": "BCE", "ontology": "molecular_function", "seed": 5501, "test_classes": 1052, "test_examples": 754, "test_macro_aupr": 0.25807418058328085, "test_macro_auroc": 0.6923075777018022, "test_macro_fmax": 0.31872999115650424, "test_micro_aupr": 0.3156569614494446, "test_micro_auroc": 0.8555911172721911, "test_micro_f1_at_validation_threshold": 0.4399457574583494, "test_micro_fmax": 0.4574349855025793, "test_micro_fmax_diagnostic": 0.45743498555184736, "test_micro_fmax_threshold_diagnostic": 0.8772766590118408, "test_smin": 18.957484051942835, "validation_threshold": 0.7083045244216919, "weight_decay": 8.266805481657407e-06}
+{"batch_size": 32, "checkpoint": "/home/ganeshiny.sridharan/dgg/deep-green-GO/arc_tuning_cafa/five_seed_hybrid/biological_process/seed_1103/best_checkpoint.pt", "dropout": 0.2, "hidden_dim": 512, "learning_rate": 5.462490060476474e-05, "loss": "Focal", "ontology": "biological_process", "seed": 1103, "test_classes": 2193, "test_examples": 754, "test_macro_aupr": 0.15513608088083614, "test_macro_auroc": 0.6092909776406453, "test_macro_fmax": 0.22537723829586087, "test_micro_aupr": 0.14199471110973566, "test_micro_auroc": 0.7622054230910672, "test_micro_f1_at_validation_threshold": 0.21991468826748245, "test_micro_fmax": 0.24231523866838373, "test_micro_fmax_diagnostic": 0.2423152387176191, "test_micro_fmax_threshold_diagnostic": 0.6050572991371155, "test_smin": 89.68799539251307, "validation_threshold": 0.7679049372673035, "weight_decay": 1.0333998491320167e-07}
+{"batch_size": 32, "checkpoint": "/home/ganeshiny.sridharan/dgg/deep-green-GO/arc_tuning_cafa/five_seed_hybrid/biological_process/seed_2207/best_checkpoint.pt", "dropout": 0.2, "hidden_dim": 512, "learning_rate": 5.462490060476474e-05, "loss": "Focal", "ontology": "biological_process", "seed": 2207, "test_classes": 2193, "test_examples": 754, "test_macro_aupr": 0.15106888881003475, "test_macro_auroc": 0.6147622498458195, "test_macro_fmax": 0.2178595917033847, "test_micro_aupr": 0.11684734169523968, "test_micro_auroc": 0.7331067573051528, "test_micro_f1_at_validation_threshold": 0.18660516959738638, "test_micro_fmax": 0.2019999256034653, "test_micro_fmax_diagnostic": 0.2019999256528229, "test_micro_fmax_threshold_diagnostic": 0.5953265428543091, "test_smin": 90.55147752859735, "validation_threshold": 0.7729377746582031, "weight_decay": 1.0333998491320167e-07}
+{"batch_size": 32, "checkpoint": "/home/ganeshiny.sridharan/dgg/deep-green-GO/arc_tuning_cafa/five_seed_hybrid/biological_process/seed_3301/best_checkpoint.pt", "dropout": 0.2, "hidden_dim": 512, "learning_rate": 5.462490060476474e-05, "loss": "Focal", "ontology": "biological_process", "seed": 3301, "test_classes": 2193, "test_examples": 754, "test_macro_aupr": 0.15230249361854784, "test_macro_auroc": 0.631406772906044, "test_macro_fmax": 0.21448245673923735, "test_micro_aupr": 0.1415285951413208, "test_micro_auroc": 0.7470534443310792, "test_micro_f1_at_validation_threshold": 0.19963994693954898, "test_micro_fmax": 0.23653917559068738, "test_micro_fmax_diagnostic": 0.23653917564005095, "test_micro_fmax_threshold_diagnostic": 0.626466691493988, "test_smin": 90.54678879068616, "validation_threshold": 0.8221274018287659, "weight_decay": 1.0333998491320167e-07}
+{"batch_size": 32, "checkpoint": "/home/ganeshiny.sridharan/dgg/deep-green-GO/arc_tuning_cafa/five_seed_hybrid/biological_process/seed_4409/best_checkpoint.pt", "dropout": 0.2, "hidden_dim": 512, "learning_rate": 5.462490060476474e-05, "loss": "Focal", "ontology": "biological_process", "seed": 4409, "test_classes": 2193, "test_examples": 754, "test_macro_aupr": 0.14477411952580835, "test_macro_auroc": 0.590854567859712, "test_macro_fmax": 0.20905036321364678, "test_micro_aupr": 0.13502704402892865, "test_micro_auroc": 0.73882638720001, "test_micro_f1_at_validation_threshold": 0.23478153643799582, "test_micro_fmax": 0.23983712244752806, "test_micro_fmax_diagnostic": 0.2398371224969558, "test_micro_fmax_threshold_diagnostic": 0.44530075788497925, "test_smin": 89.66766912680852, "validation_threshold": 0.5963726043701172, "weight_decay": 1.0333998491320167e-07}
+{"batch_size": 32, "checkpoint": "/home/ganeshiny.sridharan/dgg/deep-green-GO/arc_tuning_cafa/five_seed_hybrid/biological_process/seed_5501/best_checkpoint.pt", "dropout": 0.2, "hidden_dim": 512, "learning_rate": 5.462490060476474e-05, "loss": "Focal", "ontology": "biological_process", "seed": 5501, "test_classes": 2193, "test_examples": 754, "test_macro_aupr": 0.15054543349141114, "test_macro_auroc": 0.590950829817382, "test_macro_fmax": 0.21063553515230526, "test_micro_aupr": 0.14088606931212555, "test_micro_auroc": 0.7432228281870081, "test_micro_f1_at_validation_threshold": 0.20865747148379707, "test_micro_fmax": 0.21580774724395532, "test_micro_fmax_diagnostic": 0.21580774729339403, "test_micro_fmax_threshold_diagnostic": 0.6219433546066284, "test_smin": 89.7054937722949, "validation_threshold": 0.8153229355812073, "weight_decay": 1.0333998491320167e-07}
+{"batch_size": 64, "checkpoint": "/home/ganeshiny.sridharan/dgg/deep-green-GO/arc_tuning_cafa/five_seed_hybrid/cellular_component/seed_1103/best_checkpoint.pt", "dropout": 0.2, "hidden_dim": 128, "learning_rate": 0.0027705153087256443, "loss": "Focal", "ontology": "cellular_component", "seed": 1103, "test_classes": 318, "test_examples": 754, "test_macro_aupr": 0.20627784166359753, "test_macro_auroc": 0.6541290403973217, "test_macro_fmax": 0.2953581669372974, "test_micro_aupr": 0.2234789449558612, "test_micro_auroc": 0.830186218801743, "test_micro_f1_at_validation_threshold": 0.34027425088877605, "test_micro_fmax": 0.3415890015475669, "test_micro_fmax_diagnostic": 0.34158900159572386, "test_micro_fmax_threshold_diagnostic": 0.5729861855506897, "test_smin": 28.603408929779174, "validation_threshold": 0.5690880417823792, "weight_decay": 4.5960195338023743e-07}
+{"batch_size": 64, "checkpoint": "/home/ganeshiny.sridharan/dgg/deep-green-GO/arc_tuning_cafa/five_seed_hybrid/cellular_component/seed_2207/best_checkpoint.pt", "dropout": 0.2, "hidden_dim": 128, "learning_rate": 0.0027705153087256443, "loss": "Focal", "ontology": "cellular_component", "seed": 2207, "test_classes": 318, "test_examples": 754, "test_macro_aupr": 0.20936558817079653, "test_macro_auroc": 0.637435497482979, "test_macro_fmax": 0.28115292362444705, "test_micro_aupr": 0.2635029764041309, "test_micro_auroc": 0.7961352263775296, "test_micro_f1_at_validation_threshold": 0.33633133466577836, "test_micro_fmax": 0.34842678494560586, "test_micro_fmax_diagnostic": 0.3484267849934657, "test_micro_fmax_threshold_diagnostic": 0.5464803576469421, "test_smin": 27.79167348889866, "validation_threshold": 0.5983397960662842, "weight_decay": 4.5960195338023743e-07}
+{"batch_size": 64, "checkpoint": "/home/ganeshiny.sridharan/dgg/deep-green-GO/arc_tuning_cafa/five_seed_hybrid/cellular_component/seed_3301/best_checkpoint.pt", "dropout": 0.2, "hidden_dim": 128, "learning_rate": 0.0027705153087256443, "loss": "Focal", "ontology": "cellular_component", "seed": 3301, "test_classes": 318, "test_examples": 754, "test_macro_aupr": 0.19528833984958685, "test_macro_auroc": 0.6815779276387092, "test_macro_fmax": 0.2957501901835522, "test_micro_aupr": 0.21929850105010545, "test_micro_auroc": 0.8042076512632563, "test_micro_f1_at_validation_threshold": 0.3384041331802526, "test_micro_fmax": 0.3402280906703248, "test_micro_fmax_diagnostic": 0.34022809071547133, "test_micro_fmax_threshold_diagnostic": 0.4867886006832123, "test_smin": 29.23994064562536, "validation_threshold": 0.5176342129707336, "weight_decay": 4.5960195338023743e-07}
+{"batch_size": 64, "checkpoint": "/home/ganeshiny.sridharan/dgg/deep-green-GO/arc_tuning_cafa/five_seed_hybrid/cellular_component/seed_4409/best_checkpoint.pt", "dropout": 0.2, "hidden_dim": 128, "learning_rate": 0.0027705153087256443, "loss": "Focal", "ontology": "cellular_component", "seed": 4409, "test_classes": 318, "test_examples": 754, "test_macro_aupr": 0.16071776630117696, "test_macro_auroc": 0.6254973163320883, "test_macro_fmax": 0.2424035005536791, "test_micro_aupr": 0.22958462575570593, "test_micro_auroc": 0.7985005953991955, "test_micro_f1_at_validation_threshold": 0.3027567462628616, "test_micro_fmax": 0.30497156862977737, "test_micro_fmax_diagnostic": 0.30497156867810743, "test_micro_fmax_threshold_diagnostic": 0.5518093705177307, "test_smin": 28.44735570159755, "validation_threshold": 0.5149612426757812, "weight_decay": 4.5960195338023743e-07}
+{"batch_size": 64, "checkpoint": "/home/ganeshiny.sridharan/dgg/deep-green-GO/arc_tuning_cafa/five_seed_hybrid/cellular_component/seed_5501/best_checkpoint.pt", "dropout": 0.2, "hidden_dim": 128, "learning_rate": 0.0027705153087256443, "loss": "Focal", "ontology": "cellular_component", "seed": 5501, "test_classes": 318, "test_examples": 754, "test_macro_aupr": 0.17610805410333477, "test_macro_auroc": 0.639737835012628, "test_macro_fmax": 0.268692302786913, "test_micro_aupr": 0.2654836016206122, "test_micro_auroc": 0.7918272911535353, "test_micro_f1_at_validation_threshold": 0.3238220181480267, "test_micro_fmax": 0.3278405921535731, "test_micro_fmax_diagnostic": 0.3278405922015134, "test_micro_fmax_threshold_diagnostic": 0.5498586297035217, "test_smin": 28.07478838787734, "validation_threshold": 0.5818897485733032, "weight_decay": 4.5960195338023743e-07}
+{
+  "molecular_function": {
+    "seeds": 5,
+    "mean_micro_f1_at_validation_threshold": 0.4545575897695443,
+    "std_micro_f1_at_validation_threshold": 0.030734564980604666,
+    "min_micro_f1_at_validation_threshold": 0.42438386855862575,
+    "max_micro_f1_at_validation_threshold": 0.49471052125408727,
+    "mean_micro_fmax": 0.47113558771736497,
+    "std_micro_fmax": 0.029983909246991798,
+    "min_micro_fmax": 0.43587350954046183,
+    "max_micro_fmax": 0.5115212405311008,
+    "mean_macro_fmax": 0.3308287875478174,
+    "std_macro_fmax": 0.017141153679506492,
+    "min_macro_fmax": 0.31872999115650424,
+    "max_macro_fmax": 0.3608883315695565,
+    "mean_micro_aupr": 0.3396802775212216,
+    "std_micro_aupr": 0.02955907534917001,
+    "min_micro_aupr": 0.30410919984993323,
+    "max_micro_aupr": 0.3749082682774505,
+    "mean_macro_aupr": 0.2657140642538563,
+    "std_macro_aupr": 0.018511774315752814,
+    "min_macro_aupr": 0.2557410581321725,
+    "max_macro_aupr": 0.29872657731902186,
+    "mean_micro_auroc": 0.8529450221189563,
+    "std_micro_auroc": 0.013583722598042525,
+    "min_micro_auroc": 0.8391024321231312,
+    "max_micro_auroc": 0.8712111012711771,
+    "mean_macro_auroc": 0.6873996238268745,
+    "std_macro_auroc": 0.02094826643106932,
+    "min_macro_auroc": 0.6547818260445476,
+    "max_macro_auroc": 0.7095630470529123,
+    "mean_smin": 17.69872106491561,
+    "std_smin": 1.3633394518658557,
+    "min_smin": 16.640860852432024,
+    "max_smin": 19.404116093523264
+  },
+  "biological_process": {
+    "seeds": 5,
+    "mean_micro_f1_at_validation_threshold": 0.2099197625452421,
+    "std_micro_f1_at_validation_threshold": 0.01849894978926217,
+    "min_micro_f1_at_validation_threshold": 0.18660516959738638,
+    "max_micro_f1_at_validation_threshold": 0.23478153643799582,
+    "mean_micro_fmax": 0.22729984191080396,
+    "std_micro_fmax": 0.017607987071798108,
+    "min_micro_fmax": 0.2019999256034653,
+    "max_micro_fmax": 0.24231523866838373,
+    "mean_macro_fmax": 0.215481037020887,
+    "std_macro_fmax": 0.00650810914561365,
+    "min_macro_fmax": 0.20905036321364678,
+    "max_macro_fmax": 0.22537723829586087,
+    "mean_micro_aupr": 0.13525675225747008,
+    "std_micro_aupr": 0.010669869683779974,
+    "min_micro_aupr": 0.11684734169523968,
+    "max_micro_aupr": 0.14199471110973566,
+    "mean_macro_aupr": 0.15076540326532764,
+    "std_macro_aupr": 0.0037914852168174458,
+    "min_macro_aupr": 0.14477411952580835,
+    "max_macro_aupr": 0.15513608088083614,
+    "mean_micro_auroc": 0.7448829680228635,
+    "std_micro_auroc": 0.010987445010109669,
+    "min_micro_auroc": 0.7331067573051528,
+    "max_micro_auroc": 0.7622054230910672,
+    "mean_macro_auroc": 0.6074530796139206,
+    "std_macro_auroc": 0.01716403290146717,
+    "min_macro_auroc": 0.590854567859712,
+    "max_macro_auroc": 0.631406772906044,
+    "mean_smin": 90.03188492218,
+    "std_smin": 0.47237347707669886,
+    "min_smin": 89.66766912680852,
+    "max_smin": 90.55147752859735
+  },
+  "cellular_component": {
+    "seeds": 5,
+    "mean_micro_f1_at_validation_threshold": 0.32831769662913907,
+    "std_micro_f1_at_validation_threshold": 0.01567232509296556,
+    "min_micro_f1_at_validation_threshold": 0.3027567462628616,
+    "max_micro_f1_at_validation_threshold": 0.34027425088877605,
+    "mean_micro_fmax": 0.3326112075893696,
+    "std_micro_fmax": 0.017142480806382334,
+    "min_micro_fmax": 0.30497156862977737,
+    "max_micro_fmax": 0.34842678494560586,
+    "mean_macro_fmax": 0.2766714168171777,
+    "std_macro_fmax": 0.02219929318824698,
+    "min_macro_fmax": 0.2424035005536791,
+    "max_macro_fmax": 0.2957501901835522,
+    "mean_micro_aupr": 0.24026972995728313,
+    "std_micro_aupr": 0.022424414258540706,
+    "min_micro_aupr": 0.21929850105010545,
+    "max_micro_aupr": 0.2654836016206122,
+    "mean_macro_aupr": 0.1895515180176985,
+    "std_macro_aupr": 0.02072070440125583,
+    "min_macro_aupr": 0.16071776630117696,
+    "max_macro_aupr": 0.20936558817079653,
+    "mean_micro_auroc": 0.8041713965990519,
+    "std_micro_auroc": 0.015214197694636365,
+    "min_micro_auroc": 0.7918272911535353,
+    "max_micro_auroc": 0.830186218801743,
+    "mean_macro_auroc": 0.6476755233727453,
+    "std_macro_auroc": 0.021510223100092523,
+    "min_macro_auroc": 0.6254973163320883,
+    "max_macro_auroc": 0.6815779276387092,
+    "mean_smin": 28.431433430755618,
+    "std_smin": 0.5522683852267979,
+    "min_smin": 27.79167348889866,
+    "max_smin": 29.23994064562536
+  }
+}
