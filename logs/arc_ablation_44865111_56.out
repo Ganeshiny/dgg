@@ -1,0 +1,16 @@
+epoch=1 loss=1.239250 validation_macro_fmax=0.064224 validation_micro_fmax=0.012166
+epoch=2 loss=1.224270 validation_macro_fmax=0.061096 validation_micro_fmax=0.011372
+epoch=3 loss=1.209702 validation_macro_fmax=0.065545 validation_micro_fmax=0.014836
+epoch=4 loss=1.178887 validation_macro_fmax=0.064278 validation_micro_fmax=0.011372
+epoch=5 loss=1.114503 validation_macro_fmax=0.059719 validation_micro_fmax=0.011372
+epoch=6 loss=1.036573 validation_macro_fmax=0.079495 validation_micro_fmax=0.015263
+epoch=7 loss=0.997475 validation_macro_fmax=0.082673 validation_micro_fmax=0.013842
+epoch=8 loss=0.975152 validation_macro_fmax=0.072476 validation_micro_fmax=0.015271
+epoch=9 loss=0.954977 validation_macro_fmax=0.066608 validation_micro_fmax=0.012270
+epoch=10 loss=0.929393 validation_macro_fmax=0.063429 validation_micro_fmax=0.018585
+epoch=11 loss=0.908347 validation_macro_fmax=0.059723 validation_micro_fmax=0.011846
+epoch=12 loss=0.891193 validation_macro_fmax=0.063287 validation_micro_fmax=0.011372
+epoch=13 loss=0.867913 validation_macro_fmax=0.071184 validation_micro_fmax=0.014163
+epoch=14 loss=0.857926 validation_macro_fmax=0.069344 validation_micro_fmax=0.011641
+epoch=15 loss=0.847691 validation_macro_fmax=0.069329 validation_micro_fmax=0.011387
+{"input_modality": "struct_only", "model": "Hybrid", "ontology": "molecular_function", "split_label": "nominal_30_identity_80_coverage", "test": {"Macro_AUPRC": 0.1194948129054315, "Macro_AUROC": 0.5514592623979051, "Macro_Fmax": 0.0799379520901427, "Micro_AUPRC": 0.14127300639058185, "Micro_AUROC": 0.5539304078728967, "Micro_Fmax": 0.0165317654186266, "Smin": 3152.2439635949627}}

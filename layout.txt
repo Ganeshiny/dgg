@@ -8106,13 +8106,17 @@
 │   ├── arc_submit_input_ablations.slurm
 │   ├── arc_submit_jk.slurm
 │   ├── arc_submit_loss_ablations.slurm
+│   ├── run_arc_ablations.slurm
+│   ├── run_arc_bin_eval.slurm
 │   ├── run_hybrid_repeat.slurm
 │   ├── run_hybrid_select.slurm
 │   ├── run_hybrid_test_eval.slurm
+│   ├── run_hybrid_test_eval_cpu.slurm
 │   ├── run_hybrid_trial.slurm
 │   ├── run_hybrid_tuning.slurm
 │   ├── run_pdb_cluster_rebuild.slurm
-│   └── run_plots_arc.slurm
+│   ├── run_plots_arc.slurm
+│   └── submit_arc_post_tuning.sh
 ├── arc_tuning
 │   ├── datasets
 │   │   ├── biological_process_test.pkl
@@ -16517,7 +16521,1187 @@
 │   │           └── validation_metrics.json
 │   ├── selected_hybrid.json
 │   ├── test_evaluation
+│   │   ├── hybrid
+│   │   │   ├── per_seed_metrics.csv
+│   │   │   └── summary.json
+│   │   └── hybrid_cpu
+│   │       ├── per_seed_metrics.csv
+│   │       └── summary.json
+│   └── tuning_dataset_manifest.json
+├── arc_tuning_cafa
+│   ├── ablations
+│   │   └── nominal_30_identity_80_coverage
+│   │       ├── biological_process
+│   │       │   ├── GAT
+│   │       │   │   ├── full
+│   │       │   │   ├── seq_only
+│   │       │   │   └── struct_only
+│   │       │   ├── GCN
+│   │       │   │   ├── full
+│   │       │   │   ├── seq_only
+│   │       │   │   └── struct_only
+│   │       │   ├── Hybrid
+│   │       │   │   ├── full
+│   │       │   │   ├── seq_only
+│   │       │   │   └── struct_only
+│   │       │   ├── Hybrid_JK
+│   │       │   │   ├── full
+│   │       │   │   ├── seq_only
+│   │       │   │   └── struct_only
+│   │       │   └── MLP
+│   │       │       ├── full
+│   │       │       ├── seq_only
+│   │       │       └── struct_only
+│   │       ├── cellular_component
+│   │       │   ├── GAT
+│   │       │   │   ├── full
+│   │       │   │   ├── seq_only
+│   │       │   │   └── struct_only
+│   │       │   ├── GCN
+│   │       │   │   ├── full
+│   │       │   │   ├── seq_only
+│   │       │   │   └── struct_only
+│   │       │   ├── Hybrid
+│   │       │   │   ├── full
+│   │       │   │   ├── seq_only
+│   │       │   │   └── struct_only
+│   │       │   ├── Hybrid_JK
+│   │       │   │   ├── full
+│   │       │   │   ├── seq_only
+│   │       │   │   └── struct_only
+│   │       │   └── MLP
+│   │       │       ├── full
+│   │       │       ├── seq_only
+│   │       │       └── struct_only
+│   │       └── molecular_function
+│   │           ├── GAT
+│   │           │   ├── full
+│   │           │   │   ├── seed_1103
+│   │           │   │   │   ├── best_checkpoint.pt
+│   │           │   │   │   ├── config.json
+│   │           │   │   │   ├── test_metrics.json
+│   │           │   │   │   └── validation_metrics.json
+│   │           │   │   ├── seed_2207
+│   │           │   │   │   ├── best_checkpoint.pt
+│   │           │   │   │   ├── config.json
+│   │           │   │   │   ├── test_metrics.json
+│   │           │   │   │   └── validation_metrics.json
+│   │           │   │   ├── seed_3301
+│   │           │   │   │   ├── best_checkpoint.pt
+│   │           │   │   │   ├── config.json
+│   │           │   │   │   ├── test_metrics.json
+│   │           │   │   │   └── validation_metrics.json
+│   │           │   │   ├── seed_4409
+│   │           │   │   │   ├── best_checkpoint.pt
+│   │           │   │   │   ├── config.json
+│   │           │   │   │   ├── test_metrics.json
+│   │           │   │   │   └── validation_metrics.json
+│   │           │   │   └── seed_5501
+│   │           │   │       ├── best_checkpoint.pt
+│   │           │   │       ├── config.json
+│   │           │   │       ├── test_metrics.json
+│   │           │   │       └── validation_metrics.json
+│   │           │   ├── seq_only
+│   │           │   │   ├── seed_1103
+│   │           │   │   │   ├── best_checkpoint.pt
+│   │           │   │   │   ├── config.json
+│   │           │   │   │   ├── test_metrics.json
+│   │           │   │   │   └── validation_metrics.json
+│   │           │   │   ├── seed_2207
+│   │           │   │   │   ├── best_checkpoint.pt
+│   │           │   │   │   ├── config.json
+│   │           │   │   │   ├── test_metrics.json
+│   │           │   │   │   └── validation_metrics.json
+│   │           │   │   ├── seed_3301
+│   │           │   │   │   ├── best_checkpoint.pt
+│   │           │   │   │   ├── config.json
+│   │           │   │   │   ├── test_metrics.json
+│   │           │   │   │   └── validation_metrics.json
+│   │           │   │   ├── seed_4409
+│   │           │   │   │   ├── best_checkpoint.pt
+│   │           │   │   │   ├── config.json
+│   │           │   │   │   ├── test_metrics.json
+│   │           │   │   │   └── validation_metrics.json
+│   │           │   │   └── seed_5501
+│   │           │   │       ├── best_checkpoint.pt
+│   │           │   │       ├── config.json
+│   │           │   │       ├── test_metrics.json
+│   │           │   │       └── validation_metrics.json
+│   │           │   └── struct_only
+│   │           │       ├── seed_1103
+│   │           │       │   ├── best_checkpoint.pt
+│   │           │       │   ├── config.json
+│   │           │       │   ├── test_metrics.json
+│   │           │       │   └── validation_metrics.json
+│   │           │       ├── seed_2207
+│   │           │       │   ├── best_checkpoint.pt
+│   │           │       │   ├── config.json
+│   │           │       │   ├── test_metrics.json
+│   │           │       │   └── validation_metrics.json
+│   │           │       ├── seed_3301
+│   │           │       │   ├── best_checkpoint.pt
+│   │           │       │   ├── config.json
+│   │           │       │   ├── test_metrics.json
+│   │           │       │   └── validation_metrics.json
+│   │           │       ├── seed_4409
+│   │           │       │   ├── best_checkpoint.pt
+│   │           │       │   ├── config.json
+│   │           │       │   ├── test_metrics.json
+│   │           │       │   └── validation_metrics.json
+│   │           │       └── seed_5501
+│   │           │           ├── best_checkpoint.pt
+│   │           │           ├── config.json
+│   │           │           ├── test_metrics.json
+│   │           │           └── validation_metrics.json
+│   │           ├── GCN
+│   │           │   ├── full
+│   │           │   │   ├── seed_1103
+│   │           │   │   │   ├── best_checkpoint.pt
+│   │           │   │   │   ├── config.json
+│   │           │   │   │   ├── test_metrics.json
+│   │           │   │   │   └── validation_metrics.json
+│   │           │   │   ├── seed_2207
+│   │           │   │   │   ├── best_checkpoint.pt
+│   │           │   │   │   ├── config.json
+│   │           │   │   │   ├── test_metrics.json
+│   │           │   │   │   └── validation_metrics.json
+│   │           │   │   ├── seed_3301
+│   │           │   │   │   ├── best_checkpoint.pt
+│   │           │   │   │   ├── config.json
+│   │           │   │   │   ├── test_metrics.json
+│   │           │   │   │   └── validation_metrics.json
+│   │           │   │   ├── seed_4409
+│   │           │   │   │   ├── best_checkpoint.pt
+│   │           │   │   │   ├── config.json
+│   │           │   │   │   ├── test_metrics.json
+│   │           │   │   │   └── validation_metrics.json
+│   │           │   │   └── seed_5501
+│   │           │   │       ├── best_checkpoint.pt
+│   │           │   │       ├── config.json
+│   │           │   │       ├── test_metrics.json
+│   │           │   │       └── validation_metrics.json
+│   │           │   ├── seq_only
+│   │           │   │   ├── seed_1103
+│   │           │   │   │   ├── best_checkpoint.pt
+│   │           │   │   │   ├── config.json
+│   │           │   │   │   ├── test_metrics.json
+│   │           │   │   │   └── validation_metrics.json
+│   │           │   │   ├── seed_2207
+│   │           │   │   │   ├── best_checkpoint.pt
+│   │           │   │   │   ├── config.json
+│   │           │   │   │   ├── test_metrics.json
+│   │           │   │   │   └── validation_metrics.json
+│   │           │   │   ├── seed_3301
+│   │           │   │   │   ├── best_checkpoint.pt
+│   │           │   │   │   ├── config.json
+│   │           │   │   │   ├── test_metrics.json
+│   │           │   │   │   └── validation_metrics.json
+│   │           │   │   ├── seed_4409
+│   │           │   │   │   ├── best_checkpoint.pt
+│   │           │   │   │   ├── config.json
+│   │           │   │   │   ├── test_metrics.json
+│   │           │   │   │   └── validation_metrics.json
+│   │           │   │   └── seed_5501
+│   │           │   │       ├── best_checkpoint.pt
+│   │           │   │       ├── config.json
+│   │           │   │       ├── test_metrics.json
+│   │           │   │       └── validation_metrics.json
+│   │           │   └── struct_only
+│   │           │       ├── seed_1103
+│   │           │       │   ├── best_checkpoint.pt
+│   │           │       │   ├── config.json
+│   │           │       │   ├── test_metrics.json
+│   │           │       │   └── validation_metrics.json
+│   │           │       ├── seed_2207
+│   │           │       │   ├── best_checkpoint.pt
+│   │           │       │   ├── config.json
+│   │           │       │   ├── test_metrics.json
+│   │           │       │   └── validation_metrics.json
+│   │           │       ├── seed_3301
+│   │           │       │   ├── best_checkpoint.pt
+│   │           │       │   ├── config.json
+│   │           │       │   ├── test_metrics.json
+│   │           │       │   └── validation_metrics.json
+│   │           │       ├── seed_4409
+│   │           │       │   ├── best_checkpoint.pt
+│   │           │       │   ├── config.json
+│   │           │       │   ├── test_metrics.json
+│   │           │       │   └── validation_metrics.json
+│   │           │       └── seed_5501
+│   │           │           ├── best_checkpoint.pt
+│   │           │           ├── config.json
+│   │           │           ├── test_metrics.json
+│   │           │           └── validation_metrics.json
+│   │           ├── Hybrid
+│   │           │   ├── full
+│   │           │   │   ├── seed_1103
+│   │           │   │   │   ├── best_checkpoint.pt
+│   │           │   │   │   ├── config.json
+│   │           │   │   │   ├── test_metrics.json
+│   │           │   │   │   └── validation_metrics.json
+│   │           │   │   ├── seed_2207
+│   │           │   │   │   ├── best_checkpoint.pt
+│   │           │   │   │   ├── config.json
+│   │           │   │   │   ├── test_metrics.json
+│   │           │   │   │   └── validation_metrics.json
+│   │           │   │   ├── seed_3301
+│   │           │   │   │   ├── best_checkpoint.pt
+│   │           │   │   │   ├── config.json
+│   │           │   │   │   ├── test_metrics.json
+│   │           │   │   │   └── validation_metrics.json
+│   │           │   │   ├── seed_4409
+│   │           │   │   │   ├── best_checkpoint.pt
+│   │           │   │   │   ├── config.json
+│   │           │   │   │   ├── test_metrics.json
+│   │           │   │   │   └── validation_metrics.json
+│   │           │   │   └── seed_5501
+│   │           │   │       ├── best_checkpoint.pt
+│   │           │   │       ├── config.json
+│   │           │   │       ├── test_metrics.json
+│   │           │   │       └── validation_metrics.json
+│   │           │   ├── seq_only
+│   │           │   │   ├── seed_1103
+│   │           │   │   │   ├── best_checkpoint.pt
+│   │           │   │   │   ├── config.json
+│   │           │   │   │   ├── test_metrics.json
+│   │           │   │   │   └── validation_metrics.json
+│   │           │   │   ├── seed_2207
+│   │           │   │   │   ├── best_checkpoint.pt
+│   │           │   │   │   ├── config.json
+│   │           │   │   │   ├── test_metrics.json
+│   │           │   │   │   └── validation_metrics.json
+│   │           │   │   ├── seed_3301
+│   │           │   │   │   ├── best_checkpoint.pt
+│   │           │   │   │   ├── config.json
+│   │           │   │   │   ├── test_metrics.json
+│   │           │   │   │   └── validation_metrics.json
+│   │           │   │   ├── seed_4409
+│   │           │   │   │   ├── best_checkpoint.pt
+│   │           │   │   │   ├── config.json
+│   │           │   │   │   ├── test_metrics.json
+│   │           │   │   │   └── validation_metrics.json
+│   │           │   │   └── seed_5501
+│   │           │   │       ├── best_checkpoint.pt
+│   │           │   │       ├── config.json
+│   │           │   │       ├── test_metrics.json
+│   │           │   │       └── validation_metrics.json
+│   │           │   └── struct_only
+│   │           │       ├── seed_1103
+│   │           │       │   ├── best_checkpoint.pt
+│   │           │       │   ├── config.json
+│   │           │       │   ├── test_metrics.json
+│   │           │       │   └── validation_metrics.json
+│   │           │       ├── seed_2207
+│   │           │       │   ├── best_checkpoint.pt
+│   │           │       │   ├── config.json
+│   │           │       │   ├── test_metrics.json
+│   │           │       │   └── validation_metrics.json
+│   │           │       ├── seed_3301
+│   │           │       │   ├── best_checkpoint.pt
+│   │           │       │   ├── config.json
+│   │           │       │   ├── test_metrics.json
+│   │           │       │   └── validation_metrics.json
+│   │           │       ├── seed_4409
+│   │           │       │   ├── best_checkpoint.pt
+│   │           │       │   ├── config.json
+│   │           │       │   ├── test_metrics.json
+│   │           │       │   └── validation_metrics.json
+│   │           │       └── seed_5501
+│   │           │           ├── best_checkpoint.pt
+│   │           │           ├── config.json
+│   │           │           ├── test_metrics.json
+│   │           │           └── validation_metrics.json
+│   │           ├── Hybrid_JK
+│   │           │   ├── full
+│   │           │   │   ├── seed_1103
+│   │           │   │   │   ├── best_checkpoint.pt
+│   │           │   │   │   ├── config.json
+│   │           │   │   │   ├── test_metrics.json
+│   │           │   │   │   └── validation_metrics.json
+│   │           │   │   ├── seed_2207
+│   │           │   │   │   ├── best_checkpoint.pt
+│   │           │   │   │   ├── config.json
+│   │           │   │   │   ├── test_metrics.json
+│   │           │   │   │   └── validation_metrics.json
+│   │           │   │   ├── seed_3301
+│   │           │   │   │   ├── best_checkpoint.pt
+│   │           │   │   │   ├── config.json
+│   │           │   │   │   ├── test_metrics.json
+│   │           │   │   │   └── validation_metrics.json
+│   │           │   │   ├── seed_4409
+│   │           │   │   │   ├── best_checkpoint.pt
+│   │           │   │   │   ├── config.json
+│   │           │   │   │   ├── test_metrics.json
+│   │           │   │   │   └── validation_metrics.json
+│   │           │   │   └── seed_5501
+│   │           │   │       ├── best_checkpoint.pt
+│   │           │   │       ├── config.json
+│   │           │   │       ├── test_metrics.json
+│   │           │   │       └── validation_metrics.json
+│   │           │   ├── seq_only
+│   │           │   │   ├── seed_1103
+│   │           │   │   │   ├── best_checkpoint.pt
+│   │           │   │   │   ├── config.json
+│   │           │   │   │   ├── test_metrics.json
+│   │           │   │   │   └── validation_metrics.json
+│   │           │   │   ├── seed_2207
+│   │           │   │   │   ├── best_checkpoint.pt
+│   │           │   │   │   ├── config.json
+│   │           │   │   │   ├── test_metrics.json
+│   │           │   │   │   └── validation_metrics.json
+│   │           │   │   ├── seed_3301
+│   │           │   │   │   ├── best_checkpoint.pt
+│   │           │   │   │   ├── config.json
+│   │           │   │   │   ├── test_metrics.json
+│   │           │   │   │   └── validation_metrics.json
+│   │           │   │   ├── seed_4409
+│   │           │   │   │   ├── best_checkpoint.pt
+│   │           │   │   │   ├── config.json
+│   │           │   │   │   ├── test_metrics.json
+│   │           │   │   │   └── validation_metrics.json
+│   │           │   │   └── seed_5501
+│   │           │   │       ├── best_checkpoint.pt
+│   │           │   │       ├── config.json
+│   │           │   │       ├── test_metrics.json
+│   │           │   │       └── validation_metrics.json
+│   │           │   └── struct_only
+│   │           │       ├── seed_1103
+│   │           │       │   ├── best_checkpoint.pt
+│   │           │       │   ├── config.json
+│   │           │       │   ├── test_metrics.json
+│   │           │       │   └── validation_metrics.json
+│   │           │       ├── seed_2207
+│   │           │       │   ├── best_checkpoint.pt
+│   │           │       │   ├── config.json
+│   │           │       │   └── validation_metrics.json
+│   │           │       └── seed_3301
+│   │           │           ├── best_checkpoint.pt
+│   │           │           ├── config.json
+│   │           │           └── validation_metrics.json
+│   │           └── MLP
+│   │               ├── full
+│   │               │   ├── seed_1103
+│   │               │   │   ├── best_checkpoint.pt
+│   │               │   │   ├── config.json
+│   │               │   │   ├── test_metrics.json
+│   │               │   │   └── validation_metrics.json
+│   │               │   ├── seed_2207
+│   │               │   │   ├── best_checkpoint.pt
+│   │               │   │   ├── config.json
+│   │               │   │   ├── test_metrics.json
+│   │               │   │   └── validation_metrics.json
+│   │               │   ├── seed_3301
+│   │               │   │   ├── best_checkpoint.pt
+│   │               │   │   ├── config.json
+│   │               │   │   ├── test_metrics.json
+│   │               │   │   └── validation_metrics.json
+│   │               │   ├── seed_4409
+│   │               │   │   ├── best_checkpoint.pt
+│   │               │   │   ├── config.json
+│   │               │   │   ├── test_metrics.json
+│   │               │   │   └── validation_metrics.json
+│   │               │   └── seed_5501
+│   │               │       ├── best_checkpoint.pt
+│   │               │       ├── config.json
+│   │               │       ├── test_metrics.json
+│   │               │       └── validation_metrics.json
+│   │               ├── seq_only
+│   │               │   ├── seed_1103
+│   │               │   │   ├── best_checkpoint.pt
+│   │               │   │   ├── config.json
+│   │               │   │   ├── test_metrics.json
+│   │               │   │   └── validation_metrics.json
+│   │               │   ├── seed_2207
+│   │               │   │   ├── best_checkpoint.pt
+│   │               │   │   ├── config.json
+│   │               │   │   ├── test_metrics.json
+│   │               │   │   └── validation_metrics.json
+│   │               │   ├── seed_3301
+│   │               │   │   ├── best_checkpoint.pt
+│   │               │   │   ├── config.json
+│   │               │   │   ├── test_metrics.json
+│   │               │   │   └── validation_metrics.json
+│   │               │   ├── seed_4409
+│   │               │   │   ├── best_checkpoint.pt
+│   │               │   │   ├── config.json
+│   │               │   │   ├── test_metrics.json
+│   │               │   │   └── validation_metrics.json
+│   │               │   └── seed_5501
+│   │               │       ├── best_checkpoint.pt
+│   │               │       ├── config.json
+│   │               │       ├── test_metrics.json
+│   │               │       └── validation_metrics.json
+│   │               └── struct_only
+│   │                   ├── seed_1103
+│   │                   │   ├── best_checkpoint.pt
+│   │                   │   ├── config.json
+│   │                   │   ├── test_metrics.json
+│   │                   │   └── validation_metrics.json
+│   │                   ├── seed_2207
+│   │                   │   ├── best_checkpoint.pt
+│   │                   │   ├── config.json
+│   │                   │   ├── test_metrics.json
+│   │                   │   └── validation_metrics.json
+│   │                   ├── seed_3301
+│   │                   │   ├── best_checkpoint.pt
+│   │                   │   ├── config.json
+│   │                   │   ├── test_metrics.json
+│   │                   │   └── validation_metrics.json
+│   │                   ├── seed_4409
+│   │                   │   ├── best_checkpoint.pt
+│   │                   │   ├── config.json
+│   │                   │   ├── test_metrics.json
+│   │                   │   └── validation_metrics.json
+│   │                   └── seed_5501
+│   │                       ├── best_checkpoint.pt
+│   │                       ├── config.json
+│   │                       ├── test_metrics.json
+│   │                       └── validation_metrics.json
+│   ├── datasets
+│   │   ├── biological_process_test.pkl
+│   │   ├── biological_process_train.pkl
+│   │   ├── biological_process_valid.pkl
+│   │   ├── cellular_component_test.pkl
+│   │   ├── cellular_component_train.pkl
+│   │   ├── cellular_component_valid.pkl
+│   │   ├── molecular_function_test.pkl
+│   │   ├── molecular_function_train.pkl
+│   │   └── molecular_function_valid.pkl
+│   ├── five_seed_hybrid
+│   │   ├── biological_process
+│   │   │   ├── seed_1103
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   ├── seed_2207
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   ├── seed_3301
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   ├── seed_4409
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   └── seed_5501
+│   │   │       ├── best_checkpoint.pt
+│   │   │       ├── config.json
+│   │   │       ├── history.csv
+│   │   │       └── validation_metrics.json
+│   │   ├── cellular_component
+│   │   │   ├── seed_1103
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   ├── seed_2207
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   ├── seed_3301
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   ├── seed_4409
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   └── seed_5501
+│   │   │       ├── best_checkpoint.pt
+│   │   │       ├── config.json
+│   │   │       ├── history.csv
+│   │   │       └── validation_metrics.json
+│   │   └── molecular_function
+│   │       ├── seed_1103
+│   │       │   ├── best_checkpoint.pt
+│   │       │   ├── config.json
+│   │       │   ├── history.csv
+│   │       │   └── validation_metrics.json
+│   │       ├── seed_2207
+│   │       │   ├── best_checkpoint.pt
+│   │       │   ├── config.json
+│   │       │   ├── history.csv
+│   │       │   └── validation_metrics.json
+│   │       ├── seed_3301
+│   │       │   ├── best_checkpoint.pt
+│   │       │   ├── config.json
+│   │       │   ├── history.csv
+│   │       │   └── validation_metrics.json
+│   │       ├── seed_4409
+│   │       │   ├── best_checkpoint.pt
+│   │       │   ├── config.json
+│   │       │   ├── history.csv
+│   │       │   └── validation_metrics.json
+│   │       └── seed_5501
+│   │           ├── best_checkpoint.pt
+│   │           ├── config.json
+│   │           ├── history.csv
+│   │           └── validation_metrics.json
+│   ├── hybrid_random_trials.jsonl
+│   ├── hybrid_search
+│   │   ├── trial_000
+│   │   │   ├── biological_process
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   ├── training_positive_weights.json
+│   │   │   │   └── validation_metrics.json
+│   │   │   ├── cellular_component
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   ├── training_positive_weights.json
+│   │   │   │   └── validation_metrics.json
+│   │   │   └── molecular_function
+│   │   │       ├── best_checkpoint.pt
+│   │   │       ├── config.json
+│   │   │       ├── history.csv
+│   │   │       ├── training_positive_weights.json
+│   │   │       └── validation_metrics.json
+│   │   ├── trial_001
+│   │   │   ├── biological_process
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   ├── training_positive_weights.json
+│   │   │   │   └── validation_metrics.json
+│   │   │   ├── cellular_component
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   ├── training_positive_weights.json
+│   │   │   │   └── validation_metrics.json
+│   │   │   └── molecular_function
+│   │   │       ├── best_checkpoint.pt
+│   │   │       ├── config.json
+│   │   │       ├── history.csv
+│   │   │       ├── training_positive_weights.json
+│   │   │       └── validation_metrics.json
+│   │   ├── trial_002
+│   │   │   ├── biological_process
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   ├── training_positive_weights.json
+│   │   │   │   └── validation_metrics.json
+│   │   │   ├── cellular_component
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   ├── training_positive_weights.json
+│   │   │   │   └── validation_metrics.json
+│   │   │   └── molecular_function
+│   │   │       ├── best_checkpoint.pt
+│   │   │       ├── config.json
+│   │   │       ├── history.csv
+│   │   │       ├── training_positive_weights.json
+│   │   │       └── validation_metrics.json
+│   │   ├── trial_003
+│   │   │   ├── biological_process
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   ├── cellular_component
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   └── molecular_function
+│   │   │       ├── best_checkpoint.pt
+│   │   │       ├── config.json
+│   │   │       ├── history.csv
+│   │   │       └── validation_metrics.json
+│   │   ├── trial_004
+│   │   │   ├── biological_process
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   ├── cellular_component
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   └── molecular_function
+│   │   │       ├── best_checkpoint.pt
+│   │   │       ├── config.json
+│   │   │       ├── history.csv
+│   │   │       └── validation_metrics.json
+│   │   ├── trial_005
+│   │   │   ├── biological_process
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   ├── cellular_component
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   └── molecular_function
+│   │   │       ├── best_checkpoint.pt
+│   │   │       ├── config.json
+│   │   │       ├── history.csv
+│   │   │       └── validation_metrics.json
+│   │   ├── trial_006
+│   │   │   ├── biological_process
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   ├── cellular_component
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   └── molecular_function
+│   │   │       ├── best_checkpoint.pt
+│   │   │       ├── config.json
+│   │   │       ├── history.csv
+│   │   │       └── validation_metrics.json
+│   │   ├── trial_007
+│   │   │   ├── biological_process
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   ├── cellular_component
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   └── molecular_function
+│   │   │       ├── best_checkpoint.pt
+│   │   │       ├── config.json
+│   │   │       ├── history.csv
+│   │   │       └── validation_metrics.json
+│   │   ├── trial_008
+│   │   │   ├── biological_process
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   ├── cellular_component
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   └── molecular_function
+│   │   │       ├── best_checkpoint.pt
+│   │   │       ├── config.json
+│   │   │       ├── history.csv
+│   │   │       └── validation_metrics.json
+│   │   ├── trial_009
+│   │   │   ├── biological_process
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   ├── cellular_component
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   └── molecular_function
+│   │   │       ├── best_checkpoint.pt
+│   │   │       ├── config.json
+│   │   │       ├── history.csv
+│   │   │       └── validation_metrics.json
+│   │   ├── trial_010
+│   │   │   ├── biological_process
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   ├── cellular_component
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   └── molecular_function
+│   │   │       ├── best_checkpoint.pt
+│   │   │       ├── config.json
+│   │   │       ├── history.csv
+│   │   │       └── validation_metrics.json
+│   │   ├── trial_011
+│   │   │   ├── biological_process
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   ├── cellular_component
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   └── molecular_function
+│   │   │       ├── best_checkpoint.pt
+│   │   │       ├── config.json
+│   │   │       ├── history.csv
+│   │   │       └── validation_metrics.json
+│   │   ├── trial_012
+│   │   │   ├── biological_process
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   ├── cellular_component
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   └── molecular_function
+│   │   │       ├── best_checkpoint.pt
+│   │   │       ├── config.json
+│   │   │       ├── history.csv
+│   │   │       └── validation_metrics.json
+│   │   ├── trial_013
+│   │   │   ├── biological_process
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   ├── cellular_component
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   └── molecular_function
+│   │   │       ├── best_checkpoint.pt
+│   │   │       ├── config.json
+│   │   │       ├── history.csv
+│   │   │       └── validation_metrics.json
+│   │   ├── trial_014
+│   │   │   ├── biological_process
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   ├── cellular_component
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   └── molecular_function
+│   │   │       ├── best_checkpoint.pt
+│   │   │       ├── config.json
+│   │   │       ├── history.csv
+│   │   │       └── validation_metrics.json
+│   │   ├── trial_015
+│   │   │   ├── biological_process
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   ├── cellular_component
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   └── molecular_function
+│   │   │       ├── best_checkpoint.pt
+│   │   │       ├── config.json
+│   │   │       ├── history.csv
+│   │   │       └── validation_metrics.json
+│   │   ├── trial_016
+│   │   │   ├── biological_process
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   ├── cellular_component
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   └── molecular_function
+│   │   │       ├── best_checkpoint.pt
+│   │   │       ├── config.json
+│   │   │       ├── history.csv
+│   │   │       └── validation_metrics.json
+│   │   ├── trial_017
+│   │   │   ├── biological_process
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   ├── cellular_component
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   └── molecular_function
+│   │   │       ├── best_checkpoint.pt
+│   │   │       ├── config.json
+│   │   │       ├── history.csv
+│   │   │       └── validation_metrics.json
+│   │   ├── trial_018
+│   │   │   ├── biological_process
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   ├── cellular_component
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   └── molecular_function
+│   │   │       ├── best_checkpoint.pt
+│   │   │       ├── config.json
+│   │   │       ├── history.csv
+│   │   │       └── validation_metrics.json
+│   │   ├── trial_019
+│   │   │   ├── biological_process
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   ├── cellular_component
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   └── molecular_function
+│   │   │       ├── best_checkpoint.pt
+│   │   │       ├── config.json
+│   │   │       ├── history.csv
+│   │   │       └── validation_metrics.json
+│   │   ├── trial_020
+│   │   │   ├── biological_process
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   ├── cellular_component
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   └── molecular_function
+│   │   │       ├── best_checkpoint.pt
+│   │   │       ├── config.json
+│   │   │       ├── history.csv
+│   │   │       └── validation_metrics.json
+│   │   ├── trial_021
+│   │   │   ├── biological_process
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   ├── cellular_component
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   └── molecular_function
+│   │   │       ├── best_checkpoint.pt
+│   │   │       ├── config.json
+│   │   │       ├── history.csv
+│   │   │       └── validation_metrics.json
+│   │   ├── trial_022
+│   │   │   ├── biological_process
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   ├── cellular_component
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   └── molecular_function
+│   │   │       ├── best_checkpoint.pt
+│   │   │       ├── config.json
+│   │   │       ├── history.csv
+│   │   │       └── validation_metrics.json
+│   │   ├── trial_023
+│   │   │   ├── biological_process
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   ├── cellular_component
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   └── molecular_function
+│   │   │       ├── best_checkpoint.pt
+│   │   │       ├── config.json
+│   │   │       ├── history.csv
+│   │   │       └── validation_metrics.json
+│   │   ├── trial_024
+│   │   │   ├── biological_process
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   ├── cellular_component
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   └── molecular_function
+│   │   │       ├── best_checkpoint.pt
+│   │   │       ├── config.json
+│   │   │       ├── history.csv
+│   │   │       └── validation_metrics.json
+│   │   ├── trial_025
+│   │   │   ├── biological_process
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   ├── cellular_component
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   └── molecular_function
+│   │   │       ├── best_checkpoint.pt
+│   │   │       ├── config.json
+│   │   │       ├── history.csv
+│   │   │       └── validation_metrics.json
+│   │   ├── trial_026
+│   │   │   ├── biological_process
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   ├── cellular_component
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   └── molecular_function
+│   │   │       ├── best_checkpoint.pt
+│   │   │       ├── config.json
+│   │   │       ├── history.csv
+│   │   │       └── validation_metrics.json
+│   │   ├── trial_027
+│   │   │   ├── biological_process
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   ├── cellular_component
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   └── molecular_function
+│   │   │       ├── best_checkpoint.pt
+│   │   │       ├── config.json
+│   │   │       ├── history.csv
+│   │   │       └── validation_metrics.json
+│   │   ├── trial_028
+│   │   │   ├── biological_process
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   ├── cellular_component
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   └── molecular_function
+│   │   │       ├── best_checkpoint.pt
+│   │   │       ├── config.json
+│   │   │       ├── history.csv
+│   │   │       └── validation_metrics.json
+│   │   ├── trial_029
+│   │   │   ├── biological_process
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   ├── cellular_component
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   └── molecular_function
+│   │   │       ├── best_checkpoint.pt
+│   │   │       ├── config.json
+│   │   │       ├── history.csv
+│   │   │       └── validation_metrics.json
+│   │   ├── trial_030
+│   │   │   ├── biological_process
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   ├── cellular_component
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   └── molecular_function
+│   │   │       ├── best_checkpoint.pt
+│   │   │       ├── config.json
+│   │   │       ├── history.csv
+│   │   │       └── validation_metrics.json
+│   │   ├── trial_031
+│   │   │   ├── biological_process
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   ├── cellular_component
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   └── molecular_function
+│   │   │       ├── best_checkpoint.pt
+│   │   │       ├── config.json
+│   │   │       ├── history.csv
+│   │   │       └── validation_metrics.json
+│   │   ├── trial_032
+│   │   │   ├── biological_process
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   ├── cellular_component
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   └── molecular_function
+│   │   │       ├── best_checkpoint.pt
+│   │   │       ├── config.json
+│   │   │       ├── history.csv
+│   │   │       └── validation_metrics.json
+│   │   ├── trial_033
+│   │   │   ├── biological_process
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   ├── cellular_component
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   └── molecular_function
+│   │   │       ├── best_checkpoint.pt
+│   │   │       ├── config.json
+│   │   │       ├── history.csv
+│   │   │       └── validation_metrics.json
+│   │   ├── trial_034
+│   │   │   ├── biological_process
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   ├── cellular_component
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   └── molecular_function
+│   │   │       ├── best_checkpoint.pt
+│   │   │       ├── config.json
+│   │   │       ├── history.csv
+│   │   │       └── validation_metrics.json
+│   │   ├── trial_035
+│   │   │   ├── biological_process
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   ├── cellular_component
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   └── molecular_function
+│   │   │       ├── best_checkpoint.pt
+│   │   │       ├── config.json
+│   │   │       ├── history.csv
+│   │   │       └── validation_metrics.json
+│   │   ├── trial_036
+│   │   │   ├── biological_process
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   ├── cellular_component
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   └── molecular_function
+│   │   │       ├── best_checkpoint.pt
+│   │   │       ├── config.json
+│   │   │       ├── history.csv
+│   │   │       └── validation_metrics.json
+│   │   ├── trial_037
+│   │   │   ├── biological_process
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   ├── cellular_component
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   └── molecular_function
+│   │   │       ├── best_checkpoint.pt
+│   │   │       ├── config.json
+│   │   │       ├── history.csv
+│   │   │       └── validation_metrics.json
+│   │   ├── trial_038
+│   │   │   ├── biological_process
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   ├── cellular_component
+│   │   │   │   ├── best_checkpoint.pt
+│   │   │   │   ├── config.json
+│   │   │   │   ├── history.csv
+│   │   │   │   └── validation_metrics.json
+│   │   │   └── molecular_function
+│   │   │       ├── best_checkpoint.pt
+│   │   │       ├── config.json
+│   │   │       ├── history.csv
+│   │   │       └── validation_metrics.json
+│   │   └── trial_039
+│   │       ├── biological_process
+│   │       │   ├── best_checkpoint.pt
+│   │       │   ├── config.json
+│   │       │   ├── history.csv
+│   │       │   └── validation_metrics.json
+│   │       ├── cellular_component
+│   │       │   ├── best_checkpoint.pt
+│   │       │   ├── config.json
+│   │       │   ├── history.csv
+│   │       │   └── validation_metrics.json
+│   │       └── molecular_function
+│   │           ├── best_checkpoint.pt
+│   │           ├── config.json
+│   │           ├── history.csv
+│   │           └── validation_metrics.json
+│   ├── selected_hybrid.json
+│   ├── test_evaluation
 │   │   └── hybrid
+│   │       ├── per_seed_metrics.csv
+│   │       └── summary.json
 │   └── tuning_dataset_manifest.json
 ├── baselines
 │   ├── DeepFRI
@@ -18439,286 +19623,903 @@
 ├── environment.yml
 ├── layout.txt
 ├── logs
-│   ├── hybrid_repeat_44820847_0.err
-│   ├── hybrid_repeat_44820847_0.out
-│   ├── hybrid_repeat_44820847_1.err
-│   ├── hybrid_repeat_44820847_1.out
-│   ├── hybrid_repeat_44820847_10.err
-│   ├── hybrid_repeat_44820847_10.out
-│   ├── hybrid_repeat_44820847_11.err
-│   ├── hybrid_repeat_44820847_11.out
-│   ├── hybrid_repeat_44820847_12.err
-│   ├── hybrid_repeat_44820847_12.out
-│   ├── hybrid_repeat_44820847_13.err
-│   ├── hybrid_repeat_44820847_13.out
-│   ├── hybrid_repeat_44820847_14.err
-│   ├── hybrid_repeat_44820847_14.out
-│   ├── hybrid_repeat_44820847_2.err
-│   ├── hybrid_repeat_44820847_2.out
-│   ├── hybrid_repeat_44820847_3.err
-│   ├── hybrid_repeat_44820847_3.out
-│   ├── hybrid_repeat_44820847_4.err
-│   ├── hybrid_repeat_44820847_4.out
-│   ├── hybrid_repeat_44820847_5.err
-│   ├── hybrid_repeat_44820847_5.out
-│   ├── hybrid_repeat_44820847_6.err
-│   ├── hybrid_repeat_44820847_6.out
-│   ├── hybrid_repeat_44820847_7.err
-│   ├── hybrid_repeat_44820847_7.out
-│   ├── hybrid_repeat_44820847_8.err
-│   ├── hybrid_repeat_44820847_8.out
-│   ├── hybrid_repeat_44820847_9.err
-│   ├── hybrid_repeat_44820847_9.out
-│   ├── hybrid_select_44820846.err
-│   ├── hybrid_select_44820846.out
-│   ├── hybrid_test_44841135.err
-│   ├── hybrid_test_44841135.out
-│   ├── hybrid_trial_44820845_0.err
-│   ├── hybrid_trial_44820845_0.out
-│   ├── hybrid_trial_44820845_1.err
-│   ├── hybrid_trial_44820845_1.out
-│   ├── hybrid_trial_44820845_10.err
-│   ├── hybrid_trial_44820845_10.out
-│   ├── hybrid_trial_44820845_100.err
-│   ├── hybrid_trial_44820845_100.out
-│   ├── hybrid_trial_44820845_101.err
-│   ├── hybrid_trial_44820845_101.out
-│   ├── hybrid_trial_44820845_102.err
-│   ├── hybrid_trial_44820845_102.out
-│   ├── hybrid_trial_44820845_103.err
-│   ├── hybrid_trial_44820845_103.out
-│   ├── hybrid_trial_44820845_104.err
-│   ├── hybrid_trial_44820845_104.out
-│   ├── hybrid_trial_44820845_105.err
-│   ├── hybrid_trial_44820845_105.out
-│   ├── hybrid_trial_44820845_106.err
-│   ├── hybrid_trial_44820845_106.out
-│   ├── hybrid_trial_44820845_107.err
-│   ├── hybrid_trial_44820845_107.out
-│   ├── hybrid_trial_44820845_108.err
-│   ├── hybrid_trial_44820845_108.out
-│   ├── hybrid_trial_44820845_109.err
-│   ├── hybrid_trial_44820845_109.out
-│   ├── hybrid_trial_44820845_11.err
-│   ├── hybrid_trial_44820845_11.out
-│   ├── hybrid_trial_44820845_110.err
-│   ├── hybrid_trial_44820845_110.out
-│   ├── hybrid_trial_44820845_111.err
-│   ├── hybrid_trial_44820845_111.out
-│   ├── hybrid_trial_44820845_112.err
-│   ├── hybrid_trial_44820845_112.out
-│   ├── hybrid_trial_44820845_113.err
-│   ├── hybrid_trial_44820845_113.out
-│   ├── hybrid_trial_44820845_114.err
-│   ├── hybrid_trial_44820845_114.out
-│   ├── hybrid_trial_44820845_115.err
-│   ├── hybrid_trial_44820845_115.out
-│   ├── hybrid_trial_44820845_116.err
-│   ├── hybrid_trial_44820845_116.out
-│   ├── hybrid_trial_44820845_117.err
-│   ├── hybrid_trial_44820845_117.out
-│   ├── hybrid_trial_44820845_118.err
-│   ├── hybrid_trial_44820845_118.out
-│   ├── hybrid_trial_44820845_119.err
-│   ├── hybrid_trial_44820845_119.out
-│   ├── hybrid_trial_44820845_12.err
-│   ├── hybrid_trial_44820845_12.out
-│   ├── hybrid_trial_44820845_13.err
-│   ├── hybrid_trial_44820845_13.out
-│   ├── hybrid_trial_44820845_14.err
-│   ├── hybrid_trial_44820845_14.out
-│   ├── hybrid_trial_44820845_15.err
-│   ├── hybrid_trial_44820845_15.out
-│   ├── hybrid_trial_44820845_16.err
-│   ├── hybrid_trial_44820845_16.out
-│   ├── hybrid_trial_44820845_17.err
-│   ├── hybrid_trial_44820845_17.out
-│   ├── hybrid_trial_44820845_18.err
-│   ├── hybrid_trial_44820845_18.out
-│   ├── hybrid_trial_44820845_19.err
-│   ├── hybrid_trial_44820845_19.out
-│   ├── hybrid_trial_44820845_2.err
-│   ├── hybrid_trial_44820845_2.out
-│   ├── hybrid_trial_44820845_20.err
-│   ├── hybrid_trial_44820845_20.out
-│   ├── hybrid_trial_44820845_21.err
-│   ├── hybrid_trial_44820845_21.out
-│   ├── hybrid_trial_44820845_22.err
-│   ├── hybrid_trial_44820845_22.out
-│   ├── hybrid_trial_44820845_23.err
-│   ├── hybrid_trial_44820845_23.out
-│   ├── hybrid_trial_44820845_24.err
-│   ├── hybrid_trial_44820845_24.out
-│   ├── hybrid_trial_44820845_25.err
-│   ├── hybrid_trial_44820845_25.out
-│   ├── hybrid_trial_44820845_26.err
-│   ├── hybrid_trial_44820845_26.out
-│   ├── hybrid_trial_44820845_27.err
-│   ├── hybrid_trial_44820845_27.out
-│   ├── hybrid_trial_44820845_28.err
-│   ├── hybrid_trial_44820845_28.out
-│   ├── hybrid_trial_44820845_29.err
-│   ├── hybrid_trial_44820845_29.out
-│   ├── hybrid_trial_44820845_3.err
-│   ├── hybrid_trial_44820845_3.out
-│   ├── hybrid_trial_44820845_30.err
-│   ├── hybrid_trial_44820845_30.out
-│   ├── hybrid_trial_44820845_31.err
-│   ├── hybrid_trial_44820845_31.out
-│   ├── hybrid_trial_44820845_32.err
-│   ├── hybrid_trial_44820845_32.out
-│   ├── hybrid_trial_44820845_33.err
-│   ├── hybrid_trial_44820845_33.out
-│   ├── hybrid_trial_44820845_34.err
-│   ├── hybrid_trial_44820845_34.out
-│   ├── hybrid_trial_44820845_35.err
-│   ├── hybrid_trial_44820845_35.out
-│   ├── hybrid_trial_44820845_36.err
-│   ├── hybrid_trial_44820845_36.out
-│   ├── hybrid_trial_44820845_37.err
-│   ├── hybrid_trial_44820845_37.out
-│   ├── hybrid_trial_44820845_38.err
-│   ├── hybrid_trial_44820845_38.out
-│   ├── hybrid_trial_44820845_39.err
-│   ├── hybrid_trial_44820845_39.out
-│   ├── hybrid_trial_44820845_4.err
-│   ├── hybrid_trial_44820845_4.out
-│   ├── hybrid_trial_44820845_40.err
-│   ├── hybrid_trial_44820845_40.out
-│   ├── hybrid_trial_44820845_41.err
-│   ├── hybrid_trial_44820845_41.out
-│   ├── hybrid_trial_44820845_42.err
-│   ├── hybrid_trial_44820845_42.out
-│   ├── hybrid_trial_44820845_43.err
-│   ├── hybrid_trial_44820845_43.out
-│   ├── hybrid_trial_44820845_44.err
-│   ├── hybrid_trial_44820845_44.out
-│   ├── hybrid_trial_44820845_45.err
-│   ├── hybrid_trial_44820845_45.out
-│   ├── hybrid_trial_44820845_46.err
-│   ├── hybrid_trial_44820845_46.out
-│   ├── hybrid_trial_44820845_47.err
-│   ├── hybrid_trial_44820845_47.out
-│   ├── hybrid_trial_44820845_48.err
-│   ├── hybrid_trial_44820845_48.out
-│   ├── hybrid_trial_44820845_49.err
-│   ├── hybrid_trial_44820845_49.out
-│   ├── hybrid_trial_44820845_5.err
-│   ├── hybrid_trial_44820845_5.out
-│   ├── hybrid_trial_44820845_50.err
-│   ├── hybrid_trial_44820845_50.out
-│   ├── hybrid_trial_44820845_51.err
-│   ├── hybrid_trial_44820845_51.out
-│   ├── hybrid_trial_44820845_52.err
-│   ├── hybrid_trial_44820845_52.out
-│   ├── hybrid_trial_44820845_53.err
-│   ├── hybrid_trial_44820845_53.out
-│   ├── hybrid_trial_44820845_54.err
-│   ├── hybrid_trial_44820845_54.out
-│   ├── hybrid_trial_44820845_55.err
-│   ├── hybrid_trial_44820845_55.out
-│   ├── hybrid_trial_44820845_56.err
-│   ├── hybrid_trial_44820845_56.out
-│   ├── hybrid_trial_44820845_57.err
-│   ├── hybrid_trial_44820845_57.out
-│   ├── hybrid_trial_44820845_58.err
-│   ├── hybrid_trial_44820845_58.out
-│   ├── hybrid_trial_44820845_59.err
-│   ├── hybrid_trial_44820845_59.out
-│   ├── hybrid_trial_44820845_6.err
-│   ├── hybrid_trial_44820845_6.out
-│   ├── hybrid_trial_44820845_60.err
-│   ├── hybrid_trial_44820845_60.out
-│   ├── hybrid_trial_44820845_61.err
-│   ├── hybrid_trial_44820845_61.out
-│   ├── hybrid_trial_44820845_62.err
-│   ├── hybrid_trial_44820845_62.out
-│   ├── hybrid_trial_44820845_63.err
-│   ├── hybrid_trial_44820845_63.out
-│   ├── hybrid_trial_44820845_64.err
-│   ├── hybrid_trial_44820845_64.out
-│   ├── hybrid_trial_44820845_65.err
-│   ├── hybrid_trial_44820845_65.out
-│   ├── hybrid_trial_44820845_66.err
-│   ├── hybrid_trial_44820845_66.out
-│   ├── hybrid_trial_44820845_67.err
-│   ├── hybrid_trial_44820845_67.out
-│   ├── hybrid_trial_44820845_68.err
-│   ├── hybrid_trial_44820845_68.out
-│   ├── hybrid_trial_44820845_69.err
-│   ├── hybrid_trial_44820845_69.out
-│   ├── hybrid_trial_44820845_7.err
-│   ├── hybrid_trial_44820845_7.out
-│   ├── hybrid_trial_44820845_70.err
-│   ├── hybrid_trial_44820845_70.out
-│   ├── hybrid_trial_44820845_71.err
-│   ├── hybrid_trial_44820845_71.out
-│   ├── hybrid_trial_44820845_72.err
-│   ├── hybrid_trial_44820845_72.out
-│   ├── hybrid_trial_44820845_73.err
-│   ├── hybrid_trial_44820845_73.out
-│   ├── hybrid_trial_44820845_74.err
-│   ├── hybrid_trial_44820845_74.out
-│   ├── hybrid_trial_44820845_75.err
-│   ├── hybrid_trial_44820845_75.out
-│   ├── hybrid_trial_44820845_76.err
-│   ├── hybrid_trial_44820845_76.out
-│   ├── hybrid_trial_44820845_77.err
-│   ├── hybrid_trial_44820845_77.out
-│   ├── hybrid_trial_44820845_78.err
-│   ├── hybrid_trial_44820845_78.out
-│   ├── hybrid_trial_44820845_79.err
-│   ├── hybrid_trial_44820845_79.out
-│   ├── hybrid_trial_44820845_8.err
-│   ├── hybrid_trial_44820845_8.out
-│   ├── hybrid_trial_44820845_80.err
-│   ├── hybrid_trial_44820845_80.out
-│   ├── hybrid_trial_44820845_81.err
-│   ├── hybrid_trial_44820845_81.out
-│   ├── hybrid_trial_44820845_82.err
-│   ├── hybrid_trial_44820845_82.out
-│   ├── hybrid_trial_44820845_83.err
-│   ├── hybrid_trial_44820845_83.out
-│   ├── hybrid_trial_44820845_84.err
-│   ├── hybrid_trial_44820845_84.out
-│   ├── hybrid_trial_44820845_85.err
-│   ├── hybrid_trial_44820845_85.out
-│   ├── hybrid_trial_44820845_86.err
-│   ├── hybrid_trial_44820845_86.out
-│   ├── hybrid_trial_44820845_87.err
-│   ├── hybrid_trial_44820845_87.out
-│   ├── hybrid_trial_44820845_88.err
-│   ├── hybrid_trial_44820845_88.out
-│   ├── hybrid_trial_44820845_89.err
-│   ├── hybrid_trial_44820845_89.out
-│   ├── hybrid_trial_44820845_9.err
-│   ├── hybrid_trial_44820845_9.out
-│   ├── hybrid_trial_44820845_90.err
-│   ├── hybrid_trial_44820845_90.out
-│   ├── hybrid_trial_44820845_91.err
-│   ├── hybrid_trial_44820845_91.out
-│   ├── hybrid_trial_44820845_92.err
-│   ├── hybrid_trial_44820845_92.out
-│   ├── hybrid_trial_44820845_93.err
-│   ├── hybrid_trial_44820845_93.out
-│   ├── hybrid_trial_44820845_94.err
-│   ├── hybrid_trial_44820845_94.out
-│   ├── hybrid_trial_44820845_95.err
-│   ├── hybrid_trial_44820845_95.out
-│   ├── hybrid_trial_44820845_96.err
-│   ├── hybrid_trial_44820845_96.out
-│   ├── hybrid_trial_44820845_97.err
-│   ├── hybrid_trial_44820845_97.out
-│   ├── hybrid_trial_44820845_98.err
-│   ├── hybrid_trial_44820845_98.out
-│   ├── hybrid_trial_44820845_99.err
-│   ├── hybrid_trial_44820845_99.out
-│   ├── hybrid_tuning_controller_44816413.err
-│   ├── hybrid_tuning_controller_44816413.out
-│   ├── hybrid_tuning_controller_44818674.err
-│   ├── hybrid_tuning_controller_44818674.out
-│   ├── hybrid_tuning_controller_44819698.err
-│   ├── hybrid_tuning_controller_44819698.out
+│   ├── arc_ablation_44865111_0.err
+│   ├── arc_ablation_44865111_0.out
+│   ├── arc_ablation_44865111_1.err
+│   ├── arc_ablation_44865111_1.out
+│   ├── arc_ablation_44865111_10.err
+│   ├── arc_ablation_44865111_10.out
+│   ├── arc_ablation_44865111_11.err
+│   ├── arc_ablation_44865111_11.out
+│   ├── arc_ablation_44865111_12.err
+│   ├── arc_ablation_44865111_12.out
+│   ├── arc_ablation_44865111_13.err
+│   ├── arc_ablation_44865111_13.out
+│   ├── arc_ablation_44865111_14.err
+│   ├── arc_ablation_44865111_14.out
+│   ├── arc_ablation_44865111_15.err
+│   ├── arc_ablation_44865111_15.out
+│   ├── arc_ablation_44865111_16.err
+│   ├── arc_ablation_44865111_16.out
+│   ├── arc_ablation_44865111_17.err
+│   ├── arc_ablation_44865111_17.out
+│   ├── arc_ablation_44865111_18.err
+│   ├── arc_ablation_44865111_18.out
+│   ├── arc_ablation_44865111_19.err
+│   ├── arc_ablation_44865111_19.out
+│   ├── arc_ablation_44865111_2.err
+│   ├── arc_ablation_44865111_2.out
+│   ├── arc_ablation_44865111_20.err
+│   ├── arc_ablation_44865111_20.out
+│   ├── arc_ablation_44865111_21.err
+│   ├── arc_ablation_44865111_21.out
+│   ├── arc_ablation_44865111_22.err
+│   ├── arc_ablation_44865111_22.out
+│   ├── arc_ablation_44865111_23.err
+│   ├── arc_ablation_44865111_23.out
+│   ├── arc_ablation_44865111_24.err
+│   ├── arc_ablation_44865111_24.out
+│   ├── arc_ablation_44865111_25.err
+│   ├── arc_ablation_44865111_25.out
+│   ├── arc_ablation_44865111_26.err
+│   ├── arc_ablation_44865111_26.out
+│   ├── arc_ablation_44865111_27.err
+│   ├── arc_ablation_44865111_27.out
+│   ├── arc_ablation_44865111_28.err
+│   ├── arc_ablation_44865111_28.out
+│   ├── arc_ablation_44865111_29.err
+│   ├── arc_ablation_44865111_29.out
+│   ├── arc_ablation_44865111_3.err
+│   ├── arc_ablation_44865111_3.out
+│   ├── arc_ablation_44865111_30.err
+│   ├── arc_ablation_44865111_30.out
+│   ├── arc_ablation_44865111_31.err
+│   ├── arc_ablation_44865111_31.out
+│   ├── arc_ablation_44865111_32.err
+│   ├── arc_ablation_44865111_32.out
+│   ├── arc_ablation_44865111_33.err
+│   ├── arc_ablation_44865111_33.out
+│   ├── arc_ablation_44865111_34.err
+│   ├── arc_ablation_44865111_34.out
+│   ├── arc_ablation_44865111_35.err
+│   ├── arc_ablation_44865111_35.out
+│   ├── arc_ablation_44865111_36.err
+│   ├── arc_ablation_44865111_36.out
+│   ├── arc_ablation_44865111_37.err
+│   ├── arc_ablation_44865111_37.out
+│   ├── arc_ablation_44865111_38.err
+│   ├── arc_ablation_44865111_38.out
+│   ├── arc_ablation_44865111_39.err
+│   ├── arc_ablation_44865111_39.out
+│   ├── arc_ablation_44865111_4.err
+│   ├── arc_ablation_44865111_4.out
+│   ├── arc_ablation_44865111_40.err
+│   ├── arc_ablation_44865111_40.out
+│   ├── arc_ablation_44865111_41.err
+│   ├── arc_ablation_44865111_41.out
+│   ├── arc_ablation_44865111_42.err
+│   ├── arc_ablation_44865111_42.out
+│   ├── arc_ablation_44865111_43.err
+│   ├── arc_ablation_44865111_43.out
+│   ├── arc_ablation_44865111_44.err
+│   ├── arc_ablation_44865111_44.out
+│   ├── arc_ablation_44865111_45.err
+│   ├── arc_ablation_44865111_45.out
+│   ├── arc_ablation_44865111_46.err
+│   ├── arc_ablation_44865111_46.out
+│   ├── arc_ablation_44865111_47.err
+│   ├── arc_ablation_44865111_47.out
+│   ├── arc_ablation_44865111_48.err
+│   ├── arc_ablation_44865111_48.out
+│   ├── arc_ablation_44865111_49.err
+│   ├── arc_ablation_44865111_49.out
+│   ├── arc_ablation_44865111_5.err
+│   ├── arc_ablation_44865111_5.out
+│   ├── arc_ablation_44865111_50.err
+│   ├── arc_ablation_44865111_50.out
+│   ├── arc_ablation_44865111_51.err
+│   ├── arc_ablation_44865111_51.out
+│   ├── arc_ablation_44865111_52.err
+│   ├── arc_ablation_44865111_52.out
+│   ├── arc_ablation_44865111_53.err
+│   ├── arc_ablation_44865111_53.out
+│   ├── arc_ablation_44865111_54.err
+│   ├── arc_ablation_44865111_54.out
+│   ├── arc_ablation_44865111_55.err
+│   ├── arc_ablation_44865111_55.out
+│   ├── arc_ablation_44865111_56.err
+│   ├── arc_ablation_44865111_56.out
+│   ├── arc_ablation_44865111_57.err
+│   ├── arc_ablation_44865111_57.out
+│   ├── arc_ablation_44865111_58.err
+│   ├── arc_ablation_44865111_58.out
+│   ├── arc_ablation_44865111_59.err
+│   ├── arc_ablation_44865111_59.out
+│   ├── arc_ablation_44865111_6.err
+│   ├── arc_ablation_44865111_6.out
+│   ├── arc_ablation_44865111_60.err
+│   ├── arc_ablation_44865111_60.out
+│   ├── arc_ablation_44865111_61.err
+│   ├── arc_ablation_44865111_61.out
+│   ├── arc_ablation_44865111_62.err
+│   ├── arc_ablation_44865111_62.out
+│   ├── arc_ablation_44865111_63.err
+│   ├── arc_ablation_44865111_63.out
+│   ├── arc_ablation_44865111_64.err
+│   ├── arc_ablation_44865111_64.out
+│   ├── arc_ablation_44865111_65.err
+│   ├── arc_ablation_44865111_65.out
+│   ├── arc_ablation_44865111_66.err
+│   ├── arc_ablation_44865111_66.out
+│   ├── arc_ablation_44865111_67.err
+│   ├── arc_ablation_44865111_67.out
+│   ├── arc_ablation_44865111_68.err
+│   ├── arc_ablation_44865111_68.out
+│   ├── arc_ablation_44865111_69.err
+│   ├── arc_ablation_44865111_69.out
+│   ├── arc_ablation_44865111_7.err
+│   ├── arc_ablation_44865111_7.out
+│   ├── arc_ablation_44865111_70.err
+│   ├── arc_ablation_44865111_70.out
+│   ├── arc_ablation_44865111_71.err
+│   ├── arc_ablation_44865111_71.out
+│   ├── arc_ablation_44865111_72.err
+│   ├── arc_ablation_44865111_72.out
+│   ├── arc_ablation_44865111_8.err
+│   ├── arc_ablation_44865111_8.out
+│   ├── arc_ablation_44865111_9.err
+│   ├── arc_ablation_44865111_9.out
+│   ├── error
+│   │   ├── hybrid_trial_44844930_0.err
+│   │   ├── hybrid_trial_44844930_0.out
+│   │   ├── hybrid_trial_44844930_1.err
+│   │   ├── hybrid_trial_44844930_1.out
+│   │   ├── hybrid_trial_44844930_10.err
+│   │   ├── hybrid_trial_44844930_10.out
+│   │   ├── hybrid_trial_44844930_11.err
+│   │   ├── hybrid_trial_44844930_11.out
+│   │   ├── hybrid_trial_44844930_12.err
+│   │   ├── hybrid_trial_44844930_12.out
+│   │   ├── hybrid_trial_44844930_13.err
+│   │   ├── hybrid_trial_44844930_13.out
+│   │   ├── hybrid_trial_44844930_14.err
+│   │   ├── hybrid_trial_44844930_14.out
+│   │   ├── hybrid_trial_44844930_15.err
+│   │   ├── hybrid_trial_44844930_15.out
+│   │   ├── hybrid_trial_44844930_16.err
+│   │   ├── hybrid_trial_44844930_16.out
+│   │   ├── hybrid_trial_44844930_17.err
+│   │   ├── hybrid_trial_44844930_17.out
+│   │   ├── hybrid_trial_44844930_18.err
+│   │   ├── hybrid_trial_44844930_18.out
+│   │   ├── hybrid_trial_44844930_19.err
+│   │   ├── hybrid_trial_44844930_19.out
+│   │   ├── hybrid_trial_44844930_2.err
+│   │   ├── hybrid_trial_44844930_2.out
+│   │   ├── hybrid_trial_44844930_20.err
+│   │   ├── hybrid_trial_44844930_20.out
+│   │   ├── hybrid_trial_44844930_21.err
+│   │   ├── hybrid_trial_44844930_21.out
+│   │   ├── hybrid_trial_44844930_22.err
+│   │   ├── hybrid_trial_44844930_22.out
+│   │   ├── hybrid_trial_44844930_23.err
+│   │   ├── hybrid_trial_44844930_23.out
+│   │   ├── hybrid_trial_44844930_24.err
+│   │   ├── hybrid_trial_44844930_24.out
+│   │   ├── hybrid_trial_44844930_25.err
+│   │   ├── hybrid_trial_44844930_25.out
+│   │   ├── hybrid_trial_44844930_26.err
+│   │   ├── hybrid_trial_44844930_26.out
+│   │   ├── hybrid_trial_44844930_27.err
+│   │   ├── hybrid_trial_44844930_27.out
+│   │   ├── hybrid_trial_44844930_28.err
+│   │   ├── hybrid_trial_44844930_28.out
+│   │   ├── hybrid_trial_44844930_29.err
+│   │   ├── hybrid_trial_44844930_29.out
+│   │   ├── hybrid_trial_44844930_3.err
+│   │   ├── hybrid_trial_44844930_3.out
+│   │   ├── hybrid_trial_44844930_30.err
+│   │   ├── hybrid_trial_44844930_30.out
+│   │   ├── hybrid_trial_44844930_31.err
+│   │   ├── hybrid_trial_44844930_31.out
+│   │   ├── hybrid_trial_44844930_32.err
+│   │   ├── hybrid_trial_44844930_32.out
+│   │   ├── hybrid_trial_44844930_33.err
+│   │   ├── hybrid_trial_44844930_33.out
+│   │   ├── hybrid_trial_44844930_34.err
+│   │   ├── hybrid_trial_44844930_34.out
+│   │   ├── hybrid_trial_44844930_35.err
+│   │   ├── hybrid_trial_44844930_35.out
+│   │   ├── hybrid_trial_44844930_36.err
+│   │   ├── hybrid_trial_44844930_36.out
+│   │   ├── hybrid_trial_44844930_37.err
+│   │   ├── hybrid_trial_44844930_37.out
+│   │   ├── hybrid_trial_44844930_38.err
+│   │   ├── hybrid_trial_44844930_38.out
+│   │   ├── hybrid_trial_44844930_39.err
+│   │   ├── hybrid_trial_44844930_39.out
+│   │   ├── hybrid_trial_44844930_4.err
+│   │   ├── hybrid_trial_44844930_4.out
+│   │   ├── hybrid_trial_44844930_40.err
+│   │   ├── hybrid_trial_44844930_40.out
+│   │   ├── hybrid_trial_44844930_41.err
+│   │   ├── hybrid_trial_44844930_41.out
+│   │   ├── hybrid_trial_44844930_42.err
+│   │   ├── hybrid_trial_44844930_42.out
+│   │   ├── hybrid_trial_44844930_43.err
+│   │   ├── hybrid_trial_44844930_43.out
+│   │   ├── hybrid_trial_44844930_44.err
+│   │   ├── hybrid_trial_44844930_44.out
+│   │   ├── hybrid_trial_44844930_45.err
+│   │   ├── hybrid_trial_44844930_45.out
+│   │   ├── hybrid_trial_44844930_46.err
+│   │   ├── hybrid_trial_44844930_46.out
+│   │   ├── hybrid_trial_44844930_47.err
+│   │   ├── hybrid_trial_44844930_47.out
+│   │   ├── hybrid_trial_44844930_48.err
+│   │   ├── hybrid_trial_44844930_48.out
+│   │   ├── hybrid_trial_44844930_49.err
+│   │   ├── hybrid_trial_44844930_49.out
+│   │   ├── hybrid_trial_44844930_5.err
+│   │   ├── hybrid_trial_44844930_5.out
+│   │   ├── hybrid_trial_44844930_50.err
+│   │   ├── hybrid_trial_44844930_50.out
+│   │   ├── hybrid_trial_44844930_51.err
+│   │   ├── hybrid_trial_44844930_51.out
+│   │   ├── hybrid_trial_44844930_52.err
+│   │   ├── hybrid_trial_44844930_52.out
+│   │   ├── hybrid_trial_44844930_53.err
+│   │   ├── hybrid_trial_44844930_53.out
+│   │   ├── hybrid_trial_44844930_54.err
+│   │   ├── hybrid_trial_44844930_54.out
+│   │   ├── hybrid_trial_44844930_55.err
+│   │   ├── hybrid_trial_44844930_55.out
+│   │   ├── hybrid_trial_44844930_56.err
+│   │   ├── hybrid_trial_44844930_56.out
+│   │   ├── hybrid_trial_44844930_57.err
+│   │   ├── hybrid_trial_44844930_57.out
+│   │   ├── hybrid_trial_44844930_58.err
+│   │   ├── hybrid_trial_44844930_58.out
+│   │   ├── hybrid_trial_44844930_59.err
+│   │   ├── hybrid_trial_44844930_59.out
+│   │   ├── hybrid_trial_44844930_6.err
+│   │   ├── hybrid_trial_44844930_6.out
+│   │   ├── hybrid_trial_44844930_60.err
+│   │   ├── hybrid_trial_44844930_60.out
+│   │   ├── hybrid_trial_44844930_61.err
+│   │   ├── hybrid_trial_44844930_61.out
+│   │   ├── hybrid_trial_44844930_62.err
+│   │   ├── hybrid_trial_44844930_62.out
+│   │   ├── hybrid_trial_44844930_63.err
+│   │   ├── hybrid_trial_44844930_63.out
+│   │   ├── hybrid_trial_44844930_64.err
+│   │   ├── hybrid_trial_44844930_64.out
+│   │   ├── hybrid_trial_44844930_65.err
+│   │   ├── hybrid_trial_44844930_65.out
+│   │   ├── hybrid_trial_44844930_66.err
+│   │   ├── hybrid_trial_44844930_66.out
+│   │   ├── hybrid_trial_44844930_67.err
+│   │   ├── hybrid_trial_44844930_67.out
+│   │   ├── hybrid_trial_44844930_68.err
+│   │   ├── hybrid_trial_44844930_68.out
+│   │   ├── hybrid_trial_44844930_69.err
+│   │   ├── hybrid_trial_44844930_69.out
+│   │   ├── hybrid_trial_44844930_7.err
+│   │   ├── hybrid_trial_44844930_7.out
+│   │   ├── hybrid_trial_44844930_70.err
+│   │   ├── hybrid_trial_44844930_70.out
+│   │   ├── hybrid_trial_44844930_71.err
+│   │   ├── hybrid_trial_44844930_71.out
+│   │   ├── hybrid_trial_44844930_72.err
+│   │   ├── hybrid_trial_44844930_72.out
+│   │   ├── hybrid_trial_44844930_73.err
+│   │   ├── hybrid_trial_44844930_73.out
+│   │   ├── hybrid_trial_44844930_74.err
+│   │   ├── hybrid_trial_44844930_74.out
+│   │   ├── hybrid_trial_44844930_75.err
+│   │   ├── hybrid_trial_44844930_75.out
+│   │   ├── hybrid_trial_44844930_76.err
+│   │   ├── hybrid_trial_44844930_76.out
+│   │   ├── hybrid_trial_44844930_77.err
+│   │   ├── hybrid_trial_44844930_77.out
+│   │   ├── hybrid_trial_44844930_78.err
+│   │   ├── hybrid_trial_44844930_78.out
+│   │   ├── hybrid_trial_44844930_79.err
+│   │   ├── hybrid_trial_44844930_79.out
+│   │   ├── hybrid_trial_44844930_8.err
+│   │   ├── hybrid_trial_44844930_8.out
+│   │   ├── hybrid_trial_44844930_80.err
+│   │   ├── hybrid_trial_44844930_80.out
+│   │   ├── hybrid_trial_44844930_81.err
+│   │   ├── hybrid_trial_44844930_81.out
+│   │   ├── hybrid_trial_44844930_82.err
+│   │   ├── hybrid_trial_44844930_82.out
+│   │   ├── hybrid_trial_44844930_83.err
+│   │   ├── hybrid_trial_44844930_83.out
+│   │   ├── hybrid_trial_44844930_84.err
+│   │   ├── hybrid_trial_44844930_84.out
+│   │   ├── hybrid_trial_44844930_85.err
+│   │   ├── hybrid_trial_44844930_85.out
+│   │   ├── hybrid_trial_44844930_86.err
+│   │   ├── hybrid_trial_44844930_86.out
+│   │   ├── hybrid_trial_44844930_87.err
+│   │   ├── hybrid_trial_44844930_87.out
+│   │   ├── hybrid_trial_44844930_88.err
+│   │   ├── hybrid_trial_44844930_88.out
+│   │   ├── hybrid_trial_44844930_89.err
+│   │   ├── hybrid_trial_44844930_89.out
+│   │   ├── hybrid_trial_44844930_9.err
+│   │   ├── hybrid_trial_44844930_9.out
+│   │   ├── hybrid_trial_44844930_90.err
+│   │   ├── hybrid_trial_44844930_90.out
+│   │   ├── hybrid_trial_44844930_91.err
+│   │   ├── hybrid_trial_44844930_91.out
+│   │   ├── hybrid_trial_44844930_92.err
+│   │   ├── hybrid_trial_44844930_92.out
+│   │   ├── hybrid_trial_44844930_93.err
+│   │   ├── hybrid_trial_44844930_93.out
+│   │   ├── hybrid_trial_44844930_94.err
+│   │   └── hybrid_trial_44844930_94.out
+│   ├── hybird_cafa_training _logs
+│   │   ├── hybrid_repeat_44853133_0.err
+│   │   ├── hybrid_repeat_44853133_0.out
+│   │   ├── hybrid_repeat_44853133_1.err
+│   │   ├── hybrid_repeat_44853133_1.out
+│   │   ├── hybrid_repeat_44853133_10.err
+│   │   ├── hybrid_repeat_44853133_10.out
+│   │   ├── hybrid_repeat_44853133_11.err
+│   │   ├── hybrid_repeat_44853133_11.out
+│   │   ├── hybrid_repeat_44853133_12.err
+│   │   ├── hybrid_repeat_44853133_12.out
+│   │   ├── hybrid_repeat_44853133_13.err
+│   │   ├── hybrid_repeat_44853133_13.out
+│   │   ├── hybrid_repeat_44853133_14.err
+│   │   ├── hybrid_repeat_44853133_14.out
+│   │   ├── hybrid_repeat_44853133_2.err
+│   │   ├── hybrid_repeat_44853133_2.out
+│   │   ├── hybrid_repeat_44853133_3.err
+│   │   ├── hybrid_repeat_44853133_3.out
+│   │   ├── hybrid_repeat_44853133_4.err
+│   │   ├── hybrid_repeat_44853133_4.out
+│   │   ├── hybrid_repeat_44853133_5.err
+│   │   ├── hybrid_repeat_44853133_5.out
+│   │   ├── hybrid_repeat_44853133_6.err
+│   │   ├── hybrid_repeat_44853133_6.out
+│   │   ├── hybrid_repeat_44853133_7.err
+│   │   ├── hybrid_repeat_44853133_7.out
+│   │   ├── hybrid_repeat_44853133_8.err
+│   │   ├── hybrid_repeat_44853133_8.out
+│   │   ├── hybrid_repeat_44853133_9.err
+│   │   ├── hybrid_repeat_44853133_9.out
+│   │   ├── hybrid_select_44853132.err
+│   │   ├── hybrid_select_44853132.out
+│   │   ├── hybrid_test_44857050.err
+│   │   ├── hybrid_test_44857050.out
+│   │   ├── hybrid_trial_44853131_0.err
+│   │   ├── hybrid_trial_44853131_0.out
+│   │   ├── hybrid_trial_44853131_1.err
+│   │   ├── hybrid_trial_44853131_1.out
+│   │   ├── hybrid_trial_44853131_10.err
+│   │   ├── hybrid_trial_44853131_10.out
+│   │   ├── hybrid_trial_44853131_100.err
+│   │   ├── hybrid_trial_44853131_100.out
+│   │   ├── hybrid_trial_44853131_101.err
+│   │   ├── hybrid_trial_44853131_101.out
+│   │   ├── hybrid_trial_44853131_102.err
+│   │   ├── hybrid_trial_44853131_102.out
+│   │   ├── hybrid_trial_44853131_103.err
+│   │   ├── hybrid_trial_44853131_103.out
+│   │   ├── hybrid_trial_44853131_104.err
+│   │   ├── hybrid_trial_44853131_104.out
+│   │   ├── hybrid_trial_44853131_105.err
+│   │   ├── hybrid_trial_44853131_105.out
+│   │   ├── hybrid_trial_44853131_106.err
+│   │   ├── hybrid_trial_44853131_106.out
+│   │   ├── hybrid_trial_44853131_107.err
+│   │   ├── hybrid_trial_44853131_107.out
+│   │   ├── hybrid_trial_44853131_108.err
+│   │   ├── hybrid_trial_44853131_108.out
+│   │   ├── hybrid_trial_44853131_109.err
+│   │   ├── hybrid_trial_44853131_109.out
+│   │   ├── hybrid_trial_44853131_11.err
+│   │   ├── hybrid_trial_44853131_11.out
+│   │   ├── hybrid_trial_44853131_110.err
+│   │   ├── hybrid_trial_44853131_110.out
+│   │   ├── hybrid_trial_44853131_111.err
+│   │   ├── hybrid_trial_44853131_111.out
+│   │   ├── hybrid_trial_44853131_112.err
+│   │   ├── hybrid_trial_44853131_112.out
+│   │   ├── hybrid_trial_44853131_113.err
+│   │   ├── hybrid_trial_44853131_113.out
+│   │   ├── hybrid_trial_44853131_114.err
+│   │   ├── hybrid_trial_44853131_114.out
+│   │   ├── hybrid_trial_44853131_115.err
+│   │   ├── hybrid_trial_44853131_115.out
+│   │   ├── hybrid_trial_44853131_116.err
+│   │   ├── hybrid_trial_44853131_116.out
+│   │   ├── hybrid_trial_44853131_117.err
+│   │   ├── hybrid_trial_44853131_117.out
+│   │   ├── hybrid_trial_44853131_118.err
+│   │   ├── hybrid_trial_44853131_118.out
+│   │   ├── hybrid_trial_44853131_119.err
+│   │   ├── hybrid_trial_44853131_119.out
+│   │   ├── hybrid_trial_44853131_12.err
+│   │   ├── hybrid_trial_44853131_12.out
+│   │   ├── hybrid_trial_44853131_13.err
+│   │   ├── hybrid_trial_44853131_13.out
+│   │   ├── hybrid_trial_44853131_14.err
+│   │   ├── hybrid_trial_44853131_14.out
+│   │   ├── hybrid_trial_44853131_15.err
+│   │   ├── hybrid_trial_44853131_15.out
+│   │   ├── hybrid_trial_44853131_16.err
+│   │   ├── hybrid_trial_44853131_16.out
+│   │   ├── hybrid_trial_44853131_17.err
+│   │   ├── hybrid_trial_44853131_17.out
+│   │   ├── hybrid_trial_44853131_18.err
+│   │   ├── hybrid_trial_44853131_18.out
+│   │   ├── hybrid_trial_44853131_19.err
+│   │   ├── hybrid_trial_44853131_19.out
+│   │   ├── hybrid_trial_44853131_2.err
+│   │   ├── hybrid_trial_44853131_2.out
+│   │   ├── hybrid_trial_44853131_20.err
+│   │   ├── hybrid_trial_44853131_20.out
+│   │   ├── hybrid_trial_44853131_21.err
+│   │   ├── hybrid_trial_44853131_21.out
+│   │   ├── hybrid_trial_44853131_22.err
+│   │   ├── hybrid_trial_44853131_22.out
+│   │   ├── hybrid_trial_44853131_23.err
+│   │   ├── hybrid_trial_44853131_23.out
+│   │   ├── hybrid_trial_44853131_24.err
+│   │   ├── hybrid_trial_44853131_24.out
+│   │   ├── hybrid_trial_44853131_25.err
+│   │   ├── hybrid_trial_44853131_25.out
+│   │   ├── hybrid_trial_44853131_26.err
+│   │   ├── hybrid_trial_44853131_26.out
+│   │   ├── hybrid_trial_44853131_27.err
+│   │   ├── hybrid_trial_44853131_27.out
+│   │   ├── hybrid_trial_44853131_28.err
+│   │   ├── hybrid_trial_44853131_28.out
+│   │   ├── hybrid_trial_44853131_29.err
+│   │   ├── hybrid_trial_44853131_29.out
+│   │   ├── hybrid_trial_44853131_3.err
+│   │   ├── hybrid_trial_44853131_3.out
+│   │   ├── hybrid_trial_44853131_30.err
+│   │   ├── hybrid_trial_44853131_30.out
+│   │   ├── hybrid_trial_44853131_31.err
+│   │   ├── hybrid_trial_44853131_31.out
+│   │   ├── hybrid_trial_44853131_32.err
+│   │   ├── hybrid_trial_44853131_32.out
+│   │   ├── hybrid_trial_44853131_33.err
+│   │   ├── hybrid_trial_44853131_33.out
+│   │   ├── hybrid_trial_44853131_34.err
+│   │   ├── hybrid_trial_44853131_34.out
+│   │   ├── hybrid_trial_44853131_35.err
+│   │   ├── hybrid_trial_44853131_35.out
+│   │   ├── hybrid_trial_44853131_36.err
+│   │   ├── hybrid_trial_44853131_36.out
+│   │   ├── hybrid_trial_44853131_37.err
+│   │   ├── hybrid_trial_44853131_37.out
+│   │   ├── hybrid_trial_44853131_38.err
+│   │   ├── hybrid_trial_44853131_38.out
+│   │   ├── hybrid_trial_44853131_39.err
+│   │   ├── hybrid_trial_44853131_39.out
+│   │   ├── hybrid_trial_44853131_4.err
+│   │   ├── hybrid_trial_44853131_4.out
+│   │   ├── hybrid_trial_44853131_40.err
+│   │   ├── hybrid_trial_44853131_40.out
+│   │   ├── hybrid_trial_44853131_41.err
+│   │   ├── hybrid_trial_44853131_41.out
+│   │   ├── hybrid_trial_44853131_42.err
+│   │   ├── hybrid_trial_44853131_42.out
+│   │   ├── hybrid_trial_44853131_43.err
+│   │   ├── hybrid_trial_44853131_43.out
+│   │   ├── hybrid_trial_44853131_44.err
+│   │   ├── hybrid_trial_44853131_44.out
+│   │   ├── hybrid_trial_44853131_45.err
+│   │   ├── hybrid_trial_44853131_45.out
+│   │   ├── hybrid_trial_44853131_46.err
+│   │   ├── hybrid_trial_44853131_46.out
+│   │   ├── hybrid_trial_44853131_47.err
+│   │   ├── hybrid_trial_44853131_47.out
+│   │   ├── hybrid_trial_44853131_48.err
+│   │   ├── hybrid_trial_44853131_48.out
+│   │   ├── hybrid_trial_44853131_49.err
+│   │   ├── hybrid_trial_44853131_49.out
+│   │   ├── hybrid_trial_44853131_5.err
+│   │   ├── hybrid_trial_44853131_5.out
+│   │   ├── hybrid_trial_44853131_50.err
+│   │   ├── hybrid_trial_44853131_50.out
+│   │   ├── hybrid_trial_44853131_51.err
+│   │   ├── hybrid_trial_44853131_51.out
+│   │   ├── hybrid_trial_44853131_52.err
+│   │   ├── hybrid_trial_44853131_52.out
+│   │   ├── hybrid_trial_44853131_53.err
+│   │   ├── hybrid_trial_44853131_53.out
+│   │   ├── hybrid_trial_44853131_54.err
+│   │   ├── hybrid_trial_44853131_54.out
+│   │   ├── hybrid_trial_44853131_55.err
+│   │   ├── hybrid_trial_44853131_55.out
+│   │   ├── hybrid_trial_44853131_56.err
+│   │   ├── hybrid_trial_44853131_56.out
+│   │   ├── hybrid_trial_44853131_57.err
+│   │   ├── hybrid_trial_44853131_57.out
+│   │   ├── hybrid_trial_44853131_58.err
+│   │   ├── hybrid_trial_44853131_58.out
+│   │   ├── hybrid_trial_44853131_59.err
+│   │   ├── hybrid_trial_44853131_59.out
+│   │   ├── hybrid_trial_44853131_6.err
+│   │   ├── hybrid_trial_44853131_6.out
+│   │   ├── hybrid_trial_44853131_60.err
+│   │   ├── hybrid_trial_44853131_60.out
+│   │   ├── hybrid_trial_44853131_61.err
+│   │   ├── hybrid_trial_44853131_61.out
+│   │   ├── hybrid_trial_44853131_62.err
+│   │   ├── hybrid_trial_44853131_62.out
+│   │   ├── hybrid_trial_44853131_63.err
+│   │   ├── hybrid_trial_44853131_63.out
+│   │   ├── hybrid_trial_44853131_64.err
+│   │   ├── hybrid_trial_44853131_64.out
+│   │   ├── hybrid_trial_44853131_65.err
+│   │   ├── hybrid_trial_44853131_65.out
+│   │   ├── hybrid_trial_44853131_66.err
+│   │   ├── hybrid_trial_44853131_66.out
+│   │   ├── hybrid_trial_44853131_67.err
+│   │   ├── hybrid_trial_44853131_67.out
+│   │   ├── hybrid_trial_44853131_68.err
+│   │   ├── hybrid_trial_44853131_68.out
+│   │   ├── hybrid_trial_44853131_69.err
+│   │   ├── hybrid_trial_44853131_69.out
+│   │   ├── hybrid_trial_44853131_7.err
+│   │   ├── hybrid_trial_44853131_7.out
+│   │   ├── hybrid_trial_44853131_70.err
+│   │   ├── hybrid_trial_44853131_70.out
+│   │   ├── hybrid_trial_44853131_71.err
+│   │   ├── hybrid_trial_44853131_71.out
+│   │   ├── hybrid_trial_44853131_72.err
+│   │   ├── hybrid_trial_44853131_72.out
+│   │   ├── hybrid_trial_44853131_73.err
+│   │   ├── hybrid_trial_44853131_73.out
+│   │   ├── hybrid_trial_44853131_74.err
+│   │   ├── hybrid_trial_44853131_74.out
+│   │   ├── hybrid_trial_44853131_75.err
+│   │   ├── hybrid_trial_44853131_75.out
+│   │   ├── hybrid_trial_44853131_76.err
+│   │   ├── hybrid_trial_44853131_76.out
+│   │   ├── hybrid_trial_44853131_77.err
+│   │   ├── hybrid_trial_44853131_77.out
+│   │   ├── hybrid_trial_44853131_78.err
+│   │   ├── hybrid_trial_44853131_78.out
+│   │   ├── hybrid_trial_44853131_79.err
+│   │   ├── hybrid_trial_44853131_79.out
+│   │   ├── hybrid_trial_44853131_8.err
+│   │   ├── hybrid_trial_44853131_8.out
+│   │   ├── hybrid_trial_44853131_80.err
+│   │   ├── hybrid_trial_44853131_80.out
+│   │   ├── hybrid_trial_44853131_81.err
+│   │   ├── hybrid_trial_44853131_81.out
+│   │   ├── hybrid_trial_44853131_82.err
+│   │   ├── hybrid_trial_44853131_82.out
+│   │   ├── hybrid_trial_44853131_83.err
+│   │   ├── hybrid_trial_44853131_83.out
+│   │   ├── hybrid_trial_44853131_84.err
+│   │   ├── hybrid_trial_44853131_84.out
+│   │   ├── hybrid_trial_44853131_85.err
+│   │   ├── hybrid_trial_44853131_85.out
+│   │   ├── hybrid_trial_44853131_86.err
+│   │   ├── hybrid_trial_44853131_86.out
+│   │   ├── hybrid_trial_44853131_87.err
+│   │   ├── hybrid_trial_44853131_87.out
+│   │   ├── hybrid_trial_44853131_88.err
+│   │   ├── hybrid_trial_44853131_88.out
+│   │   ├── hybrid_trial_44853131_89.err
+│   │   ├── hybrid_trial_44853131_89.out
+│   │   ├── hybrid_trial_44853131_9.err
+│   │   ├── hybrid_trial_44853131_9.out
+│   │   ├── hybrid_trial_44853131_90.err
+│   │   ├── hybrid_trial_44853131_90.out
+│   │   ├── hybrid_trial_44853131_91.err
+│   │   ├── hybrid_trial_44853131_91.out
+│   │   ├── hybrid_trial_44853131_92.err
+│   │   ├── hybrid_trial_44853131_92.out
+│   │   ├── hybrid_trial_44853131_93.err
+│   │   ├── hybrid_trial_44853131_93.out
+│   │   ├── hybrid_trial_44853131_94.err
+│   │   ├── hybrid_trial_44853131_94.out
+│   │   ├── hybrid_trial_44853131_95.err
+│   │   ├── hybrid_trial_44853131_95.out
+│   │   ├── hybrid_trial_44853131_96.err
+│   │   ├── hybrid_trial_44853131_96.out
+│   │   ├── hybrid_trial_44853131_97.err
+│   │   ├── hybrid_trial_44853131_97.out
+│   │   ├── hybrid_trial_44853131_98.err
+│   │   ├── hybrid_trial_44853131_98.out
+│   │   ├── hybrid_trial_44853131_99.err
+│   │   └── hybrid_trial_44853131_99.out
+│   ├── hybrid_test_44861990.err
+│   ├── hybrid_test_44861990.out
+│   ├── hybrid_training_logs
+│   │   ├── hybrid_repeat_44820847_0.err
+│   │   ├── hybrid_repeat_44820847_0.out
+│   │   ├── hybrid_repeat_44820847_1.err
+│   │   ├── hybrid_repeat_44820847_1.out
+│   │   ├── hybrid_repeat_44820847_10.err
+│   │   ├── hybrid_repeat_44820847_10.out
+│   │   ├── hybrid_repeat_44820847_11.err
+│   │   ├── hybrid_repeat_44820847_11.out
+│   │   ├── hybrid_repeat_44820847_12.err
+│   │   ├── hybrid_repeat_44820847_12.out
+│   │   ├── hybrid_repeat_44820847_13.err
+│   │   ├── hybrid_repeat_44820847_13.out
+│   │   ├── hybrid_repeat_44820847_14.err
+│   │   ├── hybrid_repeat_44820847_14.out
+│   │   ├── hybrid_repeat_44820847_2.err
+│   │   ├── hybrid_repeat_44820847_2.out
+│   │   ├── hybrid_repeat_44820847_3.err
+│   │   ├── hybrid_repeat_44820847_3.out
+│   │   ├── hybrid_repeat_44820847_4.err
+│   │   ├── hybrid_repeat_44820847_4.out
+│   │   ├── hybrid_repeat_44820847_5.err
+│   │   ├── hybrid_repeat_44820847_5.out
+│   │   ├── hybrid_repeat_44820847_6.err
+│   │   ├── hybrid_repeat_44820847_6.out
+│   │   ├── hybrid_repeat_44820847_7.err
+│   │   ├── hybrid_repeat_44820847_7.out
+│   │   ├── hybrid_repeat_44820847_8.err
+│   │   ├── hybrid_repeat_44820847_8.out
+│   │   ├── hybrid_repeat_44820847_9.err
+│   │   ├── hybrid_repeat_44820847_9.out
+│   │   ├── hybrid_select_44820846.err
+│   │   ├── hybrid_select_44820846.out
+│   │   ├── hybrid_test_44841135.err
+│   │   ├── hybrid_test_44841135.out
+│   │   ├── hybrid_trial_44820845_0.err
+│   │   ├── hybrid_trial_44820845_0.out
+│   │   ├── hybrid_trial_44820845_1.err
+│   │   ├── hybrid_trial_44820845_1.out
+│   │   ├── hybrid_trial_44820845_10.err
+│   │   ├── hybrid_trial_44820845_10.out
+│   │   ├── hybrid_trial_44820845_100.err
+│   │   ├── hybrid_trial_44820845_100.out
+│   │   ├── hybrid_trial_44820845_101.err
+│   │   ├── hybrid_trial_44820845_101.out
+│   │   ├── hybrid_trial_44820845_102.err
+│   │   ├── hybrid_trial_44820845_102.out
+│   │   ├── hybrid_trial_44820845_103.err
+│   │   ├── hybrid_trial_44820845_103.out
+│   │   ├── hybrid_trial_44820845_104.err
+│   │   ├── hybrid_trial_44820845_104.out
+│   │   ├── hybrid_trial_44820845_105.err
+│   │   ├── hybrid_trial_44820845_105.out
+│   │   ├── hybrid_trial_44820845_106.err
+│   │   ├── hybrid_trial_44820845_106.out
+│   │   ├── hybrid_trial_44820845_107.err
+│   │   ├── hybrid_trial_44820845_107.out
+│   │   ├── hybrid_trial_44820845_108.err
+│   │   ├── hybrid_trial_44820845_108.out
+│   │   ├── hybrid_trial_44820845_109.err
+│   │   ├── hybrid_trial_44820845_109.out
+│   │   ├── hybrid_trial_44820845_11.err
+│   │   ├── hybrid_trial_44820845_11.out
+│   │   ├── hybrid_trial_44820845_110.err
+│   │   ├── hybrid_trial_44820845_110.out
+│   │   ├── hybrid_trial_44820845_111.err
+│   │   ├── hybrid_trial_44820845_111.out
+│   │   ├── hybrid_trial_44820845_112.err
+│   │   ├── hybrid_trial_44820845_112.out
+│   │   ├── hybrid_trial_44820845_113.err
+│   │   ├── hybrid_trial_44820845_113.out
+│   │   ├── hybrid_trial_44820845_114.err
+│   │   ├── hybrid_trial_44820845_114.out
+│   │   ├── hybrid_trial_44820845_115.err
+│   │   ├── hybrid_trial_44820845_115.out
+│   │   ├── hybrid_trial_44820845_116.err
+│   │   ├── hybrid_trial_44820845_116.out
+│   │   ├── hybrid_trial_44820845_117.err
+│   │   ├── hybrid_trial_44820845_117.out
+│   │   ├── hybrid_trial_44820845_118.err
+│   │   ├── hybrid_trial_44820845_118.out
+│   │   ├── hybrid_trial_44820845_119.err
+│   │   ├── hybrid_trial_44820845_119.out
+│   │   ├── hybrid_trial_44820845_12.err
+│   │   ├── hybrid_trial_44820845_12.out
+│   │   ├── hybrid_trial_44820845_13.err
+│   │   ├── hybrid_trial_44820845_13.out
+│   │   ├── hybrid_trial_44820845_14.err
+│   │   ├── hybrid_trial_44820845_14.out
+│   │   ├── hybrid_trial_44820845_15.err
+│   │   ├── hybrid_trial_44820845_15.out
+│   │   ├── hybrid_trial_44820845_16.err
+│   │   ├── hybrid_trial_44820845_16.out
+│   │   ├── hybrid_trial_44820845_17.err
+│   │   ├── hybrid_trial_44820845_17.out
+│   │   ├── hybrid_trial_44820845_18.err
+│   │   ├── hybrid_trial_44820845_18.out
+│   │   ├── hybrid_trial_44820845_19.err
+│   │   ├── hybrid_trial_44820845_19.out
+│   │   ├── hybrid_trial_44820845_2.err
+│   │   ├── hybrid_trial_44820845_2.out
+│   │   ├── hybrid_trial_44820845_20.err
+│   │   ├── hybrid_trial_44820845_20.out
+│   │   ├── hybrid_trial_44820845_21.err
+│   │   ├── hybrid_trial_44820845_21.out
+│   │   ├── hybrid_trial_44820845_22.err
+│   │   ├── hybrid_trial_44820845_22.out
+│   │   ├── hybrid_trial_44820845_23.err
+│   │   ├── hybrid_trial_44820845_23.out
+│   │   ├── hybrid_trial_44820845_24.err
+│   │   ├── hybrid_trial_44820845_24.out
+│   │   ├── hybrid_trial_44820845_25.err
+│   │   ├── hybrid_trial_44820845_25.out
+│   │   ├── hybrid_trial_44820845_26.err
+│   │   ├── hybrid_trial_44820845_26.out
+│   │   ├── hybrid_trial_44820845_27.err
+│   │   ├── hybrid_trial_44820845_27.out
+│   │   ├── hybrid_trial_44820845_28.err
+│   │   ├── hybrid_trial_44820845_28.out
+│   │   ├── hybrid_trial_44820845_29.err
+│   │   ├── hybrid_trial_44820845_29.out
+│   │   ├── hybrid_trial_44820845_3.err
+│   │   ├── hybrid_trial_44820845_3.out
+│   │   ├── hybrid_trial_44820845_30.err
+│   │   ├── hybrid_trial_44820845_30.out
+│   │   ├── hybrid_trial_44820845_31.err
+│   │   ├── hybrid_trial_44820845_31.out
+│   │   ├── hybrid_trial_44820845_32.err
+│   │   ├── hybrid_trial_44820845_32.out
+│   │   ├── hybrid_trial_44820845_33.err
+│   │   ├── hybrid_trial_44820845_33.out
+│   │   ├── hybrid_trial_44820845_34.err
+│   │   ├── hybrid_trial_44820845_34.out
+│   │   ├── hybrid_trial_44820845_35.err
+│   │   ├── hybrid_trial_44820845_35.out
+│   │   ├── hybrid_trial_44820845_36.err
+│   │   ├── hybrid_trial_44820845_36.out
+│   │   ├── hybrid_trial_44820845_37.err
+│   │   ├── hybrid_trial_44820845_37.out
+│   │   ├── hybrid_trial_44820845_38.err
+│   │   ├── hybrid_trial_44820845_38.out
+│   │   ├── hybrid_trial_44820845_39.err
+│   │   ├── hybrid_trial_44820845_39.out
+│   │   ├── hybrid_trial_44820845_4.err
+│   │   ├── hybrid_trial_44820845_4.out
+│   │   ├── hybrid_trial_44820845_40.err
+│   │   ├── hybrid_trial_44820845_40.out
+│   │   ├── hybrid_trial_44820845_41.err
+│   │   ├── hybrid_trial_44820845_41.out
+│   │   ├── hybrid_trial_44820845_42.err
+│   │   ├── hybrid_trial_44820845_42.out
+│   │   ├── hybrid_trial_44820845_43.err
+│   │   ├── hybrid_trial_44820845_43.out
+│   │   ├── hybrid_trial_44820845_44.err
+│   │   ├── hybrid_trial_44820845_44.out
+│   │   ├── hybrid_trial_44820845_45.err
+│   │   ├── hybrid_trial_44820845_45.out
+│   │   ├── hybrid_trial_44820845_46.err
+│   │   ├── hybrid_trial_44820845_46.out
+│   │   ├── hybrid_trial_44820845_47.err
+│   │   ├── hybrid_trial_44820845_47.out
+│   │   ├── hybrid_trial_44820845_48.err
+│   │   ├── hybrid_trial_44820845_48.out
+│   │   ├── hybrid_trial_44820845_49.err
+│   │   ├── hybrid_trial_44820845_49.out
+│   │   ├── hybrid_trial_44820845_5.err
+│   │   ├── hybrid_trial_44820845_5.out
+│   │   ├── hybrid_trial_44820845_50.err
+│   │   ├── hybrid_trial_44820845_50.out
+│   │   ├── hybrid_trial_44820845_51.err
+│   │   ├── hybrid_trial_44820845_51.out
+│   │   ├── hybrid_trial_44820845_52.err
+│   │   ├── hybrid_trial_44820845_52.out
+│   │   ├── hybrid_trial_44820845_53.err
+│   │   ├── hybrid_trial_44820845_53.out
+│   │   ├── hybrid_trial_44820845_54.err
+│   │   ├── hybrid_trial_44820845_54.out
+│   │   ├── hybrid_trial_44820845_55.err
+│   │   ├── hybrid_trial_44820845_55.out
+│   │   ├── hybrid_trial_44820845_56.err
+│   │   ├── hybrid_trial_44820845_56.out
+│   │   ├── hybrid_trial_44820845_57.err
+│   │   ├── hybrid_trial_44820845_57.out
+│   │   ├── hybrid_trial_44820845_58.err
+│   │   ├── hybrid_trial_44820845_58.out
+│   │   ├── hybrid_trial_44820845_59.err
+│   │   ├── hybrid_trial_44820845_59.out
+│   │   ├── hybrid_trial_44820845_6.err
+│   │   ├── hybrid_trial_44820845_6.out
+│   │   ├── hybrid_trial_44820845_60.err
+│   │   ├── hybrid_trial_44820845_60.out
+│   │   ├── hybrid_trial_44820845_61.err
+│   │   ├── hybrid_trial_44820845_61.out
+│   │   ├── hybrid_trial_44820845_62.err
+│   │   ├── hybrid_trial_44820845_62.out
+│   │   ├── hybrid_trial_44820845_63.err
+│   │   ├── hybrid_trial_44820845_63.out
+│   │   ├── hybrid_trial_44820845_64.err
+│   │   ├── hybrid_trial_44820845_64.out
+│   │   ├── hybrid_trial_44820845_65.err
+│   │   ├── hybrid_trial_44820845_65.out
+│   │   ├── hybrid_trial_44820845_66.err
+│   │   ├── hybrid_trial_44820845_66.out
+│   │   ├── hybrid_trial_44820845_67.err
+│   │   ├── hybrid_trial_44820845_67.out
+│   │   ├── hybrid_trial_44820845_68.err
+│   │   ├── hybrid_trial_44820845_68.out
+│   │   ├── hybrid_trial_44820845_69.err
+│   │   ├── hybrid_trial_44820845_69.out
+│   │   ├── hybrid_trial_44820845_7.err
+│   │   ├── hybrid_trial_44820845_7.out
+│   │   ├── hybrid_trial_44820845_70.err
+│   │   ├── hybrid_trial_44820845_70.out
+│   │   ├── hybrid_trial_44820845_71.err
+│   │   ├── hybrid_trial_44820845_71.out
+│   │   ├── hybrid_trial_44820845_72.err
+│   │   ├── hybrid_trial_44820845_72.out
+│   │   ├── hybrid_trial_44820845_73.err
+│   │   ├── hybrid_trial_44820845_73.out
+│   │   ├── hybrid_trial_44820845_74.err
+│   │   ├── hybrid_trial_44820845_74.out
+│   │   ├── hybrid_trial_44820845_75.err
+│   │   ├── hybrid_trial_44820845_75.out
+│   │   ├── hybrid_trial_44820845_76.err
+│   │   ├── hybrid_trial_44820845_76.out
+│   │   ├── hybrid_trial_44820845_77.err
+│   │   ├── hybrid_trial_44820845_77.out
+│   │   ├── hybrid_trial_44820845_78.err
+│   │   ├── hybrid_trial_44820845_78.out
+│   │   ├── hybrid_trial_44820845_79.err
+│   │   ├── hybrid_trial_44820845_79.out
+│   │   ├── hybrid_trial_44820845_8.err
+│   │   ├── hybrid_trial_44820845_8.out
+│   │   ├── hybrid_trial_44820845_80.err
+│   │   ├── hybrid_trial_44820845_80.out
+│   │   ├── hybrid_trial_44820845_81.err
+│   │   ├── hybrid_trial_44820845_81.out
+│   │   ├── hybrid_trial_44820845_82.err
+│   │   ├── hybrid_trial_44820845_82.out
+│   │   ├── hybrid_trial_44820845_83.err
+│   │   ├── hybrid_trial_44820845_83.out
+│   │   ├── hybrid_trial_44820845_84.err
+│   │   ├── hybrid_trial_44820845_84.out
+│   │   ├── hybrid_trial_44820845_85.err
+│   │   ├── hybrid_trial_44820845_85.out
+│   │   ├── hybrid_trial_44820845_86.err
+│   │   ├── hybrid_trial_44820845_86.out
+│   │   ├── hybrid_trial_44820845_87.err
+│   │   ├── hybrid_trial_44820845_87.out
+│   │   ├── hybrid_trial_44820845_88.err
+│   │   ├── hybrid_trial_44820845_88.out
+│   │   ├── hybrid_trial_44820845_89.err
+│   │   ├── hybrid_trial_44820845_89.out
+│   │   ├── hybrid_trial_44820845_9.err
+│   │   ├── hybrid_trial_44820845_9.out
+│   │   ├── hybrid_trial_44820845_90.err
+│   │   ├── hybrid_trial_44820845_90.out
+│   │   ├── hybrid_trial_44820845_91.err
+│   │   ├── hybrid_trial_44820845_91.out
+│   │   ├── hybrid_trial_44820845_92.err
+│   │   ├── hybrid_trial_44820845_92.out
+│   │   ├── hybrid_trial_44820845_93.err
+│   │   ├── hybrid_trial_44820845_93.out
+│   │   ├── hybrid_trial_44820845_94.err
+│   │   ├── hybrid_trial_44820845_94.out
+│   │   ├── hybrid_trial_44820845_95.err
+│   │   ├── hybrid_trial_44820845_95.out
+│   │   ├── hybrid_trial_44820845_96.err
+│   │   ├── hybrid_trial_44820845_96.out
+│   │   ├── hybrid_trial_44820845_97.err
+│   │   ├── hybrid_trial_44820845_97.out
+│   │   ├── hybrid_trial_44820845_98.err
+│   │   ├── hybrid_trial_44820845_98.out
+│   │   ├── hybrid_trial_44820845_99.err
+│   │   ├── hybrid_trial_44820845_99.out
+│   │   ├── hybrid_tuning_controller_44816413.err
+│   │   ├── hybrid_tuning_controller_44816413.out
+│   │   ├── hybrid_tuning_controller_44818674.err
+│   │   ├── hybrid_tuning_controller_44818674.out
+│   │   ├── hybrid_tuning_controller_44819698.err
+│   │   └── hybrid_tuning_controller_44819698.out
+│   ├── hybrid_tuning_controller_44853122.err
+│   ├── hybrid_tuning_controller_44853122.out
 │   └── old
 │       ├── 5seeds_44491781_4294967294.err
 │       ├── 5seeds_44491781_4294967294.out
@@ -35691,6 +37492,7 @@
 │   │   └── sample_hybrid_trials.cpython-313.pyc
 │   ├── aggregate_results.py
 │   ├── aggregate_tuning.py
+│   ├── evaluate_arc_bins.py
 │   ├── evaluate_arc_test.py
 │   ├── generate_hybrid_trials.py
 │   ├── get_best_hyperparams.py
@@ -35707,8 +37509,10 @@
 └── src
     ├── __pycache__
     │   ├── arc_dataset.cpython-310.pyc
+    │   ├── evals.cpython-310.pyc
     │   ├── model.cpython-310.pyc
     │   ├── train.cpython-313.pyc
+    │   ├── tune_hybrid.cpython-310.pyc
     │   └── utils.cpython-310.pyc
     ├── arc_dataset.py
     ├── evals.py
@@ -35717,7 +37521,8 @@
     ├── predictions.py
     ├── test.py
     ├── train.py
+    ├── train_arc_ablation.py
     ├── tune_hybrid.py
     └── utils.py
 
-302 directories, 35418 files
+628 directories, 36897 files
