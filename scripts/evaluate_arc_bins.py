@@ -134,7 +134,7 @@ def main():
             config = checkpoint["config"]
             model_name = config["model"]
             modality = config.get("input_modality", "full")
-            model = build(model_name, int(test[0].x.shape[1]), int(config["hidden_dim"]), test.num_classes, float(config.get("dropout", 0.2))).to(device)
+            model = build(model_name, int(test[0].x.shape[1]), int(config.get("hidden_dim", 512)), test.num_classes, float(config.get("dropout", 0.2))).to(device)
             model.load_state_dict(checkpoint["model_state_dict"]); model.eval()
             labels, probabilities = [], []
             with torch.inference_mode():
