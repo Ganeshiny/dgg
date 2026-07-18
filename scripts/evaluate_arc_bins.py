@@ -104,8 +104,20 @@ def grouped_metrics(y_true, probabilities, groups, ic):
         mask = np.asarray([item == group for item in groups])
         if not mask.any():
             continue
-        metrics = evaluate_all(y_true[mask], probabilities[mask], ic)
-        rows.append({"bin": group, "examples": int(mask.sum()), **{k: float(v) for k, v in metrics.items()}})
+        y_group = y_true[mask]
+        # A bin with no positive labels has no defined Fmax/AUPR/AUROC.
+        # Record it explicitly as NaN instead of repeatedly invoking sklearn
+        # on an undefined class and flooding the Slurm error log.
+        if int(y_group.sum()) == 0:
+            metrics = {"Micro_Fmax": np.nan, "Macro_Fmax": np.nan,
+                       "Macro_AUROC": np.nan, "Micro_AUROC": np.nan,
+                       "Macro_AUPRC": np.nan, "Micro_AUPRC": np.nan,
+                       "Smin": np.nan}
+        else:
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                metrics = evaluate_all(y_group, probabilities[mask], ic)
+        rows.append({"bin": group, "examples": int(mask.sum()), **{k: (float(v) if np.isfinite(v) else None) for k, v in metrics.items()}})
     return rows
 
 
