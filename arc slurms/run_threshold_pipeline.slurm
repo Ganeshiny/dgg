@@ -19,12 +19,11 @@ set -euo pipefail
 PROJECT_DIR="${DGG_PROJECT_ROOT:-/home/ganeshiny.sridharan/dgg/deep-green-GO}"
 DATA_ROOT="${DGG_DATA_ROOT:-${PROJECT_DIR}/preprocessing/data_arc_rebuild_2026_07_14}"
 GRAPH_ROOT="${DGG_GRAPH_ROOT:-${PROJECT_DIR}/arc_tuning/graphs_protbert}"
-THRESHOLD_LIST="${DGG_THRESHOLD_LIST:-40,50,70,90,95}"
+THRESHOLDS=(40 50 70 90 95)
 TRIALS="${DGG_TUNING_TRIALS:-40}"
 CONCURRENCY="${DGG_TUNING_CONCURRENCY:-4}"
 SELECTION_METRIC="${DGG_SELECTION_METRIC:-validation_macro_fmax}"
 
-IFS=',' read -r -a THRESHOLDS <<< "${THRESHOLD_LIST}"
 THRESHOLD="${THRESHOLDS[${SLURM_ARRAY_TASK_ID}]:?No threshold for array index ${SLURM_ARRAY_TASK_ID}}"
 TUNING_ROOT="${PROJECT_DIR}/arc_tuning_threshold_${THRESHOLD}"
 SPLIT_LABEL="identity_${THRESHOLD}_coverage_80"
