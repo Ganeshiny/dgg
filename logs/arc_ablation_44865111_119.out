@@ -1,0 +1,16 @@
+epoch=1 loss=1.234053 validation_macro_fmax=0.058376 validation_micro_fmax=0.023779
+epoch=2 loss=1.206820 validation_macro_fmax=0.080364 validation_micro_fmax=0.059229
+epoch=3 loss=1.191175 validation_macro_fmax=0.086391 validation_micro_fmax=0.092159
+epoch=4 loss=1.185903 validation_macro_fmax=0.081163 validation_micro_fmax=0.052297
+epoch=5 loss=1.183671 validation_macro_fmax=0.092817 validation_micro_fmax=0.075362
+epoch=6 loss=1.181886 validation_macro_fmax=0.078163 validation_micro_fmax=0.065880
+epoch=7 loss=1.182718 validation_macro_fmax=0.093072 validation_micro_fmax=0.054248
+epoch=8 loss=1.181182 validation_macro_fmax=0.092808 validation_micro_fmax=0.062334
+epoch=9 loss=1.181279 validation_macro_fmax=0.075247 validation_micro_fmax=0.053109
+epoch=10 loss=1.180230 validation_macro_fmax=0.091914 validation_micro_fmax=0.052671
+epoch=11 loss=1.182468 validation_macro_fmax=0.081543 validation_micro_fmax=0.041981
+epoch=12 loss=1.182220 validation_macro_fmax=0.085431 validation_micro_fmax=0.042078
+epoch=13 loss=1.181164 validation_macro_fmax=0.080331 validation_micro_fmax=0.048912
+epoch=14 loss=1.179409 validation_macro_fmax=0.077943 validation_micro_fmax=0.059224
+epoch=15 loss=1.184329 validation_macro_fmax=0.092672 validation_micro_fmax=0.048385
+{"input_modality": "struct_only", "model": "GAT", "ontology": "biological_process", "split_label": "nominal_30_identity_80_coverage", "test": {"Macro_AUPRC": 0.0388331903998387, "Macro_AUROC": 0.49281337565719663, "Macro_Fmax": 0.07525982039738911, "Micro_AUPRC": 0.023549195260386867, "Micro_AUROC": 0.7215891911270774, "Micro_Fmax": 0.06711105419848871, "Smin": 101.0556904085435}}

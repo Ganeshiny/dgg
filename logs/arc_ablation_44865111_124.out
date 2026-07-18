@@ -1,0 +1,16 @@
+epoch=1 loss=1.088168 validation_macro_fmax=0.206351 validation_micro_fmax=0.084913
+epoch=2 loss=0.867139 validation_macro_fmax=0.246916 validation_micro_fmax=0.136436
+epoch=3 loss=0.775726 validation_macro_fmax=0.233639 validation_micro_fmax=0.135625
+epoch=4 loss=0.707316 validation_macro_fmax=0.260612 validation_micro_fmax=0.168832
+epoch=5 loss=0.627297 validation_macro_fmax=0.268337 validation_micro_fmax=0.233094
+epoch=6 loss=0.525391 validation_macro_fmax=0.279023 validation_micro_fmax=0.254678
+epoch=7 loss=0.419450 validation_macro_fmax=0.291527 validation_micro_fmax=0.252976
+epoch=8 loss=0.327929 validation_macro_fmax=0.286123 validation_micro_fmax=0.241187
+epoch=9 loss=0.259447 validation_macro_fmax=0.280689 validation_micro_fmax=0.277935
+epoch=10 loss=0.200219 validation_macro_fmax=0.276108 validation_micro_fmax=0.298937
+epoch=11 loss=0.159289 validation_macro_fmax=0.287393 validation_micro_fmax=0.276981
+epoch=12 loss=0.138448 validation_macro_fmax=0.290597 validation_micro_fmax=0.286175
+epoch=13 loss=0.120691 validation_macro_fmax=0.291402 validation_micro_fmax=0.303232
+epoch=14 loss=0.104460 validation_macro_fmax=0.281665 validation_micro_fmax=0.294624
+epoch=15 loss=0.096431 validation_macro_fmax=0.286226 validation_micro_fmax=0.332083
+{"input_modality": "full", "model": "Hybrid", "ontology": "biological_process", "split_label": "nominal_30_identity_80_coverage", "test": {"Macro_AUPRC": 0.13807123637265523, "Macro_AUROC": 0.6291501495380482, "Macro_Fmax": 0.21270474408875237, "Micro_AUPRC": 0.08789172041780838, "Micro_AUROC": 0.6871667276750617, "Micro_Fmax": 0.1652652431844154, "Smin": 92.53199550744039}}

@@ -1,0 +1,14 @@
+epoch=1 loss=1.178594 validation_macro_fmax=0.270273 validation_micro_fmax=0.333248
+epoch=2 loss=1.040619 validation_macro_fmax=0.264412 validation_micro_fmax=0.275032
+epoch=3 loss=0.892053 validation_macro_fmax=0.273788 validation_micro_fmax=0.287400
+epoch=4 loss=0.771532 validation_macro_fmax=0.279692 validation_micro_fmax=0.294501
+epoch=5 loss=0.671601 validation_macro_fmax=0.288285 validation_micro_fmax=0.301863
+epoch=6 loss=0.603363 validation_macro_fmax=0.288106 validation_micro_fmax=0.324839
+epoch=7 loss=0.548280 validation_macro_fmax=0.288090 validation_micro_fmax=0.344538
+epoch=8 loss=0.507899 validation_macro_fmax=0.286946 validation_micro_fmax=0.359320
+epoch=9 loss=0.462100 validation_macro_fmax=0.284911 validation_micro_fmax=0.362823
+epoch=10 loss=0.430393 validation_macro_fmax=0.284703 validation_micro_fmax=0.371409
+epoch=11 loss=0.394402 validation_macro_fmax=0.284323 validation_micro_fmax=0.378169
+epoch=12 loss=0.372806 validation_macro_fmax=0.282836 validation_micro_fmax=0.388145
+epoch=13 loss=0.349447 validation_macro_fmax=0.278335 validation_micro_fmax=0.395860
+{"input_modality": "seq_only", "model": "MLP", "ontology": "cellular_component", "split_label": "nominal_30_identity_80_coverage", "test": {"Macro_AUPRC": 0.1450650362635723, "Macro_AUROC": 0.5635673199720272, "Macro_Fmax": 0.22437698500699793, "Micro_AUPRC": 0.08726266746228317, "Micro_AUROC": 0.7135963204167772, "Micro_Fmax": 0.17379909648027614, "Smin": 29.75985333418976}}
