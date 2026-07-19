@@ -28,3 +28,17 @@ epoch=2 loss=0.341603 validation_macro_fmax=0.347619 valid_micro_fmax=0.112131
 epoch=3 loss=0.142599 validation_macro_fmax=0.368289 valid_micro_fmax=0.161847
 epoch=4 loss=0.074040 validation_macro_fmax=0.378492 valid_micro_fmax=0.201084
 epoch=5 loss=0.057313 validation_macro_fmax=0.359201 valid_micro_fmax=0.229640
+epoch=6 loss=0.036935 validation_macro_fmax=0.380076 valid_micro_fmax=0.291028
+epoch=7 loss=0.043885 validation_macro_fmax=0.373233 valid_micro_fmax=0.281602
+epoch=8 loss=0.034408 validation_macro_fmax=0.324770 valid_micro_fmax=0.152537
+epoch=9 loss=0.032570 validation_macro_fmax=0.354585 valid_micro_fmax=0.293652
+epoch=10 loss=0.016955 validation_macro_fmax=0.352581 valid_micro_fmax=0.295645
+epoch=11 loss=0.012594 validation_macro_fmax=0.374142 valid_micro_fmax=0.283384
+epoch=12 loss=0.009218 validation_macro_fmax=0.362507 valid_micro_fmax=0.285219
+epoch=13 loss=0.009491 validation_macro_fmax=0.371121 valid_micro_fmax=0.298983
+epoch=14 loss=0.032753 validation_macro_fmax=0.387601 valid_micro_fmax=0.174471
+epoch=15 loss=0.187086 validation_macro_fmax=0.317782 valid_micro_fmax=0.139270
+epoch=16 loss=0.056883 validation_macro_fmax=0.340125 valid_micro_fmax=0.234305
+epoch=17 loss=0.023959 validation_macro_fmax=0.350205 valid_micro_fmax=0.281188
+epoch=18 loss=0.016281 validation_macro_fmax=0.339520 valid_micro_fmax=0.306804
+epoch=19 loss=0.012539 validation_macro_fmax=0.337777 valid_micro_fmax=0.316286
