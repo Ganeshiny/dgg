@@ -1,0 +1,81 @@
+GPU: NVIDIA L40S
+CUDA tensor check: 8.0
+Sat Jul 18 18:31:16 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 560.35.03              Driver Version: 560.35.03      CUDA Version: 12.6     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA L40S                    On  |   00000000:B5:00.0 Off |                    0 |
+| N/A   53C    P0             47W /  350W |     503MiB /  46068MiB |      1%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|    0   N/A  N/A    339325      C   python3                                       494MiB |
++-----------------------------------------------------------------------------------------+
+CUDA verified: NVIDIA L40S; tensor dot product=8.0
+GPU startup: NVIDIA L40S, 533, 46068, 5
+Loaded train=6026, valid=754; reserved test set is not loaded
+epoch=1 loss=0.727186 validation_macro_fmax=0.284986 valid_micro_fmax=0.091427
+epoch=2 loss=0.663233 validation_macro_fmax=0.293325 valid_micro_fmax=0.094349
+epoch=3 loss=0.624916 validation_macro_fmax=0.302488 valid_micro_fmax=0.098964
+epoch=4 loss=0.591878 validation_macro_fmax=0.317264 valid_micro_fmax=0.103908
+epoch=5 loss=0.572364 validation_macro_fmax=0.330383 valid_micro_fmax=0.108626
+epoch=6 loss=0.554665 validation_macro_fmax=0.342783 valid_micro_fmax=0.114732
+epoch=7 loss=0.536055 validation_macro_fmax=0.345969 valid_micro_fmax=0.117666
+epoch=8 loss=0.526021 validation_macro_fmax=0.356825 valid_micro_fmax=0.119897
+epoch=9 loss=0.513744 validation_macro_fmax=0.359718 valid_micro_fmax=0.130254
+epoch=10 loss=0.503670 validation_macro_fmax=0.364796 valid_micro_fmax=0.134825
+epoch=11 loss=0.496093 validation_macro_fmax=0.368406 valid_micro_fmax=0.144009
+epoch=12 loss=0.485895 validation_macro_fmax=0.371999 valid_micro_fmax=0.151947
+epoch=13 loss=0.480636 validation_macro_fmax=0.375278 valid_micro_fmax=0.156245
+epoch=14 loss=0.472118 validation_macro_fmax=0.375868 valid_micro_fmax=0.166160
+epoch=15 loss=0.466130 validation_macro_fmax=0.376845 valid_micro_fmax=0.172460
+epoch=16 loss=0.459105 validation_macro_fmax=0.380801 valid_micro_fmax=0.171510
+epoch=17 loss=0.453422 validation_macro_fmax=0.381427 valid_micro_fmax=0.177833
+epoch=18 loss=0.448828 validation_macro_fmax=0.382930 valid_micro_fmax=0.177663
+epoch=19 loss=0.443028 validation_macro_fmax=0.384279 valid_micro_fmax=0.183969
+epoch=20 loss=0.439545 validation_macro_fmax=0.387198 valid_micro_fmax=0.189968
+epoch=21 loss=0.436756 validation_macro_fmax=0.386964 valid_micro_fmax=0.208678
+epoch=22 loss=0.431104 validation_macro_fmax=0.387631 valid_micro_fmax=0.209089
+epoch=23 loss=0.425575 validation_macro_fmax=0.388935 valid_micro_fmax=0.206214
+epoch=24 loss=0.420382 validation_macro_fmax=0.389535 valid_micro_fmax=0.207861
+epoch=25 loss=0.419110 validation_macro_fmax=0.390575 valid_micro_fmax=0.223889
+epoch=26 loss=0.414247 validation_macro_fmax=0.392957 valid_micro_fmax=0.228561
+epoch=27 loss=0.410933 validation_macro_fmax=0.391521 valid_micro_fmax=0.229903
+epoch=28 loss=0.406259 validation_macro_fmax=0.392970 valid_micro_fmax=0.248321
+epoch=29 loss=0.404360 validation_macro_fmax=0.393476 valid_micro_fmax=0.233735
+epoch=30 loss=0.401289 validation_macro_fmax=0.395646 valid_micro_fmax=0.248365
+epoch=31 loss=0.397490 validation_macro_fmax=0.395545 valid_micro_fmax=0.255802
+epoch=32 loss=0.392282 validation_macro_fmax=0.396677 valid_micro_fmax=0.252839
+epoch=33 loss=0.388878 validation_macro_fmax=0.393656 valid_micro_fmax=0.256252
+epoch=34 loss=0.387087 validation_macro_fmax=0.398469 valid_micro_fmax=0.269779
+epoch=35 loss=0.383088 validation_macro_fmax=0.400850 valid_micro_fmax=0.268865
+epoch=36 loss=0.378752 validation_macro_fmax=0.398832 valid_micro_fmax=0.275822
+epoch=37 loss=0.376150 validation_macro_fmax=0.400402 valid_micro_fmax=0.271081
+epoch=38 loss=0.373953 validation_macro_fmax=0.401142 valid_micro_fmax=0.279667
+epoch=39 loss=0.370348 validation_macro_fmax=0.400811 valid_micro_fmax=0.294074
+epoch=40 loss=0.366753 validation_macro_fmax=0.400746 valid_micro_fmax=0.277244
+epoch=41 loss=0.362214 validation_macro_fmax=0.400109 valid_micro_fmax=0.283852
+epoch=42 loss=0.358271 validation_macro_fmax=0.400835 valid_micro_fmax=0.309829
+epoch=43 loss=0.354523 validation_macro_fmax=0.402586 valid_micro_fmax=0.297392
+epoch=44 loss=0.352558 validation_macro_fmax=0.401206 valid_micro_fmax=0.279479
+epoch=45 loss=0.348033 validation_macro_fmax=0.401562 valid_micro_fmax=0.305888
+epoch=46 loss=0.346237 validation_macro_fmax=0.404713 valid_micro_fmax=0.311912
+epoch=47 loss=0.343013 validation_macro_fmax=0.403772 valid_micro_fmax=0.304988
+epoch=48 loss=0.337891 validation_macro_fmax=0.402050 valid_micro_fmax=0.294528
+epoch=49 loss=0.334847 validation_macro_fmax=0.401856 valid_micro_fmax=0.314668
+epoch=50 loss=0.330765 validation_macro_fmax=0.403043 valid_micro_fmax=0.303108
+epoch=51 loss=0.327574 validation_macro_fmax=0.402480 valid_micro_fmax=0.324311
+epoch=52 loss=0.322152 validation_macro_fmax=0.401829 valid_micro_fmax=0.309035
+epoch=53 loss=0.320179 validation_macro_fmax=0.399497 valid_micro_fmax=0.322005
+epoch=54 loss=0.316449 validation_macro_fmax=0.400266 valid_micro_fmax=0.312421
+Early stopping after 54 epochs (patience=8)
+GPU completion: NVIDIA L40S, 29097, 46068, 0
