@@ -42,3 +42,10 @@ epoch=16 loss=0.056883 validation_macro_fmax=0.340125 valid_micro_fmax=0.234305
 epoch=17 loss=0.023959 validation_macro_fmax=0.350205 valid_micro_fmax=0.281188
 epoch=18 loss=0.016281 validation_macro_fmax=0.339520 valid_micro_fmax=0.306804
 epoch=19 loss=0.012539 validation_macro_fmax=0.337777 valid_micro_fmax=0.316286
+epoch=20 loss=0.009847 validation_macro_fmax=0.337640 valid_micro_fmax=0.325976
+epoch=21 loss=0.008436 validation_macro_fmax=0.343330 valid_micro_fmax=0.323858
+epoch=22 loss=0.007156 validation_macro_fmax=0.354819 valid_micro_fmax=0.320095
+epoch=23 loss=0.006490 validation_macro_fmax=0.358896 valid_micro_fmax=0.329632
+epoch=24 loss=0.006345 validation_macro_fmax=0.339778 valid_micro_fmax=0.328616
+Early stopping after 24 epochs (patience=10)
+GPU completion: NVIDIA L40S, 41413, 46068, 0
