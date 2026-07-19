@@ -1,0 +1,30 @@
+GPU: NVIDIA L40S
+CUDA tensor check: 8.0
+Sun Jul 19 12:38:43 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 560.35.03              Driver Version: 560.35.03      CUDA Version: 12.6     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA L40S                    On  |   00000000:B5:00.0 Off |                    0 |
+| N/A   47C    P0             43W /  350W |     503MiB /  46068MiB |      5%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|    0   N/A  N/A    891660      C   python3                                       494MiB |
++-----------------------------------------------------------------------------------------+
+CUDA verified: NVIDIA L40S; tensor dot product=8.0
+GPU startup: NVIDIA L40S, 533, 46068, 5
+Loaded train=6026, valid=754; reserved test set is not loaded
+epoch=1 loss=0.886880 validation_macro_fmax=0.244146 valid_micro_fmax=0.092585
+epoch=2 loss=0.577698 validation_macro_fmax=0.266538 valid_micro_fmax=0.096938
+epoch=3 loss=0.285861 validation_macro_fmax=0.289965 valid_micro_fmax=0.162780
+epoch=4 loss=0.140508 validation_macro_fmax=0.296356 valid_micro_fmax=0.176354
+epoch=5 loss=0.075328 validation_macro_fmax=0.296693 valid_micro_fmax=0.223310

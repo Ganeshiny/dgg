@@ -1,0 +1,44 @@
+GPU: NVIDIA L40S
+CUDA tensor check: 8.0
+Sun Jul 19 09:46:23 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 560.35.03              Driver Version: 560.35.03      CUDA Version: 12.6     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA L40S                    On  |   00000000:0D:00.0 Off |                    0 |
+| N/A   54C    P0             46W /  350W |     503MiB /  46068MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|    0   N/A  N/A   1131115      C   python3                                       494MiB |
++-----------------------------------------------------------------------------------------+
+CUDA verified: NVIDIA L40S; tensor dot product=8.0
+GPU startup: NVIDIA L40S, 533, 46068, 0
+Loaded train=6026, valid=754; reserved test set is not loaded
+epoch=1 loss=0.220529 validation_macro_fmax=0.183882 valid_micro_fmax=0.038103
+epoch=2 loss=0.101871 validation_macro_fmax=0.223366 valid_micro_fmax=0.086998
+epoch=3 loss=0.064682 validation_macro_fmax=0.208897 valid_micro_fmax=0.070718
+epoch=4 loss=0.047782 validation_macro_fmax=0.243612 valid_micro_fmax=0.074547
+epoch=5 loss=0.035284 validation_macro_fmax=0.220367 valid_micro_fmax=0.119358
+epoch=6 loss=0.033025 validation_macro_fmax=0.222103 valid_micro_fmax=0.092649
+epoch=7 loss=0.036237 validation_macro_fmax=0.248929 valid_micro_fmax=0.089788
+epoch=8 loss=0.027377 validation_macro_fmax=0.222231 valid_micro_fmax=0.128488
+epoch=9 loss=0.021747 validation_macro_fmax=0.260572 valid_micro_fmax=0.122375
+epoch=10 loss=0.019729 validation_macro_fmax=0.225984 valid_micro_fmax=0.132652
+epoch=11 loss=0.023455 validation_macro_fmax=0.213693 valid_micro_fmax=0.111794
+epoch=12 loss=0.027385 validation_macro_fmax=0.218350 valid_micro_fmax=0.107390
+epoch=13 loss=0.017790 validation_macro_fmax=0.237671 valid_micro_fmax=0.119764
+epoch=14 loss=0.016639 validation_macro_fmax=0.247414 valid_micro_fmax=0.142345
+epoch=15 loss=0.022744 validation_macro_fmax=0.224891 valid_micro_fmax=0.123325
+epoch=16 loss=0.015202 validation_macro_fmax=0.232292 valid_micro_fmax=0.146696
+epoch=17 loss=0.013862 validation_macro_fmax=0.222391 valid_micro_fmax=0.134401
+Early stopping after 17 epochs (patience=8)
+GPU completion: NVIDIA L40S, 10223, 46068, 0

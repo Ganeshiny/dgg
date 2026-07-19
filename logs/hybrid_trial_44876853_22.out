@@ -1,0 +1,52 @@
+GPU: NVIDIA L40S
+CUDA tensor check: 8.0
+Sun Jul 19 06:02:02 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 560.35.03              Driver Version: 560.35.03      CUDA Version: 12.6     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA L40S                    On  |   00000000:0D:00.0 Off |                    0 |
+| N/A   51C    P0             43W /  350W |     503MiB /  46068MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|    0   N/A  N/A   1037827      C   python3                                       494MiB |
++-----------------------------------------------------------------------------------------+
+CUDA verified: NVIDIA L40S; tensor dot product=8.0
+GPU startup: NVIDIA L40S, 533, 46068, 1
+Loaded train=6026, valid=754; reserved test set is not loaded
+epoch=1 loss=0.650701 validation_macro_fmax=0.084365 valid_micro_fmax=0.012614
+epoch=2 loss=0.569529 validation_macro_fmax=0.086368 valid_micro_fmax=0.014905
+epoch=3 loss=0.524027 validation_macro_fmax=0.097599 valid_micro_fmax=0.023477
+epoch=4 loss=0.490672 validation_macro_fmax=0.110335 valid_micro_fmax=0.036791
+epoch=5 loss=0.464910 validation_macro_fmax=0.130317 valid_micro_fmax=0.057234
+epoch=6 loss=0.444348 validation_macro_fmax=0.146510 valid_micro_fmax=0.072905
+epoch=7 loss=0.426158 validation_macro_fmax=0.154217 valid_micro_fmax=0.080044
+epoch=8 loss=0.409572 validation_macro_fmax=0.163849 valid_micro_fmax=0.100088
+epoch=9 loss=0.392122 validation_macro_fmax=0.168129 valid_micro_fmax=0.119526
+epoch=10 loss=0.374399 validation_macro_fmax=0.178299 valid_micro_fmax=0.134377
+epoch=11 loss=0.356874 validation_macro_fmax=0.203217 valid_micro_fmax=0.161992
+epoch=12 loss=0.337423 validation_macro_fmax=0.178910 valid_micro_fmax=0.159201
+epoch=13 loss=0.317785 validation_macro_fmax=0.179628 valid_micro_fmax=0.170170
+epoch=14 loss=0.297977 validation_macro_fmax=0.207957 valid_micro_fmax=0.173448
+epoch=15 loss=0.276593 validation_macro_fmax=0.181880 valid_micro_fmax=0.178893
+epoch=16 loss=0.255988 validation_macro_fmax=0.226192 valid_micro_fmax=0.197529
+epoch=17 loss=0.236122 validation_macro_fmax=0.203020 valid_micro_fmax=0.175156
+epoch=18 loss=0.216711 validation_macro_fmax=0.211091 valid_micro_fmax=0.203238
+epoch=19 loss=0.200066 validation_macro_fmax=0.185975 valid_micro_fmax=0.186148
+epoch=20 loss=0.182063 validation_macro_fmax=0.199469 valid_micro_fmax=0.204165
+epoch=21 loss=0.166061 validation_macro_fmax=0.209086 valid_micro_fmax=0.199749
+epoch=22 loss=0.153139 validation_macro_fmax=0.186529 valid_micro_fmax=0.226580
+epoch=23 loss=0.138564 validation_macro_fmax=0.215446 valid_micro_fmax=0.231459
+epoch=24 loss=0.127879 validation_macro_fmax=0.208215 valid_micro_fmax=0.222055
+epoch=25 loss=0.118048 validation_macro_fmax=0.175343 valid_micro_fmax=0.214290
+Early stopping after 25 epochs (patience=9)
+GPU completion: NVIDIA L40S, 19233, 46068, 0
