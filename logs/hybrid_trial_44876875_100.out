@@ -24,3 +24,27 @@ CUDA verified: NVIDIA L40S; tensor dot product=8.0
 GPU startup: NVIDIA L40S, 533, 46068, 5
 Loaded train=6026, valid=754; reserved test set is not loaded
 epoch=1 loss=0.131178 validation_macro_fmax=0.215644 valid_micro_fmax=0.049385
+epoch=2 loss=0.069596 validation_macro_fmax=0.214067 valid_micro_fmax=0.067706
+epoch=3 loss=0.045396 validation_macro_fmax=0.240345 valid_micro_fmax=0.106288
+epoch=4 loss=0.034945 validation_macro_fmax=0.253221 valid_micro_fmax=0.102995
+epoch=5 loss=0.024678 validation_macro_fmax=0.243080 valid_micro_fmax=0.108373
+epoch=6 loss=0.019548 validation_macro_fmax=0.286660 valid_micro_fmax=0.137255
+epoch=7 loss=0.019790 validation_macro_fmax=0.249826 valid_micro_fmax=0.152768
+epoch=8 loss=0.017699 validation_macro_fmax=0.249696 valid_micro_fmax=0.144554
+epoch=9 loss=0.017394 validation_macro_fmax=0.233635 valid_micro_fmax=0.132937
+epoch=10 loss=0.015194 validation_macro_fmax=0.255055 valid_micro_fmax=0.135940
+epoch=11 loss=0.017212 validation_macro_fmax=0.259931 valid_micro_fmax=0.153506
+epoch=12 loss=0.010615 validation_macro_fmax=0.253342 valid_micro_fmax=0.165648
+epoch=13 loss=0.011198 validation_macro_fmax=0.260712 valid_micro_fmax=0.160970
+epoch=14 loss=0.015698 validation_macro_fmax=0.318333 valid_micro_fmax=0.171811
+epoch=15 loss=0.021686 validation_macro_fmax=0.232313 valid_micro_fmax=0.138884
+epoch=16 loss=0.014982 validation_macro_fmax=0.253988 valid_micro_fmax=0.162659
+epoch=17 loss=0.011743 validation_macro_fmax=0.266622 valid_micro_fmax=0.161669
+epoch=18 loss=0.011196 validation_macro_fmax=0.265429 valid_micro_fmax=0.179197
+epoch=19 loss=0.011418 validation_macro_fmax=0.283788 valid_micro_fmax=0.145829
+epoch=20 loss=0.009270 validation_macro_fmax=0.238176 valid_micro_fmax=0.178053
+epoch=21 loss=0.013089 validation_macro_fmax=0.247847 valid_micro_fmax=0.173185
+epoch=22 loss=0.008773 validation_macro_fmax=0.229700 valid_micro_fmax=0.171345
+epoch=23 loss=0.013245 validation_macro_fmax=0.253130 valid_micro_fmax=0.151831
+Early stopping after 23 epochs (patience=9)
+GPU completion: NVIDIA L40S, 38705, 46068, 0

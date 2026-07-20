@@ -1,0 +1,10 @@
+CUDA verified: NVIDIA L40S; tensor dot product=8.0
+GPU startup: NVIDIA L40S, 533, 46068, 1
+Loaded train=6026, valid=754; reserved test set is not loaded
+epoch=1 loss=0.897511 validation_micro_fmax=0.128601 valid_micro_fmax=0.128601
+epoch=2 loss=0.587731 validation_micro_fmax=0.153080 valid_micro_fmax=0.153080
+epoch=3 loss=0.323729 validation_micro_fmax=0.244329 valid_micro_fmax=0.244329
+epoch=4 loss=0.155869 validation_micro_fmax=0.247622 valid_micro_fmax=0.247622
+epoch=5 loss=0.083206 validation_micro_fmax=0.266772 valid_micro_fmax=0.266772
+epoch=6 loss=0.052441 validation_micro_fmax=0.228571 valid_micro_fmax=0.228571
+epoch=7 loss=0.033900 validation_micro_fmax=0.268210 valid_micro_fmax=0.268210
