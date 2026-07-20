@@ -1,0 +1,48 @@
+CUDA verified: NVIDIA L40S; tensor dot product=8.0
+GPU startup: NVIDIA L40S, 533, 46068, 0
+Loaded train=6026, valid=754; reserved test set is not loaded
+epoch=1 loss=0.581507 validation_micro_fmax=0.024367 valid_micro_fmax=0.024367
+epoch=2 loss=0.474771 validation_micro_fmax=0.045062 valid_micro_fmax=0.045062
+epoch=3 loss=0.438658 validation_micro_fmax=0.059051 valid_micro_fmax=0.059051
+epoch=4 loss=0.416604 validation_micro_fmax=0.071411 valid_micro_fmax=0.071411
+epoch=5 loss=0.398103 validation_micro_fmax=0.087012 valid_micro_fmax=0.087012
+epoch=6 loss=0.380117 validation_micro_fmax=0.087904 valid_micro_fmax=0.087904
+epoch=7 loss=0.361542 validation_micro_fmax=0.096980 valid_micro_fmax=0.096980
+epoch=8 loss=0.339204 validation_micro_fmax=0.108611 valid_micro_fmax=0.108611
+epoch=9 loss=0.312598 validation_micro_fmax=0.112998 valid_micro_fmax=0.112998
+epoch=10 loss=0.281177 validation_micro_fmax=0.132947 valid_micro_fmax=0.132947
+epoch=11 loss=0.247696 validation_micro_fmax=0.126321 valid_micro_fmax=0.126321
+epoch=12 loss=0.213281 validation_micro_fmax=0.156289 valid_micro_fmax=0.156289
+epoch=13 loss=0.180450 validation_micro_fmax=0.172238 valid_micro_fmax=0.172238
+epoch=14 loss=0.150777 validation_micro_fmax=0.180362 valid_micro_fmax=0.180362
+epoch=15 loss=0.125577 validation_micro_fmax=0.191357 valid_micro_fmax=0.191357
+epoch=16 loss=0.103171 validation_micro_fmax=0.186632 valid_micro_fmax=0.186632
+epoch=17 loss=0.085855 validation_micro_fmax=0.214231 valid_micro_fmax=0.214231
+epoch=18 loss=0.071847 validation_micro_fmax=0.205831 valid_micro_fmax=0.205831
+epoch=19 loss=0.060400 validation_micro_fmax=0.233362 valid_micro_fmax=0.233362
+epoch=20 loss=0.051006 validation_micro_fmax=0.247169 valid_micro_fmax=0.247169
+epoch=21 loss=0.043788 validation_micro_fmax=0.235750 valid_micro_fmax=0.235750
+epoch=22 loss=0.038995 validation_micro_fmax=0.215700 valid_micro_fmax=0.215700
+epoch=23 loss=0.033061 validation_micro_fmax=0.227074 valid_micro_fmax=0.227074
+epoch=24 loss=0.028278 validation_micro_fmax=0.263186 valid_micro_fmax=0.263186
+epoch=25 loss=0.025043 validation_micro_fmax=0.255408 valid_micro_fmax=0.255408
+epoch=26 loss=0.022978 validation_micro_fmax=0.251454 valid_micro_fmax=0.251454
+epoch=27 loss=0.021532 validation_micro_fmax=0.254926 valid_micro_fmax=0.254926
+epoch=28 loss=0.019317 validation_micro_fmax=0.262767 valid_micro_fmax=0.262767
+epoch=29 loss=0.016095 validation_micro_fmax=0.263932 valid_micro_fmax=0.263932
+epoch=30 loss=0.014363 validation_micro_fmax=0.277718 valid_micro_fmax=0.277718
+epoch=31 loss=0.012805 validation_micro_fmax=0.256920 valid_micro_fmax=0.256920
+epoch=32 loss=0.011527 validation_micro_fmax=0.263646 valid_micro_fmax=0.263646
+epoch=33 loss=0.010264 validation_micro_fmax=0.300508 valid_micro_fmax=0.300508
+epoch=34 loss=0.009601 validation_micro_fmax=0.277719 valid_micro_fmax=0.277719
+epoch=35 loss=0.010710 validation_micro_fmax=0.249294 valid_micro_fmax=0.249294
+epoch=36 loss=0.011754 validation_micro_fmax=0.284365 valid_micro_fmax=0.284365
+epoch=37 loss=0.010987 validation_micro_fmax=0.284035 valid_micro_fmax=0.284035
+epoch=38 loss=0.009210 validation_micro_fmax=0.261119 valid_micro_fmax=0.261119
+epoch=39 loss=0.007653 validation_micro_fmax=0.276187 valid_micro_fmax=0.276187
+epoch=40 loss=0.006124 validation_micro_fmax=0.265011 valid_micro_fmax=0.265011
+epoch=41 loss=0.005688 validation_micro_fmax=0.274322 valid_micro_fmax=0.274322
+epoch=42 loss=0.005661 validation_micro_fmax=0.268542 valid_micro_fmax=0.268542
+epoch=43 loss=0.005327 validation_micro_fmax=0.279413 valid_micro_fmax=0.279413
+Early stopping after 43 epochs (patience=10)
+GPU completion: NVIDIA L40S, 42437, 46068, 0

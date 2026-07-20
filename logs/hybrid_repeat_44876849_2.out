@@ -9,3 +9,26 @@ epoch=5 loss=0.084070 validation_micro_fmax=0.218094 valid_micro_fmax=0.218094
 epoch=6 loss=0.051922 validation_micro_fmax=0.257103 valid_micro_fmax=0.257103
 epoch=7 loss=0.033365 validation_micro_fmax=0.261676 valid_micro_fmax=0.261676
 epoch=8 loss=0.025518 validation_micro_fmax=0.237516 valid_micro_fmax=0.237516
+epoch=9 loss=0.019560 validation_micro_fmax=0.265862 valid_micro_fmax=0.265862
+epoch=10 loss=0.015331 validation_micro_fmax=0.259827 valid_micro_fmax=0.259827
+epoch=11 loss=0.020451 validation_micro_fmax=0.295153 valid_micro_fmax=0.295153
+epoch=12 loss=0.019196 validation_micro_fmax=0.268433 valid_micro_fmax=0.268433
+epoch=13 loss=0.011938 validation_micro_fmax=0.276189 valid_micro_fmax=0.276189
+epoch=14 loss=0.008879 validation_micro_fmax=0.293443 valid_micro_fmax=0.293443
+epoch=15 loss=0.006104 validation_micro_fmax=0.300229 valid_micro_fmax=0.300229
+epoch=16 loss=0.005188 validation_micro_fmax=0.302635 valid_micro_fmax=0.302635
+epoch=17 loss=0.004545 validation_micro_fmax=0.286108 valid_micro_fmax=0.286108
+epoch=18 loss=0.008568 validation_micro_fmax=0.280616 valid_micro_fmax=0.280616
+epoch=19 loss=0.004746 validation_micro_fmax=0.275257 valid_micro_fmax=0.275257
+epoch=20 loss=0.004386 validation_micro_fmax=0.308161 valid_micro_fmax=0.308161
+epoch=21 loss=0.005326 validation_micro_fmax=0.316676 valid_micro_fmax=0.316676
+epoch=22 loss=0.059098 validation_micro_fmax=0.259222 valid_micro_fmax=0.259222
+epoch=23 loss=0.013001 validation_micro_fmax=0.279229 valid_micro_fmax=0.279229
+epoch=24 loss=0.005812 validation_micro_fmax=0.302826 valid_micro_fmax=0.302826
+epoch=25 loss=0.003919 validation_micro_fmax=0.308171 valid_micro_fmax=0.308171
+epoch=26 loss=0.003095 validation_micro_fmax=0.309291 valid_micro_fmax=0.309291
+epoch=27 loss=0.002806 validation_micro_fmax=0.306482 valid_micro_fmax=0.306482
+epoch=28 loss=0.002560 validation_micro_fmax=0.311421 valid_micro_fmax=0.311421
+epoch=29 loss=0.002689 validation_micro_fmax=0.306393 valid_micro_fmax=0.306393
+Early stopping after 29 epochs (patience=8)
+GPU completion: NVIDIA L40S, 35427, 46068, 0
