@@ -22,7 +22,9 @@ set -euo pipefail
 PROJECT_DIR="${DGG_PROJECT_ROOT:-/home/ganeshiny.sridharan/dgg/deep-green-GO}"
 DATA_ROOT="${DGG_DATA_ROOT:-${PROJECT_DIR}/preprocessing/data_arc_rebuild_2026_07_14}"
 TUNING_ROOT="${DGG_TUNING_ROOT:-${PROJECT_DIR}/arc_tuning_cafa}"
-GRAPH_ROOT="${DGG_GRAPH_ROOT:-${TUNING_ROOT}/graphs_protbert}"
+# The CAFA tuning root contains the five-seed checkpoints. Graphs were built
+# once in the shared project-level ARC tuning cache and reused by all runs.
+GRAPH_ROOT="${DGG_GRAPH_ROOT:-${PROJECT_DIR}/arc_tuning/graphs_protbert}"
 CHECKPOINT_ROOT="${DGG_CHECKPOINT_ROOT:-${TUNING_ROOT}/five_seed_hybrid}"
 BENCHMARK_ROOT="${DGG_BENCHMARK_ROOT:-${PROJECT_DIR}/arc_benchmark/nominal_30_identity_80_coverage}"
 METHODS="${DGG_BENCHMARK_METHODS:-hybrid,naive,blast,diamond,foldseek,interproscan,eggnog_mapper,deepfri_sequence,deepfri_structure,transfun,dpfunc,deepgoplus,deepgose,hayai,gomap}"
@@ -100,6 +102,7 @@ preflight() {
     if method_enabled hybrid; then
         require_dir "${CHECKPOINT_ROOT}"
         require_dir "${GRAPH_ROOT}"
+        require_file "${GRAPH_ROOT}/2WSC_1.pt"
         local ontology seed
         for ontology in molecular_function biological_process cellular_component; do
             for seed in 1103 2207 3301 4409 5501; do

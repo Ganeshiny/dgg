@@ -52,7 +52,7 @@ Expected defaults:
 
 | Method | Default location/environment |
 |---|---|
-| DeepGreenGO | `arc_tuning_cafa/five_seed_hybrid`, environment `deepgreengo` |
+| DeepGreenGO | checkpoints: `arc_tuning_cafa/five_seed_hybrid`; shared graphs: `arc_tuning/graphs_protbert`; environment `deepgreengo` |
 | BLAST/DIAMOND/Foldseek | executables visible in `deepgreengo` |
 | InterProScan | set `DGG_INTERPROSCAN=/absolute/path/interproscan.sh` |
 | DeepFRI | `baselines/DeepFRI`, environment `dgg_sota_tf` |
