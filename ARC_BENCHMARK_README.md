@@ -10,7 +10,7 @@ From `/home/ganeshiny.sridharan/dgg/deep-green-GO`:
 sbatch 'arc slurms/run_full_benchmark.slurm'
 ```
 
-The job is resumable. If it reaches the Slurm time limit, submit the same command again. A stage is skipped only after its `.done` marker has been written.
+ARC GPU partitions currently impose a 24-hour maximum wall time. This job requests 23 hours 55 minutes and is resumable: if it reaches the Slurm time limit, submit the same command again. A stage is skipped only after its `.done` marker has been written.
 
 Outputs are written under:
 

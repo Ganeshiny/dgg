@@ -11,7 +11,9 @@
 #SBATCH --cpus-per-task=16
 #SBATCH --gres=gpu:1
 #SBATCH --mem=96G
-#SBATCH --time=2-00:00:00
+# ARC GPU partitions currently have a 24-hour MaxWall limit. Leave a small
+# margin below that limit; the stage markers make the same script resumable.
+#SBATCH --time=23:55:00
 #SBATCH --output=/home/ganeshiny.sridharan/dgg/deep-green-GO/logs/full_benchmark_%j.out
 #SBATCH --error=/home/ganeshiny.sridharan/dgg/deep-green-GO/logs/full_benchmark_%j.err
 
