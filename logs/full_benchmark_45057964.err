@@ -1,0 +1,57 @@
+[PREFLIGHT ERROR] Set DGG_INTERPROSCAN to the executable InterProScan script
+2026-07-22 13:51:39.371762: I tensorflow/core/util/port.cc:110] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-07-22 13:51:40.103649: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2026-07-22 13:51:45.618894: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2026-07-22 13:51:45.628671: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F AVX512_VNNI AVX512_BF16 AVX_VNNI AMX_TILE AMX_INT8 AMX_BF16 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2026-07-22 13:52:05.849879: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+[PREFLIGHT ERROR] Missing file: /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/eggnog-mapper/emapper.py
+[PREFLIGHT ERROR] Missing directory: /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/eggnog-mapper/data
+
+EnvironmentLocationNotFound: Not a conda environment: /home/ganeshiny.sridharan/miniconda3/envs/dgg_eggnog
+
+[PREFLIGHT ERROR] Missing directory: /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgoplus/data
+[PREFLIGHT ERROR] Missing file: /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgoplus/data/go.obo
+[PREFLIGHT ERROR] Missing file: /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgoplus/data/model.h5
+[PREFLIGHT ERROR] Missing file: /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgoplus/data/terms.pkl
+[PREFLIGHT ERROR] Missing file: /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgoplus/data/train_data.pkl
+
+EnvironmentLocationNotFound: Not a conda environment: /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgoplus
+
+[PREFLIGHT ERROR] Missing file: /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/predict.py
+[PREFLIGHT ERROR] Missing file: /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/data/go.obo
+[PREFLIGHT ERROR] Missing file: /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/data/go-plus.norm
+[PREFLIGHT ERROR] Missing file: /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/data/mf/terms.pkl
+[PREFLIGHT ERROR] Missing file: /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/data/bp/terms.pkl
+[PREFLIGHT ERROR] Missing file: /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/data/cc/terms.pkl
+[PREFLIGHT ERROR] Missing file: /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/data/mf/deepgozero_esm_plus_0.th
+[PREFLIGHT ERROR] Missing file: /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/data/mf/deepgozero_esm_plus_1.th
+[PREFLIGHT ERROR] Missing file: /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/data/mf/deepgozero_esm_plus_2.th
+[PREFLIGHT ERROR] Missing file: /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/data/mf/deepgozero_esm_plus_5.th
+[PREFLIGHT ERROR] Missing file: /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/data/mf/deepgozero_esm_plus_6.th
+[PREFLIGHT ERROR] Missing file: /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/data/mf/deepgozero_esm_plus_8.th
+[PREFLIGHT ERROR] Missing file: /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/data/bp/deepgozero_esm_plus_2.th
+[PREFLIGHT ERROR] Missing file: /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/data/bp/deepgozero_esm_plus_5.th
+[PREFLIGHT ERROR] Missing file: /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/data/bp/deepgozero_esm_plus_6.th
+[PREFLIGHT ERROR] Missing file: /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/data/bp/deepgozero_esm_plus_7.th
+[PREFLIGHT ERROR] Missing file: /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/data/bp/deepgozero_esm_plus_8.th
+[PREFLIGHT ERROR] Missing file: /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/data/bp/deepgozero_esm_plus_9.th
+[PREFLIGHT ERROR] Missing file: /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/data/cc/deepgozero_esm_plus_1.th
+[PREFLIGHT ERROR] Missing file: /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/data/cc/deepgozero_esm_plus_3.th
+[PREFLIGHT ERROR] Missing file: /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/data/cc/deepgozero_esm_plus_4.th
+[PREFLIGHT ERROR] Missing file: /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/data/cc/deepgozero_esm_plus_5.th
+[PREFLIGHT ERROR] Missing file: /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/data/cc/deepgozero_esm_plus_6.th
+[PREFLIGHT ERROR] Missing file: /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/data/cc/deepgozero_esm_plus_7.th
+
+EnvironmentLocationNotFound: Not a conda environment: /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose
+
+[PREFLIGHT ERROR] Missing file: /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/HayaiAnnotation/db/zen.dmnd
+
+EnvironmentLocationNotFound: Not a conda environment: /home/ganeshiny.sridharan/miniconda3/envs/hayai_v3.2
+
+
+EnvironmentLocationNotFound: Not a conda environment: /home/ganeshiny.sridharan/miniconda3/envs/hayai_v3.2
+
+[PREFLIGHT ERROR] GOMAP has a manual Argot2.5 step upstream.
+Set DGG_GOMAP_GAF to a completed GAF, or DGG_GOMAP_COMMAND to a site-specific command that writes /home/ganeshiny.sridharan/dgg/deep-green-GO/arc_benchmark/nominal_30_identity_80_coverage/raw/gomap_predictions.gaf
+[PREFLIGHT FAILED] 39 dependency check(s) failed; no benchmark stages were started.

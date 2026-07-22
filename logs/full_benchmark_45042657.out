@@ -1,0 +1,9 @@
+Project: /home/ganeshiny.sridharan/dgg/deep-green-GO
+Benchmark: /home/ganeshiny.sridharan/dgg/deep-green-GO/arc_benchmark/nominal_30_identity_80_coverage
+Methods: hybrid,naive,blast,diamond,foldseek,interproscan,eggnog_mapper,deepfri_sequence,deepfri_structure,transfun,dpfunc,deepgoplus,deepgose,hayai,gomap
+base environment ok
+makeblastdb: 2.17.0+
+ Package: blast 2.17.0, build Aug 11 2025 09:46:06
+blastp: 2.17.0+
+ Package: blast 2.17.0, build Aug 11 2025 09:46:06
+diamond version 2.2.2

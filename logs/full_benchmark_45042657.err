@@ -1,0 +1,2 @@
+/tmp/tmpz2dy03k5: line 3: foldseek: command not found
+ERROR conda.cli.main_run:execute(148): `conda run foldseek version` failed. (See above for error)
