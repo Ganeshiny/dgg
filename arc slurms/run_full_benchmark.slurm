@@ -35,6 +35,9 @@ TF_ENV="${DGG_DEEPFRI_ENV:-dgg_sota_tf}"
 DEEPGO_ENV="${DGG_DEEPGO_ENV:-dgg_deepgose}"
 DEEPGOPLUS_ENV="${DGG_DEEPGOPLUS_ENV:-dgg_deepgoplus}"
 EGGNOG_ENV="${DGG_EGGNOG_ENV:-dgg_eggnog}"
+# Keep Foldseek isolated from the trained-model environment by default. If it
+# was already installed in BASE_ENV, preflight falls back to that environment.
+FOLDSEEK_ENV="${DGG_FOLDSEEK_ENV:-dgg_foldseek}"
 HAYAI_ENV="${DGG_HAYAI_ENV:-hayai_v3.2}"
 
 DEEPFRI_ROOT="${DGG_DEEPFRI_ROOT:-${PROJECT_DIR}/baselines/DeepFRI}"
@@ -80,6 +83,15 @@ require_dir() {
     [[ -d "$1" ]] || { echo "[PREFLIGHT ERROR] Missing directory: $1" >&2; return 1; }
 }
 
+PREFLIGHT_FAILURES=0
+
+preflight_check() {
+    if ! "$@"; then
+        ((PREFLIGHT_FAILURES += 1))
+    fi
+    return 0
+}
+
 stage() {
     local name="$1"
     shift
@@ -95,99 +107,129 @@ stage() {
 }
 
 preflight() {
-    require_file "${PYTHON_SCRIPT}"
-    require_dir "${DATA_ROOT}/datasets/threshold_30"
-    require_file "${DATA_ROOT}/go-basic.obo"
-    conda_run "${BASE_ENV}" python -c "import Bio,numpy,sklearn,torch; print('base environment ok')"
+    PREFLIGHT_FAILURES=0
+    preflight_check require_file "${PYTHON_SCRIPT}"
+    preflight_check require_dir "${DATA_ROOT}/datasets/threshold_30"
+    preflight_check require_file "${DATA_ROOT}/go-basic.obo"
+    preflight_check conda_run "${BASE_ENV}" python -c "import Bio,numpy,sklearn,torch; print('base environment ok')"
     if method_enabled hybrid; then
-        require_dir "${CHECKPOINT_ROOT}"
-        require_dir "${GRAPH_ROOT}"
-        require_file "${GRAPH_ROOT}/2WSC_1.pt"
+        preflight_check require_dir "${CHECKPOINT_ROOT}"
+        preflight_check require_dir "${GRAPH_ROOT}"
+        preflight_check require_file "${GRAPH_ROOT}/2WSC_1.pt"
         local ontology seed
         for ontology in molecular_function biological_process cellular_component; do
             for seed in 1103 2207 3301 4409 5501; do
-                require_file "${CHECKPOINT_ROOT}/${ontology}/seed_${seed}/best_checkpoint.pt"
+                preflight_check require_file "${CHECKPOINT_ROOT}/${ontology}/seed_${seed}/best_checkpoint.pt"
             done
         done
     fi
     if method_enabled blast; then
-        conda_run "${BASE_ENV}" makeblastdb -version
-        conda_run "${BASE_ENV}" blastp -version
+        preflight_check conda_run "${BASE_ENV}" makeblastdb -version
+        preflight_check conda_run "${BASE_ENV}" blastp -version
     fi
     if method_enabled diamond; then
-        conda_run "${BASE_ENV}" diamond version
+        preflight_check conda_run "${BASE_ENV}" diamond version
     fi
     if method_enabled foldseek; then
-        conda_run "${BASE_ENV}" "${FOLDSEEK}" version
+        local requested_foldseek="${FOLDSEEK}"
+        local resolved_foldseek=""
+        if [[ "${requested_foldseek}" == */* && -x "${requested_foldseek}" ]]; then
+            resolved_foldseek="${requested_foldseek}"
+        elif resolved_foldseek="$(conda run -n "${FOLDSEEK_ENV}" sh -c \
+                'command -v "$1"' sh "${requested_foldseek}" 2>/dev/null)" \
+                && [[ -n "${resolved_foldseek}" ]]; then
+            :
+        elif [[ "${FOLDSEEK_ENV}" != "${BASE_ENV}" ]] \
+                && resolved_foldseek="$(conda run -n "${BASE_ENV}" sh -c \
+                    'command -v "$1"' sh "${requested_foldseek}" 2>/dev/null)" \
+                && [[ -n "${resolved_foldseek}" ]]; then
+            echo "Foldseek found in fallback environment ${BASE_ENV}"
+            FOLDSEEK_ENV="${BASE_ENV}"
+        else
+            echo "[PREFLIGHT ERROR] Foldseek was not found in ${FOLDSEEK_ENV} or ${BASE_ENV}." >&2
+            echo "On the ARC login node, create it once with:" >&2
+            echo "  conda create -y -n dgg_foldseek -c conda-forge -c bioconda foldseek" >&2
+            echo "Then resubmit the unchanged Slurm command." >&2
+            ((PREFLIGHT_FAILURES += 1))
+        fi
+        if [[ -n "${resolved_foldseek}" ]]; then
+            FOLDSEEK="$(printf '%s\n' "${resolved_foldseek}" | tail -n 1)"
+            preflight_check "${FOLDSEEK}" version
+        fi
     fi
     if method_enabled interproscan || method_enabled dpfunc; then
         [[ -x "${INTERPROSCAN}" ]] || command -v "${INTERPROSCAN}" >/dev/null || {
             echo "[PREFLIGHT ERROR] Set DGG_INTERPROSCAN to the executable InterProScan script" >&2
-            return 1
+            ((PREFLIGHT_FAILURES += 1))
         }
     fi
     if method_enabled deepfri_sequence || method_enabled deepfri_structure; then
-        require_file "${DEEPFRI_ROOT}/predict.py"
-        require_file "${DEEPFRI_ROOT}/trained_models/model_config.json"
-        conda_run "${TF_ENV}" python -c "import tensorflow; print('DeepFRI environment ok')"
+        preflight_check require_file "${DEEPFRI_ROOT}/predict.py"
+        preflight_check require_file "${DEEPFRI_ROOT}/trained_models/model_config.json"
+        preflight_check conda_run "${TF_ENV}" python -c "import tensorflow; print('DeepFRI environment ok')"
     fi
     if method_enabled transfun; then
-        require_file "${TRANSFUN_ROOT}/predict.py"
-        require_file "${TRANSFUN_ROOT}/data/molecular_function.pt"
-        require_file "${TRANSFUN_ROOT}/data/biological_process.pt"
-        require_file "${TRANSFUN_ROOT}/data/cellular_component.pt"
+        preflight_check require_file "${TRANSFUN_ROOT}/predict.py"
+        preflight_check require_file "${TRANSFUN_ROOT}/data/molecular_function.pt"
+        preflight_check require_file "${TRANSFUN_ROOT}/data/biological_process.pt"
+        preflight_check require_file "${TRANSFUN_ROOT}/data/cellular_component.pt"
     fi
     if method_enabled dpfunc; then
-        require_file "${DPFUNC_ROOT}/DPFunc_demo_pipeline/scripts/build_data_demo.py"
-        require_file "${DPFUNC_ROOT}/DPFunc_demo_pipeline/scripts/run_dpfunc.py"
-        require_file "${DPFUNC_ROOT}/data/inter_idx.pkl"
+        preflight_check require_file "${DPFUNC_ROOT}/DPFunc_demo_pipeline/scripts/build_data_demo.py"
+        preflight_check require_file "${DPFUNC_ROOT}/DPFunc_demo_pipeline/scripts/run_dpfunc.py"
+        preflight_check require_file "${DPFUNC_ROOT}/data/inter_idx.pkl"
         local ontology model_index
         for ontology in mf bp cc; do
-            require_file "${DPFUNC_ROOT}/mlb/${ontology}_go.mlb"
+            preflight_check require_file "${DPFUNC_ROOT}/mlb/${ontology}_go.mlb"
             for model_index in 0 1 2; do
-                require_file "${DPFUNC_ROOT}/save_models/${DPFUNC_PRENAME}_${ontology}_${model_index}of3model.pt"
+                preflight_check require_file "${DPFUNC_ROOT}/save_models/${DPFUNC_PRENAME}_${ontology}_${model_index}of3model.pt"
             done
         done
     fi
     if method_enabled eggnog_mapper; then
-        require_file "${EGGNOG_ROOT}/emapper.py"
-        require_dir "${EGGNOG_DATA}"
-        conda_run "${EGGNOG_ENV}" python "${EGGNOG_ROOT}/emapper.py" --version
+        preflight_check require_file "${EGGNOG_ROOT}/emapper.py"
+        preflight_check require_dir "${EGGNOG_DATA}"
+        preflight_check conda_run "${EGGNOG_ENV}" python "${EGGNOG_ROOT}/emapper.py" --version
     fi
     if method_enabled deepgoplus; then
-        require_dir "${DEEPGOPLUS_ROOT}/data"
-        require_file "${DEEPGOPLUS_ROOT}/data/go.obo"
-        require_file "${DEEPGOPLUS_ROOT}/data/model.h5"
-        require_file "${DEEPGOPLUS_ROOT}/data/terms.pkl"
-        require_file "${DEEPGOPLUS_ROOT}/data/train_data.pkl"
-        conda_run "${DEEPGOPLUS_ENV}" deepgoplus --help >/dev/null
+        preflight_check require_dir "${DEEPGOPLUS_ROOT}/data"
+        preflight_check require_file "${DEEPGOPLUS_ROOT}/data/go.obo"
+        preflight_check require_file "${DEEPGOPLUS_ROOT}/data/model.h5"
+        preflight_check require_file "${DEEPGOPLUS_ROOT}/data/terms.pkl"
+        preflight_check require_file "${DEEPGOPLUS_ROOT}/data/train_data.pkl"
+        preflight_check conda_run "${DEEPGOPLUS_ENV}" deepgoplus --help >/dev/null
     fi
     if method_enabled deepgose; then
-        require_file "${DEEPGO_ROOT}/predict.py"
-        require_file "${DEEPGO_ROOT}/data/go.obo"
-        require_file "${DEEPGO_ROOT}/data/go-plus.norm"
+        preflight_check require_file "${DEEPGO_ROOT}/predict.py"
+        preflight_check require_file "${DEEPGO_ROOT}/data/go.obo"
+        preflight_check require_file "${DEEPGO_ROOT}/data/go-plus.norm"
         local ontology model_index
         for ontology in mf bp cc; do
-            require_file "${DEEPGO_ROOT}/data/${ontology}/terms.pkl"
+            preflight_check require_file "${DEEPGO_ROOT}/data/${ontology}/terms.pkl"
         done
-        for model_index in 0 1 2 5 6 8; do require_file "${DEEPGO_ROOT}/data/mf/deepgozero_esm_plus_${model_index}.th"; done
-        for model_index in 2 5 6 7 8 9; do require_file "${DEEPGO_ROOT}/data/bp/deepgozero_esm_plus_${model_index}.th"; done
-        for model_index in 1 3 4 5 6 7; do require_file "${DEEPGO_ROOT}/data/cc/deepgozero_esm_plus_${model_index}.th"; done
-        conda_run "${DEEPGO_ENV}" python -c "import torch; print('DeepGO-SE environment ok')"
+        for model_index in 0 1 2 5 6 8; do preflight_check require_file "${DEEPGO_ROOT}/data/mf/deepgozero_esm_plus_${model_index}.th"; done
+        for model_index in 2 5 6 7 8 9; do preflight_check require_file "${DEEPGO_ROOT}/data/bp/deepgozero_esm_plus_${model_index}.th"; done
+        for model_index in 1 3 4 5 6 7; do preflight_check require_file "${DEEPGO_ROOT}/data/cc/deepgozero_esm_plus_${model_index}.th"; done
+        preflight_check conda_run "${DEEPGO_ENV}" python -c "import torch; print('DeepGO-SE environment ok')"
     fi
     if method_enabled hayai; then
-        require_file "${HAYAI_ROOT}/db/zen.dmnd"
-        conda_run "${HAYAI_ENV}" diamond version
+        preflight_check require_file "${HAYAI_ROOT}/db/zen.dmnd"
+        preflight_check conda_run "${HAYAI_ENV}" diamond version
         if [[ "${DGG_HAYAI_USE_ORTHOLOGER:-1}" == "1" ]]; then
-            conda_run "${HAYAI_ENV}" ODB-mapper --help >/dev/null
+            preflight_check conda_run "${HAYAI_ENV}" ODB-mapper --help >/dev/null
         fi
     fi
     if method_enabled gomap && [[ ! -f "${DGG_GOMAP_GAF:-}" && -z "${DGG_GOMAP_COMMAND:-}" ]]; then
         echo "[PREFLIGHT ERROR] GOMAP has a manual Argot2.5 step upstream." >&2
         echo "Set DGG_GOMAP_GAF to a completed GAF, or DGG_GOMAP_COMMAND to a site-specific command that writes ${RAW}/gomap_predictions.gaf" >&2
+        ((PREFLIGHT_FAILURES += 1))
+    fi
+    preflight_check nvidia-smi --query-gpu=name,memory.total --format=csv,noheader
+    if ((PREFLIGHT_FAILURES > 0)); then
+        echo "[PREFLIGHT FAILED] ${PREFLIGHT_FAILURES} dependency check(s) failed; no benchmark stages were started." >&2
         return 1
     fi
-    nvidia-smi --query-gpu=name,memory.total --format=csv,noheader
+    echo "Preflight passed"
 }
 
 prepare_inputs() {

@@ -53,7 +53,8 @@ Expected defaults:
 | Method | Default location/environment |
 |---|---|
 | DeepGreenGO | checkpoints: `arc_tuning_cafa/five_seed_hybrid`; shared graphs: `arc_tuning/graphs_protbert`; environment `deepgreengo` |
-| BLAST/DIAMOND/Foldseek | executables visible in `deepgreengo` |
+| BLAST/DIAMOND | executables visible in `deepgreengo` |
+| Foldseek | executable visible in `DGG_FOLDSEEK_ENV` (defaults to `dgg_foldseek`, then falls back to `deepgreengo`) |
 | InterProScan | set `DGG_INTERPROSCAN=/absolute/path/interproscan.sh` |
 | DeepFRI | `baselines/DeepFRI`, environment `dgg_sota_tf` |
 | TransFun | `SOTA/TransFun`, environment `dgg_sota_torch` |
@@ -71,6 +72,18 @@ DGG_INTERPROSCAN=/home/ganeshiny.sridharan/tools/interproscan/interproscan.sh \
 DGG_DEEPGO_ROOT=/home/ganeshiny.sridharan/tools/deepgo2 \
 sbatch 'arc slurms/run_full_benchmark.slurm'
 ```
+
+Foldseek can be kept in a small dedicated environment instead of modifying the trained-model environment:
+
+```bash
+conda create -y -n dgg_foldseek -c conda-forge -c bioconda foldseek
+sbatch 'arc slurms/run_full_benchmark.slurm'
+```
+
+The launcher resolves the executable to its absolute path during preflight, so
+the Foldseek stage can still be driven by the main `deepgreengo` Python
+environment. Set `DGG_FOLDSEEK_ENV` only if you chose a different environment
+name.
 
 ## GOMAP limitation
 
