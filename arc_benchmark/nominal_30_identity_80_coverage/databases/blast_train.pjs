@@ -1,0 +1,24 @@
+{
+  "version": "1.2",
+  "dbname": "blast_train",
+  "dbtype": "Protein",
+  "db-version": 5,
+  "description": "/home/ganeshiny.sridharan/dgg/deep-green-GO/arc_benchmark/nominal_30_identity_80_coverage/inputs/train.fasta",
+  "number-of-letters": 2395080,
+  "number-of-sequences": 6026,
+  "last-updated": "2026-07-23T01:09:00",
+  "number-of-volumes": 1,
+  "bytes-total": 3285117,
+  "bytes-to-cache": 2449507,
+  "files": [
+    "blast_train.pdb",
+    "blast_train.phr",
+    "blast_train.pin",
+    "blast_train.pog",
+    "blast_train.pos",
+    "blast_train.pot",
+    "blast_train.psq",
+    "blast_train.ptf",
+    "blast_train.pto"
+  ]
+}
