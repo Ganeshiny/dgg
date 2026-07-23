@@ -30,6 +30,28 @@ def run_checked(command: list[str | Path], *, cwd: Path | None = None) -> None:
     subprocess.run([str(part) for part in command], cwd=cwd, check=True)
 
 
+def canonicalize_similarity_id(raw_id: str) -> str:
+    """Map search-tool sequence identifiers back to locked ARC protein IDs.
+
+    ``makeblastdb -parse_seqids`` recognizes identifiers such as ``7FHK_A`` as
+    PDB accessions and emits them as ``pdb|7FHK|A``. DIAMOND and the locked
+    datasets retain ``7FHK_A``. Normalize both forms before label transfer so
+    a BLAST hit is not silently discarded due to formatting alone.
+    """
+    value = raw_id.strip()
+    pdb_match = re.fullmatch(r"pdb\|([^|]+)\|(.+)", value, flags=re.IGNORECASE)
+    if pdb_match:
+        return f"{pdb_match.group(1)}_{pdb_match.group(2)}"
+
+    # Foldseek commonly emits a structure filename rather than a FASTA ID.
+    name = Path(value).name
+    if name.endswith(".pdb.gz"):
+        return name[:-7]
+    if name.endswith(".pdb"):
+        return name[:-4]
+    return Path(name).stem
+
+
 def parse_similarity_hits(path: Path):
     """Return query -> (target, bits, identity, qcov, tcov) hits."""
     hits = defaultdict(list)
@@ -50,8 +72,8 @@ def parse_similarity_hits(path: Path):
             if tcov > 1:
                 tcov /= 100.0
             if evalue <= 1e-3:
-                hits[Path(query).stem.replace(".pdb", "")].append(
-                    (Path(target).stem.replace(".pdb", ""), bits, identity, qcov, tcov)
+                hits[canonicalize_similarity_id(query)].append(
+                    (canonicalize_similarity_id(target), bits, identity, qcov, tcov)
                 )
     return hits
 
@@ -400,4 +422,3 @@ def normalize_dpfunc(workspace: Path, method: str, files: dict[str, Path]) -> No
                 if float(score) > 0
             )
     normalize_scored_rows(workspace, method, write_rows(workspace, method, rows), "\t")
-

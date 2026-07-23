@@ -30,8 +30,9 @@ BENCHMARK_ROOT="${DGG_BENCHMARK_ROOT:-${PROJECT_DIR}/arc_benchmark/nominal_30_id
 METHODS="${DGG_BENCHMARK_METHODS:-hybrid,naive,blast,diamond,foldseek,interproscan,eggnog_mapper,deepfri_sequence,deepfri_structure,transfun,dpfunc,deepgoplus,deepgose,hayai,gomap}"
 
 BASE_ENV="${DGG_BASE_ENV:-deepgreengo}"
-TORCH_ENV="${DGG_SOTA_TORCH_ENV:-dgg_sota_torch}"
 TF_ENV="${DGG_DEEPFRI_ENV:-dgg_sota_tf}"
+TRANSFUN_ENV="${DGG_TRANSFUN_ENV:-dgg_transfun}"
+DPFUNC_ENV="${DGG_DPFUNC_ENV:-dgg_dpfunc}"
 DEEPGO_ENV="${DGG_DEEPGO_ENV:-dgg_deepgose}"
 DEEPGOPLUS_ENV="${DGG_DEEPGOPLUS_ENV:-dgg_deepgoplus}"
 EGGNOG_ENV="${DGG_EGGNOG_ENV:-dgg_eggnog}"
@@ -48,7 +49,7 @@ DEEPGOPLUS_ROOT="${DGG_DEEPGOPLUS_ROOT:-${PROJECT_DIR}/SOTA/deepgoplus}"
 EGGNOG_ROOT="${DGG_EGGNOG_ROOT:-${PROJECT_DIR}/SOTA/eggnog-mapper}"
 EGGNOG_DATA="${DGG_EGGNOG_DATA:-${EGGNOG_ROOT}/data}"
 HAYAI_ROOT="${DGG_HAYAI_ROOT:-${PROJECT_DIR}/SOTA/HayaiAnnotation}"
-INTERPROSCAN="${DGG_INTERPROSCAN:-interproscan.sh}"
+INTERPROSCAN="${DGG_INTERPROSCAN:-${PROJECT_DIR}/SOTA/interproscan/interproscan.sh}"
 FOLDSEEK="${DGG_FOLDSEEK:-foldseek}"
 DPFUNC_PRENAME="${DGG_DPFUNC_PRENAME:-DPFunc_model}"
 
@@ -75,6 +76,19 @@ conda_run() {
     conda run --no-capture-output -n "${environment}" "$@"
 }
 
+pipeline_fingerprint() {
+    {
+        printf '%s\n' "${METHODS}"
+        sha256sum "$0" "${PYTHON_SCRIPT}" \
+            "${PROJECT_DIR}/scripts/arc_benchmark.py" \
+            "${PROJECT_DIR}/scripts/arc_benchmark_methods.py" \
+            "${PROJECT_DIR}/scripts/arc_benchmark_external.py" \
+            "${PROJECT_DIR}/scripts/arc_benchmark_evaluate.py"
+    } | sha256sum | cut -d' ' -f1
+}
+
+PIPELINE_FINGERPRINT="$(pipeline_fingerprint)"
+
 require_file() {
     [[ -f "$1" ]] || { echo "[PREFLIGHT ERROR] Missing file: $1" >&2; return 1; }
 }
@@ -96,13 +110,18 @@ stage() {
     local name="$1"
     shift
     local marker="${STAGES}/${name}.done"
-    if [[ -f "${marker}" ]]; then
+    if [[ -f "${marker}" ]] && grep -qx "fingerprint=${PIPELINE_FINGERPRINT}" "${marker}"; then
         echo "[SKIP] ${name} already completed"
         return 0
     fi
+    if [[ -f "${marker}" ]]; then
+        echo "[STALE] ${name} code or method configuration changed; rerunning"
+    fi
     echo "[START] ${name} $(date --iso-8601=seconds)"
     "$@"
-    printf '%s\n' "completed $(date --iso-8601=seconds) job=${SLURM_JOB_ID}" > "${marker}"
+    printf '%s\n%s\n' \
+        "completed $(date --iso-8601=seconds) job=${SLURM_JOB_ID}" \
+        "fingerprint=${PIPELINE_FINGERPRINT}" > "${marker}"
     echo "[DONE] ${name}"
 }
 
@@ -173,6 +192,8 @@ preflight() {
         preflight_check require_file "${TRANSFUN_ROOT}/data/molecular_function.pt"
         preflight_check require_file "${TRANSFUN_ROOT}/data/biological_process.pt"
         preflight_check require_file "${TRANSFUN_ROOT}/data/cellular_component.pt"
+        preflight_check conda_run "${TRANSFUN_ENV}" python -c \
+            "import biopandas, esm, torch, torch_geometric; print('TransFun environment ok')"
     fi
     if method_enabled dpfunc; then
         preflight_check require_file "${DPFUNC_ROOT}/DPFunc_demo_pipeline/scripts/build_data_demo.py"
@@ -185,6 +206,8 @@ preflight() {
                 preflight_check require_file "${DPFUNC_ROOT}/save_models/${DPFUNC_PRENAME}_${ontology}_${model_index}of3model.pt"
             done
         done
+        preflight_check conda_run "${DPFUNC_ENV}" python -c \
+            "import dgl, logzero, torch; print('DPFunc environment ok')"
     fi
     if method_enabled eggnog_mapper; then
         preflight_check require_file "${EGGNOG_ROOT}/emapper.py"
@@ -351,7 +374,7 @@ run_transfun() {
             bp) full=biological_process ;;
             cc) full=cellular_component ;;
         esac
-        conda_run "${TORCH_ENV}" python "${TRANSFUN_ROOT}/predict.py" \
+        conda_run "${TRANSFUN_ENV}" python "${TRANSFUN_ROOT}/predict.py" \
             --data-path "${data_dir}" --ontology "${full}" --input-type fasta \
             --fasta-path dgg_benchmark.fasta --pdb-path dgg_benchmark_pdbs \
             --cut-off 0 --output "dgg_benchmark_${short}.txt"
@@ -370,7 +393,7 @@ run_dpfunc() {
         --output "${RAW}/dpfunc/manifest.tsv"
 
     local source_workspace="${RAW}/dpfunc/mf"
-    conda_run "${TORCH_ENV}" python "${DPFUNC_ROOT}/DPFunc_demo_pipeline/scripts/build_data_demo.py" \
+    conda_run "${DPFUNC_ENV}" python "${DPFUNC_ROOT}/DPFunc_demo_pipeline/scripts/build_data_demo.py" \
         --manifest "${RAW}/dpfunc/manifest.tsv" --workspace "${source_workspace}" \
         --ontology mf --pdb-dir "${BENCHMARK_ROOT}/inputs/structures/valid_test" \
         --inter-idx "${DPFUNC_ROOT}/data/inter_idx.pkl" --go-obo "${DATA_ROOT}/go-basic.obo" \
@@ -386,7 +409,7 @@ run_dpfunc() {
                 --mlb-source "${DPFUNC_ROOT}/mlb/${short}_go.mlb"
         fi
         cp "${DPFUNC_ROOT}"/save_models/"${DPFUNC_PRENAME}_${short}_"*of3model.pt "${dp_workspace}/save_models/"
-        conda_run "${TORCH_ENV}" python "${DPFUNC_ROOT}/DPFunc_demo_pipeline/scripts/run_dpfunc.py" predict \
+        conda_run "${DPFUNC_ENV}" python "${DPFUNC_ROOT}/DPFunc_demo_pipeline/scripts/run_dpfunc.py" predict \
             --workspace "${dp_workspace}" --ontology "${short}" --gpu 0 --pre-name "${DPFUNC_PRENAME}"
     done
     conda_run "${BASE_ENV}" python "${PYTHON_SCRIPT}" normalize-dpfunc \
@@ -459,4 +482,3 @@ method_enabled hayai && stage 11_hayai run_hayai
 method_enabled gomap && stage 12_gomap run_gomap
 run_evaluation
 echo "Benchmark completed: ${BENCHMARK_ROOT}"
-

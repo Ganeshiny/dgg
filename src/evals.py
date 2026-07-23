@@ -22,18 +22,34 @@ def get_macro_fmax(y_true, y_pred_probs):
     return np.mean(fmax_list)
 
 def get_auroc(y_true, y_pred_probs, average="macro"):
-    """Compute AUROC."""
+    """Compute AUROC without turning undefined one-class terms into zero.
+
+    A bin can contain only positives (or only negatives) for a GO term. In
+    that case AUROC is undefined for that term; returning 0.0 for the whole
+    macro average makes a small-support bin look like a catastrophic model
+    failure. Macro AUROC therefore averages only terms with both classes and
+    returns NaN when none are defined. Micro AUROC remains undefined when the
+    flattened bin contains one class.
+    """
     import warnings
-    try:
-        if average == "macro":
+
+    y_true = np.asarray(y_true)
+    y_pred_probs = np.asarray(y_pred_probs)
+    if average == "macro":
+        scores = []
+        for index in range(y_true.shape[1]):
+            column = y_true[:, index]
+            if np.unique(column).size < 2:
+                continue
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore")
-                scores = roc_auc_score(y_true, y_pred_probs, average=None)
-            return np.nanmean(scores)
-        else:
-            return roc_auc_score(y_true, y_pred_probs, average=average)
-    except ValueError:
-        return 0.0
+                scores.append(roc_auc_score(column, y_pred_probs[:, index]))
+        return float(np.mean(scores)) if scores else float("nan")
+    if np.unique(y_true).size < 2:
+        return float("nan")
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        return float(roc_auc_score(y_true, y_pred_probs, average=average))
 
 def get_auprc(y_true, y_pred_probs, average="macro"):
     """Compute Area Under the Precision-Recall Curve."""

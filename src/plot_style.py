@@ -45,6 +45,7 @@ CATEGORICAL_PALETTE = [
     "#eb6834",  # 8 orange
 ]
 MODEL_COLOR = dict(zip(MODEL_ORDER, CATEGORICAL_PALETTE))
+MODEL_MARKER = {"MLP": "o", "GCN": "s", "GAT": "^", "Hybrid": "D", "Hybrid_JK": "P"}
 
 # ---------------------------------------------------------------------------
 # Ablation variants (input modality) — encoded as a hatch, not a second hue,
@@ -147,14 +148,46 @@ SINGLE_COLUMN_IN = 3.5
 DOUBLE_COLUMN_IN = 7.2
 
 
+def colorblind_audit() -> dict[str, float]:
+    """Return minimum pairwise colour distances under common simulations.
+
+    Model markers and input hatches carry identity as a second channel; this
+    audit still guards the fixed palette against indistinguishable hues.
+    """
+    matrices = {
+        "protanopia": np.array([[0.152286, 1.052583, -0.204868],
+                                [0.114503, 0.786281, 0.099216],
+                                [-0.003882, -0.048116, 1.051998]]),
+        "deuteranopia": np.array([[0.367322, 0.860646, -0.227968],
+                                  [0.280085, 0.672501, 0.047413],
+                                  [-0.011820, 0.042940, 0.968881]]),
+        "grayscale": np.array([[0.2126, 0.7152, 0.0722],
+                               [0.2126, 0.7152, 0.0722],
+                               [0.2126, 0.7152, 0.0722]]),
+    }
+    rgb = []
+    for name in MODEL_ORDER:
+        value = MODEL_COLOR[name].lstrip("#")
+        rgb.append(np.array([int(value[i:i + 2], 16) / 255 for i in (0, 2, 4)]))
+    result = {}
+    for label, matrix in matrices.items():
+        simulated = np.clip(np.asarray(rgb) @ matrix.T, 0, 1)
+        distances = [np.linalg.norm(simulated[i] - simulated[j])
+                     for i in range(len(simulated)) for j in range(i)]
+        result[label] = float(min(distances))
+    return result
+
+
 def savefig(fig: plt.Figure, path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     try:
         fig.tight_layout()
     except Exception:
         pass
-    fig.savefig(path, bbox_inches="tight")
-    fig.savefig(path.with_suffix(".pdf"), bbox_inches="tight")
+    fig.savefig(path, bbox_inches="tight", dpi=300)
+    fig.savefig(path.with_suffix(".pdf"), bbox_inches="tight", dpi=300)
+    fig.savefig(path.with_suffix(".svg"), bbox_inches="tight")
+    fig.savefig(path.with_suffix(".tiff"), bbox_inches="tight", dpi=300)
     plt.close(fig)
 
 

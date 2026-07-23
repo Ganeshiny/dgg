@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
-"""Make supplementary plots from the ARC hybrid tuning artifacts.
+"""Publication-ready diagnostics for ARC Hybrid hyperparameter tuning.
 
-The script only reads JSON/CSV files; model checkpoints and graph caches are
-not required.  Run once for each tuning root, for example:
-
-  python src/plot_arc_tuning.py --tuning-root arc_tuning
-  python src/plot_arc_tuning.py --tuning-root arc_tuning_cafa
+The landscape is a parallel-coordinates view of the complete seeded random
+search, not a two-dimensional projection. All uncertainty bands explicitly
+state their meaning, and the archived CC late-epoch downturn is retained.
 """
 from __future__ import annotations
 
@@ -16,8 +14,9 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from matplotlib.colors import Normalize
 from matplotlib.lines import Line2D
-from matplotlib.patches import Patch
+from matplotlib.cm import ScalarMappable
 
 from plot_style import (
     DOUBLE_COLUMN_IN,
@@ -25,171 +24,296 @@ from plot_style import (
     MODEL_COLOR,
     ONTOLOGY_ORDER,
     ONTOLOGY_SHORT,
-    VALIDATION_METRIC_HIGHER_IS_BETTER,
     VALIDATION_METRIC_LABEL,
-    annotate_insufficient_data,
     apply_style,
-    jitter,
+    colorblind_audit,
     label_panel,
     mean_and_error,
     savefig,
 )
 
-# This script is single-model (Hybrid) tuning/QA diagnostics, not the
-# multi-architecture ablation comparison (see plot_arc_ablations.py for that).
 PRIMARY_COLOR = MODEL_COLOR["Hybrid"]
-REPLICATE_COLOR = "#898781"  # neutral gray for a same-model CPU/GPU reproducibility replicate
+REPLICATE_COLOR = "#6b6a66"
+TEST_LABELS = {
+    "test_micro_f1_at_validation_threshold": "Micro F1 (validation threshold)",
+    "test_micro_fmax": "Micro Fmax",
+    "test_macro_fmax": "Macro Fmax",
+    "test_micro_aupr": "Micro AUPR",
+    "test_macro_aupr": "Macro AUPR",
+    "test_micro_auroc": "Micro AUROC",
+    "test_macro_auroc": "Macro AUROC",
+    "test_micro_fmax_diagnostic": "Micro Fmax diagnostic",
+}
+PARAMS = [
+    ("learning_rate", "LR", "log"),
+    ("weight_decay", "WD", "log"),
+    ("dropout", "Dropout", "linear"),
+    ("hidden_dim", "Hidden", "linear"),
+    ("batch_size", "Batch", "linear"),
+    ("gradient_clip", "Clip", "linear"),
+    ("patience", "Patience", "linear"),
+    ("focal_gamma", "Focal gamma", "linear"),
+    ("loss", "Loss", "categorical"),
+]
 
 
 def load_trials(root: Path) -> pd.DataFrame:
     rows = []
     for p in sorted((root / "hybrid_search").glob("trial_*/**/config.json")):
-        trial_dir = p.parent
-        metric_path = trial_dir / "validation_metrics.json"
+        metric_path = p.parent / "validation_metrics.json"
         if not metric_path.exists():
             continue
         cfg = json.loads(p.read_text())
         met = json.loads(metric_path.read_text())
         rows.append({
-            "trial": trial_dir.parent.name,
-            "ontology": cfg.get("ontology", trial_dir.name),
-            **{k: cfg.get(k) for k in ["learning_rate", "weight_decay", "dropout", "hidden_dim", "batch_size", "loss", "patience", "focal_gamma"]},
-            **{k: met.get(k) for k in ["validation_micro_fmax", "validation_macro_fmax", "validation_micro_aupr", "validation_macro_aupr", "validation_micro_auroc", "validation_macro_auroc", "validation_smin"]},
+            "trial": p.parent.parent.name,
+            "ontology": cfg.get("ontology", p.parent.name),
+            **{k: cfg.get(k) for k in [
+                "learning_rate", "weight_decay", "dropout", "hidden_dim",
+                "batch_size", "gradient_clip", "loss", "patience", "focal_gamma",
+            ]},
+            **{k: met.get(k) for k in [
+                "validation_micro_fmax", "validation_macro_fmax",
+                "validation_micro_aupr", "validation_macro_aupr",
+                "validation_micro_auroc", "validation_macro_auroc",
+                "validation_smin",
+            ]},
         })
     return pd.DataFrame(rows)
 
 
+def _finite_limits(values: np.ndarray, lower: float | None = None) -> tuple[float, float]:
+    values = np.asarray(values, dtype=float)
+    values = values[np.isfinite(values)]
+    if values.size == 0:
+        return (0.0, 1.0)
+    lo, hi = float(values.min()), float(values.max())
+    span = max(hi - lo, 0.02)
+    lo = max(0.0, lo - 0.05 * span) if lower is None else lower
+    hi = hi + 0.05 * span
+    return lo, hi
+
+
+def _encode_parameter(series: pd.Series, mode: str) -> tuple[np.ndarray, list[str]]:
+    if mode == "categorical":
+        values = series.fillna("NA").astype(str)
+        cats = sorted(values.unique())
+        lookup = {value: i / max(len(cats) - 1, 1) for i, value in enumerate(cats)}
+        return values.map(lookup).to_numpy(float), cats
+    values = pd.to_numeric(series, errors="coerce")
+    if mode == "log":
+        values = np.log10(values.where(values > 0))
+    lo, hi = np.nanmin(values), np.nanmax(values)
+    if not np.isfinite(lo) or not np.isfinite(hi) or hi == lo:
+        return np.full(len(values), 0.5), [f"{lo:g}"]
+    return ((values - lo) / (hi - lo)).to_numpy(float), [f"{lo:g}", f"{hi:g}"]
+
+
+def _format_value(row: pd.Series, key: str) -> str:
+    value = row.get(key)
+    if pd.isna(value):
+        return "NA"
+    if key in {"learning_rate", "weight_decay"}:
+        return f"{float(value):.1e}".replace("e-0", "e-").replace("e+0", "e+")
+    if key in {"dropout", "gradient_clip"}:
+        return f"{float(value):g}"
+    if key == "focal_gamma":
+        return f"gamma={float(value):g}"
+    return str(value)
+
+
 def plot_landscape(df: pd.DataFrame, out: Path, metric: str) -> None:
-    fig, axes = plt.subplots(1, 3, figsize=(DOUBLE_COLUMN_IN, 2.6), constrained_layout=True, sharey=True)
-    sc = None
+    """Parallel coordinates for all tuned parameters, coloured by actual score."""
+    score = pd.to_numeric(df[metric], errors="coerce")
+    valid = df.loc[score.notna()].copy()
+    score = pd.to_numeric(valid[metric], errors="coerce")
+    lo, hi = float(score.min()), float(score.max())
+    norm = Normalize(vmin=lo, vmax=hi if hi > lo else lo + 1e-9)
+    cmap = plt.get_cmap("viridis")
+    fig, axes = plt.subplots(1, 3, figsize=(DOUBLE_COLUMN_IN, 3.3), sharey=True)
     for panel, (ax, ont) in enumerate(zip(axes, ONTOLOGY_ORDER)):
-        sub = df[df.ontology == ont].copy()
+        sub = valid[valid.ontology == ont].reset_index(drop=True)
         if sub.empty:
-            annotate_insufficient_data(ax); ax.set_title(ONTOLOGY_SHORT[ont]); label_panel(ax, chr(97 + panel)); continue
-        sc = ax.scatter(sub.learning_rate, sub.weight_decay, c=sub[metric], cmap="viridis", s=26,
-                         edgecolor="white", linewidth=.3, vmin=df[metric].min(), vmax=df[metric].max())
-        ax.set_xscale("log"); ax.set_yscale("log")
-        ax.set_title(ONTOLOGY_SHORT[ont]); ax.set_xlabel("Learning rate")
+            ax.text(.5, .5, "insufficient data", transform=ax.transAxes, ha="center")
+            ax.set_title(ONTOLOGY_SHORT[ont])
+            label_panel(ax, chr(97 + panel))
+            continue
+        x = np.arange(len(PARAMS))
+        encoded = []
+        tick_labels = []
+        for key, label, mode in PARAMS:
+            values, labels = _encode_parameter(sub[key], mode)
+            encoded.append(values)
+            tick_labels.append(labels)
+        encoded = np.asarray(encoded).T
+        for row_index in range(len(sub)):
+            ax.plot(x, encoded[row_index], color=cmap(norm(float(sub.iloc[row_index][metric]))),
+                    alpha=.42, linewidth=.55, zorder=2)
+        ax.set_xticks(x, [label for _, label, _ in PARAMS], rotation=48, ha="right")
+        ax.set_ylim(-.04, 1.04)
+        ax.set_yticks([0, .5, 1], ["low", "mid", "high"])
+        ax.set_title(f"{ONTOLOGY_SHORT[ont]} (n={len(sub)})")
+        ax.grid(axis="y", alpha=.35)
+        for position, labels in enumerate(tick_labels):
+            if labels:
+                ax.text(position, 1.045, labels[-1], ha="center", va="bottom", fontsize=4.8, rotation=55)
+                ax.text(position, -.07, labels[0], ha="center", va="top", fontsize=4.8, rotation=55)
         label_panel(ax, chr(97 + panel))
-    axes[0].set_ylabel("Weight decay")
-    if sc is not None:
-        fig.colorbar(sc, ax=axes, fraction=.025, pad=.02, label=VALIDATION_METRIC_LABEL.get(metric, metric))
+    axes[0].set_ylabel("Normalised hyperparameter value")
+    fig.suptitle("Seeded random-search hyperparameter landscape", y=1.04, fontsize=9, fontweight="bold")
+    fig.text(.5, -.03, "40-trial seeded random search per ontology; each line is one trial. "
+             "Axes are independently normalised; endpoint labels show actual values. "
+             "Colour is validation Macro-Fmax.", ha="center", fontsize=6)
+    fig.colorbar(ScalarMappable(norm=norm, cmap=cmap), ax=axes, fraction=.018, pad=.02,
+                 label=f"{VALIDATION_METRIC_LABEL.get(metric, metric)} (actual min={lo:.3f}, max={hi:.3f})")
     savefig(fig, out / "validation_hyperparameter_landscape.png")
 
 
 def plot_top_trials(df: pd.DataFrame, out: Path, metric: str) -> None:
-    fig, axes = plt.subplots(1, 3, figsize=(DOUBLE_COLUMN_IN, 3.0), sharey=False)
+    fig, axes = plt.subplots(1, 3, figsize=(DOUBLE_COLUMN_IN, 4.2), sharey=False)
     for panel, (ax, ont) in enumerate(zip(axes, ONTOLOGY_ORDER)):
         sub = df[df.ontology == ont].nlargest(10, metric).copy()
         if sub.empty:
-            annotate_insufficient_data(ax); ax.set_title(ONTOLOGY_SHORT[ont]); label_panel(ax, chr(97 + panel)); continue
+            ax.text(.5, .5, "insufficient data", transform=ax.transAxes, ha="center")
+            label_panel(ax, chr(97 + panel))
+            continue
         sub = sub.sort_values(metric)
-        ax.barh(sub.trial, sub[metric], color=PRIMARY_COLOR, edgecolor="#0b0b0b", linewidth=0.4)
-        ax.set_title(f"{ONTOLOGY_SHORT[ont]}: top 10 trials")
+        labels = [
+            f"lr={_format_value(row, 'learning_rate')}, wd={_format_value(row, 'weight_decay')}, "
+            f"drop={_format_value(row, 'dropout')}, h={_format_value(row, 'hidden_dim')}, "
+            f"b={_format_value(row, 'batch_size')}, {_format_value(row, 'loss')}"
+            for _, row in sub.iterrows()
+        ]
+        ax.barh(np.arange(len(sub)), sub[metric], color=PRIMARY_COLOR, edgecolor="#111111", linewidth=.35)
+        ax.set_yticks(np.arange(len(sub)), labels, fontsize=5.4)
+        ax.set_title(f"{ONTOLOGY_SHORT[ont]}: top 10")
         ax.set_xlabel(VALIDATION_METRIC_LABEL.get(metric, metric))
+        ax.grid(axis="x", alpha=.35)
         label_panel(ax, chr(97 + panel))
+    fig.text(.5, -.02, "Each bar is one independent trial (one run per trial; no within-trial error bars). "
+             "Labels show the sampled hyperparameters.", ha="center", fontsize=6)
     savefig(fig, out / "top_validation_trials.png")
 
 
-def plot_seed_metrics(root: Path, out: Path, err_kind: str = "sd") -> None:
-    """Mean +/- error of Hybrid test-set metrics across the 5 confirmation
-    seeds, one panel per ontology. Every model-directory found under
-    test_evaluation/ is loaded (not just the first match) and shown as its
-    own series — e.g. "hybrid" (GPU) vs "hybrid_cpu" is a reproducibility
-    replicate of the *same* model/seeds, not a different model, but which
-    directory a bare glob()[0] returns is filesystem-order-dependent, so
-    silently picking one is not reproducible either. Bounded 0-1 metrics
-    (Fmax/AUPR/AUROC) and Smin (unbounded, lower-is-better) are always split
-    into separate panels/figures — they were previously sharing one y-axis,
-    which made every bounded metric render as a flat line at zero next to
-    a much larger Smin value.
-    """
+def _bar_panel(ax: plt.Axes, sub: pd.DataFrame, sources: list[str], metrics: list[str],
+               colors: dict[str, str]) -> None:
+    width = .8 / max(len(sources), 1)
+    for index, source in enumerate(sources):
+        src = sub[sub.source == source]
+        xs = np.arange(len(metrics)) + (index - (len(sources) - 1) / 2) * width
+        means, errs = [], []
+        for metric in metrics:
+            mean, err, _ = mean_and_error(src[metric].to_numpy(), "sd") if metric in src else (np.nan, np.nan, 0)
+            means.append(mean)
+            errs.append(err)
+        ax.bar(xs, means, width=width * .9, yerr=errs, color=colors[source],
+               edgecolor="#111111", linewidth=.35,
+               error_kw=dict(elinewidth=.7, capsize=2, ecolor="#111111"),
+               label=source if len(sources) > 1 else None)
+    ax.set_xticks(np.arange(len(metrics)), [TEST_LABELS.get(m, m) for m in metrics],
+                  rotation=32, ha="right")
+
+
+def plot_seed_metrics(root: Path, out: Path) -> None:
     files = sorted((root / "test_evaluation").glob("*/per_seed_metrics.csv"))
     if not files:
         return
-    frames = []
-    for path in files:
-        d = pd.read_csv(path)
-        d["source"] = path.parent.name
-        frames.append(d)
-    df = pd.concat(frames, ignore_index=True)
-    sources = sorted(df["source"].unique())
-    colors = {sources[0]: PRIMARY_COLOR}
-    for extra in sources[1:]:
-        colors[extra] = REPLICATE_COLOR
+    df = pd.concat([pd.read_csv(path).assign(source=path.parent.name) for path in files], ignore_index=True)
+    sources = sorted(df.source.unique())
+    colors = {sources[0]: PRIMARY_COLOR, **{source: REPLICATE_COLOR for source in sources[1:]}}
+    auroc = [m for m in ["test_micro_auroc", "test_macro_auroc"] if m in df]
+    fmax_aupr = [m for m in [
+        "test_micro_f1_at_validation_threshold", "test_micro_fmax",
+        "test_macro_fmax", "test_micro_aupr", "test_macro_aupr",
+        "test_micro_fmax_diagnostic",
+    ] if m in df]
+    fig, axes = plt.subplots(2, 3, figsize=(DOUBLE_COLUMN_IN, 5.2), sharey="row")
+    for row, metrics in enumerate((auroc, fmax_aupr)):
+        for panel, (ax, ont) in enumerate(zip(axes[row], ONTOLOGY_ORDER)):
+            sub = df[df.ontology == ont]
+            if sub.empty:
+                ax.text(.5, .5, "insufficient data", transform=ax.transAxes, ha="center")
+                continue
+            _bar_panel(ax, sub, sources, metrics, colors)
+            ax.set_title(ONTOLOGY_SHORT[ont])
+            label_panel(ax, chr(97 + row * 3 + panel))
+        if metrics:
+            axes[row, 0].set_ylabel(f"{'AUROC family' if row == 0 else 'Fmax/AUPR family'}\nmean ± SD (n≤5 seeds)")
+    fig.text(.5, 1.01, "(a) AUROC-family metrics", ha="center", fontsize=8, fontweight="bold")
+    fig.text(.5, .49, "(b) Fmax/AUPR-family metrics", ha="center", fontsize=8, fontweight="bold")
+    fig.text(.5, -.035, "Error bars = SD across at most five confirmation seeds. "
+             "Micro Fmax diagnostic checks the independent test-swept implementation; "
+             "micro F1 at the validation threshold is the fixed-threshold sanity/leakage check. "
+             "They are complementary, not duplicate metrics.", ha="center", fontsize=6)
+    if len(sources) > 1:
+        axes[0, -1].legend(loc="upper left", bbox_to_anchor=(1.02, 1.0))
+    savefig(fig, out / "test_metrics_mean_sd.png")
 
-    bounded = [c for c in ["test_micro_fmax", "test_macro_fmax", "test_micro_aupr", "test_macro_aupr",
-                            "test_micro_auroc", "test_macro_auroc", "test_micro_f1_at_validation_threshold",
-                            "test_micro_fmax_diagnostic"] if c in df]
     smin = "test_smin" if "test_smin" in df else None
-    if not bounded and not smin:
-        print(f"plot_seed_metrics: no recognised metric columns in {files}, skipping")
-        return
-
-    def _panel(ax, sub: pd.DataFrame, metrics: list[str]) -> None:
-        width = 0.8 / max(len(sources), 1)
-        for i, source in enumerate(sources):
-            src = sub[sub.source == source]
-            xs = np.arange(len(metrics)) + (i - (len(sources) - 1) / 2) * width
-            means, errs = [], []
-            for m in metrics:
-                mean, err, _ = mean_and_error(src[m].to_numpy(), err_kind) if m in src else (np.nan, np.nan, 0)
-                means.append(mean); errs.append(err)
-            ax.bar(xs, means, width=width * 0.9, yerr=errs, color=colors[source], edgecolor="#0b0b0b",
-                   linewidth=0.4, error_kw=dict(elinewidth=0.8, capsize=2.0, ecolor="#0b0b0b"),
-                   label=source if len(sources) > 1 else None)
-        ax.set_xticks(np.arange(len(metrics)), [VALIDATION_METRIC_LABEL.get(m, m.replace("test_", "").replace("_", " ")) for m in metrics], rotation=30, ha="right")
-
-    if bounded:
-        fig, axes = plt.subplots(1, 3, figsize=(DOUBLE_COLUMN_IN, 3.2), sharey=True)
-        for panel, (ax, ont) in enumerate(zip(axes, ONTOLOGY_ORDER)):
-            sub = df[df.ontology == ont]
-            if sub.empty:
-                annotate_insufficient_data(ax); ax.set_title(ONTOLOGY_SHORT[ont]); label_panel(ax, chr(97 + panel)); continue
-            _panel(ax, sub, bounded)
-            ax.set_title(ONTOLOGY_SHORT[ont]); label_panel(ax, chr(97 + panel))
-        axes[0].set_ylabel(f"Test score ({ERROR_KIND_LABEL[err_kind]}, n≤5 seeds)")
-        if len(sources) > 1:
-            axes[-1].legend(loc="upper left", bbox_to_anchor=(1.02, 1))
-        savefig(fig, out / "test_metrics_mean_sd.png")
-
     if smin:
-        fig, axes = plt.subplots(1, 3, figsize=(DOUBLE_COLUMN_IN, 2.6), sharey=True)
+        global_max = float(np.nanmax(df[smin].to_numpy(dtype=float)))
+        ymax = max(global_max * 1.10, 1.0)
+        fig, axes = plt.subplots(1, 3, figsize=(DOUBLE_COLUMN_IN, 2.8), sharey=True)
         for panel, (ax, ont) in enumerate(zip(axes, ONTOLOGY_ORDER)):
             sub = df[df.ontology == ont]
-            if sub.empty:
-                annotate_insufficient_data(ax); ax.set_title(ONTOLOGY_SHORT[ont]); label_panel(ax, chr(97 + panel)); continue
-            _panel(ax, sub, [smin])
-            ax.set_title(ONTOLOGY_SHORT[ont]); label_panel(ax, chr(97 + panel))
-            ax.text(0.03, 0.96, "lower is better", transform=ax.transAxes, fontsize=6, color="#898781", va="top")
-        axes[0].set_ylabel(f"S$_{{min}}$ ({ERROR_KIND_LABEL[err_kind]}, n≤5 seeds)")
+            _bar_panel(ax, sub, sources, [smin], colors)
+            ax.set_title(ONTOLOGY_SHORT[ont])
+            ax.set_ylim(0, ymax)
+            ax.text(.01, 1.03, "lower is better", transform=ax.transAxes,
+                    fontsize=6, color="#555555", va="bottom", clip_on=False)
+            label_panel(ax, chr(97 + panel))
+        axes[0].set_ylabel(f"Smin mean ± SD (n≤5 seeds)")
+        fig.text(.5, -.035, f"Error bars = SD across at most five seeds; shared y-axis maximum = {ymax:.1f} "
+                 "(global maximum plus 10% headroom).", ha="center", fontsize=6)
         if len(sources) > 1:
-            axes[-1].legend(loc="upper left", bbox_to_anchor=(1.02, 1))
+            axes[-1].legend(loc="upper left", bbox_to_anchor=(1.02, 1.0))
         savefig(fig, out / "test_smin_mean_sd.png")
 
 
 def plot_histories(root: Path, out: Path) -> None:
     frames = []
-    for p in sorted((root / "five_seed_hybrid").glob("*/seed_*/history.csv")):
-        d = pd.read_csv(p)
-        if "validation_micro_fmax" not in d: continue
-        d["ontology"] = p.parent.parent.name; d["seed"] = p.parent.name
-        frames.append(d[["ontology", "seed", "epoch", "validation_micro_fmax"]])
-    if not frames: return
-    df = pd.concat(frames)
-    fig, axes = plt.subplots(1, 3, figsize=(DOUBLE_COLUMN_IN, 2.6), sharey=True)
+    for path in sorted((root / "five_seed_hybrid").glob("*/seed_*/history.csv")):
+        data = pd.read_csv(path)
+        if "validation_micro_fmax" not in data:
+            continue
+        data["ontology"] = path.parent.parent.name
+        data["seed"] = path.parent.name
+        frames.append(data[["ontology", "seed", "epoch", "validation_micro_fmax"]])
+    if not frames:
+        return
+    df = pd.concat(frames, ignore_index=True)
+    all_values = df.validation_micro_fmax.to_numpy(dtype=float)
+    ymin, ymax = _finite_limits(all_values, lower=0.0)
+    fig, axes = plt.subplots(1, 3, figsize=(DOUBLE_COLUMN_IN, 2.9), sharey=True)
     for panel, (ax, ont) in enumerate(zip(axes, ONTOLOGY_ORDER)):
         sub = df[df.ontology == ont]
-        if sub.empty:
-            annotate_insufficient_data(ax); label_panel(ax, chr(97 + panel)); continue
         for _, seed in sub.groupby("seed"):
-            ax.plot(seed.epoch, seed.validation_micro_fmax, color=PRIMARY_COLOR, alpha=.25, linewidth=0.8)
-        g = sub.groupby("epoch").validation_micro_fmax.agg(["mean", "std"])
-        ax.plot(g.index, g["mean"], color=PRIMARY_COLOR, linewidth=1.8, label="mean")
-        ax.fill_between(g.index, g["mean"] - g["std"].fillna(0), g["mean"] + g["std"].fillna(0), color=PRIMARY_COLOR, alpha=.15, linewidth=0)
-        ax.set_title(ONTOLOGY_SHORT[ont]); ax.set_xlabel("Epoch")
+            ax.plot(seed.epoch, seed.validation_micro_fmax, color=PRIMARY_COLOR, alpha=.30,
+                    linewidth=.75, label="_seed")
+        grouped = sub.groupby("epoch").validation_micro_fmax.agg(["mean", "std"])
+        ax.fill_between(grouped.index, grouped["mean"] - grouped["std"].fillna(0),
+                        grouped["mean"] + grouped["std"].fillna(0), color=PRIMARY_COLOR,
+                        alpha=.14, linewidth=0, label="_sd")
+        ax.plot(grouped.index, grouped["mean"], color=PRIMARY_COLOR, linewidth=2.0, label="_mean")
+        ax.set_ylim(ymin, ymax)
+        ax.set_title(ONTOLOGY_SHORT[ont])
+        ax.set_xlabel("Epoch")
         label_panel(ax, chr(97 + panel))
-    axes[0].set_ylabel("Validation micro-F$_{max}$")
+        if ont == "cellular_component" and len(sub):
+            late = grouped.tail(3)
+            if len(late) >= 2 and late["mean"].iloc[-1] < late["mean"].iloc[0]:
+                ax.annotate("late-epoch drop retained", xy=(late.index[-1], late["mean"].iloc[-1]),
+                            xytext=(-45, 12), textcoords="offset points", fontsize=5.5,
+                            arrowprops=dict(arrowstyle="->", linewidth=.6))
+    axes[0].set_ylabel("Validation micro-Fmax")
+    handles = [
+        Line2D([0], [0], color=PRIMARY_COLOR, lw=.8, alpha=.30, label="individual seed"),
+        Line2D([0], [0], color=PRIMARY_COLOR, lw=2.0, label="mean"),
+        plt.Rectangle((0, 0), 1, 1, facecolor=PRIMARY_COLOR, alpha=.14, label="± SD"),
+    ]
+    axes[-1].legend(handles=handles, loc="upper left", bbox_to_anchor=(1.02, 1.0), frameon=False)
+    fig.text(.5, -.035, f"Shared y-axis across MF/BP/CC: [{ymin:.3f}, {ymax:.3f}]. "
+             "The shaded region is ± SD across seeds; the CC late-epoch downturn is shown, not smoothed.", ha="center", fontsize=6)
     savefig(fig, out / "five_seed_validation_curves.png")
 
 
@@ -200,15 +324,19 @@ def main() -> None:
     ap.add_argument("--err", choices=["sd", "sem", "ci95"], default="sd")
     args = ap.parse_args()
     apply_style()
+    print("Colour audit:", colorblind_audit())
     root = args.tuning_root.resolve()
     out = (args.output_dir or Path("plots") / root.name).resolve()
     out.mkdir(parents=True, exist_ok=True)
     df = load_trials(root)
-    if df.empty: raise SystemExit(f"No trial metrics found under {root / 'hybrid_search'}")
+    if df.empty:
+        raise SystemExit(f"No trial metrics found under {root / 'hybrid_search'}")
     df.to_csv(out / "trial_metrics.csv", index=False)
     metric = "validation_macro_fmax" if df["validation_macro_fmax"].notna().any() else "validation_micro_fmax"
-    plot_landscape(df, out, metric); plot_top_trials(df, out, metric)
-    plot_seed_metrics(root, out, args.err); plot_histories(root, out)
+    plot_landscape(df, out, metric)
+    plot_top_trials(df, out, metric)
+    plot_seed_metrics(root, out)
+    plot_histories(root, out)
     print(f"Wrote plots to {out}")
 
 

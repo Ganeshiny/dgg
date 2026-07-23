@@ -118,7 +118,17 @@ def grouped_metrics(y_true, probabilities, groups, ic):
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore")
                 metrics = evaluate_all(y_group, probabilities[mask], ic)
-        rows.append({"bin": group, "examples": int(mask.sum()), **{k: (float(v) if np.isfinite(v) else None) for k, v in metrics.items()}})
+        positive_counts = np.sum(y_group, axis=0)
+        rows.append({
+            "bin": group,
+            "examples": int(mask.sum()),
+            "positive_examples": int(np.sum(np.any(y_group > 0, axis=1))),
+            "positive_term_assignments": int(np.sum(y_group)),
+            "positive_terms": int(np.sum(positive_counts > 0)),
+            "valid_auroc_terms": int(np.sum((positive_counts > 0) & (positive_counts < int(mask.sum())))),
+            "all_positive_terms": int(np.sum(positive_counts == int(mask.sum()))),
+            **{k: (float(v) if np.isfinite(v) else None) for k, v in metrics.items()},
+        })
     return rows
 
 

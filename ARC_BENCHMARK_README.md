@@ -16,18 +16,18 @@ Outputs are written under:
 
 ```text
 arc_benchmark/nominal_30_identity_80_coverage/
-├── benchmark_manifest.json
-├── inputs/
-├── predictions/
-├── raw/
-├── results/
-│   ├── benchmark_metrics.csv
-│   ├── bootstrap_metrics.csv
-│   ├── paired_differences_vs_deepgreengo.csv
-│   └── coverage_and_mapping_audit.csv
-└── plots/
-    ├── 01_cafa_metrics.png/.pdf
-    └── 02_prediction_coverage.png/.pdf
+|-- benchmark_manifest.json
+|-- inputs/
+|-- predictions/
+|-- raw/
+|-- results/
+|   |-- benchmark_metrics.csv
+|   |-- bootstrap_metrics.csv
+|   |-- paired_differences_vs_deepgreengo.csv
+|   `-- coverage_and_mapping_audit.csv
+`-- plots/
+    |-- 01_cafa_metrics.png/.pdf
+    `-- 02_prediction_coverage.png/.pdf
 ```
 
 The primary metrics are protein-centric CAFA Fmax, conditional-information Smin, micro/macro AUPR, and coverage. Confidence intervals use 1,000 paired protein bootstraps. AUPR and AUROC are deliberately left undefined for binary annotation pipelines such as InterProScan, eggNOG-mapper, GOMAP, and Hayai.
@@ -48,6 +48,21 @@ A separate naive-plant or plant-reference-DIAMOND result is not fabricated here.
 
 The single Slurm script orchestrates the work but does not silently download version-changing databases. Its preflight stage stops before computation and names every missing item.
 
+Install and verify the six deep-learning baselines and InterProScan first:
+
+```bash
+sbatch 'arc slurms/arc_01_setup_sota.slurm'
+```
+
+The setup job is strict and resumable. It creates separate upstream-compatible environments for DeepFRI, TransFun, DPFunc, DeepGOPlus, and DeepGO-SE; downloads their official pretrained data/models; verifies required imports and files; and exits non-zero if any check fails. A successful log ends with `[SETUP COMPLETE]`.
+
+To run the complete deep-learning comparison immediately after setup (without the separately managed eggNOG, Hayai, and GOMAP workflows):
+
+```bash
+DGG_BENCHMARK_METHODS=hybrid,naive,blast,diamond,foldseek,interproscan,deepfri_sequence,deepfri_structure,transfun,dpfunc,deepgoplus,deepgose \
+sbatch 'arc slurms/run_full_benchmark.slurm'
+```
+
 Expected defaults:
 
 | Method | Default location/environment |
@@ -55,10 +70,10 @@ Expected defaults:
 | DeepGreenGO | checkpoints: `arc_tuning_cafa/five_seed_hybrid`; shared graphs: `arc_tuning/graphs_protbert`; environment `deepgreengo` |
 | BLAST/DIAMOND | executables visible in `deepgreengo` |
 | Foldseek | executable visible in `DGG_FOLDSEEK_ENV` (defaults to `dgg_foldseek`, then falls back to `deepgreengo`) |
-| InterProScan | set `DGG_INTERPROSCAN=/absolute/path/interproscan.sh` |
+| InterProScan | `SOTA/interproscan/interproscan.sh` |
 | DeepFRI | `baselines/DeepFRI`, environment `dgg_sota_tf` |
-| TransFun | `SOTA/TransFun`, environment `dgg_sota_torch` |
-| DPFunc | `SOTA/DPFunc`, environment `dgg_sota_torch` |
+| TransFun | `SOTA/TransFun`, environment `dgg_transfun` |
+| DPFunc | `SOTA/DPFunc`, environment `dgg_dpfunc` |
 | DeepGOPlus | `SOTA/deepgoplus/data`, environment `dgg_deepgoplus` |
 | DeepGO-SE | `SOTA/deepgo2`, environment `dgg_deepgose` |
 | eggNOG-mapper | `SOTA/eggnog-mapper`, database under its `data/`, environment `dgg_eggnog` |
@@ -87,7 +102,7 @@ name.
 
 ## GOMAP limitation
 
-The upstream GOMAP workflow cannot be made fully unattended from its documented release: it requires a MySQL-backed PANNZER setup and a manual Argot2.5 web submission between `pipeline1.py` and `pipeline2.py`. Labeling a reduced or rewritten workflow as “GOMAP” would be scientifically misleading.
+The upstream GOMAP workflow cannot be made fully unattended from its documented release: it requires a MySQL-backed PANNZER setup and a manual Argot2.5 web submission between `pipeline1.py` and `pipeline2.py`. Labeling a reduced or rewritten workflow as "GOMAP" would be scientifically misleading.
 
 Use either:
 
@@ -121,4 +136,3 @@ This subset run is not the complete final comparison until GOMAP is added and ev
 - Missing predictions remain zero in the full 754-protein analysis.
 - Pretrained external models are not described as leakage-free because historical training overlap may be unknown.
 - Structural quality analysis uses experimental-chain residue coverage, not pLDDT.
-
