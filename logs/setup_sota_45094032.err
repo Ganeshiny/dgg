@@ -1,0 +1,17 @@
+Cloning into '/home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgoplus'...
+Updating files:  91% (45/49)Updating files:  93% (46/49)Updating files:  95% (47/49)Updating files:  97% (48/49)Updating files: 100% (49/49)Updating files: 100% (49/49), done.
+
+
+==> WARNING: A newer version of conda exists. <==
+    current version: 26.3.2
+    latest version: 26.5.3
+
+Please update conda by running
+
+    $ conda update -n base -c defaults conda
+
+
+ERROR: Ignored the following versions that require a different python version: 1.0.0 Requires-Python >=3.6, <3.7; 1.0.1 Requires-Python >=3.7, <3.8; 1.0.2 Requires-Python <3.8,>=3.7
+ERROR: Could not find a version that satisfies the requirement deepgoplus==1.0.2 (from versions: none)
+ERROR: No matching distribution found for deepgoplus==1.0.2
+ERROR conda.cli.main_run:execute(148): `conda run python -m pip install deepgoplus==1.0.2` failed. (See above for error)
