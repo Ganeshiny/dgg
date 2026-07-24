@@ -74,7 +74,7 @@ Expected defaults:
 | DeepFRI | `baselines/DeepFRI`, environment `dgg_sota_tf` |
 | TransFun | `SOTA/TransFun`, environment `dgg_transfun` |
 | DPFunc | `SOTA/DPFunc`, environment `dgg_dpfunc` |
-| DeepGOPlus | `SOTA/deepgoplus/data`, environment `dgg_deepgoplus` |
+| DeepGOPlus | `SOTA/deepgoplus/data`, environment `dgg_deepgoplus_py37` (Python 3.7) |
 | DeepGO-SE | `SOTA/deepgo2`, environment `dgg_deepgose` |
 | eggNOG-mapper | `SOTA/eggnog-mapper`, database under its `data/`, environment `dgg_eggnog` |
 | Hayai v3.2 | `SOTA/HayaiAnnotation`, environment `hayai_v3.2` |

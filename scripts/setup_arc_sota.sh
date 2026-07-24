@@ -13,7 +13,7 @@ SETUP_METHODS="${DGG_SOTA_SETUP_METHODS:-deepfri,transfun,dpfunc,deepgoplus,deep
 DEEPFRI_ENV="${DGG_DEEPFRI_ENV:-dgg_sota_tf}"
 TRANSFUN_ENV="${DGG_TRANSFUN_ENV:-dgg_transfun}"
 DPFUNC_ENV="${DGG_DPFUNC_ENV:-dgg_dpfunc}"
-DEEPGOPLUS_ENV="${DGG_DEEPGOPLUS_ENV:-dgg_deepgoplus}"
+DEEPGOPLUS_ENV="${DGG_DEEPGOPLUS_ENV:-dgg_deepgoplus_py37}"
 DEEPGO_ENV="${DGG_DEEPGO_ENV:-dgg_deepgose}"
 
 DEEPFRI_ROOT="${DGG_DEEPFRI_ROOT:-${PROJECT_DIR}/baselines/DeepFRI}"
@@ -156,7 +156,8 @@ setup_dpfunc() {
 
 setup_deepgoplus() {
     clone_repo https://github.com/bio-ontology-research-group/deepgoplus.git "${DEEPGOPLUS_ROOT}"
-    ensure_named_env "${DEEPGOPLUS_ENV}" 3.8
+    # PyPI metadata for DeepGOPlus 1.0.2 requires Python >=3.7,<3.8.
+    ensure_named_env "${DEEPGOPLUS_ENV}" 3.7
     conda run -n "${DEEPGOPLUS_ENV}" python -m pip install "deepgoplus==1.0.2"
     if [[ ! -s "${DEEPGOPLUS_ROOT}/data/model.h5" ]]; then
         local archive="${DOWNLOAD_ROOT}/deepgoplus_data.tar.gz"

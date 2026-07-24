@@ -34,7 +34,7 @@ TF_ENV="${DGG_DEEPFRI_ENV:-dgg_sota_tf}"
 TRANSFUN_ENV="${DGG_TRANSFUN_ENV:-dgg_transfun}"
 DPFUNC_ENV="${DGG_DPFUNC_ENV:-dgg_dpfunc}"
 DEEPGO_ENV="${DGG_DEEPGO_ENV:-dgg_deepgose}"
-DEEPGOPLUS_ENV="${DGG_DEEPGOPLUS_ENV:-dgg_deepgoplus}"
+DEEPGOPLUS_ENV="${DGG_DEEPGOPLUS_ENV:-dgg_deepgoplus_py37}"
 EGGNOG_ENV="${DGG_EGGNOG_ENV:-dgg_eggnog}"
 # Keep Foldseek isolated from the trained-model environment by default. If it
 # was already installed in BASE_ENV, preflight falls back to that environment.
