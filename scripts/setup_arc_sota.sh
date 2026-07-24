@@ -86,9 +86,21 @@ download_file() {
         return
     fi
     local partial="${destination}.partial"
-    curl --fail --location --retry 5 --retry-delay 10 \
-        --continue-at - --output "${partial}" "${url}"
-    mv "${partial}" "${destination}"
+    local attempt
+    local max_attempts="${DGG_DOWNLOAD_ATTEMPTS:-20}"
+    for ((attempt = 1; attempt <= max_attempts; attempt++)); do
+        echo "[DOWNLOAD] Attempt ${attempt}/${max_attempts}: ${url}"
+        if curl --fail --location --http1.1 --connect-timeout 60 \
+                --continue-at - --output "${partial}" "${url}"; then
+            require_file "${partial}"
+            mv "${partial}" "${destination}"
+            return
+        fi
+        echo "[DOWNLOAD WARNING] Transfer interrupted; preserving ${partial} for resume" >&2
+        sleep 15
+    done
+    echo "[SETUP ERROR] Download failed after ${max_attempts} attempts: ${url}" >&2
+    return 1
 }
 
 extract_archive() {
