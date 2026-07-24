@@ -120,7 +120,10 @@ setup_deepfri() {
     ensure_named_env "${DEEPFRI_ENV}" 3.9
     conda run -n "${DEEPFRI_ENV}" python -m pip install \
         "tensorflow==2.13.0" "numpy<2" biopython scikit-learn h5py networkx
-    conda run -n "${DEEPFRI_ENV}" python -m pip install -e "${DEEPFRI_ROOT}"
+    # DeepFRI's setup.py pins its 2020 dependency stack (including NumPy 1.18.5
+    # and tensorflow-gpu 2.3.1), which cannot be resolved on Python 3.9. The
+    # compatible runtime dependencies are installed explicitly above.
+    conda run -n "${DEEPFRI_ENV}" python -m pip install --no-deps -e "${DEEPFRI_ROOT}"
 }
 
 setup_transfun() {
