@@ -143,6 +143,9 @@ setup_transfun() {
     if ! conda_env_exists "${TRANSFUN_ENV}"; then
         conda env create -n "${TRANSFUN_ENV}" -f "${TRANSFUN_ROOT}/environment.yml"
     fi
+    # TransFun's older PyTorch build cannot load against MKL 2024.1+ because
+    # libtorch_cpu.so still expects the removed iJIT_NotifyEvent symbol.
+    conda install -y -n "${TRANSFUN_ENV}" "mkl=2024.0"
     if [[ ! -s "${TRANSFUN_ROOT}/data/molecular_function.pt" ]]; then
         local archive="${DOWNLOAD_ROOT}/transfun_data.zip"
         download_file "${TRANSFUN_DATA_URL}" "${archive}"
