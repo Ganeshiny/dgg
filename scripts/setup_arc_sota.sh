@@ -145,7 +145,9 @@ setup_transfun() {
     fi
     # TransFun's older PyTorch build cannot load against MKL 2024.1+ because
     # libtorch_cpu.so still expects the removed iJIT_NotifyEvent symbol.
-    conda install -y -n "${TRANSFUN_ENV}" "mkl=2024.0"
+    # ARC's defaults channel no longer exposes MKL 2024.0, but 2023.1.0 is
+    # available there and also selects the matching pre-2024.1 OpenMP runtime.
+    conda install -y -n "${TRANSFUN_ENV}" "mkl=2023.1.0"
     if [[ ! -s "${TRANSFUN_ROOT}/data/molecular_function.pt" ]]; then
         local archive="${DOWNLOAD_ROOT}/transfun_data.zip"
         download_file "${TRANSFUN_DATA_URL}" "${archive}"
