@@ -154,6 +154,9 @@ def main() -> None:
 
     command = sub.add_parser("evaluate")
     add_workspace(command)
+    command.add_argument("--data-root", type=Path, default=None,
+                         help="Override the manifest's recorded data root (needed when "
+                              "re-evaluating a workspace produced on another host).")
     command.add_argument("--bootstraps", type=int, default=1000)
     command.add_argument("--bootstrap-seed", type=int, default=20260720)
     command.add_argument("--require-methods", default="")

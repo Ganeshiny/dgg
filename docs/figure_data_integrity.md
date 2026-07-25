@@ -126,7 +126,7 @@ seed-level dispersion, not placeholders.
 
 ---
 
-## 7. BLAST benchmark rows are a stale artifact, not a zero result
+## 7. BLAST benchmark rows were a stale artifact — root-caused and REPAIRED
 
 **[confirmed]** In `arc_benchmark/.../results/benchmark_metrics.csv`, BLAST and
 BLAST-max record CAFA Fmax **0.000** with protein coverage **0.000** and 0
@@ -152,12 +152,45 @@ empty despite its hit file being the largest of the three. The most probable
 cause is that the hit file was empty when the prediction stage ran and the
 `.done` marker then suppressed recomputation on resume.
 
-**Consequence.** BLAST rows must not be published. `src/plot_benchmark.py`
-detects this automatically — any method with zero coverage everywhere *and* a
-non-empty raw hit file is drawn in a hatched "not evaluated" slot with the
-reason in the caption, rather than as a legitimate 0.000 bar. **[blocked]**
-Fixing it requires re-running the BLAST prediction stage on ARC (delete the
-BLAST `.done` marker first, or the resume logic will skip it again).
+**[confirmed] Root cause.** `arc_benchmark_methods.py` guarded each search with
+`if not hits.is_file()`. blastp creates its `-out` file the instant it starts,
+so a run killed by the Slurm wall clock (the benchmark requests 23 h 55 min and
+is resumable) leaves a zero-byte or truncated `blast_hits.tsv`. On resume that
+file is indistinguishable from a finished search: blastp is skipped, the
+transfer reads nothing, all-zero predictions are written, and the stage `.done`
+marker locks the empty result in permanently. DIAMOND and Foldseek carried the
+identical guard and were simply never interrupted.
+
+**Fix.** `run_search_once` now writes to a `.partial` path and `os.replace`s it
+into position only after the process exits successfully, so the final filename
+can never name an incomplete search; an existing zero-byte file is discarded
+and re-run, and an empty result raises rather than being recorded. Applied to
+all three searches.
+
+**[confirmed] Repaired.** The transfer and evaluation are pure NumPy, so the
+repair ran locally from the intact hit file — no ARC time and no re-search:
+
+```
+python scripts/run_arc_benchmark.py sequence-baselines --workspace <ws> --methods blast
+python scripts/run_arc_benchmark.py evaluate --workspace <ws> --bootstraps 1000 --bootstrap-seed 20260720
+```
+
+| CAFA Fmax | MF | BP | CC |
+|---|---|---|---|
+| BLAST before | 0.0000 | 0.0000 | 0.0000 |
+| **BLAST after** | **0.2777** | **0.1352** | **0.1158** |
+| BLAST-max after | 0.2830 | 0.1338 | 0.1948 |
+| DIAMOND (for reference) | 0.2192 | 0.1296 | 0.0752 |
+
+Coverage rose from 0.000 to 0.19–0.23, and all 3,000 BLAST bootstrap replicates
+are now nonzero. BLAST now exceeds DIAMOND on all three ontologies, which is the
+expected ordering for a more sensitive search and is an independent check that
+the repair is correct rather than merely non-zero.
+
+Re-evaluation also required a portability fix: the manifest records an absolute
+ARC `data_root`, so `go-basic.obo` could not be found on any other host.
+`resolve_data_root` now falls back to the same directory name under the local
+checkout, and `evaluate` accepts `--data-root`.
 
 **Separately worth noting [confirmed]:** the naive frequency prior *beats*
 DeepGreenGO on cellular component (0.3690 vs 0.3461 CAFA Fmax) and is close on
@@ -177,3 +210,46 @@ comparison belongs in the results text rather than only in a figure.
    does not, the framing in the results section changes.
 4. The homology 40–60% bin (n=5) cannot support any per-model claim. Keep it in
    figures as an explicitly flagged low-support point, or drop the bin.
+
+---
+
+## 8. Reviewer-requested evidence: what exists and what does not
+
+Mapping the BMC Bioinformatics reviewer comments onto available data.
+
+**R1.3 / R2.3 — redundancy and data leakage. [confirmed, figure available]**
+`figure_leakage_residual_identity` quantifies it: 142 of 754 test proteins have
+any BLAST hit to training, 116 (15.4%) retain >=30% identity, and **31 (4.1%)
+sit at or above 60%** — visibly a spike near 100% identity. The split is
+homology-controlled, not leakage-free, and must not be described as the latter.
+Homology-binned performance is reported separately so the low-identity result
+can be read independently of the residual.
+
+**R1.10 — micro- and macro-AUROC reported as identical. [confirmed: not a
+current bug]** Across all 225 ablation runs, **0 rows** have numerically equal
+micro and macro AUROC; the mean gap is 0.10 (BP), 0.12 (CC), 0.13 (MF). The
+identical values in the submitted Table 2 therefore came from the older
+evaluation, not from this code. Regenerate Table 2 from current results.
+
+**R2.6 — loss-function ablation (BCE vs focal). [blocked — does not exist]**
+No controlled loss ablation exists on the locked split. The current ARC
+ablation varies architecture and input modality only; the archived
+`old run/runs_ablation_loss` was produced on the superseded pre-homology split
+and is not comparable. Loss *was* one of nine hyperparameters in the random
+search, so `figure_loss_bce_vs_focal_search` reports that evidence
+(19 BCE vs 21 focal trials per ontology) — but it is **observational and
+confounded**: those trials also differ in learning rate, dropout, hidden
+dimension and batch size, so the gap cannot be attributed to the loss. Focal
+leads on CC (0.3445 vs 0.3186) and is indistinguishable on MF and BP.
+Answering the reviewer properly needs an ARC run holding every other
+hyperparameter at the selected configuration and varying only the loss,
+5 seeds x 3 ontologies.
+
+**R2.5 — PR curves inconsistent with Table 2. [not yet built]** The benchmark
+prediction arrays are on disk, so per-method PR curves are computable without
+ARC; not generated in this pass.
+
+**R1.6 / R2.8 — pLDDT filtering of AlphaFold structures. [n/a for this split]**
+The locked benchmark uses 754 experimental PDB chains, not AlphaFold models, so
+the concern applies to the rice prediction stage rather than to training or
+test. That distinction should be stated explicitly in the response.

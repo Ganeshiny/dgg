@@ -192,10 +192,40 @@ def discover_methods(workspace: Path) -> list[str]:
     return methods
 
 
+def resolve_data_root(manifest: dict, override: Path | None = None) -> Path:
+    """Locate the data root, tolerating a manifest written on another machine.
+
+    The manifest records an absolute path, so a workspace produced on ARC
+    cannot be re-evaluated anywhere else — the run aborts on a missing
+    go-basic.obo even though the repository contains one at the equivalent
+    relative location. Prefer an explicit override, then the recorded path,
+    then the same directory name under this checkout's preprocessing/.
+    """
+    if override is not None:
+        root = Path(override).expanduser().resolve()
+        if not root.is_dir():
+            raise SystemExit(f"--data-root does not exist: {root}")
+        return root
+    recorded = Path(manifest["data_root"])
+    if recorded.is_dir():
+        return recorded
+    local = Path(__file__).resolve().parents[1] / "preprocessing" / recorded.name
+    if local.is_dir():
+        print(f"[benchmark] manifest data_root {recorded} is not present on this host; "
+              f"using {local}")
+        return local
+    raise SystemExit(
+        f"Cannot locate the benchmark data root. Manifest records {recorded}, which does "
+        f"not exist here, and {local} is absent too. Pass --data-root explicitly.")
+
+
 def evaluate(args) -> None:
     workspace = args.workspace.resolve()
     manifest = json.loads((workspace / "benchmark_manifest.json").read_text())
-    obo_path = Path(manifest["data_root"]) / "go-basic.obo"
+    data_root = resolve_data_root(manifest, getattr(args, "data_root", None))
+    obo_path = data_root / "go-basic.obo"
+    if not obo_path.is_file():
+        raise SystemExit(f"go-basic.obo not found under {data_root}")
     methods = discover_methods(workspace)
     required = [value.strip() for value in args.require_methods.split(",") if value.strip()]
     missing = sorted(set(required) - set(methods))
