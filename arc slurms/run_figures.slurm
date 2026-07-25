@@ -31,14 +31,26 @@ mkdir -p logs
 
 # Conda under a non-interactive Slurm shell: source the profile hook rather
 # than relying on `conda activate` being defined.
+#
+# `set -u` must be lifted across both the source and the activate. The env's
+# activate.d hooks are not written for a strict shell — deepgreengo's
+# libblas_mkl_activate.sh opens with
+#   export CONDA_MKL_INTERFACE_LAYER_BACKUP=${MKL_INTERFACE_LAYER}
+# and an unbound MKL_INTERFACE_LAYER aborts the job before any figure is
+# drawn. This is what killed job 45154297.
+set +u
 if [[ -f "$HOME/miniconda3/etc/profile.d/conda.sh" ]]; then
     # shellcheck disable=SC1091
     source "$HOME/miniconda3/etc/profile.d/conda.sh"
 elif [[ -f "$HOME/anaconda3/etc/profile.d/conda.sh" ]]; then
     # shellcheck disable=SC1091
     source "$HOME/anaconda3/etc/profile.d/conda.sh"
+else
+    echo "ERROR: conda.sh not found under \$HOME/miniconda3 or \$HOME/anaconda3" >&2
+    exit 1
 fi
-conda activate deepgreengo
+conda activate "${DGG_FIGURE_ENV:-deepgreengo}"
+set -u
 
 # Headless node: no display, so force a non-interactive backend. Without this
 # matplotlib can try an interactive backend and fail on a compute node.

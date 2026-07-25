@@ -143,11 +143,34 @@ setup_transfun() {
     if ! conda_env_exists "${TRANSFUN_ENV}"; then
         conda env create -n "${TRANSFUN_ENV}" -f "${TRANSFUN_ROOT}/environment.yml"
     fi
-    # TransFun's older PyTorch build cannot load against MKL 2024.1+ because
-    # libtorch_cpu.so still expects the removed iJIT_NotifyEvent symbol.
-    # ARC's defaults channel no longer exposes MKL 2024.0, but 2023.1.0 is
-    # available there and also selects the matching pre-2024.1 OpenMP runtime.
-    conda install -y -n "${TRANSFUN_ENV}" "mkl=2023.1.0"
+    # TransFun's older PyTorch build cannot load against MKL 2024.1+, which
+    # removed the iJIT_NotifyEvent symbol libtorch_cpu.so still expects.
+    #
+    # Do NOT pin an explicit MKL version here. TransFun's environment.yml pins
+    # pytorch=1.10.2, and that package already requires mkl >=2021.4.0,<2022.0a0
+    # — comfortably below 2024.1 — so a correctly solved environment needs no
+    # intervention at all. Two previous attempts to force one both made the
+    # solve unsatisfiable: mkl=2024.0 is absent from ARC's defaults channel,
+    # and mkl=2023.1.0 contradicts pytorch's own <2022 bound, producing
+    #   "pytorch 1.10.2 would require mkl >=2021.4.0,<2022.0a0, which conflicts"
+    # A bare `conda install` also resolves against defaults alone, dropping the
+    # pytorch/pyg/conda-forge channels the environment was built from, so the
+    # solver cannot see the builds it needs.
+    #
+    # Inspect first, act only if the installed MKL is genuinely too new, and
+    # then use a range plus the original channels so the solver has room.
+    local mkl_version
+    mkl_version="$(conda list -n "${TRANSFUN_ENV}" '^mkl$' 2>/dev/null \
+        | awk '$1 == "mkl" { print $2; exit }')"
+    if [[ -z "${mkl_version}" ]]; then
+        echo "[SETUP] ${TRANSFUN_ENV}: no conda-managed MKL present; nothing to constrain."
+    elif [[ "$(printf '2024.1\n%s\n' "${mkl_version}" | sort -V | head -1)" == "2024.1" ]]; then
+        echo "[SETUP] ${TRANSFUN_ENV}: MKL ${mkl_version} >= 2024.1 lacks iJIT_NotifyEvent; constraining to <2024.1"
+        conda install -y -n "${TRANSFUN_ENV}" \
+            -c pytorch -c pyg -c conda-forge -c defaults "mkl<2024.1"
+    else
+        echo "[SETUP] ${TRANSFUN_ENV}: MKL ${mkl_version} is already compatible with pytorch 1.10.2."
+    fi
     if [[ ! -s "${TRANSFUN_ROOT}/data/molecular_function.pt" ]]; then
         local archive="${DOWNLOAD_ROOT}/transfun_data.zip"
         download_file "${TRANSFUN_DATA_URL}" "${archive}"
