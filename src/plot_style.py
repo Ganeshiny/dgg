@@ -9,6 +9,9 @@ the same input-modality variant.
 """
 from __future__ import annotations
 
+import hashlib
+import json
+import os
 from pathlib import Path
 
 import matplotlib.pyplot as plt
@@ -143,9 +146,34 @@ def apply_style() -> None:
     })
 
 
-# Nature figure widths, in inches (89 mm single column / 183 mm double column).
-SINGLE_COLUMN_IN = 3.5
-DOUBLE_COLUMN_IN = 7.2
+# ---------------------------------------------------------------------------
+# Target journal. Figure widths and the main-text display-item cap differ by
+# publisher, so they live in one switchable table rather than scattered
+# literals. Override with DGG_JOURNAL=bmc in the environment.
+# ---------------------------------------------------------------------------
+JOURNAL_SPECS = {
+    # Nature: 89 mm single / 183 mm double column, ~4 main display items.
+    "nature": {"single_mm": 89.0, "double_mm": 183.0, "main_item_cap": 4,
+               "raster": "tiff", "main_dpi": 600, "supp_dpi": 300},
+    # BMC: 85 mm single / 170 mm double column, no hard main-text cap.
+    "bmc": {"single_mm": 85.0, "double_mm": 170.0, "main_item_cap": None,
+            "raster": "png", "main_dpi": 600, "supp_dpi": 300},
+}
+JOURNAL = os.environ.get("DGG_JOURNAL", "bmc").strip().lower()
+if JOURNAL not in JOURNAL_SPECS:
+    raise ValueError(f"Unknown DGG_JOURNAL={JOURNAL!r}; expected one of {sorted(JOURNAL_SPECS)}")
+SPEC = JOURNAL_SPECS[JOURNAL]
+
+_MM_PER_IN = 25.4
+SINGLE_COLUMN_IN = SPEC["single_mm"] / _MM_PER_IN
+DOUBLE_COLUMN_IN = SPEC["double_mm"] / _MM_PER_IN
+MAIN_ITEM_CAP = SPEC["main_item_cap"]
+
+# Figure tiers. Main-text figures are read at full column width and carry the
+# argument, so they get larger minimum type; supplementary may run denser.
+MAIN, SUPPLEMENTARY = "main", "supplementary"
+TIER_MIN_FONT_PT = {MAIN: 7.0, SUPPLEMENTARY: 5.0}
+TIER_DPI = {MAIN: SPEC["main_dpi"], SUPPLEMENTARY: SPEC["supp_dpi"]}
 
 
 def colorblind_audit() -> dict[str, float]:
@@ -172,23 +200,134 @@ def colorblind_audit() -> dict[str, float]:
     result = {}
     for label, matrix in matrices.items():
         simulated = np.clip(np.asarray(rgb) @ matrix.T, 0, 1)
-        distances = [np.linalg.norm(simulated[i] - simulated[j])
+        distances = [(float(np.linalg.norm(simulated[i] - simulated[j])), MODEL_ORDER[j], MODEL_ORDER[i])
                      for i in range(len(simulated)) for j in range(i)]
-        result[label] = float(min(distances))
+        result[label] = min(distances)
     return result
 
 
-def savefig(fig: plt.Figure, path: Path) -> None:
+# Below this RGB separation, two models are not reliably told apart by hue
+# alone and must carry a second channel (marker shape, or x-axis position and
+# tick label). Measured worst pairs on the locked palette: Hybrid vs MLP in
+# grayscale (0.112) and Hybrid_JK vs MLP under deuteranopia (0.264). Hybrid vs
+# GCN, often assumed to be the risky pair, is comfortably separated everywhere.
+CVD_FLOOR = 0.30
+
+
+def report_colorblind_audit(require_secondary_channel: bool = True) -> list[str]:
+    """Print the worst pair per simulation; return warnings for sub-floor pairs."""
+    warnings_out = []
+    for label, (distance, first, second) in sorted(colorblind_audit().items()):
+        flag = "" if distance >= CVD_FLOOR else "  <-- below floor"
+        print(f"  colour audit [{label:12s}] worst pair: {first} vs {second} d={distance:.3f}{flag}")
+        if distance < CVD_FLOOR:
+            warnings_out.append(
+                f"{first}/{second} separation {distance:.3f} under {label} is below {CVD_FLOOR}; "
+                "hue alone is insufficient")
+    if warnings_out and require_secondary_channel:
+        print("  -> secondary channel required (marker shape and/or axis position); "
+              "every figure in this set carries one.")
+    return warnings_out
+
+
+# ---------------------------------------------------------------------------
+# Palette-drift guard. Manual iteration across three plotting scripts is
+# exactly how a model quietly changes colour between figures, so the mapping
+# is fingerprinted and checked rather than trusted.
+# ---------------------------------------------------------------------------
+PALETTE_FINGERPRINT = "56a06a743fcd9eb0"
+
+
+def palette_fingerprint() -> str:
+    payload = json.dumps({"models": MODEL_ORDER,
+                          "colors": [MODEL_COLOR[m] for m in MODEL_ORDER],
+                          "markers": [MODEL_MARKER[m] for m in MODEL_ORDER],
+                          "variants": VARIANT_ORDER}, sort_keys=True)
+    return hashlib.blake2s(payload.encode(), digest_size=8).hexdigest()
+
+
+def assert_palette_locked() -> str:
+    """Fail loudly if the model->colour/marker mapping drifted."""
+    actual = palette_fingerprint()
+    if PALETTE_FINGERPRINT and actual != PALETTE_FINGERPRINT:
+        raise RuntimeError(
+            f"Model colour/marker mapping changed (fingerprint {actual}, expected "
+            f"{PALETTE_FINGERPRINT}). Every figure must share one mapping; update "
+            "PALETTE_FINGERPRINT deliberately if the change is intended.")
+    return actual
+
+
+# ---------------------------------------------------------------------------
+# Caption fragments. Defined once so the stats statement cannot drift between
+# an axis label and the figure legend a reviewer actually reads.
+# ---------------------------------------------------------------------------
+ERROR_CAPTION = {
+    "sd": "Error bars show mean ± s.d. across n = 5 training seeds",
+    "sem": "Error bars show mean ± s.e.m. across n = 5 training seeds",
+    "ci95": "Error bars show mean ± 95% CI across n = 5 training seeds",
+}
+
+MACRO_AUPRC_CAVEAT = (
+    "Macro-AUPRC values are provisional: archived tables were produced with a "
+    "trapezoidal PR estimator that is upward-biased for tied scores "
+    "(see docs/figure_data_integrity.md); regenerate before reporting."
+)
+CONSTANT_PREDICTOR_CAVEAT = (
+    "MLP under structure-only receives zeroed features and ignores graph edges, "
+    "so it emits a constant score and acts as a null control, not a model."
+)
+
+
+def provenance(script: str, source: str, extra: str = "") -> str:
+    tail = f" {extra}" if extra else ""
+    return f"Generated by {script} from {source}.{tail}"
+
+
+def savefig(fig: plt.Figure, path: Path, tier: str = SUPPLEMENTARY,
+            formats: tuple[str, ...] | None = None) -> None:
+    """Write a figure at its tier's resolution, vector first.
+
+    Vector (PDF) is always written because journals require it for line art;
+    the raster companion is TIFF or PNG depending on the target journal.
+    """
+    if tier not in TIER_DPI:
+        raise ValueError(f"Unknown tier {tier!r}")
     path.parent.mkdir(parents=True, exist_ok=True)
+    dpi = TIER_DPI[tier]
+    if formats is None:
+        formats = ("pdf", SPEC["raster"])
     try:
         fig.tight_layout()
     except Exception:
         pass
-    fig.savefig(path, bbox_inches="tight", dpi=300)
-    fig.savefig(path.with_suffix(".pdf"), bbox_inches="tight", dpi=300)
-    fig.savefig(path.with_suffix(".svg"), bbox_inches="tight")
-    fig.savefig(path.with_suffix(".tiff"), bbox_inches="tight", dpi=300)
+    for suffix in formats:
+        # Uncompressed 600 dpi TIFF runs to tens of MB per figure; LZW is
+        # lossless and accepted by publishers, so there is no reason to ship
+        # the raw form.
+        extra = {"pil_kwargs": {"compression": "tiff_lzw"}} if suffix == "tiff" else {}
+        fig.savefig(path.with_suffix(f".{suffix}"), bbox_inches="tight", dpi=dpi, **extra)
     plt.close(fig)
+
+
+def check_min_font(fig: plt.Figure, tier: str) -> list[str]:
+    """Return human-readable warnings for text below the tier's floor.
+
+    Font size is set in points and rendered at a fixed physical width, so a
+    label that is legible on screen can still be under the journal's minimum
+    in print. This checks the actual rendered text objects.
+    """
+    floor = TIER_MIN_FONT_PT[tier]
+    small = set()
+    for text in fig.findobj(plt.Text):
+        try:
+            size = float(text.get_fontsize())
+        except (TypeError, ValueError):
+            continue
+        if text.get_text().strip() and size < floor:
+            small.add(round(size, 2))
+    if not small:
+        return []
+    return [f"text at {sorted(small)} pt is below the {tier} minimum of {floor} pt"]
 
 
 def label_panel(ax: plt.Axes, letter: str) -> None:

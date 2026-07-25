@@ -19,6 +19,11 @@ import pandas as pd
 from matplotlib.lines import Line2D
 
 from plot_style import (
+    ERROR_CAPTION,
+    SUPPLEMENTARY,
+    assert_palette_locked,
+    provenance,
+    report_colorblind_audit,
     BIN_AXIS_LABEL,
     BIN_ORDER,
     DOUBLE_COLUMN_IN,
@@ -204,8 +209,37 @@ def _marker_legend(max_n: float) -> list[Line2D]:
             for n in refs]
 
 
+def load_audited_bins(bin_csv: Path, dataset_root: Path,
+                      homology_path: Path | None = None,
+                      logs_hint=None) -> pd.DataFrame | None:
+    """Read the bin metrics table and attach the raw-support integrity audit.
+
+    Factored out of main() so the two-tier figure driver reuses exactly the
+    same audit path rather than a second, drifting copy of it.
+    """
+    bin_csv = Path(bin_csv)
+    if not bin_csv.exists():
+        print(f"NOTE: bin metrics not found at {bin_csv}; skipping bin figures.")
+        return None
+    frame = pd.read_csv(bin_csv)
+    required = {"ontology", "model", "input_modality", "bin_type", "bin", "examples"}
+    missing = required - set(frame.columns)
+    if missing:
+        raise SystemExit(f"Missing required bin columns: {sorted(missing)}")
+    threshold = _threshold_from_label(frame)
+    hom = Path(homology_path) if homology_path else DEFAULT_HOMOLOGY
+    audit = build_integrity_audit(Path(dataset_root), Path(hom).resolve(), threshold)
+    merged = merge_and_validate(frame, audit)
+    for bin_type, order in BIN_ORDER.items():
+        mask = merged.bin_type == bin_type
+        merged.loc[mask, "bin"] = pd.Categorical(
+            merged.loc[mask, "bin"], categories=order, ordered=True)
+    return merged
+
+
 def plot_bin_grid(frame: pd.DataFrame, out: Path, bin_type: str, order: list[str],
-                  metric: str, min_n: int, err_kind: str) -> None:
+                  metric: str, min_n: int, err_kind: str,
+                  tier: str = SUPPLEMENTARY) -> None:
     higher_better = METRIC_HIGHER_IS_BETTER[metric]
     ymin, ymax = _metric_limits(frame, metric)
     fig, axes = plt.subplots(
@@ -282,7 +316,7 @@ def plot_bin_grid(frame: pd.DataFrame, out: Path, bin_type: str, order: list[str
     fig.add_artist(legend)
     fig.legend(handles=_marker_legend(max_n), title="Test examples", loc="upper left",
                bbox_to_anchor=(1.0, .62), frameon=False, fontsize=6.5)
-    savefig(fig, out / f"{bin_type}_{metric.lower()}.png")
+    savefig(fig, out / f"{bin_type}_{metric.lower()}.png", tier)
 
 
 def main() -> None:
@@ -296,7 +330,8 @@ def main() -> None:
     ap.add_argument("--err", choices=["sd", "sem", "ci95"], default="sd")
     args = ap.parse_args()
     apply_style()
-    print("Colour audit:", colorblind_audit())
+    print("Palette fingerprint:", assert_palette_locked())
+    report_colorblind_audit()
     source = args.bin_csv.resolve()
     frame = pd.read_csv(source)
     required = {"ontology", "model", "input_modality", "bin_type", "bin", "examples"}

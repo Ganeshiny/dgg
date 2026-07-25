@@ -1,0 +1,4 @@
+ontology,test_examples,test_terms_with_positive_support,terms_with_support_le_5,terms_with_support_le_10,median_term_support,minimum_term_support,maximum_term_support,checkpoint_count,prediction_artifacts_available,raw_predicted_term_counts_available
+molecular_function,754,218,90,133,7.0,1,376,0,False,False
+biological_process,754,672,281,417,8.0,1,476,0,False,False
+cellular_component,754,129,34,44,23.0,1,523,0,False,False
