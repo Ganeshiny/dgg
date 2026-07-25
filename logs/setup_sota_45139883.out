@@ -1,7 +1,7 @@
 ========================================================
-  Job ID      : 45137668
+  Job ID      : 45139883
   Node        : mc49
-  Start time  : Fri Jul 24 17:46:30 MDT 2026
+  Start time  : Fri Jul 24 19:02:54 MDT 2026
   Project     : /home/ganeshiny.sridharan/dgg/deep-green-GO
   Methods     : deepfri,transfun,dpfunc,deepgoplus,deepgose,interproscan
 ========================================================
@@ -67,8 +67,8 @@ Obtaining file:///home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/DeepFRI
 Building wheels for collected packages: DeepFRI
   Building editable for DeepFRI (pyproject.toml): started
   Building editable for DeepFRI (pyproject.toml): finished with status 'done'
-  Created wheel for DeepFRI: filename=deepfri-0.0.1-0.editable-py3-none-any.whl size=4001 sha256=14bf746a70df4b251a11ddf492859abe36edd1fbd319bf0e8ee2460d2b268fa6
-  Stored in directory: /tmp/pip-ephem-wheel-cache-63on2qkw/wheels/5b/c0/af/7cc8debfaa06e7532c908b664f95e503d9145e148997320f6f
+  Created wheel for DeepFRI: filename=deepfri-0.0.1-0.editable-py3-none-any.whl size=4001 sha256=2f2b4700996ff922a0ac87daddaa4567aa035bdd922523cc4c27bddf8c914a3b
+  Stored in directory: /tmp/pip-ephem-wheel-cache-1fqe7dpk/wheels/5b/c0/af/7cc8debfaa06e7532c908b664f95e503d9145e148997320f6f
 Successfully built DeepFRI
 Installing collected packages: DeepFRI
   Attempting uninstall: DeepFRI
@@ -81,10 +81,5 @@ Successfully installed DeepFRI-0.0.1
 Channels:
  - defaults
 Platform: linux-64
-Collecting package metadata (repodata.json): - \ | / - \ | / - \ | / - \ | / - \ | / done
-Solving environment: \ | / failed
-Channels:
- - defaults
-Platform: linux-64
-Collecting package metadata (repodata.json): \ | / - done
-Solving environment: | / - failed
+Collecting package metadata (repodata.json): - \ | / - done
+Solving environment: | / - \ | / - \ | / - \ failed
