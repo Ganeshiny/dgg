@@ -67,18 +67,21 @@ echo "host=$(hostname) job=${SLURM_JOB_ID:-none} journal=$DGG_JOURNAL"
 echo "python=$(which python)"
 python -c "import matplotlib; print('matplotlib', matplotlib.__version__)"
 
-echo "=== [1/3] ablation + bin figures (main_text/ and supplementary/) ==="
+echo "=== [1/4] ablation + bin figures (main_text/ and supplementary/) ==="
 python src/make_figures.py --output-dir plots/figures
 
-echo "=== [2/3] hyperparameter tuning supplement ==="
+echo "=== [2/4] hyperparameter tuning supplement ==="
 python src/plot_arc_tuning.py \
     --tuning-root arc_tuning_cafa \
     --output-dir plots/figures/supplementary_tuning
 
-echo "=== [3/3] baseline benchmark figures ==="
+echo "=== [3/4] baseline benchmark figures ==="
 python src/plot_benchmark.py \
     --workspace arc_benchmark/nominal_30_identity_80_coverage \
     --output-dir plots/figures/benchmark
+
+echo "=== [4/4] reviewer-response figures ==="
+python src/plot_reviewer_figures.py --output-dir plots/figures/reviewer
 
 echo "=== done ==="
 find plots/figures -name '*.pdf' | wc -l | xargs echo "vector figures written:"

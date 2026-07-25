@@ -141,6 +141,11 @@ def build(tier_wanted: str, out_root: Path, ablations_root: Path, bin_csv: Path,
             supp_entries.append((f"faceted_{metric.lower()}",
                                  f"{metric.replace('_', '-')} with input modality as rows and "
                                  f"ontology as columns. {abl._metric_note(metric)}"))
+            abl.plot_box_faceted(df, work, metric, err, SUPPLEMENTARY)
+            supp_entries.append((f"box_{metric.lower()}",
+                                 f"Boxplot rendering of {metric.replace('_', '-')} across seeds, "
+                                 f"with every seed overlaid because n = 5 is a thin basis for "
+                                 f"quartiles. {abl._metric_note(metric)}"))
             abl.plot_strip(df, work, metric, err, SUPPLEMENTARY)
             supp_entries.append((f"strip_{metric.lower()}",
                                  f"Per-seed {metric.replace('_', '-')} for all architectures and "

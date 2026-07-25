@@ -7,6 +7,7 @@ import csv
 import gzip
 import json
 import re
+import os
 import subprocess
 from collections import defaultdict
 from pathlib import Path
@@ -28,6 +29,46 @@ from arc_benchmark import (
 def run_checked(command: list[str | Path], *, cwd: Path | None = None) -> None:
     print("RUN " + " ".join(str(part) for part in command), flush=True)
     subprocess.run([str(part) for part in command], cwd=cwd, check=True)
+
+
+def run_search_once(output: Path, build_command) -> None:
+    """Run a similarity search unless a *complete* result already exists.
+
+    A bare ``output.is_file()`` resume check is unsafe here. blastp, DIAMOND
+    and Foldseek all create their ``-out``/``--out`` file as soon as they
+    start, so a run killed by the Slurm wall clock leaves a zero-byte or
+    truncated file behind. On the next resume that file looks exactly like a
+    finished search: the tool is skipped, the label transfer reads almost
+    nothing, all-zero predictions are written, and the stage `.done` marker
+    then locks the empty result in permanently.
+
+    That is precisely how BLAST came to report CAFA Fmax 0.000 with 0%
+    coverage while its own hit file held 7,108 alignments that re-transfer to
+    2,619 nonzero scores (docs/figure_data_integrity.md).
+
+    The search therefore writes to a temporary path and is renamed into place
+    only after the process exits successfully, so the final filename can never
+    name a partial result. os.replace is atomic within a filesystem.
+    """
+    if output.is_file() and output.stat().st_size > 0:
+        print(f"[benchmark] reusing complete search output {output}", flush=True)
+        return
+    if output.is_file():
+        print(f"[benchmark] {output} exists but is empty — discarding and re-running", flush=True)
+        output.unlink()
+    partial = output.with_name(output.name + ".partial")
+    if partial.exists():
+        partial.unlink()
+    run_checked(build_command(partial))
+    if not partial.is_file():
+        raise RuntimeError(f"search did not produce {partial}")
+    if partial.stat().st_size == 0:
+        # Exit code 0 with no rows is possible in principle, but against a
+        # 6,026-sequence database it means something is wrong upstream.
+        raise RuntimeError(
+            f"search wrote an empty {partial}; refusing to record a zero-coverage "
+            "result as if it were a real one")
+    os.replace(partial, output)
 
 
 def canonicalize_similarity_id(raw_id: str) -> str:
@@ -126,23 +167,23 @@ def sequence_baselines(args) -> None:
             run_checked([args.makeblastdb, "-in", input_dir / "train.fasta", "-dbtype", "prot",
                          "-parse_seqids", "-out", db])
         hits = raw_dir / "blast_hits.tsv"
-        if not hits.is_file():
-            run_checked([args.blastp, "-query", input_dir / "valid_test.fasta", "-db", db,
-                         "-out", hits, "-evalue", "1e-3", "-max_target_seqs", args.max_hits,
-                         "-num_threads", args.threads, "-outfmt",
-                         "6 qseqid sseqid pident length qlen slen evalue bitscore qcovs"])
+        run_search_once(hits, lambda out: [
+            args.blastp, "-query", input_dir / "valid_test.fasta", "-db", db,
+            "-out", out, "-evalue", "1e-3", "-max_target_seqs", args.max_hits,
+            "-num_threads", args.threads, "-outfmt",
+            "6 qseqid sseqid pident length qlen slen evalue bitscore qcovs"])
         hit_files["blast"] = hits
     if "diamond" in methods:
         db = db_dir / "diamond_train"
         if not Path(str(db) + ".dmnd").is_file():
             run_checked([args.diamond, "makedb", "--in", input_dir / "train.fasta", "--db", db])
         hits = raw_dir / "diamond_hits.tsv"
-        if not hits.is_file():
-            run_checked([args.diamond, "blastp", "--query", input_dir / "valid_test.fasta",
-                         "--db", db, "--out", hits, "--evalue", "1e-3",
-                         "--max-target-seqs", args.max_hits, "--threads", args.threads,
-                         "--outfmt", "6", "qseqid", "sseqid", "pident", "length", "qlen",
-                         "slen", "evalue", "bitscore", "qcovhsp"])
+        run_search_once(hits, lambda out: [
+            args.diamond, "blastp", "--query", input_dir / "valid_test.fasta",
+            "--db", db, "--out", out, "--evalue", "1e-3",
+            "--max-target-seqs", args.max_hits, "--threads", args.threads,
+            "--outfmt", "6", "qseqid", "sseqid", "pident", "length", "qlen",
+            "slen", "evalue", "bitscore", "qcovhsp"])
         hit_files["diamond"] = hits
 
     for short in ONTOLOGIES:
@@ -203,13 +244,13 @@ def foldseek_baseline(args) -> None:
             link = query_dir / path.name
             if not link.exists():
                 link.symlink_to(path.resolve())
-    if not hits_path.is_file():
-        tmp_dir = workspace / "tmp" / "foldseek"
-        tmp_dir.mkdir(parents=True, exist_ok=True)
-        run_checked([args.foldseek, "easy-search", query_dir,
-                     workspace / "inputs" / "structures" / "train", hits_path, tmp_dir,
-                     "--threads", args.threads, "--max-seqs", args.max_hits,
-                     "--format-output", "query,target,fident,alnlen,qlen,tlen,evalue,bits,qcov,tcov"])
+    tmp_dir = workspace / "tmp" / "foldseek"
+    tmp_dir.mkdir(parents=True, exist_ok=True)
+    run_search_once(hits_path, lambda out: [
+        args.foldseek, "easy-search", query_dir,
+        workspace / "inputs" / "structures" / "train", out, tmp_dir,
+        "--threads", args.threads, "--max-seqs", args.max_hits,
+        "--format-output", "query,target,fident,alnlen,qlen,tlen,evalue,bits,qcov,tcov"])
     parsed = parse_similarity_hits(hits_path)
     for short in ONTOLOGIES:
         train_ids, terms, train_labels = load_label_npz(workspace, short, "train")

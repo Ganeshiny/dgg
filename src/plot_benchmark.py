@@ -79,11 +79,13 @@ METRICS = {
 }
 
 
-def load(workspace: Path) -> tuple[pd.DataFrame, pd.DataFrame | None]:
+def load(workspace: Path):
     metrics = pd.read_csv(workspace / "results/benchmark_metrics.csv")
     audit_path = workspace / "results/coverage_and_mapping_audit.csv"
     audit = pd.read_csv(audit_path) if audit_path.exists() else None
-    return metrics, audit
+    boot_path = workspace / "results/bootstrap_metrics.csv"
+    bootstrap = pd.read_csv(boot_path) if boot_path.exists() else None
+    return metrics, audit, bootstrap
 
 
 def detect_invalid(metrics: pd.DataFrame, workspace: Path) -> dict[str, str]:
@@ -170,11 +172,87 @@ def plot_metric_panels(metrics: pd.DataFrame, invalid: dict[str, str], out: Path
     savefig(fig, out / "benchmark_cafa_fmax.png", tier)
 
 
+def plot_bootstrap_boxplots(bootstrap: pd.DataFrame, invalid: dict[str, str], out: Path,
+                            tier: str = MAIN) -> None:
+    """Boxplots over the 1,000 paired protein bootstrap replicates.
+
+    A boxplot needs a real distribution behind it. These two metrics have one
+    — 1,000 resamples each — so the box shows the actual sampling
+    uncertainty rather than a summary of a summary. The remaining metrics in
+    the results table are single point estimates with no replicates, and are
+    deliberately NOT drawn as boxes anywhere in this figure set.
+    """
+    methods = [m for m in _methods_present(bootstrap) if m not in invalid]
+    keys = [k for k in ("cafa_fmax", "cafa_smin") if k in bootstrap.columns]
+    fig, axes = plt.subplots(len(keys), 3, figsize=(DOUBLE_COLUMN_IN, 2.35 * len(keys)),
+                             squeeze=False)
+    positions = np.arange(len(methods))
+    panel = 0
+    for row, key in enumerate(keys):
+        label, higher = METRICS.get(key, (key, True))
+        for col, ontology in enumerate(ONTOLOGY_ORDER):
+            ax = axes[row][col]
+            sub = bootstrap[bootstrap.ontology == ontology]
+            data, colors = [], []
+            for method in methods:
+                values = pd.to_numeric(sub[sub.method == method][key], errors="coerce")
+                values = values[np.isfinite(values)].to_numpy()
+                data.append(values if values.size else np.array([np.nan]))
+                colors.append(FAMILY_COLOR[METHOD_FAMILY.get(method, "sequence")])
+            box = ax.boxplot(data, positions=positions, widths=.62, patch_artist=True,
+                             showfliers=False, whis=(2.5, 97.5),
+                             medianprops=dict(color="#111111", linewidth=1.0),
+                             boxprops=dict(linewidth=.5, edgecolor="#111111"),
+                             whiskerprops=dict(linewidth=.6, color="#111111"),
+                             capprops=dict(linewidth=.6, color="#111111"))
+            for patch, color in zip(box["boxes"], colors):
+                patch.set_facecolor(color)
+                patch.set_alpha(.85)
+            if row == 0:
+                ax.set_title(ONTOLOGY_SHORT[ontology])
+            if col == 0:
+                ax.set_ylabel(label, fontsize=7)
+            if row == len(keys) - 1:
+                ax.set_xticks(positions, [METHOD_LABEL.get(m, m) for m in methods],
+                              rotation=35, ha="right", fontsize=5.2)
+            else:
+                ax.set_xticks(positions, [""] * len(methods))
+            if not higher:
+                # Above the axes: inside the panel this sat on the top whisker.
+                ax.text(.0, 1.015, "lower is better", transform=ax.transAxes,
+                        fontsize=5.2, color="#777777", va="bottom", ha="left")
+            label_panel(ax, chr(97 + panel))
+            panel += 1
+    handles = [Patch(facecolor=FAMILY_COLOR[f], edgecolor="#111111", label=FAMILY_LABEL[f])
+               for f in ("model", "frequency", "sequence", "structure")]
+    fig.legend(handles=handles, loc="upper left", bbox_to_anchor=(1.0, .95),
+               frameon=False, fontsize=6.2, title="Evidence type", title_fontsize=6.5)
+    fig.text(.5, -.05,
+             "Boxes span the interquartile range of 1,000 paired protein bootstrap replicates, "
+             "the line is the median, and whiskers reach the 2.5th and 97.5th percentiles (a 95% "
+             "interval); outliers are not drawn separately because every replicate is already "
+             "represented. Each ontology is on its own y-scale. "
+             + provenance("src/plot_benchmark.py", "results/bootstrap_metrics.csv"),
+             ha="center", fontsize=5.2, wrap=True)
+    savefig(fig, out / "benchmark_bootstrap_boxplots.png", tier)
+
+
 def plot_metric_grid(metrics: pd.DataFrame, invalid: dict[str, str], out: Path,
+                     bootstrap: pd.DataFrame | None = None,
                      tier: str = SUPPLEMENTARY) -> None:
-    """Every headline metric: rows are metrics, columns are ontologies."""
+    """Every headline metric: rows are metrics, columns are ontologies.
+
+    Error bars are drawn only where replicates actually exist. cafa_fmax and
+    cafa_smin are bootstrapped, so they get 95% intervals; micro-AUPR and
+    coverage are single point estimates in the results table and are left
+    bare, with the absence stated in the caption rather than implied by a
+    missing whisker.
+    """
     methods = [m for m in _methods_present(metrics) if m not in invalid]
     keys = [k for k in METRICS if k in metrics.columns]
+    has_ci = set()
+    if bootstrap is not None:
+        has_ci = {k for k in keys if k in bootstrap.columns}
     fig, axes = plt.subplots(len(keys), 3, figsize=(DOUBLE_COLUMN_IN, 1.85 * len(keys)),
                              squeeze=False, sharex="row")
     x = np.arange(len(methods))
@@ -182,13 +260,27 @@ def plot_metric_grid(metrics: pd.DataFrame, invalid: dict[str, str], out: Path,
     for row, key in enumerate(keys):
         label, higher = METRICS[key]
         values_all = pd.to_numeric(metrics[key], errors="coerce")
-        top = float(values_all.max()) * 1.12 if np.isfinite(values_all.max()) else 1.0
+        top = float(values_all.max()) * 1.18 if np.isfinite(values_all.max()) else 1.0
         for col, ontology in enumerate(ONTOLOGY_ORDER):
             ax = axes[row][col]
             sub = metrics[metrics.ontology == ontology].set_index("method")
             values = [float(sub.loc[m, key]) if m in sub.index else np.nan for m in methods]
+            yerr = None
+            if key in has_ci:
+                lows, highs = [], []
+                bsub = bootstrap[bootstrap.ontology == ontology]
+                for method, value in zip(methods, values):
+                    reps = pd.to_numeric(bsub[bsub.method == method][key], errors="coerce")
+                    reps = reps[np.isfinite(reps)].to_numpy()
+                    if reps.size and np.isfinite(value):
+                        lows.append(max(value - np.percentile(reps, 2.5), 0))
+                        highs.append(max(np.percentile(reps, 97.5) - value, 0))
+                    else:
+                        lows.append(0.0); highs.append(0.0)
+                yerr = [lows, highs]
             ax.bar(x, values, color=[FAMILY_COLOR[METHOD_FAMILY.get(m, "sequence")] for m in methods],
-                   edgecolor="#111111", linewidth=.4, width=.72)
+                   edgecolor="#111111", linewidth=.4, width=.72, yerr=yerr,
+                   error_kw=dict(elinewidth=.7, capsize=1.8, ecolor="#111111"))
             ax.set_ylim(0, top)
             if row == 0:
                 ax.set_title(ONTOLOGY_SHORT[ontology])
@@ -209,7 +301,11 @@ def plot_metric_grid(metrics: pd.DataFrame, invalid: dict[str, str], out: Path,
     fig.legend(handles=handles, loc="upper left", bbox_to_anchor=(1.0, .95),
                frameon=False, fontsize=6.2, title="Evidence type", title_fontsize=6.5)
     excluded = ", ".join(METHOD_LABEL.get(m, m) for m in invalid) or "none"
-    fig.text(.5, -.04,
+    ci_note = ("CAFA F$_{max}$ and S$_{min}$ carry 95% bootstrap intervals (1,000 paired protein "
+               "resamples). Micro-AUPR and coverage are single point estimates in the results "
+               "table with no replicates, so they are shown without error bars rather than with "
+               "invented ones. ")
+    fig.text(.5, -.05, ci_note +
              f"Rows share a y-axis across ontologies so cross-ontology magnitudes are comparable. "
              f"Coverage is the fraction of the 754 test proteins receiving any non-zero score; a "
              f"method with high F$_{{max}}$ but low coverage annotates few proteins confidently "
@@ -265,7 +361,7 @@ def main() -> None:
     out = args.output_dir.resolve()
     out.mkdir(parents=True, exist_ok=True)
 
-    metrics, audit = load(workspace)
+    metrics, audit, bootstrap = load(workspace)
     invalid = detect_invalid(metrics, workspace)
     if invalid:
         print("\nINTEGRITY: methods excluded from scoring")
@@ -281,7 +377,11 @@ def main() -> None:
                             values="cafa_fmax").round(4).to_string())
 
     plot_metric_panels(metrics, invalid, out, MAIN if args.tier == "main" else SUPPLEMENTARY)
-    plot_metric_grid(metrics, invalid, out)
+    if bootstrap is not None:
+        plot_bootstrap_boxplots(bootstrap, invalid, out, MAIN)
+    else:
+        print("NOTE: results/bootstrap_metrics.csv absent; skipping boxplot figure.")
+    plot_metric_grid(metrics, invalid, out, bootstrap)
     plot_coverage_vs_fmax(metrics, invalid, out)
     metrics.to_csv(out / "benchmark_metrics_plotted.csv", index=False)
     print(f"\nWrote benchmark figures to {out}")

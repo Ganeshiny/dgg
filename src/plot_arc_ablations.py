@@ -430,6 +430,76 @@ def plot_strip_faceted(df: pd.DataFrame, out: Path, metric: str, err_kind: str =
     savefig(fig, out / f"faceted_{metric.lower()}.png", tier)
 
 
+def plot_box_faceted(df: pd.DataFrame, out: Path, metric: str, err_kind: str = "sd",
+                     tier: str = SUPPLEMENTARY) -> None:
+    """Boxplot version of the faceted ablation, with the seeds drawn on top.
+
+    Read the caveat before using this in the main text: each box summarises
+    only n = 5 seeds, so its quartiles are estimated from five numbers and the
+    box will look confident whether or not it deserves to. The individual
+    seeds are therefore always overlaid, and they — not the box — are the
+    evidence. Where a real distribution exists (the 1,000-replicate benchmark
+    bootstrap) a boxplot stands on its own; here it does not.
+    """
+    ymin, ymax = _metric_limits(df, metric)
+    fig, axes = plt.subplots(len(VARIANT_ORDER), len(ONTOLOGY_ORDER),
+                             figsize=(DOUBLE_COLUMN_IN, 2.15 * len(VARIANT_ORDER)),
+                             sharex=True, sharey=True, squeeze=False)
+    positions = np.arange(len(MODEL_ORDER), dtype=float)
+    panel = 0
+    for row, variant in enumerate(VARIANT_ORDER):
+        for col, ontology in enumerate(ONTOLOGY_ORDER):
+            ax = axes[row][col]
+            sub = df[(df.ontology == ontology) & (df.input == variant)]
+            if sub.empty:
+                annotate_insufficient_data(ax)
+                label_panel(ax, chr(97 + panel))
+                panel += 1
+                continue
+            data = []
+            for model in MODEL_ORDER:
+                values = sub[sub.model == model][metric].to_numpy(dtype=float)
+                values = values[np.isfinite(values)]
+                data.append(values if values.size else np.array([np.nan]))
+            box = ax.boxplot(data, positions=positions, widths=.6, patch_artist=True,
+                             showfliers=False,
+                             medianprops=dict(color="#111111", linewidth=.9),
+                             boxprops=dict(linewidth=.45, edgecolor="#111111"),
+                             whiskerprops=dict(linewidth=.55, color="#111111"),
+                             capprops=dict(linewidth=.55, color="#111111"))
+            for patch, model in zip(box["boxes"], MODEL_ORDER):
+                patch.set_facecolor(MODEL_COLOR[model])
+                patch.set_alpha(.45)
+            for i, (model, values) in enumerate(zip(MODEL_ORDER, data)):
+                values = values[np.isfinite(values)]
+                if not values.size:
+                    continue
+                seed = abs(hash((ontology, model, variant))) % (2 ** 32)
+                ax.scatter(positions[i] + jitter(values.size, width=.10, seed=seed), values,
+                           s=11, color=MODEL_COLOR[model], edgecolor="#111111",
+                           linewidth=.3, zorder=4)
+                if model == "MLP" and variant == "struct_only":
+                    annotate_constant_predictor(ax, positions[i], float(np.nanmean(values)), metric)
+            ax.set_ylim(ymin, ymax)
+            if row == 0:
+                ax.set_title(ONTOLOGY_SHORT[ontology])
+            if col == 0:
+                ax.set_ylabel(f"{VARIANT_LABEL[variant]}\n{METRIC_LABEL[metric]}", fontsize=6.5)
+            if row == len(VARIANT_ORDER) - 1:
+                ax.set_xticks(positions, MODEL_ORDER, rotation=30, ha="right", fontsize=6)
+            label_panel(ax, chr(97 + panel))
+            panel += 1
+    fig.text(.5, -.03,
+             f"Rows are input modality, columns are ontology. Boxes show the median and "
+             f"interquartile range across n = 5 training seeds and whiskers the full range; "
+             f"because five points is a thin basis for quartiles, every seed is plotted on top "
+             f"and the points are the evidence. † marks the MLP structure-only constant-predictor "
+             f"control. {_metric_note(metric)} "
+             + provenance("src/plot_arc_ablations.py", "ablations/**/test_metrics.json"),
+             ha="center", fontsize=5.2, wrap=True)
+    savefig(fig, out / f"box_{metric.lower()}.png", tier)
+
+
 def plot_metric_family_composite(df: pd.DataFrame, out: Path,
                                  top_metric: str = "Micro_Fmax",
                                  bottom_metric: str = "Micro_AUROC",
