@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-"""Create publication-ready baseline-only figures from an ARC benchmark.
+"""Create publication-ready DeepGreenGO-versus-baseline figures.
 
-DeepGreenGO and its seed-specific predictions are deliberately excluded. The
-script plots every completed comparator present in benchmark_metrics.csv and
-therefore also picks up SOTA methods after a later complete benchmark run.
+The benchmark's five-seed DeepGreenGO ensemble is the focal method. The script
+plots it with every completed comparator present in benchmark_metrics.csv.
 
 Examples
 --------
@@ -52,6 +51,7 @@ from plot_style import (  # noqa: E402
 
 
 METHOD_ORDER = [
+    "deepgreengo",
     "naive",
     "blast", "blast_max",
     "diamond", "diamond_max",
@@ -63,6 +63,7 @@ METHOD_ORDER = [
 ]
 
 METHOD_LABEL = {
+    "deepgreengo": "DeepGreenGO (this work)",
     "naive": "Naive frequency",
     "blast": "BLAST (top-10)",
     "blast_max": "BLAST (max identity)",
@@ -83,6 +84,7 @@ METHOD_LABEL = {
 }
 
 METHOD_FAMILY = {
+    "deepgreengo": "proposed",
     "naive": "frequency",
     "blast": "sequence", "blast_max": "sequence",
     "diamond": "sequence", "diamond_max": "sequence",
@@ -95,16 +97,18 @@ METHOD_FAMILY = {
 }
 
 FAMILY_COLOR = {
+    "proposed": CATEGORICAL_PALETTE[6],
     "frequency": CATEGORICAL_PALETTE[2],
     "sequence": CATEGORICAL_PALETTE[0],
     "structure": CATEGORICAL_PALETTE[4],
     "domain": CATEGORICAL_PALETTE[7],
     "deep_learning": CATEGORICAL_PALETTE[3],
     "orthology": CATEGORICAL_PALETTE[5],
-    "other": CATEGORICAL_PALETTE[6],
+    "other": "#777777",
 }
 
 FAMILY_LABEL = {
+    "proposed": "DeepGreenGO (this work)",
     "frequency": "Frequency prior",
     "sequence": "Sequence alignment",
     "structure": "Structure alignment",
@@ -122,13 +126,13 @@ def parse_args() -> argparse.Namespace:
         "--output",
         type=Path,
         default=None,
-        help="Default: <workspace>/plots/baselines_only",
+        help="Default: <workspace>/plots/main_comparison",
     )
     parser.add_argument("--journal", choices=("bmc", "nature"), default=None)
     return parser.parse_args()
 
 
-def load_baselines(workspace: Path) -> tuple[pd.DataFrame, pd.DataFrame]:
+def load_comparison(workspace: Path) -> tuple[pd.DataFrame, pd.DataFrame]:
     metrics_path = workspace / "results" / "benchmark_metrics.csv"
     bootstrap_path = workspace / "results" / "bootstrap_metrics.csv"
     if not metrics_path.is_file():
@@ -147,13 +151,14 @@ def load_baselines(workspace: Path) -> tuple[pd.DataFrame, pd.DataFrame]:
     if missing:
         raise ValueError(f"benchmark_metrics.csv lacks columns: {sorted(missing)}")
 
-    # Exclude the proposed model and every seed/split-specific variant by name.
-    baseline_mask = ~metrics["method"].astype(str).str.startswith("deepgreengo")
-    boot_mask = ~bootstrap["method"].astype(str).str.startswith("deepgreengo")
-    metrics = metrics.loc[baseline_mask].copy()
-    bootstrap = bootstrap.loc[boot_mask].copy()
-    if metrics.empty:
-        raise ValueError("No completed baselines are present in benchmark_metrics.csv")
+    deepgreengo = metrics.loc[metrics["method"] == "deepgreengo"]
+    counts = deepgreengo.groupby("ontology").size().to_dict()
+    expected_counts = {ontology: 1 for ontology in ONTOLOGY_ORDER}
+    if counts != expected_counts:
+        raise ValueError(
+            "Expected exactly one DeepGreenGO ensemble result per ontology; "
+            f"found {counts}"
+        )
     if metrics.duplicated(["method", "ontology"]).any():
         duplicated = metrics.loc[
             metrics.duplicated(["method", "ontology"], keep=False),
@@ -168,7 +173,7 @@ def load_baselines(workspace: Path) -> tuple[pd.DataFrame, pd.DataFrame]:
         if set(group["ontology"]) != expected
     }
     if incomplete:
-        raise ValueError(f"Incomplete baseline ontology results: {incomplete}")
+        raise ValueError(f"Incomplete comparison ontology results: {incomplete}")
     return metrics, bootstrap
 
 
@@ -183,11 +188,22 @@ def family(method: str) -> str:
 
 
 def marker(method: str) -> str:
+    if method == "deepgreengo":
+        return "*"
     if method.endswith("_max"):
         return "D"
     if method == "naive":
         return "s"
     return "o"
+
+
+def marker_size(method: str, default: float) -> float:
+    return 8.5 if method == "deepgreengo" else default
+
+
+def add_proposed_separator(ax: plt.Axes, methods: list[str]) -> None:
+    if methods and methods[0] == "deepgreengo" and len(methods) > 1:
+        ax.axhline(0.5, color="#777777", linewidth=0.65, zorder=1)
 
 
 def marker_face(method: str, color: str) -> str:
@@ -218,7 +234,9 @@ def build_legend_handles(methods: list[str], bars: bool = False) -> list:
     else:
         handles = [
             Line2D(
-                [0], [0], marker="o", linestyle="none", markersize=6,
+                [0], [0],
+                marker="*" if name == "proposed" else "o",
+                linestyle="none", markersize=8 if name == "proposed" else 6,
                 markerfacecolor=FAMILY_COLOR[name],
                 markeredgecolor=FAMILY_COLOR[name], label=FAMILY_LABEL[name],
             )
@@ -290,12 +308,13 @@ def plot_cafa(metrics: pd.DataFrame, methods: list[str], out: Path) -> None:
                 ax.errorbar(
                     value, yi,
                     xerr=np.array([[max(0.0, value - low)], [max(0.0, high - value)]]),
-                    fmt=marker(method), markersize=5.2,
+                    fmt=marker(method), markersize=marker_size(method, 5.2),
                     markerfacecolor=marker_face(method, color),
                     markeredgecolor=color, markeredgewidth=1.0,
                     ecolor=color, elinewidth=1.0, capsize=2.2, capthick=0.8,
                     zorder=3,
                 )
+            add_proposed_separator(ax, methods)
             maximum = max(upper_values)
             ax.set_xlim(0, maximum * 1.10 if maximum > 0 else 1)
             ax.set_yticks(y, [METHOD_LABEL.get(method, method) for method in methods] if column_index == 0 else [])
@@ -306,7 +325,7 @@ def plot_cafa(metrics: pd.DataFrame, methods: list[str], out: Path) -> None:
     add_shared_legend(fig, methods)
     fig.subplots_adjust(left=0.15, bottom=0.22, hspace=0.42, wspace=0.24)
     assert_print_fonts(fig)
-    savefig(fig, out / "baseline_cafa_performance", MAIN)
+    savefig(fig, out / "comparison_cafa_performance", MAIN)
 
 
 def plot_aupr(metrics: pd.DataFrame, methods: list[str], out: Path) -> None:
@@ -330,10 +349,12 @@ def plot_aupr(metrics: pd.DataFrame, methods: list[str], out: Path) -> None:
                 values.append(value)
                 color = FAMILY_COLOR[family(method)]
                 ax.plot(
-                    value, yi, marker=marker(method), linestyle="none", markersize=5.5,
+                    value, yi, marker=marker(method), linestyle="none",
+                    markersize=marker_size(method, 5.5),
                     markerfacecolor=marker_face(method, color), markeredgecolor=color,
                     markeredgewidth=1.0, zorder=3,
                 )
+            add_proposed_separator(ax, methods)
             maximum = max(values)
             ax.set_xlim(0, maximum * 1.12 if maximum > 0 else 1)
             ax.set_yticks(y, [METHOD_LABEL.get(method, method) for method in methods] if column_index == 0 else [])
@@ -344,7 +365,7 @@ def plot_aupr(metrics: pd.DataFrame, methods: list[str], out: Path) -> None:
     add_shared_legend(fig, methods)
     fig.subplots_adjust(left=0.15, bottom=0.22, hspace=0.42, wspace=0.24)
     assert_print_fonts(fig)
-    savefig(fig, out / "baseline_aupr", MAIN)
+    savefig(fig, out / "comparison_aupr", MAIN)
 
 
 def plot_coverage(metrics: pd.DataFrame, methods: list[str], out: Path) -> None:
@@ -381,6 +402,7 @@ def plot_coverage(metrics: pd.DataFrame, methods: list[str], out: Path) -> None:
                     min(value + 1.4, 97.0), yi, f"{value:.1f}",
                     va="center", ha="left" if value < 92 else "right",
                 )
+            add_proposed_separator(ax, methods)
             ax.set_xlim(0, 105)
             ax.set_yticks(y, [METHOD_LABEL.get(method, method) for method in methods] if column_index == 0 else [])
             style_axis(ax, ontology, xlabel, chr(97 + panel_index))
@@ -390,7 +412,7 @@ def plot_coverage(metrics: pd.DataFrame, methods: list[str], out: Path) -> None:
     add_shared_legend(fig, methods, bars=True)
     fig.subplots_adjust(left=0.15, bottom=0.22, hspace=0.42, wspace=0.24)
     assert_print_fonts(fig)
-    savefig(fig, out / "baseline_prediction_coverage", MAIN)
+    savefig(fig, out / "comparison_prediction_coverage", MAIN)
 
 
 def write_supporting_files(
@@ -401,18 +423,18 @@ def write_supporting_files(
     out: Path,
 ) -> None:
     out.mkdir(parents=True, exist_ok=True)
-    metrics.to_csv(out / "baseline_metrics_plotted.csv", index=False)
-    bootstrap.to_csv(out / "baseline_bootstrap_plotted.csv", index=False)
+    metrics.to_csv(out / "comparison_metrics_plotted.csv", index=False)
+    bootstrap.to_csv(out / "comparison_bootstrap_plotted.csv", index=False)
     captions = """Unless noted, higher values indicate better performance for all metrics except CAFA Smin, where lower is better.
 
-baseline_cafa_performance
-Baseline-only CAFA performance on the nominal 30%-identity/80%-coverage test split (n = 754 proteins). Points show test-set CAFA Fmax and Smin; error bars show percentile 95% confidence intervals from 1,000 paired protein-level bootstrap replicates. DeepGreenGO is excluded.
+comparison_cafa_performance
+DeepGreenGO and baseline CAFA performance on the nominal 30%-identity/80%-coverage test split (n = 754 proteins). Points show test-set CAFA Fmax and Smin; error bars show percentile 95% confidence intervals from 1,000 paired protein-level bootstrap replicates.
 
-baseline_aupr
-Baseline-only area-under-the-precision-recall-curve comparison on the same test split. Micro-AUPR pools protein-term decisions; macro-AUPR averages per-term average precision across GO terms observed in the test set. These are test-set point estimates. DeepGreenGO is excluded.
+comparison_aupr
+DeepGreenGO and baseline area-under-the-precision-recall-curve comparison on the same test split. Micro-AUPR pools protein-term decisions; macro-AUPR averages per-term average precision across GO terms observed in the test set. These are test-set point estimates.
 
-baseline_prediction_coverage
-Baseline prediction coverage on the same test split. Protein coverage is the percentage of test proteins receiving at least one nonzero score; term coverage is the percentage of evaluated test GO terms receiving at least one nonzero score. Coverage is not an accuracy measure. DeepGreenGO is excluded.
+comparison_prediction_coverage
+DeepGreenGO and baseline prediction coverage on the same test split. Protein coverage is the percentage of test proteins receiving at least one nonzero score; term coverage is the percentage of evaluated test GO terms receiving at least one nonzero score. Coverage is not an accuracy measure.
 """
     (out / "captions.txt").write_text(captions, encoding="utf-8")
     manifest = {
@@ -420,15 +442,15 @@ Baseline prediction coverage on the same test split. Protein coverage is the per
         "journal_profile": JOURNAL,
         "source_metrics": "results/benchmark_metrics.csv",
         "source_bootstrap": "results/bootstrap_metrics.csv",
-        "excluded_method_prefixes": ["deepgreengo"],
+        "focal_method": "deepgreengo",
         "included_methods": methods,
         "ontologies": ONTOLOGY_ORDER,
         "outputs": [
             f"{stem}.{suffix}"
             for stem in (
-                "baseline_cafa_performance",
-                "baseline_aupr",
-                "baseline_prediction_coverage",
+                "comparison_cafa_performance",
+                "comparison_aupr",
+                "comparison_prediction_coverage",
             )
             for suffix in ("pdf", SPEC["raster"])
         ],
@@ -441,15 +463,15 @@ Baseline prediction coverage on the same test split. Protein coverage is the per
 def main() -> None:
     args = parse_args()
     workspace = args.workspace.expanduser().resolve()
-    output = (args.output or workspace / "plots" / "baselines_only").expanduser().resolve()
+    output = (args.output or workspace / "plots" / "main_comparison").expanduser().resolve()
     apply_style()
-    metrics, bootstrap = load_baselines(workspace)
+    metrics, bootstrap = load_comparison(workspace)
     methods = ordered_methods(metrics)
     plot_cafa(metrics, methods, output)
     plot_aupr(metrics, methods, output)
     plot_coverage(metrics, methods, output)
     write_supporting_files(metrics, bootstrap, methods, workspace, output)
-    print(f"Plotted {len(methods)} baselines: {', '.join(methods)}")
+    print(f"Plotted DeepGreenGO with {len(methods) - 1} comparators: {', '.join(methods)}")
     print(f"Output: {output}")
 
 
