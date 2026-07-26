@@ -28,6 +28,9 @@ GRAPH_ROOT="${DGG_GRAPH_ROOT:-${PROJECT_DIR}/arc_tuning/graphs_protbert}"
 CHECKPOINT_ROOT="${DGG_CHECKPOINT_ROOT:-${TUNING_ROOT}/five_seed_hybrid}"
 BENCHMARK_ROOT="${DGG_BENCHMARK_ROOT:-${PROJECT_DIR}/arc_benchmark/nominal_30_identity_80_coverage}"
 METHODS="${DGG_BENCHMARK_METHODS:-hybrid,naive,blast,diamond,foldseek,interproscan,eggnog_mapper,deepfri_sequence,deepfri_structure,transfun,dpfunc,deepgoplus,deepgose,hayai,gomap}"
+# 1 (default): benchmark whatever is installed and report what was skipped.
+# 0: require every requested method, aborting if any is missing.
+SKIP_UNAVAILABLE="${DGG_BENCHMARK_SKIP_UNAVAILABLE:-1}"
 
 BASE_ENV="${DGG_BASE_ENV:-deepgreengo}"
 TF_ENV="${DGG_DEEPFRI_ENV:-dgg_sota_tf}"
@@ -98,12 +101,24 @@ require_dir() {
 }
 
 PREFLIGHT_FAILURES=0
+declare -A METHOD_FAILURES=()
+CURRENT_METHOD="core"
 
+# Attribute each failed check to the method being checked, so one unavailable
+# comparator does not abort a run whose other comparators are fully installed.
+# Anything checked while CURRENT_METHOD=core (interpreter, split data, GO file,
+# base environment) is a genuine pipeline fault and always aborts.
 preflight_check() {
     if ! "$@"; then
         ((PREFLIGHT_FAILURES += 1))
+        METHOD_FAILURES["${CURRENT_METHOD}"]=$(( ${METHOD_FAILURES["${CURRENT_METHOD}"]:-0} + 1 ))
     fi
     return 0
+}
+
+note_failure() {
+    ((PREFLIGHT_FAILURES += 1))
+    METHOD_FAILURES["${CURRENT_METHOD}"]=$(( ${METHOD_FAILURES["${CURRENT_METHOD}"]:-0} + 1 ))
 }
 
 stage() {
@@ -132,6 +147,7 @@ preflight() {
     preflight_check require_file "${DATA_ROOT}/go-basic.obo"
     preflight_check conda_run "${BASE_ENV}" python -c "import Bio,numpy,sklearn,torch; print('base environment ok')"
     if method_enabled hybrid; then
+        CURRENT_METHOD=hybrid
         preflight_check require_dir "${CHECKPOINT_ROOT}"
         preflight_check require_dir "${GRAPH_ROOT}"
         preflight_check require_file "${GRAPH_ROOT}/2WSC_1.pt"
@@ -143,13 +159,16 @@ preflight() {
         done
     fi
     if method_enabled blast; then
+        CURRENT_METHOD=blast
         preflight_check conda_run "${BASE_ENV}" makeblastdb -version
         preflight_check conda_run "${BASE_ENV}" blastp -version
     fi
     if method_enabled diamond; then
+        CURRENT_METHOD=diamond
         preflight_check conda_run "${BASE_ENV}" diamond version
     fi
     if method_enabled foldseek; then
+        CURRENT_METHOD=foldseek
         local requested_foldseek="${FOLDSEEK}"
         local resolved_foldseek=""
         if [[ "${requested_foldseek}" == */* && -x "${requested_foldseek}" ]]; then
@@ -169,7 +188,7 @@ preflight() {
             echo "On the ARC login node, create it once with:" >&2
             echo "  conda create -y -n dgg_foldseek -c conda-forge -c bioconda foldseek" >&2
             echo "Then resubmit the unchanged Slurm command." >&2
-            ((PREFLIGHT_FAILURES += 1))
+            note_failure
         fi
         if [[ -n "${resolved_foldseek}" ]]; then
             FOLDSEEK="$(printf '%s\n' "${resolved_foldseek}" | tail -n 1)"
@@ -177,17 +196,20 @@ preflight() {
         fi
     fi
     if method_enabled interproscan || method_enabled dpfunc; then
+        CURRENT_METHOD=interproscan
         [[ -x "${INTERPROSCAN}" ]] || command -v "${INTERPROSCAN}" >/dev/null || {
             echo "[PREFLIGHT ERROR] Set DGG_INTERPROSCAN to the executable InterProScan script" >&2
-            ((PREFLIGHT_FAILURES += 1))
+            note_failure
         }
     fi
     if method_enabled deepfri_sequence || method_enabled deepfri_structure; then
+        CURRENT_METHOD=deepfri
         preflight_check require_file "${DEEPFRI_ROOT}/predict.py"
         preflight_check require_file "${DEEPFRI_ROOT}/trained_models/model_config.json"
         preflight_check conda_run "${TF_ENV}" python -c "import tensorflow; print('DeepFRI environment ok')"
     fi
     if method_enabled transfun; then
+        CURRENT_METHOD=transfun
         preflight_check require_file "${TRANSFUN_ROOT}/predict.py"
         preflight_check require_file "${TRANSFUN_ROOT}/data/molecular_function.pt"
         preflight_check require_file "${TRANSFUN_ROOT}/data/biological_process.pt"
@@ -196,6 +218,7 @@ preflight() {
             "import biopandas, esm, torch, torch_geometric; print('TransFun environment ok')"
     fi
     if method_enabled dpfunc; then
+        CURRENT_METHOD=dpfunc
         preflight_check require_file "${DPFUNC_ROOT}/DPFunc_demo_pipeline/scripts/build_data_demo.py"
         preflight_check require_file "${DPFUNC_ROOT}/DPFunc_demo_pipeline/scripts/run_dpfunc.py"
         preflight_check require_file "${DPFUNC_ROOT}/data/inter_idx.pkl"
@@ -210,11 +233,13 @@ preflight() {
             "import dgl, logzero, torch; print('DPFunc environment ok')"
     fi
     if method_enabled eggnog_mapper; then
+        CURRENT_METHOD=eggnog_mapper
         preflight_check require_file "${EGGNOG_ROOT}/emapper.py"
         preflight_check require_dir "${EGGNOG_DATA}"
         preflight_check conda_run "${EGGNOG_ENV}" python "${EGGNOG_ROOT}/emapper.py" --version
     fi
     if method_enabled deepgoplus; then
+        CURRENT_METHOD=deepgoplus
         preflight_check require_dir "${DEEPGOPLUS_ROOT}/data"
         preflight_check require_file "${DEEPGOPLUS_ROOT}/data/go.obo"
         preflight_check require_file "${DEEPGOPLUS_ROOT}/data/model.h5"
@@ -223,6 +248,7 @@ preflight() {
         preflight_check conda_run "${DEEPGOPLUS_ENV}" deepgoplus --help >/dev/null
     fi
     if method_enabled deepgose; then
+        CURRENT_METHOD=deepgose
         preflight_check require_file "${DEEPGO_ROOT}/predict.py"
         preflight_check require_file "${DEEPGO_ROOT}/data/go.obo"
         preflight_check require_file "${DEEPGO_ROOT}/data/go-plus.norm"
@@ -236,6 +262,7 @@ preflight() {
         preflight_check conda_run "${DEEPGO_ENV}" python -c "import torch; print('DeepGO-SE environment ok')"
     fi
     if method_enabled hayai; then
+        CURRENT_METHOD=hayai
         preflight_check require_file "${HAYAI_ROOT}/db/zen.dmnd"
         preflight_check conda_run "${HAYAI_ENV}" diamond version
         if [[ "${DGG_HAYAI_USE_ORTHOLOGER:-1}" == "1" ]]; then
@@ -243,16 +270,73 @@ preflight() {
         fi
     fi
     if method_enabled gomap && [[ ! -f "${DGG_GOMAP_GAF:-}" && -z "${DGG_GOMAP_COMMAND:-}" ]]; then
+        CURRENT_METHOD=gomap
         echo "[PREFLIGHT ERROR] GOMAP has a manual Argot2.5 step upstream." >&2
         echo "Set DGG_GOMAP_GAF to a completed GAF, or DGG_GOMAP_COMMAND to a site-specific command that writes ${RAW}/gomap_predictions.gaf" >&2
-        ((PREFLIGHT_FAILURES += 1))
+        note_failure
     fi
+    CURRENT_METHOD=core
     preflight_check nvidia-smi --query-gpu=name,memory.total --format=csv,noheader
-    if ((PREFLIGHT_FAILURES > 0)); then
-        echo "[PREFLIGHT FAILED] ${PREFLIGHT_FAILURES} dependency check(s) failed; no benchmark stages were started." >&2
+    if ((PREFLIGHT_FAILURES == 0)); then
+        echo "Preflight passed"
+        return 0
+    fi
+
+    echo "" >&2
+    echo "[PREFLIGHT] ${PREFLIGHT_FAILURES} check(s) failed, by method:" >&2
+    local method
+    for method in "${!METHOD_FAILURES[@]}"; do
+        echo "  ${method}: ${METHOD_FAILURES[$method]} failed check(s)" >&2
+    done
+
+    # A core failure means the pipeline itself cannot run; no method selection
+    # can rescue that, so it always aborts.
+    if (( ${METHOD_FAILURES[core]:-0} > 0 )); then
+        echo "[PREFLIGHT FAILED] ${METHOD_FAILURES[core]} core check(s) failed (interpreter, split data," >&2
+        echo "GO file, base environment or GPU). Fix these before rerunning." >&2
         return 1
     fi
-    echo "Preflight passed"
+
+    if [[ "${SKIP_UNAVAILABLE}" != "1" ]]; then
+        echo "[PREFLIGHT FAILED] Every requested method must be installed because" >&2
+        echo "DGG_BENCHMARK_SKIP_UNAVAILABLE=0. Set it to 1 to benchmark the available" >&2
+        echo "subset instead, or narrow DGG_BENCHMARK_METHODS." >&2
+        return 1
+    fi
+
+    # Drop only the methods that failed; keep the rest.
+    local kept=() dropped=()
+    local candidate
+    IFS=',' read -r -a candidate <<< "${METHODS}"
+    for method in "${candidate[@]}"; do
+        local key="${method}"
+        case "${method}" in
+            deepfri_sequence|deepfri_structure) key=deepfri ;;
+        esac
+        if (( ${METHOD_FAILURES[$key]:-0} > 0 )); then
+            dropped+=("${method}")
+        else
+            kept+=("${method}")
+        fi
+    done
+
+    if ((${#kept[@]} == 0)); then
+        echo "[PREFLIGHT FAILED] No requested method passed its dependency checks." >&2
+        return 1
+    fi
+
+    METHODS="$(IFS=','; echo "${kept[*]}")"
+    echo "" >&2
+    echo "[PREFLIGHT] Continuing with the available subset." >&2
+    echo "  DROPPED (not installed / not configured): ${dropped[*]}" >&2
+    echo "  RUNNING: ${METHODS}" >&2
+    echo "  These results describe only the running set. Any comparison written up" >&2
+    echo "  from this run must state which methods were absent." >&2
+    mkdir -p "${BENCHMARK_ROOT}"
+    printf '%s\n' "${dropped[@]}" > "${BENCHMARK_ROOT}/preflight_dropped_methods.txt"
+    echo "  Recorded in ${BENCHMARK_ROOT}/preflight_dropped_methods.txt" >&2
+    echo "" >&2
+    return 0
 }
 
 prepare_inputs() {
