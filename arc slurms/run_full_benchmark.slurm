@@ -59,6 +59,8 @@ HAYAI_ROOT="${DGG_HAYAI_ROOT:-${PROJECT_DIR}/SOTA/HayaiAnnotation}"
 INTERPROSCAN="${DGG_INTERPROSCAN:-${PROJECT_DIR}/SOTA/interproscan/interproscan.sh}"
 INTERPRO_JAVA_ENV="${DGG_INTERPROSCAN_JAVA_ENV:-dgg_interproscan_java11}"
 INTERPRO_JAVA_HOME="${DGG_INTERPROSCAN_JAVA_HOME:-}"
+TORCH_HOME="${DGG_TORCH_HOME:-${PROJECT_DIR}/SOTA/torch_cache}"
+export TORCH_HOME
 FOLDSEEK="${DGG_FOLDSEEK:-foldseek}"
 DPFUNC_PRENAME="${DGG_DPFUNC_PRENAME:-DPFunc_model}"
 DEEPGOPLUS_DIAMOND_DIR=""
@@ -364,6 +366,8 @@ preflight() {
         preflight_check conda_run "${DPFUNC_ENV}" python "${DPFUNC_ROOT}/DPFunc_demo_pipeline/scripts/build_data_demo.py" --help
         preflight_check conda_run "${DPFUNC_ENV}" python "${DPFUNC_ROOT}/DPFunc_demo_pipeline/scripts/run_dpfunc.py" --help
         preflight_check require_file "${DPFUNC_ROOT}/data/inter_idx.pkl"
+        preflight_check require_file "${TORCH_HOME}/hub/checkpoints/esm2_t33_650M_UR50D.pt"
+        preflight_check require_file "${TORCH_HOME}/hub/checkpoints/esm2_t33_650M_UR50D-contact-regression.pt"
         local ontology model_index
         for ontology in mf bp cc; do
             preflight_check require_file "${DPFUNC_ROOT}/mlb/${ontology}_go.mlb"
@@ -372,7 +376,7 @@ preflight() {
             done
         done
         preflight_check conda_run "${DPFUNC_ENV}" python -c \
-            "import dgl, logzero, torch; print('DPFunc environment ok')"
+            "import dgl, esm, logzero, torch; print('DPFunc environment and ESM import ok')"
     fi
     if method_enabled eggnog_mapper; then
         CURRENT_METHOD=eggnog_mapper

@@ -24,15 +24,19 @@ DEEPGOPLUS_ROOT="${DGG_DEEPGOPLUS_ROOT:-${SOTA_ROOT}/deepgoplus}"
 DEEPGO_ROOT="${DGG_DEEPGO_ROOT:-${SOTA_ROOT}/deepgo2}"
 INTERPRO_VERSION="${DGG_INTERPRO_VERSION:-5.78-109.0}"
 INTERPRO_ROOT="${DGG_INTERPRO_ROOT:-${SOTA_ROOT}/interproscan-${INTERPRO_VERSION}}"
+TORCH_HOME="${DGG_TORCH_HOME:-${SOTA_ROOT}/torch_cache}"
+export TORCH_HOME
 
 DEEPFRI_MODELS_URL="${DGG_DEEPFRI_MODELS_URL:-https://users.flatironinstitute.org/~renfrew/DeepFRI_data/trained_models.tar.gz}"
 TRANSFUN_DATA_URL="${DGG_TRANSFUN_DATA_URL:-https://calla.rnet.missouri.edu/rnaminer/transfun/data}"
 DPFUNC_MODELS_GDRIVE_ID="${DGG_DPFUNC_MODELS_GDRIVE_ID:-1V0VTFTiB29ilbAIOZn0okBQWPlbOI3wN}"
+DPFUNC_ESM2_MODEL_URL="${DGG_DPFUNC_ESM2_MODEL_URL:-https://dl.fbaipublicfiles.com/fair-esm/models/esm2_t33_650M_UR50D.pt}"
+DPFUNC_ESM2_REGRESSION_URL="${DGG_DPFUNC_ESM2_REGRESSION_URL:-https://dl.fbaipublicfiles.com/fair-esm/regression/esm2_t33_650M_UR50D-contact-regression.pt}"
 DEEPGOPLUS_DATA_URL="${DGG_DEEPGOPLUS_DATA_URL:-http://deepgoplus.bio2vec.net/data/data.tar.gz}"
 DEEPGO_DATA_URL="${DGG_DEEPGO_DATA_URL:-https://deepgo.cbrc.kaust.edu.sa/data/deepgo2/data.tar.gz}"
 INTERPRO_URL="${DGG_INTERPRO_URL:-https://ftp.ebi.ac.uk/pub/software/unix/iprscan/5/${INTERPRO_VERSION}/interproscan-${INTERPRO_VERSION}-64-bit.tar.gz}"
 
-mkdir -p "${SOTA_ROOT}" "${DOWNLOAD_ROOT}"
+mkdir -p "${SOTA_ROOT}" "${DOWNLOAD_ROOT}" "${TORCH_HOME}/hub/checkpoints"
 
 if [[ -z "${SETUP_METHODS}" ]]; then
     echo "[SETUP ERROR] DGG_SOTA_SETUP_METHODS must not be empty" >&2
@@ -200,7 +204,19 @@ setup_dpfunc() {
     if ! conda_env_exists "${DPFUNC_ENV}"; then
         conda env create -n "${DPFUNC_ENV}" -f "${DPFUNC_ROOT}/DPFunc_env.yml"
     fi
-    conda run -n "${DPFUNC_ENV}" python -m pip install "gdown>=5,<6"
+    # The current DPFunc preprocessing pipeline imports `esm` and loads
+    # esm2_t33_650M_UR50D, but upstream DPFunc_env.yml does not declare the
+    # package that provides that module. Install it explicitly and populate the
+    # shared Torch checkpoint cache during setup, rather than discovering the
+    # missing dependency/download after the GPU benchmark has started.
+    conda run -n "${DPFUNC_ENV}" python -m pip install \
+        "gdown>=5,<6" "fair-esm==2.0.0"
+    download_file "${DPFUNC_ESM2_MODEL_URL}" \
+        "${TORCH_HOME}/hub/checkpoints/esm2_t33_650M_UR50D.pt"
+    download_file "${DPFUNC_ESM2_REGRESSION_URL}" \
+        "${TORCH_HOME}/hub/checkpoints/esm2_t33_650M_UR50D-contact-regression.pt"
+    conda run -n "${DPFUNC_ENV}" python -c \
+        "import esm; model, alphabet = esm.pretrained.esm2_t33_650M_UR50D(); print('DPFunc ESM2 cache ready')"
     if [[ ! -s "${DPFUNC_ROOT}/save_models/DPFunc_model_mf_0of3model.pt" ]]; then
         local archive="${DOWNLOAD_ROOT}/dpfunc_models.archive"
         if [[ ! -s "${archive}" ]]; then
@@ -281,6 +297,8 @@ verify_setup() {
     if method_enabled dpfunc; then
         check require_file "${DPFUNC_ROOT}/DPFunc_demo_pipeline/scripts/build_data_demo.py"
         check require_file "${DPFUNC_ROOT}/data/inter_idx.pkl"
+        check require_file "${TORCH_HOME}/hub/checkpoints/esm2_t33_650M_UR50D.pt"
+        check require_file "${TORCH_HOME}/hub/checkpoints/esm2_t33_650M_UR50D-contact-regression.pt"
         check conda run -n "${DPFUNC_ENV}" python "${DPFUNC_ROOT}/DPFunc_demo_pipeline/scripts/build_data_demo.py" --help
         check conda run -n "${DPFUNC_ENV}" python "${DPFUNC_ROOT}/DPFunc_demo_pipeline/scripts/run_dpfunc.py" --help
         for ontology in mf bp cc; do
@@ -289,10 +307,14 @@ verify_setup() {
                 check require_file "${DPFUNC_ROOT}/save_models/DPFunc_model_${ontology}_${model_index}of3model.pt"
             done
         done
-        check conda run -n "${DPFUNC_ENV}" python -c "import dgl, logzero, torch"
+        check conda run -n "${DPFUNC_ENV}" python -c \
+            "import dgl, esm, logzero, torch; esm.pretrained.esm2_t33_650M_UR50D(); print('DPFunc runtime and ESM2 cache verified')"
     fi
     if method_enabled deepgoplus; then
-        for file in go.obo model.h5 terms.pkl train_data.pkl train_data.dmnd metadata/last_release.json; do
+        # DeepGOPlus 1.0.2 consumes these five files. last_release.json belongs
+        # to a different/newer data layout and is not present in the official
+        # 1.0.2 archive or read by the benchmark command.
+        for file in go.obo model.h5 terms.pkl train_data.pkl train_data.dmnd; do
             check require_file "${DEEPGOPLUS_ROOT}/data/${file}"
         done
         check conda run -n "${DEEPGOPLUS_ENV}" deepgoplus --help
