@@ -274,6 +274,20 @@ def style_axis(ax: plt.Axes, ontology: str, xlabel: str, panel: str) -> None:
     label_panel(ax, panel)
 
 
+def set_method_axis(
+    ax: plt.Axes,
+    y: np.ndarray,
+    methods: list[str],
+    column_index: int,
+) -> None:
+    """Keep shared tick positions while showing method names only at left."""
+    ax.set_yticks(y)
+    if column_index == 0:
+        ax.set_yticklabels([METHOD_LABEL.get(method, method) for method in methods])
+        ax.tick_params(axis="y", labelleft=True)
+    else:
+        ax.tick_params(axis="y", labelleft=False)
+
 
 def assert_print_fonts(fig: plt.Figure) -> None:
     warnings = check_min_font(fig, MAIN)
@@ -317,7 +331,7 @@ def plot_cafa(metrics: pd.DataFrame, methods: list[str], out: Path) -> None:
             add_proposed_separator(ax, methods)
             maximum = max(upper_values)
             ax.set_xlim(0, maximum * 1.10 if maximum > 0 else 1)
-            ax.set_yticks(y, [METHOD_LABEL.get(method, method) for method in methods] if column_index == 0 else [])
+            set_method_axis(ax, y, methods, column_index)
             style_axis(ax, ontology, xlabel, chr(97 + panel_index))
             panel_index += 1
     # All panels share y; invert exactly once so METHOD_ORDER is top-to-bottom.
@@ -357,7 +371,7 @@ def plot_aupr(metrics: pd.DataFrame, methods: list[str], out: Path) -> None:
             add_proposed_separator(ax, methods)
             maximum = max(values)
             ax.set_xlim(0, maximum * 1.12 if maximum > 0 else 1)
-            ax.set_yticks(y, [METHOD_LABEL.get(method, method) for method in methods] if column_index == 0 else [])
+            set_method_axis(ax, y, methods, column_index)
             style_axis(ax, ontology, xlabel, chr(97 + panel_index))
             panel_index += 1
     # All panels share y; invert exactly once so METHOD_ORDER is top-to-bottom.
@@ -404,7 +418,7 @@ def plot_coverage(metrics: pd.DataFrame, methods: list[str], out: Path) -> None:
                 )
             add_proposed_separator(ax, methods)
             ax.set_xlim(0, 105)
-            ax.set_yticks(y, [METHOD_LABEL.get(method, method) for method in methods] if column_index == 0 else [])
+            set_method_axis(ax, y, methods, column_index)
             style_axis(ax, ontology, xlabel, chr(97 + panel_index))
             panel_index += 1
     # All panels share y; invert exactly once so METHOD_ORDER is top-to-bottom.
