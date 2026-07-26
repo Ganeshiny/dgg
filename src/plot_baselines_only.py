@@ -242,12 +242,12 @@ def plot_cafa(metrics: pd.DataFrame, methods: list[str], out: Path) -> None:
                 )
             maximum = max(upper_values)
             ax.set_xlim(0, maximum * 1.10 if maximum > 0 else 1)
-            ax.set_yticks(y, [METHOD_LABEL.get(method, method) for method in methods])
+            ax.set_yticks(y, [METHOD_LABEL.get(method, method) for method in methods] if column_index == 0 else [])
             style_axis(ax, ontology, xlabel, chr(97 + panel_index))
             panel_index += 1
     # All panels share y; invert exactly once so METHOD_ORDER is top-to-bottom.
     axes[0, 0].invert_yaxis()
-    fig.subplots_adjust(left=0.19, bottom=0.10, hspace=0.42, wspace=0.28)
+    fig.subplots_adjust(left=0.15, bottom=0.10, hspace=0.42, wspace=0.24)
     assert_print_fonts(fig)
     savefig(fig, out / "baseline_cafa_performance", MAIN)
 
@@ -279,12 +279,12 @@ def plot_aupr(metrics: pd.DataFrame, methods: list[str], out: Path) -> None:
                 )
             maximum = max(values)
             ax.set_xlim(0, maximum * 1.12 if maximum > 0 else 1)
-            ax.set_yticks(y, [METHOD_LABEL.get(method, method) for method in methods])
+            ax.set_yticks(y, [METHOD_LABEL.get(method, method) for method in methods] if column_index == 0 else [])
             style_axis(ax, ontology, xlabel, chr(97 + panel_index))
             panel_index += 1
     # All panels share y; invert exactly once so METHOD_ORDER is top-to-bottom.
     axes[0, 0].invert_yaxis()
-    fig.subplots_adjust(left=0.19, bottom=0.10, hspace=0.42, wspace=0.28)
+    fig.subplots_adjust(left=0.15, bottom=0.10, hspace=0.42, wspace=0.24)
     assert_print_fonts(fig)
     savefig(fig, out / "baseline_aupr", MAIN)
 
@@ -324,12 +324,12 @@ def plot_coverage(metrics: pd.DataFrame, methods: list[str], out: Path) -> None:
                     va="center", ha="left" if value < 92 else "right",
                 )
             ax.set_xlim(0, 105)
-            ax.set_yticks(y, [METHOD_LABEL.get(method, method) for method in methods])
+            ax.set_yticks(y, [METHOD_LABEL.get(method, method) for method in methods] if column_index == 0 else [])
             style_axis(ax, ontology, xlabel, chr(97 + panel_index))
             panel_index += 1
     # All panels share y; invert exactly once so METHOD_ORDER is top-to-bottom.
     axes[0, 0].invert_yaxis()
-    fig.subplots_adjust(left=0.19, bottom=0.10, hspace=0.42, wspace=0.28)
+    fig.subplots_adjust(left=0.15, bottom=0.10, hspace=0.42, wspace=0.24)
     assert_print_fonts(fig)
     savefig(fig, out / "baseline_prediction_coverage", MAIN)
 
