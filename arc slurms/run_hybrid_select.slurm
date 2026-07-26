@@ -16,7 +16,7 @@ TUNING_ROOT="${DGG_TUNING_ROOT:-${PROJECT_DIR}/arc_tuning}"
 SELECTION_METRIC="${DGG_SELECTION_METRIC:-validation_micro_fmax}"
 cd "${PROJECT_DIR}"
 mkdir -p "${PROJECT_DIR}/logs"
-python3 scripts/select_hybrid_trials.py \
+python3 src/select_hybrid_trials.py \
   --runs-dir "${TUNING_ROOT}/hybrid_search" \
   --output "${TUNING_ROOT}/selected_hybrid.json" \
   --expected-trials "${DGG_EXPECTED_TRIALS:-40}" --metric "${SELECTION_METRIC}"

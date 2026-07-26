@@ -11,8 +11,8 @@ import subprocess
 from collections import defaultdict
 from pathlib import Path
 
-from arc_benchmark import ONTOLOGIES, load_label_npz
-from arc_benchmark_methods import run_checked
+from .core import ONTOLOGIES, load_label_npz
+from .methods import run_checked
 
 
 def make_dpfunc_manifest(args) -> None:

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Hyperparameter-search and confirmation-run figures for the ARC pipeline.
 
-Search provenance (read from scripts/generate_hybrid_trials.py, not assumed):
+Search provenance (read from src/generate_hybrid_trials.py, not assumed):
 a seeded RANDOM search of 40 trials, search seed 20260714 — not a Cartesian
 grid and not Bayesian. Learning rate and weight decay are drawn log-uniformly
 from [1e-5, 3e-3] and [1e-7, 1e-2]; dropout, hidden dim, batch size, gradient

@@ -11,7 +11,7 @@ fi
 ONTOLOGY="$1"
 echo "Fetching best hyperparameters for $ONTOLOGY..."
 
-BEST_PARAMS=$(python3 scripts/get_best_hyperparams.py --ontology "$ONTOLOGY")
+BEST_PARAMS=$(python3 src/get_best_hyperparams.py --ontology "$ONTOLOGY")
 
 if [ -z "$BEST_PARAMS" ]; then
     echo "Error: Could not find best parameters for $ONTOLOGY in tuning summary."

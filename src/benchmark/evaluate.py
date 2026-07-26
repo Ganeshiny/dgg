@@ -10,7 +10,7 @@ from pathlib import Path
 
 import numpy as np
 
-from arc_benchmark import ONTOLOGIES, load_label_npz, load_prediction, parse_obo
+from .core import ONTOLOGIES, load_label_npz, load_prediction, parse_obo
 
 
 def align_prediction(path: Path, target_ids: list[str], target_terms: list[str]):
@@ -209,7 +209,7 @@ def resolve_data_root(manifest: dict, override: Path | None = None) -> Path:
     recorded = Path(manifest["data_root"])
     if recorded.is_dir():
         return recorded
-    local = Path(__file__).resolve().parents[1] / "preprocessing" / recorded.name
+    local = Path(__file__).resolve().parents[2] / "preprocessing" / recorded.name
     if local.is_dir():
         print(f"[benchmark] manifest data_root {recorded} is not present on this host; "
               f"using {local}")

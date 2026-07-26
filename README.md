@@ -53,8 +53,8 @@ source ~/.bashrc
 
 ```
 deep-green-GO/
-├── src/              model, training, evaluation, and figure-generation code
-├── scripts/          pipeline orchestration & analysis CLIs (trial selection, bin evaluation, aggregation)
+├── src/              all Python: model, training, benchmark, evaluation, figures, and CLIs
+├── scripts/          shell-only external dependency/model setup
 ├── preprocessing/     sequence/structure extraction, homology-aware splitting, graph dataset construction
 ├── "arc slurms/"     SLURM job scripts for the ARC HPC pipeline
 ├── baselines/        BLAST / DIAMOND / naive-frequency / DeepFRI baselines

@@ -44,7 +44,7 @@ python3 preprocessing/build_threshold_arc_dataset.py \
   --data-root "${DATA_ROOT}" --tuning-root "${TUNING_ROOT}" \
   --graph-root "${GRAPH_ROOT}" --threshold "${THRESHOLD}" --coverage 0.8
 
-python3 scripts/generate_hybrid_trials.py --trials "${TRIALS}" --output "${TRIAL_CONFIGS}"
+python3 src/generate_hybrid_trials.py --trials "${TRIALS}" --output "${TRIAL_CONFIGS}"
 unset CUDA_VISIBLE_DEVICES
 LAST_TASK=$((TRIALS * 3 - 1))
 

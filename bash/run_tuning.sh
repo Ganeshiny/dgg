@@ -87,4 +87,4 @@ if [ "$FAILED" -gt 0 ]; then
     echo "  Failed:    $FAILED"
 fi
 echo "========================================="
-echo "Run 'python3 scripts/aggregate_tuning.py' to summarize results."
+echo "Run 'python3 src/aggregate_tuning.py' to summarize results."

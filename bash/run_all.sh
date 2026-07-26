@@ -119,7 +119,7 @@ if [ "$RUN_TUNING" = true ]; then
     section "Step 2.5: Hyperparameter Tuning"
     info "Running grid search over LR, Dropout, and Batch Size for all 3 ontologies."
     EPOCHS="$EPOCHS" DATASET_PATH="$DATASET_PKL" bash run_tuning.sh
-    python3 scripts/aggregate_tuning.py
+    python3 src/aggregate_tuning.py
 else
     warn "Skipping hyperparameter tuning (pass --tune to run)"
 fi
@@ -152,7 +152,7 @@ if [ "$SKIP_EVAL" = false ]; then
 
         if [ -f "$BEST_MODEL_PATH" ]; then
             info "Per-cluster eval: $ONT"
-            python3 scripts/per_cluster_eval.py \
+            python3 src/per_cluster_eval.py \
                 --model_path "$BEST_MODEL_PATH" \
                 --model      "$MAIN_MODEL" \
                 --ontology   "$ONT" \
@@ -209,7 +209,7 @@ fi
 if [ "$SKIP_PLOTS" = false ]; then
     section "Step 6: Aggregate Results and Generate Plots"
 
-    python3 scripts/aggregate_results.py
+    python3 src/aggregate_results.py
     python3 plots/plot_results.py
     success "Plots saved to plots/"
 else

@@ -30,7 +30,7 @@ echo "  Job ID      : ${SLURM_JOB_ID}"
 echo "  Node        : ${SLURM_NODELIST}"
 echo "  Start time  : $(date)"
 echo "  Project     : ${PROJECT_DIR}"
-echo "  Methods     : ${DGG_SOTA_SETUP_METHODS:-deepfri,transfun,dpfunc,deepgoplus,deepgose,interproscan}"
+echo "  Methods     : ${DGG_SOTA_SETUP_METHODS:-deepfri,dpfunc,deepgoplus,deepgose,interproscan}"
 echo "========================================================"
 
 if [[ ! -x "${SETUP_SCRIPT}" ]]; then

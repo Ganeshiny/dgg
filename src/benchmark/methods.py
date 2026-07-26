@@ -14,7 +14,7 @@ from pathlib import Path
 
 import numpy as np
 
-from arc_benchmark import (
+from .core import (
     ONTOLOGIES,
     ROOT_TERMS,
     ancestors,
@@ -31,7 +31,7 @@ def run_checked(command: list[str | Path], *, cwd: Path | None = None) -> None:
     subprocess.run([str(part) for part in command], cwd=cwd, check=True)
 
 
-def run_search_once(output: Path, build_command) -> None:
+def run_search_once(output: Path, build_command, *, force: bool = False) -> None:
     """Run a similarity search unless a *complete* result already exists.
 
     A bare ``output.is_file()`` resume check is unsafe here. blastp, DIAMOND
@@ -50,6 +50,9 @@ def run_search_once(output: Path, build_command) -> None:
     only after the process exits successfully, so the final filename can never
     name a partial result. os.replace is atomic within a filesystem.
     """
+    if force and output.exists():
+        print(f"[benchmark] forcing search refresh for {output}", flush=True)
+        output.unlink()
     if output.is_file() and output.stat().st_size > 0:
         print(f"[benchmark] reusing complete search output {output}", flush=True)
         return
@@ -237,20 +240,16 @@ def foldseek_baseline(args) -> None:
     raw_dir = workspace / "raw"
     raw_dir.mkdir(parents=True, exist_ok=True)
     hits_path = raw_dir / "foldseek_hits.tsv"
-    query_dir = workspace / "inputs" / "structures" / "valid_test"
-    query_dir.mkdir(parents=True, exist_ok=True)
-    for split in ("valid", "test"):
-        for path in (workspace / "inputs" / "structures" / split).glob("*.pdb"):
-            link = query_dir / path.name
-            if not link.exists():
-                link.symlink_to(path.resolve())
+    structure_root = workspace / "inputs" / "structures" / "foldseek"
+    query_dir = structure_root / "valid_test"
+    target_dir = structure_root / "train"
     tmp_dir = workspace / "tmp" / "foldseek"
     tmp_dir.mkdir(parents=True, exist_ok=True)
     run_search_once(hits_path, lambda out: [
-        args.foldseek, "easy-search", query_dir,
-        workspace / "inputs" / "structures" / "train", out, tmp_dir,
+        args.foldseek, "easy-search", query_dir, target_dir, out, tmp_dir,
         "--threads", args.threads, "--max-seqs", args.max_hits,
-        "--format-output", "query,target,fident,alnlen,qlen,tlen,evalue,bits,qcov,tcov"])
+        "--format-output", "query,target,fident,alnlen,qlen,tlen,evalue,bits,qcov,tcov"],
+        force=args.force_search)
     parsed = parse_similarity_hits(hits_path)
     for short in ONTOLOGIES:
         train_ids, terms, train_labels = load_label_npz(workspace, short, "train")
@@ -333,6 +332,45 @@ def normalize_scored_rows(workspace: Path, method: str, files: dict[str, Path],
                         score_type=score_type, metadata={**meta, "split": "valid"})
         save_prediction(workspace, method, short, test_ids, terms, scores[valid_count:],
                         score_type=score_type, metadata={**meta, "split": "test"})
+
+
+def normalize_deepgoplus(workspace: Path, path: Path) -> None:
+    """Normalize DeepGOPlus's protein<TAB>GO|score wide-row output.
+
+    DeepGOPlus 1.0.2 does not emit one three-column record per prediction.
+    Each line starts with the protein ID and is followed by any number of
+    GO:nnnnnnn|score fields. Parsing it as a generic scored table silently
+    produces zero predictions.
+    """
+    terms_by_ontology = {
+        short: set(load_label_npz(workspace, short, "test")[1])
+        for short in ONTOLOGIES
+    }
+    rows = {short: [] for short in ONTOLOGIES}
+    with path.open() as handle:
+        for line_number, raw in enumerate(handle, start=1):
+            fields = raw.rstrip("\n").split("\t")
+            if not fields or not fields[0]:
+                continue
+            protein = fields[0]
+            for item in fields[1:]:
+                try:
+                    term, raw_score = item.rsplit("|", 1)
+                    score = float(raw_score)
+                except ValueError as exc:
+                    raise ValueError(
+                        f"{path}:{line_number}: invalid DeepGOPlus field {item!r}"
+                    ) from exc
+                for short in ONTOLOGIES:
+                    if term in terms_by_ontology[short]:
+                        rows[short].append((protein, term, score))
+                        break
+    normalize_scored_rows(
+        workspace,
+        "deepgoplus",
+        write_rows(workspace, "deepgoplus", rows),
+        "\t",
+    )
 
 
 def normalize_deepfri(workspace: Path, method: str, files: dict[str, Path]) -> None:

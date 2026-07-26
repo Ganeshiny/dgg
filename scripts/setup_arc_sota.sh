@@ -8,13 +8,14 @@ set -euo pipefail
 PROJECT_DIR="${DGG_PROJECT_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 SOTA_ROOT="${DGG_SOTA_ROOT:-${PROJECT_DIR}/SOTA}"
 DOWNLOAD_ROOT="${DGG_SOTA_DOWNLOAD_ROOT:-${SOTA_ROOT}/downloads}"
-SETUP_METHODS="${DGG_SOTA_SETUP_METHODS:-deepfri,transfun,dpfunc,deepgoplus,deepgose,interproscan}"
+SETUP_METHODS="${DGG_SOTA_SETUP_METHODS:-deepfri,dpfunc,deepgoplus,deepgose,interproscan}"
 
 DEEPFRI_ENV="${DGG_DEEPFRI_ENV:-dgg_sota_tf}"
 TRANSFUN_ENV="${DGG_TRANSFUN_ENV:-dgg_transfun}"
 DPFUNC_ENV="${DGG_DPFUNC_ENV:-dgg_dpfunc}"
 DEEPGOPLUS_ENV="${DGG_DEEPGOPLUS_ENV:-dgg_deepgoplus_py37}"
 DEEPGO_ENV="${DGG_DEEPGO_ENV:-dgg_deepgose}"
+INTERPRO_JAVA_ENV="${DGG_INTERPROSCAN_JAVA_ENV:-dgg_interproscan_java11}"
 
 DEEPFRI_ROOT="${DGG_DEEPFRI_ROOT:-${PROJECT_DIR}/baselines/DeepFRI}"
 TRANSFUN_ROOT="${DGG_TRANSFUN_ROOT:-${SOTA_ROOT}/TransFun}"
@@ -62,6 +63,22 @@ require_executable() {
 
 conda_env_exists() {
     conda run -n "$1" true >/dev/null 2>&1
+}
+
+require_java11_env() {
+    local environment="$1"
+    local version
+    version="$(conda run -n "${environment}" java -version 2>&1 | head -n 1)"
+    case "${version}" in
+        *'version "11.'*|*'version "11"'*)
+            echo "[OK] ${environment}: ${version}"
+            return 0
+            ;;
+        *)
+            echo "[SETUP ERROR] ${environment} does not provide Java 11: ${version:-no java found}" >&2
+            return 1
+            ;;
+    esac
 }
 
 clone_repo() {
@@ -222,6 +239,14 @@ setup_deepgose() {
 }
 
 setup_interproscan() {
+    if ! conda_env_exists "${INTERPRO_JAVA_ENV}"; then
+        conda create -y -n "${INTERPRO_JAVA_ENV}" --override-channels \
+            -c conda-forge "openjdk=11"
+    elif ! require_java11_env "${INTERPRO_JAVA_ENV}"; then
+        conda install -y -n "${INTERPRO_JAVA_ENV}" --override-channels \
+            -c conda-forge "openjdk=11"
+    fi
+    require_java11_env "${INTERPRO_JAVA_ENV}"
     if [[ ! -x "${INTERPRO_ROOT}/interproscan.sh" ]]; then
         local archive="${DOWNLOAD_ROOT}/interproscan-${INTERPRO_VERSION}-64-bit.tar.gz"
         local checksum="${archive}.md5"
@@ -244,6 +269,7 @@ verify_setup() {
         check require_file "${DEEPFRI_ROOT}/predict.py"
         check require_file "${DEEPFRI_ROOT}/trained_models/model_config.json"
         check conda run -n "${DEEPFRI_ENV}" python -c "import tensorflow"
+        check conda run -n "${DEEPFRI_ENV}" python "${DEEPFRI_ROOT}/predict.py" --help
     fi
     if method_enabled transfun; then
         check require_file "${TRANSFUN_ROOT}/predict.py"
@@ -255,6 +281,8 @@ verify_setup() {
     if method_enabled dpfunc; then
         check require_file "${DPFUNC_ROOT}/DPFunc_demo_pipeline/scripts/build_data_demo.py"
         check require_file "${DPFUNC_ROOT}/data/inter_idx.pkl"
+        check conda run -n "${DPFUNC_ENV}" python "${DPFUNC_ROOT}/DPFunc_demo_pipeline/scripts/build_data_demo.py" --help
+        check conda run -n "${DPFUNC_ENV}" python "${DPFUNC_ROOT}/DPFunc_demo_pipeline/scripts/run_dpfunc.py" --help
         for ontology in mf bp cc; do
             check require_file "${DPFUNC_ROOT}/mlb/${ontology}_go.mlb"
             for model_index in 0 1 2; do
@@ -264,7 +292,7 @@ verify_setup() {
         check conda run -n "${DPFUNC_ENV}" python -c "import dgl, logzero, torch"
     fi
     if method_enabled deepgoplus; then
-        for file in go.obo model.h5 terms.pkl train_data.pkl; do
+        for file in go.obo model.h5 terms.pkl train_data.pkl train_data.dmnd metadata/last_release.json; do
             check require_file "${DEEPGOPLUS_ROOT}/data/${file}"
         done
         check conda run -n "${DEEPGOPLUS_ENV}" deepgoplus --help
@@ -285,11 +313,13 @@ verify_setup() {
         for model_index in 1 3 4 5 6 7; do
             check require_file "${DEEPGO_ROOT}/data/cc/deepgozero_esm_plus_${model_index}.th"
         done
-        check conda run -n "${DEEPGO_ENV}" python -c "import dgl, torch"
+        check conda run -n "${DEEPGO_ENV}" python -c "import dgl, esm, torch"
+        check conda run -n "${DEEPGO_ENV}" python "${DEEPGO_ROOT}/predict.py" --help
     fi
     if method_enabled interproscan; then
         check require_executable "${INTERPRO_ROOT}/interproscan.sh"
         check require_executable "${SOTA_ROOT}/interproscan/interproscan.sh"
+        check require_java11_env "${INTERPRO_JAVA_ENV}"
     fi
 
     if ((failures > 0)); then

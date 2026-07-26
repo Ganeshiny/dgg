@@ -6,12 +6,13 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from arc_benchmark import export_hybrid, prepare
-from arc_benchmark_evaluate import evaluate, plot
-from arc_benchmark_external import clone_dpfunc_workspace, make_dpfunc_manifest, run_hayai
-from arc_benchmark_methods import (
+from .core import export_hybrid, prepare
+from .evaluate import evaluate, plot
+from .external import clone_dpfunc_workspace, make_dpfunc_manifest, run_hayai
+from .methods import (
     foldseek_baseline,
     normalize_deepfri,
+    normalize_deepgoplus,
     normalize_dpfunc,
     normalize_eggnog,
     normalize_gomap,
@@ -72,6 +73,7 @@ def main() -> None:
     command.add_argument("--top-k", type=int, default=10)
     command.add_argument("--min-qcov", type=float, default=0.5)
     command.add_argument("--min-tcov", type=float, default=0.5)
+    command.add_argument("--force-search", action="store_true")
     command.set_defaults(func=foldseek_baseline)
 
     command = sub.add_parser("normalize-scored")
@@ -96,6 +98,12 @@ def main() -> None:
     command.add_argument("--cc", type=Path, required=True)
     command.set_defaults(func=lambda args: normalize_deepfri(
         args.workspace.resolve(), args.method, files_by_ontology(args)))
+
+    command = sub.add_parser("normalize-deepgoplus")
+    add_workspace(command)
+    command.add_argument("--input", type=Path, required=True)
+    command.set_defaults(func=lambda args: normalize_deepgoplus(
+        args.workspace.resolve(), args.input.resolve()))
 
     command = sub.add_parser("normalize-dpfunc")
     add_workspace(command)

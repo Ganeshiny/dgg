@@ -24,7 +24,7 @@ MODELS=("Hybrid_JK")
 LOSSES=("BCE" "Focal")
 SEEDS=(42 123 456)
 
-BEST_PARAMS=$(python3 scripts/get_best_hyperparams.py --ontology "$ONT" --summary_file "tuning_runs_jk/tuning_results_summary.csv")
+BEST_PARAMS=$(python3 src/get_best_hyperparams.py --ontology "$ONT" --summary_file "tuning_runs_jk/tuning_results_summary.csv")
 eval "$BEST_PARAMS"
 
 for model in "${MODELS[@]}"; do

@@ -27,10 +27,14 @@ TUNING_ROOT="${DGG_TUNING_ROOT:-${PROJECT_DIR}/arc_tuning_cafa}"
 GRAPH_ROOT="${DGG_GRAPH_ROOT:-${PROJECT_DIR}/arc_tuning/graphs_protbert}"
 CHECKPOINT_ROOT="${DGG_CHECKPOINT_ROOT:-${TUNING_ROOT}/five_seed_hybrid}"
 BENCHMARK_ROOT="${DGG_BENCHMARK_ROOT:-${PROJECT_DIR}/arc_benchmark/nominal_30_identity_80_coverage}"
-METHODS="${DGG_BENCHMARK_METHODS:-hybrid,naive,blast,diamond,foldseek,interproscan,eggnog_mapper,deepfri_sequence,deepfri_structure,transfun,dpfunc,deepgoplus,deepgose,hayai,gomap}"
-# 1 (default): benchmark whatever is installed and report what was skipped.
-# 0: require every requested method, aborting if any is missing.
-SKIP_UNAVAILABLE="${DGG_BENCHMARK_SKIP_UNAVAILABLE:-1}"
+# Deadline-safe profile: only methods whose repositories, model files, and
+# environments passed the ARC setup checks. TransFun, eggNOG, Hayai, and GOMAP
+# remain explicit opt-ins; they are not silently advertised as completed.
+METHODS="${DGG_BENCHMARK_METHODS:-hybrid,naive,blast,diamond,foldseek,interproscan,deepfri_sequence,deepfri_structure,dpfunc,deepgoplus,deepgose}"
+# Strict by default: a requested comparator must pass preflight before any
+# expensive stage starts. Set to 1 only for an intentionally incomplete run.
+SKIP_UNAVAILABLE="${DGG_BENCHMARK_SKIP_UNAVAILABLE:-0}"
+FORCE_STAGES="${DGG_BENCHMARK_FORCE_STAGES:-}"
 
 BASE_ENV="${DGG_BASE_ENV:-deepgreengo}"
 TF_ENV="${DGG_DEEPFRI_ENV:-dgg_sota_tf}"
@@ -53,13 +57,22 @@ EGGNOG_ROOT="${DGG_EGGNOG_ROOT:-${PROJECT_DIR}/SOTA/eggnog-mapper}"
 EGGNOG_DATA="${DGG_EGGNOG_DATA:-${EGGNOG_ROOT}/data}"
 HAYAI_ROOT="${DGG_HAYAI_ROOT:-${PROJECT_DIR}/SOTA/HayaiAnnotation}"
 INTERPROSCAN="${DGG_INTERPROSCAN:-${PROJECT_DIR}/SOTA/interproscan/interproscan.sh}"
+INTERPRO_JAVA_ENV="${DGG_INTERPROSCAN_JAVA_ENV:-dgg_interproscan_java11}"
+INTERPRO_JAVA_HOME="${DGG_INTERPROSCAN_JAVA_HOME:-}"
 FOLDSEEK="${DGG_FOLDSEEK:-foldseek}"
 DPFUNC_PRENAME="${DGG_DPFUNC_PRENAME:-DPFunc_model}"
+DEEPGOPLUS_DIAMOND_DIR=""
 
 THREADS="${SLURM_CPUS_PER_TASK:-16}"
 STAGES="${BENCHMARK_ROOT}/stages"
 RAW="${BENCHMARK_ROOT}/raw"
-PYTHON_SCRIPT="${PROJECT_DIR}/scripts/run_arc_benchmark.py"
+PYTHON_FILES=(
+    "${PROJECT_DIR}/src/benchmark/cli.py"
+    "${PROJECT_DIR}/src/benchmark/core.py"
+    "${PROJECT_DIR}/src/benchmark/methods.py"
+    "${PROJECT_DIR}/src/benchmark/external.py"
+    "${PROJECT_DIR}/src/benchmark/evaluate.py"
+)
 
 cd "${PROJECT_DIR}"
 mkdir -p "${PROJECT_DIR}/logs" "${BENCHMARK_ROOT}" "${STAGES}" "${RAW}"
@@ -79,18 +92,79 @@ conda_run() {
     conda run --no-capture-output -n "${environment}" "$@"
 }
 
-pipeline_fingerprint() {
-    {
-        printf '%s\n' "${METHODS}"
-        sha256sum "$0" "${PYTHON_SCRIPT}" \
-            "${PROJECT_DIR}/scripts/arc_benchmark.py" \
-            "${PROJECT_DIR}/scripts/arc_benchmark_methods.py" \
-            "${PROJECT_DIR}/scripts/arc_benchmark_external.py" \
-            "${PROJECT_DIR}/scripts/arc_benchmark_evaluate.py"
-    } | sha256sum | cut -d' ' -f1
+benchmark_cli() {
+    conda_run "${BASE_ENV}" python -m src.benchmark.cli "$@"
 }
 
-PIPELINE_FINGERPRINT="$(pipeline_fingerprint)"
+nonempty_file() {
+    [[ -s "$1" ]]
+}
+
+prediction_complete() {
+    local method="$1"
+    local ontology
+    for ontology in mf bp cc; do
+        nonempty_file "${BENCHMARK_ROOT}/predictions/${method}/${ontology}.npz" || return 1
+    done
+}
+
+stage_artifacts_ok() {
+    local name="$1"
+    local ontology
+    case "${name}" in
+        01_prepare_inputs)
+            nonempty_file "${BENCHMARK_ROOT}/benchmark_manifest.json" || return 1
+            nonempty_file "${BENCHMARK_ROOT}/inputs/train.fasta" || return 1
+            nonempty_file "${BENCHMARK_ROOT}/inputs/valid.fasta" || return 1
+            nonempty_file "${BENCHMARK_ROOT}/inputs/test.fasta" || return 1
+            nonempty_file "${BENCHMARK_ROOT}/inputs/structure_manifest.tsv" || return 1
+            for ontology in mf bp cc; do
+                nonempty_file "${BENCHMARK_ROOT}/labels/${ontology}_train.npz" || return 1
+                nonempty_file "${BENCHMARK_ROOT}/labels/${ontology}_valid.npz" || return 1
+                nonempty_file "${BENCHMARK_ROOT}/labels/${ontology}_test.npz" || return 1
+            done
+            ;;
+        01b_structure_views)
+            [[ "$(find "${BENCHMARK_ROOT}/inputs/structures/foldseek/train" -maxdepth 1 -type l | wc -l)" -eq 6026 ]] || return 1
+            [[ "$(find "${BENCHMARK_ROOT}/inputs/structures/foldseek/valid_test" -maxdepth 1 -type l | wc -l)" -eq 1508 ]] || return 1
+            [[ "$(find "${BENCHMARK_ROOT}/inputs/structures/valid_test" -maxdepth 1 -type l | wc -l)" -eq 1508 ]] || return 1
+            ;;
+        02_hybrid)
+            prediction_complete deepgreengo || return 1
+            ;;
+        03_sequence_baselines_*)
+            prediction_complete naive || return 1
+            if method_enabled blast; then
+                nonempty_file "${RAW}/blast_hits.tsv" || return 1
+                prediction_complete blast || return 1
+                prediction_complete blast_max || return 1
+            fi
+            if method_enabled diamond; then
+                nonempty_file "${RAW}/diamond_hits.tsv" || return 1
+                prediction_complete diamond || return 1
+                prediction_complete diamond_max || return 1
+            fi
+            ;;
+        04_foldseek_unique_structures)
+            nonempty_file "${RAW}/foldseek_hits.tsv" || return 1
+            prediction_complete foldseek || return 1
+            prediction_complete foldseek_max || return 1
+            ;;
+        05_interproscan)
+            nonempty_file "${RAW}/interpro/interpro.tsv" || return 1
+            if method_enabled interproscan; then prediction_complete interproscan || return 1; fi
+            ;;
+        05b_eggnog_mapper) prediction_complete eggnog_mapper || return 1 ;;
+        06_deepfri_sequence) prediction_complete deepfri_sequence || return 1 ;;
+        07_deepfri_structure) prediction_complete deepfri_structure || return 1 ;;
+        08_transfun) prediction_complete transfun || return 1 ;;
+        09_dpfunc) prediction_complete dpfunc || return 1 ;;
+        09b_deepgoplus) prediction_complete deepgoplus || return 1 ;;
+        10_deepgose) prediction_complete deepgose || return 1 ;;
+        11_hayai) prediction_complete hayai || return 1 ;;
+        12_gomap) prediction_complete gomap || return 1 ;;
+    esac
+}
 
 require_file() {
     [[ -f "$1" ]] || { echo "[PREFLIGHT ERROR] Missing file: $1" >&2; return 1; }
@@ -98,6 +172,56 @@ require_file() {
 
 require_dir() {
     [[ -d "$1" ]] || { echo "[PREFLIGHT ERROR] Missing directory: $1" >&2; return 1; }
+}
+
+java_major() {
+    local java_bin="$1"
+    local version
+    version="$("${java_bin}" -version 2>&1 | head -n 1)"
+    if [[ "${version}" =~ \"1\.([0-9]+) ]]; then
+        printf '%s\n' "${BASH_REMATCH[1]}"
+    elif [[ "${version}" =~ \"([0-9]+) ]]; then
+        printf '%s\n' "${BASH_REMATCH[1]}"
+    else
+        return 1
+    fi
+}
+
+resolve_interpro_java() {
+    local java_bin=""
+    if [[ -n "${INTERPRO_JAVA_HOME}" ]]; then
+        java_bin="${INTERPRO_JAVA_HOME}/bin/java"
+    else
+        java_bin="$(conda run -n "${INTERPRO_JAVA_ENV}" sh -c 'command -v java' 2>/dev/null | tail -n 1 || true)"
+        if [[ -z "${java_bin}" ]]; then
+            java_bin="$(command -v java 2>/dev/null || true)"
+        fi
+    fi
+    if [[ ! -x "${java_bin}" ]]; then
+        echo "[PREFLIGHT ERROR] Java 11 was not found. Run the SOTA setup job to create ${INTERPRO_JAVA_ENV}." >&2
+        return 1
+    fi
+    local major
+    major="$(java_major "${java_bin}")" || {
+        echo "[PREFLIGHT ERROR] Could not parse Java version from ${java_bin}" >&2
+        return 1
+    }
+    if [[ "${major}" != "11" ]]; then
+        echo "[PREFLIGHT ERROR] InterProScan requires Java 11; ${java_bin} reports major version ${major}." >&2
+        return 1
+    fi
+    INTERPRO_JAVA_HOME="$(cd "$(dirname "${java_bin}")/.." && pwd)"
+    echo "InterProScan Java 11: ${INTERPRO_JAVA_HOME}/bin/java"
+}
+
+resolve_deepgoplus_diamond() {
+    local diamond_bin
+    diamond_bin="$(conda run -n "${BASE_ENV}" sh -c 'command -v diamond' 2>/dev/null | tail -n 1 || true)"
+    if [[ ! -x "${diamond_bin}" ]]; then
+        echo "[PREFLIGHT ERROR] DeepGOPlus needs the DIAMOND executable from ${BASE_ENV}." >&2
+        return 1
+    fi
+    DEEPGOPLUS_DIAMOND_DIR="$(dirname "${diamond_bin}")"
 }
 
 PREFLIGHT_FAILURES=0
@@ -125,24 +249,30 @@ stage() {
     local name="$1"
     shift
     local marker="${STAGES}/${name}.done"
-    if [[ -f "${marker}" ]] && grep -qx "fingerprint=${PIPELINE_FINGERPRINT}" "${marker}"; then
-        echo "[SKIP] ${name} already completed"
+    if [[ -f "${marker}" ]] && [[ ",${FORCE_STAGES}," != *",${name},"* ]] \
+            && stage_artifacts_ok "${name}"; then
+        echo "[SKIP] ${name} already completed and required artifacts are present"
         return 0
     fi
     if [[ -f "${marker}" ]]; then
-        echo "[STALE] ${name} code or method configuration changed; rerunning"
+        echo "[RERUN] ${name}: forced or a required artifact is missing"
     fi
     echo "[START] ${name} $(date --iso-8601=seconds)"
     "$@"
-    printf '%s\n%s\n' \
-        "completed $(date --iso-8601=seconds) job=${SLURM_JOB_ID}" \
-        "fingerprint=${PIPELINE_FINGERPRINT}" > "${marker}"
+    stage_artifacts_ok "${name}" || {
+        echo "[STAGE ERROR] ${name} returned successfully but required artifacts are missing" >&2
+        return 1
+    }
+    printf '%s\n' "completed $(date --iso-8601=seconds) job=${SLURM_JOB_ID}" > "${marker}"
     echo "[DONE] ${name}"
 }
 
 preflight() {
     PREFLIGHT_FAILURES=0
-    preflight_check require_file "${PYTHON_SCRIPT}"
+    local python_file
+    for python_file in "${PYTHON_FILES[@]}"; do
+        preflight_check require_file "${python_file}"
+    done
     preflight_check require_dir "${DATA_ROOT}/datasets/threshold_30"
     preflight_check require_file "${DATA_ROOT}/go-basic.obo"
     preflight_check conda_run "${BASE_ENV}" python -c "import Bio,numpy,sklearn,torch; print('base environment ok')"
@@ -195,18 +325,28 @@ preflight() {
             preflight_check "${FOLDSEEK}" version
         fi
     fi
-    if method_enabled interproscan || method_enabled dpfunc; then
+    if method_enabled interproscan; then
         CURRENT_METHOD=interproscan
         [[ -x "${INTERPROSCAN}" ]] || command -v "${INTERPROSCAN}" >/dev/null || {
             echo "[PREFLIGHT ERROR] Set DGG_INTERPROSCAN to the executable InterProScan script" >&2
             note_failure
         }
+        preflight_check resolve_interpro_java
+    fi
+    if method_enabled dpfunc; then
+        CURRENT_METHOD=dpfunc
+        [[ -x "${INTERPROSCAN}" ]] || command -v "${INTERPROSCAN}" >/dev/null || {
+            echo "[PREFLIGHT ERROR] DPFunc requires executable InterProScan at DGG_INTERPROSCAN" >&2
+            note_failure
+        }
+        preflight_check resolve_interpro_java
     fi
     if method_enabled deepfri_sequence || method_enabled deepfri_structure; then
         CURRENT_METHOD=deepfri
         preflight_check require_file "${DEEPFRI_ROOT}/predict.py"
         preflight_check require_file "${DEEPFRI_ROOT}/trained_models/model_config.json"
         preflight_check conda_run "${TF_ENV}" python -c "import tensorflow; print('DeepFRI environment ok')"
+        preflight_check conda_run "${TF_ENV}" python "${DEEPFRI_ROOT}/predict.py" --help
     fi
     if method_enabled transfun; then
         CURRENT_METHOD=transfun
@@ -221,6 +361,8 @@ preflight() {
         CURRENT_METHOD=dpfunc
         preflight_check require_file "${DPFUNC_ROOT}/DPFunc_demo_pipeline/scripts/build_data_demo.py"
         preflight_check require_file "${DPFUNC_ROOT}/DPFunc_demo_pipeline/scripts/run_dpfunc.py"
+        preflight_check conda_run "${DPFUNC_ENV}" python "${DPFUNC_ROOT}/DPFunc_demo_pipeline/scripts/build_data_demo.py" --help
+        preflight_check conda_run "${DPFUNC_ENV}" python "${DPFUNC_ROOT}/DPFunc_demo_pipeline/scripts/run_dpfunc.py" --help
         preflight_check require_file "${DPFUNC_ROOT}/data/inter_idx.pkl"
         local ontology model_index
         for ontology in mf bp cc; do
@@ -245,7 +387,10 @@ preflight() {
         preflight_check require_file "${DEEPGOPLUS_ROOT}/data/model.h5"
         preflight_check require_file "${DEEPGOPLUS_ROOT}/data/terms.pkl"
         preflight_check require_file "${DEEPGOPLUS_ROOT}/data/train_data.pkl"
+        preflight_check require_file "${DEEPGOPLUS_ROOT}/data/train_data.dmnd"
+        preflight_check require_file "${DEEPGOPLUS_ROOT}/data/metadata/last_release.json"
         preflight_check conda_run "${DEEPGOPLUS_ENV}" deepgoplus --help >/dev/null
+        preflight_check resolve_deepgoplus_diamond
     fi
     if method_enabled deepgose; then
         CURRENT_METHOD=deepgose
@@ -259,7 +404,8 @@ preflight() {
         for model_index in 0 1 2 5 6 8; do preflight_check require_file "${DEEPGO_ROOT}/data/mf/deepgozero_esm_plus_${model_index}.th"; done
         for model_index in 2 5 6 7 8 9; do preflight_check require_file "${DEEPGO_ROOT}/data/bp/deepgozero_esm_plus_${model_index}.th"; done
         for model_index in 1 3 4 5 6 7; do preflight_check require_file "${DEEPGO_ROOT}/data/cc/deepgozero_esm_plus_${model_index}.th"; done
-        preflight_check conda_run "${DEEPGO_ENV}" python -c "import torch; print('DeepGO-SE environment ok')"
+        preflight_check conda_run "${DEEPGO_ENV}" python -c "import dgl, esm, torch; print('DeepGO-SE environment ok')"
+        preflight_check conda_run "${DEEPGO_ENV}" python "${DEEPGO_ROOT}/predict.py" --help
     fi
     if method_enabled hayai; then
         CURRENT_METHOD=hayai
@@ -340,27 +486,38 @@ preflight() {
 }
 
 prepare_inputs() {
-    conda_run "${BASE_ENV}" python "${PYTHON_SCRIPT}" prepare \
+    benchmark_cli prepare \
         --data-root "${DATA_ROOT}" --workspace "${BENCHMARK_ROOT}" \
         --expected-test-size 754 --extract-structures
-    mkdir -p "${BENCHMARK_ROOT}/inputs/structures/valid_test"
+}
+
+prepare_structure_views() {
+    local structure_root="${BENCHMARK_ROOT}/inputs/structures"
+    local foldseek_root="${structure_root}/foldseek"
+    local query_view="${foldseek_root}/valid_test"
+    local train_view="${foldseek_root}/train"
+    local deepfri_view="${structure_root}/valid_test"
+    mkdir -p "${query_view}" "${train_view}" "${deepfri_view}"
+
+    # These directories contain generated symlinks only. Rebuild them from the
+    # plain PDB files so .pdb/.pdb.gz duplicates cannot crowd Foldseek's top-k
+    # hits or make DeepFRI process every protein twice.
+    find "${query_view}" -mindepth 1 -maxdepth 1 -type l -delete
+    find "${train_view}" -mindepth 1 -maxdepth 1 -type l -delete
+    find "${deepfri_view}" -mindepth 1 -maxdepth 1 -type l -delete
+
     local structure
-    for structure in "${BENCHMARK_ROOT}"/inputs/structures/valid/*.pdb; do
-        ln -sfn "${structure}" "${BENCHMARK_ROOT}/inputs/structures/valid_test/$(basename "${structure}")"
+    for structure in "${structure_root}"/train/*.pdb; do
+        ln -sfn "${structure}" "${train_view}/$(basename "${structure}")"
     done
-    for structure in "${BENCHMARK_ROOT}"/inputs/structures/test/*.pdb; do
-        ln -sfn "${structure}" "${BENCHMARK_ROOT}/inputs/structures/valid_test/$(basename "${structure}")"
-    done
-    for structure in "${BENCHMARK_ROOT}"/inputs/structures/valid/*.pdb.gz; do
-        ln -sfn "${structure}" "${BENCHMARK_ROOT}/inputs/structures/valid_test/$(basename "${structure}")"
-    done
-    for structure in "${BENCHMARK_ROOT}"/inputs/structures/test/*.pdb.gz; do
-        ln -sfn "${structure}" "${BENCHMARK_ROOT}/inputs/structures/valid_test/$(basename "${structure}")"
+    for structure in "${structure_root}"/valid/*.pdb "${structure_root}"/test/*.pdb; do
+        ln -sfn "${structure}" "${query_view}/$(basename "${structure}")"
+        ln -sfn "${structure}" "${deepfri_view}/$(basename "${structure}")"
     done
 }
 
 run_hybrid() {
-    conda_run "${BASE_ENV}" python "${PYTHON_SCRIPT}" export-hybrid \
+    benchmark_cli export-hybrid \
         --data-root "${DATA_ROOT}" --workspace "${BENCHMARK_ROOT}" \
         --checkpoint-root "${CHECKPOINT_ROOT}" --graph-root "${GRAPH_ROOT}" \
         --batch-size 16 --workers 0 --require-cuda
@@ -370,24 +527,37 @@ run_sequence_baselines() {
     local selected=""
     method_enabled blast && selected="blast"
     method_enabled diamond && selected="${selected:+${selected},}diamond"
-    conda_run "${BASE_ENV}" python "${PYTHON_SCRIPT}" sequence-baselines \
+    benchmark_cli sequence-baselines \
         --workspace "${BENCHMARK_ROOT}" --methods "${selected}" --threads "${THREADS}" \
         --top-k 10 --max-hits 50 --min-qcov 0.5 --min-tcov 0.5
 }
 
 run_foldseek() {
-    conda_run "${BASE_ENV}" python "${PYTHON_SCRIPT}" foldseek \
+    benchmark_cli foldseek \
         --workspace "${BENCHMARK_ROOT}" --foldseek "${FOLDSEEK}" --threads "${THREADS}" \
-        --top-k 10 --max-hits 50 --min-qcov 0.5 --min-tcov 0.5
+        --top-k 10 --max-hits 50 --min-qcov 0.5 --min-tcov 0.5 --force-search
 }
 
 run_interpro() {
+    local output="${RAW}/interpro/interpro.tsv"
+    local partial="${output}.partial"
     mkdir -p "${RAW}/interpro"
-    "${INTERPROSCAN}" -i "${BENCHMARK_ROOT}/inputs/valid_test.fasta" \
-        -f TSV -o "${RAW}/interpro/interpro.tsv" -goterms -iprlookup \
-        -cpu "${THREADS}" -dp
-    conda_run "${BASE_ENV}" python "${PYTHON_SCRIPT}" normalize-interpro \
-        --workspace "${BENCHMARK_ROOT}" --input "${RAW}/interpro/interpro.tsv"
+    if [[ -s "${output}" ]]; then
+        echo "[benchmark] reusing complete InterProScan output ${output}"
+    else
+        rm -f "${partial}"
+        env JAVA_HOME="${INTERPRO_JAVA_HOME}" \
+            PATH="${INTERPRO_JAVA_HOME}/bin:${PATH}" \
+            "${INTERPROSCAN}" -i "${BENCHMARK_ROOT}/inputs/valid_test.fasta" \
+            -f TSV -o "${partial}" -goterms -iprlookup -cpu "${THREADS}" -dp
+        nonempty_file "${partial}" || {
+            echo "[STAGE ERROR] InterProScan did not produce ${partial}" >&2
+            return 1
+        }
+        mv "${partial}" "${output}"
+    fi
+    benchmark_cli normalize-interpro \
+        --workspace "${BENCHMARK_ROOT}" --input "${output}"
 }
 
 run_eggnog() {
@@ -397,35 +567,49 @@ run_eggnog() {
         -m diamond --data_dir "${EGGNOG_DATA}" --cpu "${THREADS}" \
         -o dgg_benchmark --output_dir "${RAW}/eggnog" \
         --go_evidence all --override
-    conda_run "${BASE_ENV}" python "${PYTHON_SCRIPT}" normalize-eggnog \
+    benchmark_cli normalize-eggnog \
         --workspace "${BENCHMARK_ROOT}" \
         --input "${RAW}/eggnog/dgg_benchmark.emapper.annotations"
 }
 
 run_deepgoplus() {
+    local output="${RAW}/deepgoplus/predictions.tsv"
+    local partial="${output}.partial"
     mkdir -p "${RAW}/deepgoplus"
-    gzip -c "${BENCHMARK_ROOT}/inputs/valid_test.fasta" > "${RAW}/deepgoplus/valid_test.fasta.gz"
-    conda_run "${DEEPGOPLUS_ENV}" deepgoplus \
-        --data-root "${DEEPGOPLUS_ROOT}/data" \
-        --in-file "${RAW}/deepgoplus/valid_test.fasta.gz" \
-        --out-file "${RAW}/deepgoplus/predictions.tsv.gz" --threshold 0
-    conda_run "${BASE_ENV}" python "${PYTHON_SCRIPT}" normalize-scored \
-        --workspace "${BENCHMARK_ROOT}" --method deepgoplus --delimiter tab \
-        --score-column 5 \
-        --mf "${RAW}/deepgoplus/predictions.tsv.gz" \
-        --bp "${RAW}/deepgoplus/predictions.tsv.gz" \
-        --cc "${RAW}/deepgoplus/predictions.tsv.gz"
+    if [[ -s "${output}" ]]; then
+        echo "[benchmark] reusing complete DeepGOPlus output ${output}"
+    else
+        rm -f "${partial}"
+        PATH="${DEEPGOPLUS_DIAMOND_DIR}:${PATH}" conda_run "${DEEPGOPLUS_ENV}" deepgoplus \
+            --data-root "${DEEPGOPLUS_ROOT}/data" \
+            --in-file "${BENCHMARK_ROOT}/inputs/valid_test.fasta" \
+            --out-file "${partial}" --threshold 0
+        nonempty_file "${partial}" || {
+            echo "[STAGE ERROR] DeepGOPlus did not produce ${partial}" >&2
+            return 1
+        }
+        mv "${partial}" "${output}"
+    fi
+    benchmark_cli normalize-deepgoplus \
+        --workspace "${BENCHMARK_ROOT}" --input "${output}"
 }
 
 run_deepfri_sequence() {
     mkdir -p "${RAW}/deepfri"
-    local ont
+    local ont output
     for ont in mf bp cc; do
+        output="${RAW}/deepfri/sequence_${ont^^}_pred_scores.json"
+        if conda_run "${BASE_ENV}" python -m json.tool "${output}" >/dev/null 2>&1; then
+            echo "[benchmark] reusing complete DeepFRI sequence output ${output}"
+            continue
+        fi
+        rm -f "${output}"
         conda_run "${TF_ENV}" python "${DEEPFRI_ROOT}/predict.py" \
             --fasta_fn "${BENCHMARK_ROOT}/inputs/valid_test.fasta" -ont "${ont}" \
             -o "${RAW}/deepfri/sequence"
+        conda_run "${BASE_ENV}" python -m json.tool "${output}" >/dev/null
     done
-    conda_run "${BASE_ENV}" python "${PYTHON_SCRIPT}" normalize-deepfri \
+    benchmark_cli normalize-deepfri \
         --workspace "${BENCHMARK_ROOT}" --method deepfri_sequence \
         --mf "${RAW}/deepfri/sequence_MF_pred_scores.json" \
         --bp "${RAW}/deepfri/sequence_BP_pred_scores.json" \
@@ -434,13 +618,20 @@ run_deepfri_sequence() {
 
 run_deepfri_structure() {
     mkdir -p "${RAW}/deepfri"
-    local ont
+    local ont output
     for ont in mf bp cc; do
+        output="${RAW}/deepfri/structure_${ont^^}_pred_scores.json"
+        if conda_run "${BASE_ENV}" python -m json.tool "${output}" >/dev/null 2>&1; then
+            echo "[benchmark] reusing complete DeepFRI structure output ${output}"
+            continue
+        fi
+        rm -f "${output}"
         conda_run "${TF_ENV}" python "${DEEPFRI_ROOT}/predict.py" \
             --pdb_dir "${BENCHMARK_ROOT}/inputs/structures/valid_test" -ont "${ont}" \
             -o "${RAW}/deepfri/structure"
+        conda_run "${BASE_ENV}" python -m json.tool "${output}" >/dev/null
     done
-    conda_run "${BASE_ENV}" python "${PYTHON_SCRIPT}" normalize-deepfri \
+    benchmark_cli normalize-deepfri \
         --workspace "${BENCHMARK_ROOT}" --method deepfri_structure \
         --mf "${RAW}/deepfri/structure_MF_pred_scores.json" \
         --bp "${RAW}/deepfri/structure_BP_pred_scores.json" \
@@ -463,7 +654,7 @@ run_transfun() {
             --fasta-path dgg_benchmark.fasta --pdb-path dgg_benchmark_pdbs \
             --cut-off 0 --output "dgg_benchmark_${short}.txt"
     done
-    conda_run "${BASE_ENV}" python "${PYTHON_SCRIPT}" normalize-scored \
+    benchmark_cli normalize-scored \
         --workspace "${BENCHMARK_ROOT}" --method transfun \
         --mf "${data_dir}/dgg_benchmark_mf.txt" --bp "${data_dir}/dgg_benchmark_bp.txt" \
         --cc "${data_dir}/dgg_benchmark_cc.txt"
@@ -472,7 +663,7 @@ run_transfun() {
 run_dpfunc() {
     require_file "${RAW}/interpro/interpro.tsv"
     mkdir -p "${RAW}/dpfunc"
-    conda_run "${BASE_ENV}" python "${PYTHON_SCRIPT}" make-dpfunc-manifest \
+    benchmark_cli make-dpfunc-manifest \
         --workspace "${BENCHMARK_ROOT}" --interpro-tsv "${RAW}/interpro/interpro.tsv" \
         --output "${RAW}/dpfunc/manifest.tsv"
 
@@ -483,11 +674,16 @@ run_dpfunc() {
         --inter-idx "${DPFUNC_ROOT}/data/inter_idx.pkl" --go-obo "${DATA_ROOT}/go-basic.obo" \
         --mlb-source "${DPFUNC_ROOT}/mlb/mf_go.mlb" --esm-batch-size 4 --device cuda
 
-    local short dp_workspace
+    local short dp_workspace result
     for short in mf bp cc; do
         dp_workspace="${RAW}/dpfunc/${short}"
+        result="${dp_workspace}/results/${DPFUNC_PRENAME}_${short}_final.pkl"
+        if [[ -s "${result}" ]]; then
+            echo "[benchmark] reusing complete DPFunc output ${result}"
+            continue
+        fi
         if [[ "${short}" != "mf" ]]; then
-            conda_run "${BASE_ENV}" python "${PYTHON_SCRIPT}" clone-dpfunc-workspace \
+            benchmark_cli clone-dpfunc-workspace \
                 --source "${source_workspace}" --target "${dp_workspace}" \
                 --source-ontology mf --target-ontology "${short}" \
                 --mlb-source "${DPFUNC_ROOT}/mlb/${short}_go.mlb"
@@ -495,8 +691,9 @@ run_dpfunc() {
         cp "${DPFUNC_ROOT}"/save_models/"${DPFUNC_PRENAME}_${short}_"*of3model.pt "${dp_workspace}/save_models/"
         conda_run "${DPFUNC_ENV}" python "${DPFUNC_ROOT}/DPFunc_demo_pipeline/scripts/run_dpfunc.py" predict \
             --workspace "${dp_workspace}" --ontology "${short}" --gpu 0 --pre-name "${DPFUNC_PRENAME}"
+        nonempty_file "${result}" || return 1
     done
-    conda_run "${BASE_ENV}" python "${PYTHON_SCRIPT}" normalize-dpfunc \
+    benchmark_cli normalize-dpfunc \
         --workspace "${BENCHMARK_ROOT}" --method dpfunc \
         --mf "${RAW}/dpfunc/mf/results/${DPFUNC_PRENAME}_mf_final.pkl" \
         --bp "${RAW}/dpfunc/bp/results/${DPFUNC_PRENAME}_bp_final.pkl" \
@@ -506,10 +703,22 @@ run_dpfunc() {
 run_deepgose() {
     mkdir -p "${RAW}/deepgose"
     cp "${BENCHMARK_ROOT}/inputs/valid_test.fasta" "${RAW}/deepgose/queries.fasta"
-    conda_run "${DEEPGO_ENV}" python "${DEEPGO_ROOT}/predict.py" \
-        -if "${RAW}/deepgose/queries.fasta" -dr "${DEEPGO_ROOT}/data" \
-        -t 0 -bs 8 -d cuda
-    conda_run "${BASE_ENV}" python "${PYTHON_SCRIPT}" normalize-scored \
+    if gzip -t "${RAW}/deepgose/queries_preds_mf.tsv.gz" \
+            "${RAW}/deepgose/queries_preds_bp.tsv.gz" \
+            "${RAW}/deepgose/queries_preds_cc.tsv.gz" 2>/dev/null; then
+        echo "[benchmark] reusing complete DeepGO-SE outputs"
+    else
+        rm -f "${RAW}/deepgose/queries_preds_mf.tsv.gz" \
+            "${RAW}/deepgose/queries_preds_bp.tsv.gz" \
+            "${RAW}/deepgose/queries_preds_cc.tsv.gz"
+        conda_run "${DEEPGO_ENV}" python "${DEEPGO_ROOT}/predict.py" \
+            -if "${RAW}/deepgose/queries.fasta" -dr "${DEEPGO_ROOT}/data" \
+            -t 0 -bs 8 -d cuda
+        gzip -t "${RAW}/deepgose/queries_preds_mf.tsv.gz" \
+            "${RAW}/deepgose/queries_preds_bp.tsv.gz" \
+            "${RAW}/deepgose/queries_preds_cc.tsv.gz"
+    fi
+    benchmark_cli normalize-scored \
         --workspace "${BENCHMARK_ROOT}" --method deepgose --delimiter tab \
         --mf "${RAW}/deepgose/queries_preds_mf.tsv.gz" \
         --bp "${RAW}/deepgose/queries_preds_bp.tsv.gz" \
@@ -519,10 +728,10 @@ run_deepgose() {
 run_hayai() {
     local orthologer=()
     [[ "${DGG_HAYAI_USE_ORTHOLOGER:-1}" == "1" ]] && orthologer=(--orthologer)
-    conda_run "${HAYAI_ENV}" python "${PYTHON_SCRIPT}" run-hayai \
+    conda_run "${HAYAI_ENV}" python -m src.benchmark.cli run-hayai \
         --workspace "${BENCHMARK_ROOT}" --hayai-root "${HAYAI_ROOT}" \
         --output "${RAW}/hayai_annotations.tsv" --threads "${THREADS}" "${orthologer[@]}"
-    conda_run "${BASE_ENV}" python "${PYTHON_SCRIPT}" normalize-hayai \
+    benchmark_cli normalize-hayai \
         --workspace "${BENCHMARK_ROOT}" --input "${RAW}/hayai_annotations.tsv"
 }
 
@@ -532,15 +741,15 @@ run_gomap() {
         bash -lc "${DGG_GOMAP_COMMAND}"
     fi
     require_file "${output}"
-    conda_run "${BASE_ENV}" python "${PYTHON_SCRIPT}" normalize-gomap \
+    benchmark_cli normalize-gomap \
         --workspace "${BENCHMARK_ROOT}" --input "${output}"
 }
 
 run_evaluation() {
     local required="${METHODS//hybrid/deepgreengo}"
-    conda_run "${BASE_ENV}" python "${PYTHON_SCRIPT}" evaluate \
+    benchmark_cli evaluate \
         --workspace "${BENCHMARK_ROOT}" --bootstraps 1000 --require-methods "${required}"
-    conda_run "${BASE_ENV}" python "${PYTHON_SCRIPT}" plot --workspace "${BENCHMARK_ROOT}"
+    benchmark_cli plot --workspace "${BENCHMARK_ROOT}"
 }
 
 echo "Project: ${PROJECT_DIR}"
@@ -548,12 +757,13 @@ echo "Benchmark: ${BENCHMARK_ROOT}"
 echo "Methods: ${METHODS}"
 preflight
 stage 01_prepare_inputs prepare_inputs
+stage 01b_structure_views prepare_structure_views
 method_enabled hybrid && stage 02_hybrid run_hybrid
 SEQUENCE_TAG="naive"
 method_enabled blast && SEQUENCE_TAG="${SEQUENCE_TAG}_blast"
 method_enabled diamond && SEQUENCE_TAG="${SEQUENCE_TAG}_diamond"
 stage "03_sequence_baselines_${SEQUENCE_TAG}" run_sequence_baselines
-method_enabled foldseek && stage 04_foldseek run_foldseek
+method_enabled foldseek && stage 04_foldseek_unique_structures run_foldseek
 if method_enabled interproscan || method_enabled dpfunc; then stage 05_interproscan run_interpro; fi
 method_enabled eggnog_mapper && stage 05b_eggnog_mapper run_eggnog
 method_enabled deepfri_sequence && stage 06_deepfri_sequence run_deepfri_sequence

@@ -171,8 +171,8 @@ all three searches.
 repair ran locally from the intact hit file — no ARC time and no re-search:
 
 ```
-python scripts/run_arc_benchmark.py sequence-baselines --workspace <ws> --methods blast
-python scripts/run_arc_benchmark.py evaluate --workspace <ws> --bootstraps 1000 --bootstrap-seed 20260720
+python -m src.benchmark.cli sequence-baselines --workspace <ws> --methods blast
+python -m src.benchmark.cli evaluate --workspace <ws> --bootstraps 1000 --bootstrap-seed 20260720
 ```
 
 | CAFA Fmax | MF | BP | CC |

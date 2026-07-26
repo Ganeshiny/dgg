@@ -47,7 +47,7 @@ echo "Split: nominal 30% identity / 80% coverage split"
 
 if [[ "${MODE}" == "tune" || "${MODE}" == "tune_cafa" ]]; then
   python3 preprocessing/build_arc_tuning_dataset.py --data-root "${DATA_ROOT}" --tuning-root "${TUNING_ROOT}" --graph-root "${PROJECT_DIR}/arc_tuning/graphs_protbert" --smoke-batches 1
-  python3 scripts/generate_hybrid_trials.py --trials "${TRIALS}" --output "${TRIAL_CONFIGS}"
+  python3 src/generate_hybrid_trials.py --trials "${TRIALS}" --output "${TRIAL_CONFIGS}"
   unset CUDA_VISIBLE_DEVICES
   LAST_TASK=$((TRIALS * 3 - 1))
   ARRAY_JOB=$(sbatch --parsable \

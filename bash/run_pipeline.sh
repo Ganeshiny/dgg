@@ -14,7 +14,7 @@ echo "=== Preprocessing Completed Successfully ==="
 
 echo "=== 3.5 Run Hyperparameter Tuning ==="
 bash run_tuning.sh
-python3 scripts/aggregate_tuning.py
+python3 src/aggregate_tuning.py
 
 echo "=== 4. Run Baseline (BLAST) ==="
 cd baselines/blast
@@ -22,6 +22,6 @@ python3 run_blast_baseline.py
 cd ../../
 
 echo "=== 5. Run Ablations & Plot Results ==="
-python3 scripts/run_experiments.py
+python3 src/run_experiments.py
 
 echo "=== Pipeline Completed! ==="

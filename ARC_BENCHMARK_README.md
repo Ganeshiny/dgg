@@ -32,15 +32,16 @@ arc_benchmark/nominal_30_identity_80_coverage/
 
 The primary metrics are protein-centric CAFA Fmax, conditional-information Smin, micro/macro AUPR, and coverage. Confidence intervals use 1,000 paired protein bootstraps. AUPR and AUROC are deliberately left undefined for binary annotation pipelines such as InterProScan, eggNOG-mapper, GOMAP, and Hayai.
 
-The default comparison includes:
+The deadline-safe default comparison includes:
 
 - frequency: training-label prevalence (naive);
 - sequence homology: BLAST and DIAMOND, each with weighted top-10 and maximum-similarity GO transfer;
 - structure homology: Foldseek with weighted top-10 and maximum-similarity GO transfer;
-- conventional annotation: InterProScan and eggNOG-mapper;
-- general deep learning: DeepFRI sequence, DeepFRI structure, TransFun, DPFunc, DeepGOPlus, and DeepGO-SE;
-- plant-oriented annotation: current Hayai v3.2 and GOMAP;
+- conventional annotation: InterProScan;
+- verified deep learning: DeepFRI sequence, DeepFRI structure, DPFunc, DeepGOPlus, and DeepGO-SE;
 - DeepGreenGO: the five best seed checkpoints, averaged as the primary ensemble.
+
+TransFun, eggNOG-mapper, Hayai, and GOMAP remain supported as explicit opt-ins, but they are not part of the deadline default because their ARC environments/data or manual upstream steps have not passed end-to-end verification. They must not be named as completed comparisons unless their prediction files are actually present and evaluated.
 
 A separate naive-plant or plant-reference-DIAMOND result is not fabricated here. The locked split records do not contain taxonomy identifiers, so they cannot be separated into plant and non-plant training subsets reproducibly. If a verified protein-to-NCBI-taxonomy manifest is added later, those controls should be added explicitly.
 
@@ -48,18 +49,17 @@ A separate naive-plant or plant-reference-DIAMOND result is not fabricated here.
 
 The single Slurm script orchestrates the work but does not silently download version-changing databases. Its preflight stage stops before computation and names every missing item.
 
-Install and verify the six deep-learning baselines and InterProScan first:
+Install and verify the five resolved deep-learning baselines and InterProScan first:
 
 ```bash
 sbatch 'arc slurms/arc_01_setup_sota.slurm'
 ```
 
-The setup job is strict and resumable. It creates separate upstream-compatible environments for DeepFRI, TransFun, DPFunc, DeepGOPlus, and DeepGO-SE; downloads their official pretrained data/models; verifies required imports and files; and exits non-zero if any check fails. A successful log ends with `[SETUP COMPLETE]`.
+The setup job is strict and resumable. Its default creates or verifies separate environments for DeepFRI, DPFunc, DeepGOPlus, DeepGO-SE, and InterProScan's Java 11 runtime; downloads their official pretrained data/models; verifies required imports and files; and exits non-zero if any check fails. Existing multi-gigabyte archives are reused. A successful log ends with `[SETUP COMPLETE] All requested SOTA dependencies and model files passed verification`.
 
-To run the complete deep-learning comparison immediately after setup (without the separately managed eggNOG, Hayai, and GOMAP workflows):
+After setup succeeds, submit the deadline-safe benchmark profile directly:
 
 ```bash
-DGG_BENCHMARK_METHODS=hybrid,naive,blast,diamond,foldseek,interproscan,deepfri_sequence,deepfri_structure,transfun,dpfunc,deepgoplus,deepgose \
 sbatch 'arc slurms/run_full_benchmark.slurm'
 ```
 
@@ -70,7 +70,7 @@ Expected defaults:
 | DeepGreenGO | checkpoints: `arc_tuning_cafa/five_seed_hybrid`; shared graphs: `arc_tuning/graphs_protbert`; environment `deepgreengo` |
 | BLAST/DIAMOND | executables visible in `deepgreengo` |
 | Foldseek | executable visible in `DGG_FOLDSEEK_ENV` (defaults to `dgg_foldseek`, then falls back to `deepgreengo`) |
-| InterProScan | `SOTA/interproscan/interproscan.sh` |
+| InterProScan | `SOTA/interproscan/interproscan.sh`; Java environment `dgg_interproscan_java11` |
 | DeepFRI | `baselines/DeepFRI`, environment `dgg_sota_tf` |
 | TransFun | `SOTA/TransFun`, environment `dgg_transfun` |
 | DPFunc | `SOTA/DPFunc`, environment `dgg_dpfunc` |
@@ -118,14 +118,15 @@ DGG_GOMAP_COMMAND='/absolute/path/run_site_gomap.sh' \
 sbatch 'arc slurms/run_full_benchmark.slurm'
 ```
 
-The default benchmark is strict: if GOMAP is requested and neither option is provided, preflight fails instead of silently omitting the method. To run a staged subset, set the comma-separated method list explicitly:
+The launcher is strict by default. If any explicitly requested method fails preflight, it exits before expensive computation instead of silently dropping that comparator. GOMAP therefore fails preflight when requested without a completed GAF or site command. Use `DGG_BENCHMARK_SKIP_UNAVAILABLE=1` only for a deliberately incomplete diagnostic run, and report the dropped methods recorded in `preflight_dropped_methods.txt`.
+
+TransFun can be retried later as an explicit opt-in after its archived PyTorch/PyG environment is repaired independently:
 
 ```bash
-DGG_BENCHMARK_METHODS=hybrid,naive,blast,diamond,foldseek,interproscan,eggnog_mapper,deepfri_sequence,deepfri_structure,transfun,dpfunc,deepgoplus,deepgose,hayai \
-sbatch 'arc slurms/run_full_benchmark.slurm'
+DGG_SOTA_SETUP_METHODS=transfun sbatch 'arc slurms/arc_01_setup_sota.slurm'
 ```
 
-This subset run is not the complete final comparison until GOMAP is added and evaluation is rerun.
+It is not necessary for the deadline-safe five-model deep-learning comparison.
 
 ## Fairness controls
 
