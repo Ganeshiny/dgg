@@ -22,6 +22,8 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from matplotlib.lines import Line2D
+from matplotlib.patches import Patch
 
 
 PROJECT_DIR = Path(__file__).resolve().parents[1]
@@ -192,6 +194,60 @@ def marker_face(method: str, color: str) -> str:
     return "white" if method.endswith("_max") else color
 
 
+def build_legend_handles(methods: list[str], bars: bool = False) -> list:
+    """Explain family colour and transfer-rule styling once per figure."""
+    family_order = list(FAMILY_LABEL)
+    families_present = sorted(
+        {family(method) for method in methods},
+        key=lambda name: family_order.index(name),
+    )
+    if bars:
+        handles = [
+            Patch(
+                facecolor=FAMILY_COLOR[name], edgecolor="#333333",
+                linewidth=0.5, label=FAMILY_LABEL[name],
+            )
+            for name in families_present
+        ]
+        handles += [
+            Patch(facecolor="#777777", edgecolor="#333333",
+                  label="Top-10 hits (summed)"),
+            Patch(facecolor="white", edgecolor="#444444", hatch="//",
+                  label="Best single hit (max identity)"),
+        ]
+    else:
+        handles = [
+            Line2D(
+                [0], [0], marker="o", linestyle="none", markersize=6,
+                markerfacecolor=FAMILY_COLOR[name],
+                markeredgecolor=FAMILY_COLOR[name], label=FAMILY_LABEL[name],
+            )
+            for name in families_present
+        ]
+        handles += [
+            Line2D(
+                [0], [0], marker="o", linestyle="none", markersize=6,
+                markerfacecolor="#444444", markeredgecolor="#444444",
+                label="Top-10 hits (summed)",
+            ),
+            Line2D(
+                [0], [0], marker="D", linestyle="none", markersize=6,
+                markerfacecolor="white", markeredgecolor="#444444",
+                label="Best single hit (max identity)",
+            ),
+        ]
+    return handles
+
+
+def add_shared_legend(fig: plt.Figure, methods: list[str], bars: bool = False) -> None:
+    handles = build_legend_handles(methods, bars=bars)
+    fig.legend(
+        handles=handles, loc="lower center", ncol=min(len(handles), 4),
+        bbox_to_anchor=(0.5, -0.045), frameon=False,
+        handletextpad=0.5, columnspacing=1.1,
+    )
+
+
 def style_axis(ax: plt.Axes, ontology: str, xlabel: str, panel: str) -> None:
     ax.set_title(ONTOLOGY_SHORT[ontology])
     ax.set_xlabel(xlabel)
@@ -247,7 +303,8 @@ def plot_cafa(metrics: pd.DataFrame, methods: list[str], out: Path) -> None:
             panel_index += 1
     # All panels share y; invert exactly once so METHOD_ORDER is top-to-bottom.
     axes[0, 0].invert_yaxis()
-    fig.subplots_adjust(left=0.15, bottom=0.10, hspace=0.42, wspace=0.24)
+    add_shared_legend(fig, methods)
+    fig.subplots_adjust(left=0.15, bottom=0.22, hspace=0.42, wspace=0.24)
     assert_print_fonts(fig)
     savefig(fig, out / "baseline_cafa_performance", MAIN)
 
@@ -284,7 +341,8 @@ def plot_aupr(metrics: pd.DataFrame, methods: list[str], out: Path) -> None:
             panel_index += 1
     # All panels share y; invert exactly once so METHOD_ORDER is top-to-bottom.
     axes[0, 0].invert_yaxis()
-    fig.subplots_adjust(left=0.15, bottom=0.10, hspace=0.42, wspace=0.24)
+    add_shared_legend(fig, methods)
+    fig.subplots_adjust(left=0.15, bottom=0.22, hspace=0.42, wspace=0.24)
     assert_print_fonts(fig)
     savefig(fig, out / "baseline_aupr", MAIN)
 
@@ -329,7 +387,8 @@ def plot_coverage(metrics: pd.DataFrame, methods: list[str], out: Path) -> None:
             panel_index += 1
     # All panels share y; invert exactly once so METHOD_ORDER is top-to-bottom.
     axes[0, 0].invert_yaxis()
-    fig.subplots_adjust(left=0.15, bottom=0.10, hspace=0.42, wspace=0.24)
+    add_shared_legend(fig, methods, bars=True)
+    fig.subplots_adjust(left=0.15, bottom=0.22, hspace=0.42, wspace=0.24)
     assert_print_fonts(fig)
     savefig(fig, out / "baseline_prediction_coverage", MAIN)
 
