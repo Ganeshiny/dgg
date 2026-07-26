@@ -429,6 +429,44 @@ def plot_coverage(metrics: pd.DataFrame, methods: list[str], out: Path) -> None:
     savefig(fig, out / "comparison_prediction_coverage", MAIN)
 
 
+def load_deepgreengo_ensemble_seeds(workspace: Path) -> list[int]:
+    metadata_paths = sorted(
+        (workspace / "predictions" / "deepgreengo").glob("*.metadata.json")
+    )
+    if len(metadata_paths) != len(ONTOLOGY_ORDER):
+        raise ValueError(
+            "Expected one DeepGreenGO metadata file per ontology; "
+            f"found {len(metadata_paths)}"
+        )
+    seed_sets: set[tuple[int, ...]] = set()
+    for path in metadata_paths:
+        metadata = json.loads(path.read_text(encoding="utf-8"))
+        if metadata.get("method") != "deepgreengo" or metadata.get("split") != "test":
+            raise ValueError(f"Unexpected DeepGreenGO provenance in {path}")
+        seeds = tuple(int(seed) for seed in metadata.get("ensemble_seeds", []))
+        if not seeds:
+            raise ValueError(f"Missing ensemble seeds in {path}")
+        seed_sets.add(seeds)
+    if len(seed_sets) != 1:
+        raise ValueError(f"Inconsistent DeepGreenGO ensemble seeds: {seed_sets}")
+    return list(next(iter(seed_sets)))
+
+
+def build_captions(ensemble_seeds: list[int]) -> str:
+    seeds = ", ".join(str(seed) for seed in ensemble_seeds)
+    return f"""Unless noted, higher values indicate better performance for all metrics except CAFA Smin, where lower is better.
+
+comparison_cafa_performance
+DeepGreenGO versus completed baselines on the nominal 30%-identity/80%-coverage test split (n = 754 proteins). DeepGreenGO is the five-seed ensemble ({seeds}) and is marked by a pink star. Points show test-set CAFA Fmax and Smin; error bars show percentile 95% confidence intervals from 1,000 paired protein-level bootstrap replicates. Colors denote method family. Filled circles denote top-10 summed transfer, and open diamonds denote best-single-hit maximum-identity transfer.
+
+comparison_aupr
+DeepGreenGO versus completed baselines on the same test split. Micro-AUPR pools protein-term decisions; macro-AUPR averages per-term average precision across GO terms observed in the test set. The plotted values are test-set point estimates. Colors denote method family; the star, filled circles, and open diamonds follow the same method and transfer-rule definitions as above.
+
+comparison_prediction_coverage
+DeepGreenGO and baseline prediction coverage on the same test split. Protein coverage is the percentage of test proteins receiving at least one nonzero score; term coverage is the percentage of evaluated test GO terms receiving at least one nonzero score. Coverage is not an accuracy measure. Colors denote method family; solid bars denote top-10 summed transfer and hatched bars denote best-single-hit maximum-identity transfer.
+"""
+
+
 def write_supporting_files(
     metrics: pd.DataFrame,
     bootstrap: pd.DataFrame,
@@ -437,26 +475,21 @@ def write_supporting_files(
     out: Path,
 ) -> None:
     out.mkdir(parents=True, exist_ok=True)
+    ensemble_seeds = load_deepgreengo_ensemble_seeds(workspace)
     metrics.to_csv(out / "comparison_metrics_plotted.csv", index=False)
     bootstrap.to_csv(out / "comparison_bootstrap_plotted.csv", index=False)
-    captions = """Unless noted, higher values indicate better performance for all metrics except CAFA Smin, where lower is better.
-
-comparison_cafa_performance
-DeepGreenGO and baseline CAFA performance on the nominal 30%-identity/80%-coverage test split (n = 754 proteins). Points show test-set CAFA Fmax and Smin; error bars show percentile 95% confidence intervals from 1,000 paired protein-level bootstrap replicates.
-
-comparison_aupr
-DeepGreenGO and baseline area-under-the-precision-recall-curve comparison on the same test split. Micro-AUPR pools protein-term decisions; macro-AUPR averages per-term average precision across GO terms observed in the test set. These are test-set point estimates.
-
-comparison_prediction_coverage
-DeepGreenGO and baseline prediction coverage on the same test split. Protein coverage is the percentage of test proteins receiving at least one nonzero score; term coverage is the percentage of evaluated test GO terms receiving at least one nonzero score. Coverage is not an accuracy measure.
-"""
-    (out / "captions.txt").write_text(captions, encoding="utf-8")
+    (out / "captions.txt").write_text(
+        build_captions(ensemble_seeds), encoding="utf-8"
+    )
     manifest = {
         "source_workspace": str(workspace.resolve()),
         "journal_profile": JOURNAL,
         "source_metrics": "results/benchmark_metrics.csv",
         "source_bootstrap": "results/bootstrap_metrics.csv",
         "focal_method": "deepgreengo",
+        "focal_method_label": METHOD_LABEL["deepgreengo"],
+        "focal_method_ensemble_seeds": ensemble_seeds,
+        "caption_file": "captions.txt",
         "included_methods": methods,
         "ontologies": ONTOLOGY_ORDER,
         "outputs": [

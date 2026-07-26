@@ -38,6 +38,10 @@ class MainComparisonPlotTests(unittest.TestCase):
             {ontology: 1 for ontology in plot.ONTOLOGY_ORDER},
         )
         self.assertEqual(plot.ordered_methods(metrics)[0], "deepgreengo")
+        self.assertEqual(
+            plot.load_deepgreengo_ensemble_seeds(plot.DEFAULT_WORKSPACE),
+            [1103, 2207, 3301, 4409, 5501],
+        )
 
     def test_legend_explains_families_and_transfer_rules(self):
         methods = [
