@@ -1,0 +1,345 @@
+========================================================
+  Job ID      : 45216817
+  Node        : mc55
+  Start time  : Sun Jul 26 13:41:26 MDT 2026
+  Project     : /home/ganeshiny.sridharan/dgg/deep-green-GO
+  Methods     : deepfri,dpfunc,deepgoplus,deepgose,interproscan
+========================================================
+[OK] Repository exists: /home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/DeepFRI
+Requirement already satisfied: tensorflow==2.13.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (2.13.0)
+Requirement already satisfied: numpy<2 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (1.24.3)
+Requirement already satisfied: biopython in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (1.85)
+Requirement already satisfied: scikit-learn in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (1.6.1)
+Requirement already satisfied: h5py in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (3.14.0)
+Requirement already satisfied: networkx in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (3.2.1)
+Requirement already satisfied: absl-py>=1.0.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from tensorflow==2.13.0) (2.3.1)
+Requirement already satisfied: astunparse>=1.6.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from tensorflow==2.13.0) (1.6.3)
+Requirement already satisfied: flatbuffers>=23.1.21 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from tensorflow==2.13.0) (25.12.19)
+Requirement already satisfied: gast<=0.4.0,>=0.2.1 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from tensorflow==2.13.0) (0.4.0)
+Requirement already satisfied: google-pasta>=0.1.1 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from tensorflow==2.13.0) (0.2.0)
+Requirement already satisfied: grpcio<2.0,>=1.24.3 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from tensorflow==2.13.0) (1.74.0)
+Requirement already satisfied: keras<2.14,>=2.13.1 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from tensorflow==2.13.0) (2.13.1)
+Requirement already satisfied: libclang>=13.0.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from tensorflow==2.13.0) (18.1.1)
+Requirement already satisfied: opt-einsum>=2.3.2 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from tensorflow==2.13.0) (3.4.0)
+Requirement already satisfied: packaging in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from tensorflow==2.13.0) (26.2)
+Requirement already satisfied: protobuf!=4.21.0,!=4.21.1,!=4.21.2,!=4.21.3,!=4.21.4,!=4.21.5,<5.0.0dev,>=3.20.3 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from tensorflow==2.13.0) (4.25.9)
+Requirement already satisfied: setuptools in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from tensorflow==2.13.0) (80.9.0)
+Requirement already satisfied: six>=1.12.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from tensorflow==2.13.0) (1.17.0)
+Requirement already satisfied: tensorboard<2.14,>=2.13 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from tensorflow==2.13.0) (2.13.0)
+Requirement already satisfied: tensorflow-estimator<2.14,>=2.13.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from tensorflow==2.13.0) (2.13.0)
+Requirement already satisfied: termcolor>=1.1.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from tensorflow==2.13.0) (3.1.0)
+Requirement already satisfied: typing-extensions<4.6.0,>=3.6.6 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from tensorflow==2.13.0) (4.5.0)
+Requirement already satisfied: wrapt>=1.11.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from tensorflow==2.13.0) (2.2.2)
+Requirement already satisfied: tensorflow-io-gcs-filesystem>=0.23.1 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from tensorflow==2.13.0) (0.37.1)
+Requirement already satisfied: google-auth<3,>=1.6.3 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from tensorboard<2.14,>=2.13->tensorflow==2.13.0) (2.50.0)
+Requirement already satisfied: google-auth-oauthlib<1.1,>=0.5 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from tensorboard<2.14,>=2.13->tensorflow==2.13.0) (1.0.0)
+Requirement already satisfied: markdown>=2.6.8 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from tensorboard<2.14,>=2.13->tensorflow==2.13.0) (3.9)
+Requirement already satisfied: requests<3,>=2.21.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from tensorboard<2.14,>=2.13->tensorflow==2.13.0) (2.32.5)
+Requirement already satisfied: tensorboard-data-server<0.8.0,>=0.7.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from tensorboard<2.14,>=2.13->tensorflow==2.13.0) (0.7.2)
+Requirement already satisfied: werkzeug>=1.0.1 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from tensorboard<2.14,>=2.13->tensorflow==2.13.0) (3.1.8)
+Requirement already satisfied: wheel>=0.26 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from tensorboard<2.14,>=2.13->tensorflow==2.13.0) (0.45.1)
+Requirement already satisfied: pyasn1-modules>=0.2.1 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from google-auth<3,>=1.6.3->tensorboard<2.14,>=2.13->tensorflow==2.13.0) (0.4.2)
+Requirement already satisfied: cryptography>=38.0.3 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from google-auth<3,>=1.6.3->tensorboard<2.14,>=2.13->tensorflow==2.13.0) (45.0.7)
+Requirement already satisfied: requests-oauthlib>=0.7.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from google-auth-oauthlib<1.1,>=0.5->tensorboard<2.14,>=2.13->tensorflow==2.13.0) (2.0.0)
+Requirement already satisfied: charset_normalizer<4,>=2 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from requests<3,>=2.21.0->tensorboard<2.14,>=2.13->tensorflow==2.13.0) (3.4.8)
+Requirement already satisfied: idna<4,>=2.5 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from requests<3,>=2.21.0->tensorboard<2.14,>=2.13->tensorflow==2.13.0) (3.18)
+Requirement already satisfied: urllib3<3,>=1.21.1 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from requests<3,>=2.21.0->tensorboard<2.14,>=2.13->tensorflow==2.13.0) (2.6.3)
+Requirement already satisfied: certifi>=2017.4.17 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from requests<3,>=2.21.0->tensorboard<2.14,>=2.13->tensorflow==2.13.0) (2026.6.17)
+Requirement already satisfied: scipy>=1.6.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from scikit-learn) (1.13.1)
+Requirement already satisfied: joblib>=1.2.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from scikit-learn) (1.5.3)
+Requirement already satisfied: threadpoolctl>=3.1.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from scikit-learn) (3.6.0)
+Requirement already satisfied: cffi>=1.14 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from cryptography>=38.0.3->google-auth<3,>=1.6.3->tensorboard<2.14,>=2.13->tensorflow==2.13.0) (2.0.0)
+Requirement already satisfied: pycparser in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from cffi>=1.14->cryptography>=38.0.3->google-auth<3,>=1.6.3->tensorboard<2.14,>=2.13->tensorflow==2.13.0) (2.23)
+Requirement already satisfied: importlib-metadata>=4.4 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from markdown>=2.6.8->tensorboard<2.14,>=2.13->tensorflow==2.13.0) (8.7.1)
+Requirement already satisfied: zipp>=3.20 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from importlib-metadata>=4.4->markdown>=2.6.8->tensorboard<2.14,>=2.13->tensorflow==2.13.0) (3.23.1)
+Requirement already satisfied: pyasn1<0.7.0,>=0.6.1 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from pyasn1-modules>=0.2.1->google-auth<3,>=1.6.3->tensorboard<2.14,>=2.13->tensorflow==2.13.0) (0.6.3)
+Requirement already satisfied: oauthlib>=3.0.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from requests-oauthlib>=0.7.0->google-auth-oauthlib<1.1,>=0.5->tensorboard<2.14,>=2.13->tensorflow==2.13.0) (3.3.1)
+Requirement already satisfied: markupsafe>=2.1.1 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from werkzeug>=1.0.1->tensorboard<2.14,>=2.13->tensorflow==2.13.0) (3.0.3)
+Obtaining file:///home/ganeshiny.sridharan/dgg/deep-green-GO/baselines/DeepFRI
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Checking if build backend supports build_editable: started
+  Checking if build backend supports build_editable: finished with status 'done'
+  Getting requirements to build editable: started
+  Getting requirements to build editable: finished with status 'done'
+  Preparing editable metadata (pyproject.toml): started
+  Preparing editable metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: DeepFRI
+  Building editable for DeepFRI (pyproject.toml): started
+  Building editable for DeepFRI (pyproject.toml): finished with status 'done'
+  Created wheel for DeepFRI: filename=deepfri-0.0.1-0.editable-py3-none-any.whl size=4001 sha256=bc737e86947b8d6db3f5e9e6b8a0b6f6df618bf36da042066e3c154cb0e8cc6a
+  Stored in directory: /tmp/pip-ephem-wheel-cache-vuikkuxe/wheels/5b/c0/af/7cc8debfaa06e7532c908b664f95e503d9145e148997320f6f
+Successfully built DeepFRI
+Installing collected packages: DeepFRI
+  Attempting uninstall: DeepFRI
+    Found existing installation: DeepFRI 0.0.1
+    Uninstalling DeepFRI-0.0.1:
+      Successfully uninstalled DeepFRI-0.0.1
+Successfully installed DeepFRI-0.0.1
+[OK] Repository exists: /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/DPFunc
+Requirement already satisfied: gdown<6,>=5 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_dpfunc/lib/python3.8/site-packages (5.2.2)
+Collecting fair-esm==2.0.0
+  Using cached fair_esm-2.0.0-py3-none-any.whl.metadata (37 kB)
+Requirement already satisfied: beautifulsoup4 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_dpfunc/lib/python3.8/site-packages (from gdown<6,>=5) (4.15.0)
+Requirement already satisfied: filelock in /home/ganeshiny.sridharan/miniconda3/envs/dgg_dpfunc/lib/python3.8/site-packages (from gdown<6,>=5) (3.16.1)
+Requirement already satisfied: requests[socks] in /home/ganeshiny.sridharan/miniconda3/envs/dgg_dpfunc/lib/python3.8/site-packages (from gdown<6,>=5) (2.32.3)
+Requirement already satisfied: tqdm in /home/ganeshiny.sridharan/miniconda3/envs/dgg_dpfunc/lib/python3.8/site-packages (from gdown<6,>=5) (4.66.5)
+Requirement already satisfied: soupsieve>=1.6.1 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_dpfunc/lib/python3.8/site-packages (from beautifulsoup4->gdown<6,>=5) (2.7)
+Requirement already satisfied: typing-extensions>=4.0.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_dpfunc/lib/python3.8/site-packages (from beautifulsoup4->gdown<6,>=5) (4.11.0)
+Requirement already satisfied: charset-normalizer<4,>=2 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_dpfunc/lib/python3.8/site-packages (from requests[socks]->gdown<6,>=5) (3.3.2)
+Requirement already satisfied: idna<4,>=2.5 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_dpfunc/lib/python3.8/site-packages (from requests[socks]->gdown<6,>=5) (3.7)
+Requirement already satisfied: urllib3<3,>=1.21.1 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_dpfunc/lib/python3.8/site-packages (from requests[socks]->gdown<6,>=5) (2.2.3)
+Requirement already satisfied: certifi>=2017.4.17 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_dpfunc/lib/python3.8/site-packages (from requests[socks]->gdown<6,>=5) (2024.8.30)
+Requirement already satisfied: PySocks!=1.5.7,>=1.5.6 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_dpfunc/lib/python3.8/site-packages (from requests[socks]->gdown<6,>=5) (1.7.1)
+Using cached fair_esm-2.0.0-py3-none-any.whl (93 kB)
+Installing collected packages: fair-esm
+Successfully installed fair-esm-2.0.0
+[DOWNLOAD] Attempt 1/20: https://dl.fbaipublicfiles.com/fair-esm/models/esm2_t33_650M_UR50D.pt
+[DOWNLOAD] Attempt 1/20: https://dl.fbaipublicfiles.com/fair-esm/regression/esm2_t33_650M_UR50D-contact-regression.pt
+DPFunc ESM2 cache ready
+[OK] Repository exists: /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgoplus
+Requirement already satisfied: deepgoplus==1.0.2 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgoplus_py37/lib/python3.7/site-packages (1.0.2)
+Requirement already satisfied: scikit-learn in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgoplus_py37/lib/python3.7/site-packages (from deepgoplus==1.0.2) (1.0.2)
+Requirement already satisfied: tensorflow<2.4 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgoplus_py37/lib/python3.7/site-packages (from deepgoplus==1.0.2) (2.3.4)
+Requirement already satisfied: scipy in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgoplus_py37/lib/python3.7/site-packages (from deepgoplus==1.0.2) (1.7.3)
+Requirement already satisfied: numpy<2.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgoplus_py37/lib/python3.7/site-packages (from deepgoplus==1.0.2) (1.18.5)
+Requirement already satisfied: click<8 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgoplus_py37/lib/python3.7/site-packages (from deepgoplus==1.0.2) (7.1.2)
+Requirement already satisfied: pandas in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgoplus_py37/lib/python3.7/site-packages (from deepgoplus==1.0.2) (1.3.5)
+Requirement already satisfied: absl-py>=0.7.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgoplus_py37/lib/python3.7/site-packages (from tensorflow<2.4->deepgoplus==1.0.2) (2.1.0)
+Requirement already satisfied: gast==0.3.3 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgoplus_py37/lib/python3.7/site-packages (from tensorflow<2.4->deepgoplus==1.0.2) (0.3.3)
+Requirement already satisfied: grpcio>=1.8.6 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgoplus_py37/lib/python3.7/site-packages (from tensorflow<2.4->deepgoplus==1.0.2) (1.62.3)
+Requirement already satisfied: h5py<2.11.0,>=2.10.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgoplus_py37/lib/python3.7/site-packages (from tensorflow<2.4->deepgoplus==1.0.2) (2.10.0)
+Requirement already satisfied: protobuf>=3.9.2 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgoplus_py37/lib/python3.7/site-packages (from tensorflow<2.4->deepgoplus==1.0.2) (3.20.3)
+Requirement already satisfied: six>=1.12.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgoplus_py37/lib/python3.7/site-packages (from tensorflow<2.4->deepgoplus==1.0.2) (1.17.0)
+Requirement already satisfied: opt-einsum>=2.3.2 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgoplus_py37/lib/python3.7/site-packages (from tensorflow<2.4->deepgoplus==1.0.2) (3.3.0)
+Requirement already satisfied: tensorflow-estimator<2.4.0,>=2.3.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgoplus_py37/lib/python3.7/site-packages (from tensorflow<2.4->deepgoplus==1.0.2) (2.3.0)
+Requirement already satisfied: wrapt>=1.11.1 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgoplus_py37/lib/python3.7/site-packages (from tensorflow<2.4->deepgoplus==1.0.2) (1.16.0)
+Requirement already satisfied: wheel>=0.26 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgoplus_py37/lib/python3.7/site-packages (from tensorflow<2.4->deepgoplus==1.0.2) (0.38.4)
+Requirement already satisfied: keras-preprocessing<1.2,>=1.1.1 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgoplus_py37/lib/python3.7/site-packages (from tensorflow<2.4->deepgoplus==1.0.2) (1.1.2)
+Requirement already satisfied: tensorboard<3,>=2.3.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgoplus_py37/lib/python3.7/site-packages (from tensorflow<2.4->deepgoplus==1.0.2) (2.11.2)
+Requirement already satisfied: astunparse==1.6.3 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgoplus_py37/lib/python3.7/site-packages (from tensorflow<2.4->deepgoplus==1.0.2) (1.6.3)
+Requirement already satisfied: termcolor>=1.1.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgoplus_py37/lib/python3.7/site-packages (from tensorflow<2.4->deepgoplus==1.0.2) (2.3.0)
+Requirement already satisfied: google-pasta>=0.1.8 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgoplus_py37/lib/python3.7/site-packages (from tensorflow<2.4->deepgoplus==1.0.2) (0.2.0)
+Requirement already satisfied: python-dateutil>=2.7.3 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgoplus_py37/lib/python3.7/site-packages (from pandas->deepgoplus==1.0.2) (2.9.0.post0)
+Requirement already satisfied: pytz>=2017.3 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgoplus_py37/lib/python3.7/site-packages (from pandas->deepgoplus==1.0.2) (2026.2)
+Requirement already satisfied: threadpoolctl>=2.0.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgoplus_py37/lib/python3.7/site-packages (from scikit-learn->deepgoplus==1.0.2) (3.1.0)
+Requirement already satisfied: joblib>=0.11 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgoplus_py37/lib/python3.7/site-packages (from scikit-learn->deepgoplus==1.0.2) (1.3.2)
+Requirement already satisfied: google-auth<3,>=1.6.3 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgoplus_py37/lib/python3.7/site-packages (from tensorboard<3,>=2.3.0->tensorflow<2.4->deepgoplus==1.0.2) (2.45.0)
+Requirement already satisfied: markdown>=2.6.8 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgoplus_py37/lib/python3.7/site-packages (from tensorboard<3,>=2.3.0->tensorflow<2.4->deepgoplus==1.0.2) (3.4.4)
+Requirement already satisfied: requests<3,>=2.21.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgoplus_py37/lib/python3.7/site-packages (from tensorboard<3,>=2.3.0->tensorflow<2.4->deepgoplus==1.0.2) (2.31.0)
+Requirement already satisfied: google-auth-oauthlib<0.5,>=0.4.1 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgoplus_py37/lib/python3.7/site-packages (from tensorboard<3,>=2.3.0->tensorflow<2.4->deepgoplus==1.0.2) (0.4.6)
+Requirement already satisfied: tensorboard-data-server<0.7.0,>=0.6.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgoplus_py37/lib/python3.7/site-packages (from tensorboard<3,>=2.3.0->tensorflow<2.4->deepgoplus==1.0.2) (0.6.1)
+Requirement already satisfied: setuptools>=41.0.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgoplus_py37/lib/python3.7/site-packages (from tensorboard<3,>=2.3.0->tensorflow<2.4->deepgoplus==1.0.2) (65.6.3)
+Requirement already satisfied: tensorboard-plugin-wit>=1.6.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgoplus_py37/lib/python3.7/site-packages (from tensorboard<3,>=2.3.0->tensorflow<2.4->deepgoplus==1.0.2) (1.8.1)
+Requirement already satisfied: werkzeug>=1.0.1 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgoplus_py37/lib/python3.7/site-packages (from tensorboard<3,>=2.3.0->tensorflow<2.4->deepgoplus==1.0.2) (2.2.3)
+Requirement already satisfied: rsa<5,>=3.1.4 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgoplus_py37/lib/python3.7/site-packages (from google-auth<3,>=1.6.3->tensorboard<3,>=2.3.0->tensorflow<2.4->deepgoplus==1.0.2) (4.9.1)
+Requirement already satisfied: pyasn1-modules>=0.2.1 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgoplus_py37/lib/python3.7/site-packages (from google-auth<3,>=1.6.3->tensorboard<3,>=2.3.0->tensorflow<2.4->deepgoplus==1.0.2) (0.3.0)
+Requirement already satisfied: cachetools<7.0,>=2.0.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgoplus_py37/lib/python3.7/site-packages (from google-auth<3,>=1.6.3->tensorboard<3,>=2.3.0->tensorflow<2.4->deepgoplus==1.0.2) (5.5.2)
+Requirement already satisfied: requests-oauthlib>=0.7.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgoplus_py37/lib/python3.7/site-packages (from google-auth-oauthlib<0.5,>=0.4.1->tensorboard<3,>=2.3.0->tensorflow<2.4->deepgoplus==1.0.2) (2.0.0)
+Requirement already satisfied: importlib-metadata>=4.4 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgoplus_py37/lib/python3.7/site-packages (from markdown>=2.6.8->tensorboard<3,>=2.3.0->tensorflow<2.4->deepgoplus==1.0.2) (6.7.0)
+Requirement already satisfied: idna<4,>=2.5 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgoplus_py37/lib/python3.7/site-packages (from requests<3,>=2.21.0->tensorboard<3,>=2.3.0->tensorflow<2.4->deepgoplus==1.0.2) (3.10)
+Requirement already satisfied: urllib3<3,>=1.21.1 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgoplus_py37/lib/python3.7/site-packages (from requests<3,>=2.21.0->tensorboard<3,>=2.3.0->tensorflow<2.4->deepgoplus==1.0.2) (2.0.7)
+Requirement already satisfied: charset-normalizer<4,>=2 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgoplus_py37/lib/python3.7/site-packages (from requests<3,>=2.21.0->tensorboard<3,>=2.3.0->tensorflow<2.4->deepgoplus==1.0.2) (3.4.9)
+Requirement already satisfied: certifi>=2017.4.17 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgoplus_py37/lib/python3.7/site-packages (from requests<3,>=2.21.0->tensorboard<3,>=2.3.0->tensorflow<2.4->deepgoplus==1.0.2) (2022.12.7)
+Requirement already satisfied: MarkupSafe>=2.1.1 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgoplus_py37/lib/python3.7/site-packages (from werkzeug>=1.0.1->tensorboard<3,>=2.3.0->tensorflow<2.4->deepgoplus==1.0.2) (2.1.5)
+Requirement already satisfied: zipp>=0.5 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgoplus_py37/lib/python3.7/site-packages (from importlib-metadata>=4.4->markdown>=2.6.8->tensorboard<3,>=2.3.0->tensorflow<2.4->deepgoplus==1.0.2) (3.15.0)
+Requirement already satisfied: typing-extensions>=3.6.4 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgoplus_py37/lib/python3.7/site-packages (from importlib-metadata>=4.4->markdown>=2.6.8->tensorboard<3,>=2.3.0->tensorflow<2.4->deepgoplus==1.0.2) (4.7.1)
+Requirement already satisfied: pyasn1<0.6.0,>=0.4.6 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgoplus_py37/lib/python3.7/site-packages (from pyasn1-modules>=0.2.1->google-auth<3,>=1.6.3->tensorboard<3,>=2.3.0->tensorflow<2.4->deepgoplus==1.0.2) (0.5.1)
+Requirement already satisfied: oauthlib>=3.0.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgoplus_py37/lib/python3.7/site-packages (from requests-oauthlib>=0.7.0->google-auth-oauthlib<0.5,>=0.4.1->tensorboard<3,>=2.3.0->tensorflow<2.4->deepgoplus==1.0.2) (3.2.2)
+[OK] Repository exists: /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2
+Requirement already satisfied: torch==2.0.1 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (2.0.1)
+Requirement already satisfied: torchvision==0.15.2 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (0.15.2)
+Requirement already satisfied: torchaudio==2.0.2 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (2.0.2)
+Requirement already satisfied: filelock in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from torch==2.0.1) (3.12.4)
+Requirement already satisfied: typing-extensions in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from torch==2.0.1) (4.8.0)
+Requirement already satisfied: sympy in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from torch==2.0.1) (1.12)
+Requirement already satisfied: networkx in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from torch==2.0.1) (3.1)
+Requirement already satisfied: jinja2 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from torch==2.0.1) (3.1.2)
+Requirement already satisfied: nvidia-cuda-nvrtc-cu11==11.7.99 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from torch==2.0.1) (11.7.99)
+Requirement already satisfied: nvidia-cuda-runtime-cu11==11.7.99 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from torch==2.0.1) (11.7.99)
+Requirement already satisfied: nvidia-cuda-cupti-cu11==11.7.101 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from torch==2.0.1) (11.7.101)
+Requirement already satisfied: nvidia-cudnn-cu11==8.5.0.96 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from torch==2.0.1) (8.5.0.96)
+Requirement already satisfied: nvidia-cublas-cu11==11.10.3.66 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from torch==2.0.1) (11.10.3.66)
+Requirement already satisfied: nvidia-cufft-cu11==10.9.0.58 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from torch==2.0.1) (10.9.0.58)
+Requirement already satisfied: nvidia-curand-cu11==10.2.10.91 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from torch==2.0.1) (10.2.10.91)
+Requirement already satisfied: nvidia-cusolver-cu11==11.4.0.1 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from torch==2.0.1) (11.4.0.1)
+Requirement already satisfied: nvidia-cusparse-cu11==11.7.4.91 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from torch==2.0.1) (11.7.4.91)
+Requirement already satisfied: nvidia-nccl-cu11==2.14.3 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from torch==2.0.1) (2.14.3)
+Requirement already satisfied: nvidia-nvtx-cu11==11.7.91 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from torch==2.0.1) (11.7.91)
+Requirement already satisfied: triton==2.0.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from torch==2.0.1) (2.0.0)
+Requirement already satisfied: numpy in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from torchvision==0.15.2) (1.26.1)
+Requirement already satisfied: requests in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from torchvision==0.15.2) (2.31.0)
+Requirement already satisfied: pillow!=8.3.*,>=5.3.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from torchvision==0.15.2) (10.1.0)
+Requirement already satisfied: setuptools in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from nvidia-cublas-cu11==11.10.3.66->torch==2.0.1) (83.0.0)
+Requirement already satisfied: wheel in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from nvidia-cublas-cu11==11.10.3.66->torch==2.0.1) (0.45.1)
+Requirement already satisfied: cmake in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from triton==2.0.0->torch==2.0.1) (3.27.7)
+Requirement already satisfied: lit in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from triton==2.0.0->torch==2.0.1) (17.0.3)
+Requirement already satisfied: MarkupSafe>=2.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from jinja2->torch==2.0.1) (2.1.3)
+Requirement already satisfied: charset-normalizer<4,>=2 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from requests->torchvision==0.15.2) (3.3.0)
+Requirement already satisfied: idna<4,>=2.5 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from requests->torchvision==0.15.2) (3.4)
+Requirement already satisfied: urllib3<3,>=1.21.1 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from requests->torchvision==0.15.2) (2.0.7)
+Requirement already satisfied: certifi>=2017.4.17 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from requests->torchvision==0.15.2) (2023.7.22)
+Requirement already satisfied: mpmath>=0.19 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from sympy->torch==2.0.1) (1.3.0)
+Looking in links: https://data.dgl.ai/wheels/cu117/repo.html
+Requirement already satisfied: dgl==1.1.2+cu117 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (1.1.2+cu117)
+Requirement already satisfied: numpy>=1.14.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from dgl==1.1.2+cu117) (1.26.1)
+Requirement already satisfied: scipy>=1.1.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from dgl==1.1.2+cu117) (1.11.3)
+Requirement already satisfied: networkx>=2.1 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from dgl==1.1.2+cu117) (3.1)
+Requirement already satisfied: requests>=2.19.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from dgl==1.1.2+cu117) (2.31.0)
+Requirement already satisfied: tqdm in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from dgl==1.1.2+cu117) (4.66.1)
+Requirement already satisfied: psutil>=5.8.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from dgl==1.1.2+cu117) (5.9.6)
+Requirement already satisfied: charset-normalizer<4,>=2 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from requests>=2.19.0->dgl==1.1.2+cu117) (3.3.0)
+Requirement already satisfied: idna<4,>=2.5 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from requests>=2.19.0->dgl==1.1.2+cu117) (3.4)
+Requirement already satisfied: urllib3<3,>=1.21.1 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from requests>=2.19.0->dgl==1.1.2+cu117) (2.0.7)
+Requirement already satisfied: certifi>=2017.4.17 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from requests>=2.19.0->dgl==1.1.2+cu117) (2023.7.22)
+Requirement already satisfied: biopython==1.81 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from -r /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/requirements.txt (line 1)) (1.81)
+Requirement already satisfied: certifi==2023.7.22 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from -r /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/requirements.txt (line 2)) (2023.7.22)
+Requirement already satisfied: charset-normalizer==3.3.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from -r /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/requirements.txt (line 3)) (3.3.0)
+Requirement already satisfied: click==8.1.7 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from -r /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/requirements.txt (line 4)) (8.1.7)
+Requirement already satisfied: cmake==3.27.7 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from -r /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/requirements.txt (line 5)) (3.27.7)
+Requirement already satisfied: dgl==1.1.2+cu117 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from -r /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/requirements.txt (line 6)) (1.1.2+cu117)
+Requirement already satisfied: fair-esm==2.0.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from -r /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/requirements.txt (line 7)) (2.0.0)
+Requirement already satisfied: filelock==3.12.4 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from -r /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/requirements.txt (line 8)) (3.12.4)
+Requirement already satisfied: fsspec==2023.9.2 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from -r /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/requirements.txt (line 9)) (2023.9.2)
+Requirement already satisfied: idna==3.4 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from -r /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/requirements.txt (line 10)) (3.4)
+Requirement already satisfied: Jinja2==3.1.2 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from -r /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/requirements.txt (line 11)) (3.1.2)
+Requirement already satisfied: joblib==1.3.2 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from -r /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/requirements.txt (line 12)) (1.3.2)
+Requirement already satisfied: lit==17.0.3 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from -r /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/requirements.txt (line 13)) (17.0.3)
+Requirement already satisfied: MarkupSafe==2.1.3 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from -r /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/requirements.txt (line 14)) (2.1.3)
+Requirement already satisfied: mpmath==1.3.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from -r /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/requirements.txt (line 15)) (1.3.0)
+Requirement already satisfied: networkx==3.1 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from -r /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/requirements.txt (line 16)) (3.1)
+Requirement already satisfied: numpy==1.26.1 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from -r /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/requirements.txt (line 17)) (1.26.1)
+Requirement already satisfied: nvidia-cublas-cu11==11.10.3.66 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from -r /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/requirements.txt (line 18)) (11.10.3.66)
+Requirement already satisfied: nvidia-cuda-cupti-cu11==11.7.101 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from -r /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/requirements.txt (line 19)) (11.7.101)
+Requirement already satisfied: nvidia-cuda-nvrtc-cu11==11.7.99 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from -r /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/requirements.txt (line 20)) (11.7.99)
+Requirement already satisfied: nvidia-cuda-runtime-cu11==11.7.99 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from -r /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/requirements.txt (line 21)) (11.7.99)
+Requirement already satisfied: nvidia-cudnn-cu11==8.5.0.96 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from -r /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/requirements.txt (line 22)) (8.5.0.96)
+Requirement already satisfied: nvidia-cufft-cu11==10.9.0.58 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from -r /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/requirements.txt (line 23)) (10.9.0.58)
+Requirement already satisfied: nvidia-curand-cu11==10.2.10.91 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from -r /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/requirements.txt (line 24)) (10.2.10.91)
+Requirement already satisfied: nvidia-cusolver-cu11==11.4.0.1 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from -r /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/requirements.txt (line 25)) (11.4.0.1)
+Requirement already satisfied: nvidia-cusparse-cu11==11.7.4.91 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from -r /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/requirements.txt (line 26)) (11.7.4.91)
+Requirement already satisfied: nvidia-nccl-cu11==2.14.3 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from -r /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/requirements.txt (line 27)) (2.14.3)
+Requirement already satisfied: nvidia-nvtx-cu11==11.7.91 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from -r /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/requirements.txt (line 28)) (11.7.91)
+Requirement already satisfied: packaging==23.2 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from -r /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/requirements.txt (line 29)) (23.2)
+Requirement already satisfied: pandas==1.5.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from -r /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/requirements.txt (line 30)) (1.5.0)
+Requirement already satisfied: Pillow==10.1.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from -r /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/requirements.txt (line 31)) (10.1.0)
+Requirement already satisfied: psutil==5.9.6 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from -r /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/requirements.txt (line 32)) (5.9.6)
+Requirement already satisfied: python-dateutil==2.8.2 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from -r /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/requirements.txt (line 33)) (2.8.2)
+Requirement already satisfied: pytz==2023.3.post1 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from -r /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/requirements.txt (line 34)) (2023.3.post1)
+Requirement already satisfied: requests==2.31.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from -r /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/requirements.txt (line 35)) (2.31.0)
+Requirement already satisfied: scikit-learn==1.3.1 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from -r /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/requirements.txt (line 36)) (1.3.1)
+Requirement already satisfied: scipy==1.11.3 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from -r /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/requirements.txt (line 37)) (1.11.3)
+Requirement already satisfied: six==1.16.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from -r /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/requirements.txt (line 38)) (1.16.0)
+Requirement already satisfied: sympy==1.12 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from -r /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/requirements.txt (line 39)) (1.12)
+Requirement already satisfied: threadpoolctl==3.2.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from -r /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/requirements.txt (line 40)) (3.2.0)
+Requirement already satisfied: torch==2.0.1 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from -r /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/requirements.txt (line 41)) (2.0.1)
+Requirement already satisfied: torchaudio==2.0.2 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from -r /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/requirements.txt (line 42)) (2.0.2)
+Requirement already satisfied: torchvision==0.15.2 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from -r /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/requirements.txt (line 43)) (0.15.2)
+Requirement already satisfied: tqdm==4.66.1 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from -r /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/requirements.txt (line 44)) (4.66.1)
+Requirement already satisfied: triton==2.0.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from -r /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/requirements.txt (line 45)) (2.0.0)
+Requirement already satisfied: typing_extensions==4.8.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from -r /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/requirements.txt (line 46)) (4.8.0)
+Requirement already satisfied: tzdata==2023.3 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from -r /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/requirements.txt (line 47)) (2023.3)
+Requirement already satisfied: urllib3==2.0.7 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from -r /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/requirements.txt (line 48)) (2.0.7)
+Requirement already satisfied: setuptools in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from nvidia-cublas-cu11==11.10.3.66->-r /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/requirements.txt (line 18)) (83.0.0)
+Requirement already satisfied: wheel in /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgose/lib/python3.10/site-packages (from nvidia-cublas-cu11==11.10.3.66->-r /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgo2/requirements.txt (line 18)) (0.45.1)
+[OK] dgg_interproscan_java11: openjdk version "11.0.30-internal" 2026-01-20
+[OK] dgg_interproscan_java11: openjdk version "11.0.30-internal" 2026-01-20
+usage: predict.py [-h] [-s SEQ] [-cm CMAP] [-pdb PDB_FN] [--cmap_csv CMAP_CSV]
+                  [--pdb_dir PDB_DIR] [--fasta_fn FASTA_FN]
+                  [--model_config MODEL_CONFIG] -ont {mf,bp,cc,ec}
+                  [{mf,bp,cc,ec} ...] [-o OUTPUT_FN_PREFIX] [-v]
+                  [--use_guided_grads] [--saliency]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -s SEQ, --seq SEQ     Protein sequence to be annotated. (default: None)
+  -cm CMAP, --cmap CMAP
+                        Protein contact map to be annotated (in *npz file
+                        format). (default: None)
+  -pdb PDB_FN, --pdb_fn PDB_FN
+                        Protein PDB file to be annotated. (default: None)
+  --cmap_csv CMAP_CSV   Catalogue with chain to file path mapping. (default:
+                        None)
+  --pdb_dir PDB_DIR     Directory with PDB files of predicted Rosetta/DMPFold
+                        structures. (default: None)
+  --fasta_fn FASTA_FN   Fasta file with protein sequences. (default: None)
+  --model_config MODEL_CONFIG
+                        JSON file with model names. (default:
+                        ./trained_models/model_config.json)
+  -ont {mf,bp,cc,ec} [{mf,bp,cc,ec} ...], --ontology {mf,bp,cc,ec} [{mf,bp,cc,ec} ...]
+                        Gene Ontology/Enzyme Commission. (default: ['mf'])
+  -o OUTPUT_FN_PREFIX, --output_fn_prefix OUTPUT_FN_PREFIX
+                        Save predictions/saliency in file. (default: DeepFRI)
+  -v, --verbose         Prints predictions. (default: False)
+  --use_guided_grads    Use guided grads to compute gradCAM. (default: False)
+  --saliency            Compute saliency maps for every protein and every MF-
+                        GO term/EC number. (default: False)
+usage: build_data_demo.py [-h] --manifest MANIFEST --workspace WORKSPACE
+                          --ontology {mf,bp,cc} [--pdb-dir PDB_DIR]
+                          [--inter-idx INTER_IDX] [--go-obo GO_OBO]
+                          [--mlb-source MLB_SOURCE]
+                          [--distance-threshold DISTANCE_THRESHOLD]
+                          [--esm-batch-size ESM_BATCH_SIZE] [--device DEVICE]
+                          [--train-chunk-size TRAIN_CHUNK_SIZE]
+                          [--force-rebuild-esm]
+
+Build optimized DPFunc data-processing demo workspace
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --manifest MANIFEST   TSV/CSV with protein_id/split and optional columns
+  --workspace WORKSPACE
+                        Output workspace directory
+  --ontology {mf,bp,cc}
+  --pdb-dir PDB_DIR     Default directory for <protein_id>.pdb(.gz)
+  --inter-idx INTER_IDX
+                        Path to interpro index dict
+  --go-obo GO_OBO       Optional go.obo copy source
+  --mlb-source MLB_SOURCE
+                        Optional pretrained mlb to copy into workspace/mlb
+  --distance-threshold DISTANCE_THRESHOLD
+  --esm-batch-size ESM_BATCH_SIZE
+  --device DEVICE
+  --train-chunk-size TRAIN_CHUNK_SIZE
+  --force-rebuild-esm   Recompute ESM embeddings even if cached
+usage: run_dpfunc.py [-h] {train,predict} ...
+
+Run DPFunc training/prediction in demo workspace
+
+positional arguments:
+  {train,predict}
+    train          Call DPFunc_main.py
+    predict        Call DPFunc_pred.py
+
+optional arguments:
+  -h, --help       show this help message and exit
+DPFunc runtime and ESM2 cache verified
+Usage: deepgoplus [OPTIONS]
+
+Options:
+  -dr, --data-root TEXT         Data root folder  [required]
+  -if, --in-file TEXT           Input FASTA file  [required]
+  -of, --out-file TEXT          Output result file
+  -gf, --go-file TEXT           Gene Ontology
+  -mf, --model-file TEXT        Tensorflow model file
+  -tf, --terms-file TEXT        List of predicted terms
+  -tf, --annotations-file TEXT  Experimental annotations
+  -dd, --diamond-db TEXT        Diamond Database file
+  -df, --diamond-file TEXT      Diamond Mapping file
+  -cs, --chunk-size INTEGER     Number of sequences to read at a time
+  -t, --threshold FLOAT         Prediction threshold
+  -bs, --batch-size INTEGER     Batch size for prediction model
+  -a, --alpha FLOAT             Alpha weight parameter
+  --help                        Show this message and exit.
+Usage: predict.py [OPTIONS]
+
+Options:
+  -if, --in-file TEXT        Input FASTA file  [required]
+  -dr, --data-root TEXT      Prediction model
+  -t, --threshold FLOAT      Prediction threshold
+  -bs, --batch-size INTEGER  Batch size for prediction model
+  -d, --device TEXT          Device
+  --help                     Show this message and exit.
+[OK] dgg_interproscan_java11: openjdk version "11.0.30-internal" 2026-01-20
+[SETUP COMPLETE] All requested SOTA dependencies and model files passed verification
+Use DGG_INTERPROSCAN=/home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/interproscan-5.78-109.0/interproscan.sh when submitting the benchmark.
