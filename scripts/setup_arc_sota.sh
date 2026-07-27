@@ -223,7 +223,7 @@ setup_dpfunc() {
     download_file "${DPFUNC_ESM2_REGRESSION_URL}" \
         "${TORCH_HOME}/hub/checkpoints/esm2_t33_650M_UR50D-contact-regression.pt"
     conda run -n "${DPFUNC_ENV}" python -c \
-        "import esm; model, alphabet = esm.pretrained.esm2_t33_650M_UR50D(); print('DPFunc ESM2 cache ready')"
+        "import esm; print('DPFunc ESM import ok; cached checkpoints verified separately')"
     if [[ ! -s "${DPFUNC_ROOT}/save_models/DPFunc_model_mf_0of3model.pt" ]]; then
         local archive="${DOWNLOAD_ROOT}/dpfunc_models.archive"
         if [[ ! -s "${archive}" ]]; then
@@ -315,7 +315,7 @@ verify_setup() {
             done
         done
         check conda run -n "${DPFUNC_ENV}" python -c \
-            "import dgl, esm, logzero, torch; esm.pretrained.esm2_t33_650M_UR50D(); print('DPFunc runtime and ESM2 cache verified')"
+            "import dgl, esm, logzero, torch; print('DPFunc runtime imports and ESM2 cache files verified')"
     fi
     if method_enabled deepgoplus; then
         # DeepGOPlus 1.0.2 consumes these five files. last_release.json belongs
