@@ -2,13 +2,12 @@
 # Evaluate every completed model/input ablation in homology and IC bins.
 # Submit after run_arc_ablations.slurm with --dependency=afterok:<jobid>.
 #SBATCH --job-name=dgg_arc_bins
-#SBATCH --partition=gpu-l40
+#SBATCH --partition=cpu2019
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --gpus-per-task=1
 #SBATCH --cpus-per-task=8
-#SBATCH --mem=48G
-#SBATCH --time=24:00:00
+#SBATCH --mem=32G
+#SBATCH --time=04:00:00
 #SBATCH --output=/home/ganeshiny.sridharan/dgg/deep-green-GO/logs/arc_bin_eval_%j.out
 #SBATCH --error=/home/ganeshiny.sridharan/dgg/deep-green-GO/logs/arc_bin_eval_%j.err
 

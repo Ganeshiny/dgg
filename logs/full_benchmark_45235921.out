@@ -1,0 +1,124 @@
+Project: /home/ganeshiny.sridharan/dgg/deep-green-GO
+Benchmark: /home/ganeshiny.sridharan/dgg/deep-green-GO/arc_benchmark/nominal_30_identity_80_coverage
+Methods: hybrid,naive,blast,diamond,foldseek,interproscan,deepfri_sequence,deepfri_structure,dpfunc,deepgoplus,deepgose
+base environment ok
+makeblastdb: 2.17.0+
+ Package: blast 2.17.0, build Aug 11 2025 09:46:06
+blastp: 2.17.0+
+ Package: blast 2.17.0, build Aug 11 2025 09:46:06
+diamond version 2.2.2
+10.941cd33
+InterProScan Java 11: /home/ganeshiny.sridharan/miniconda3/envs/dgg_interproscan_java11/bin/java
+InterProScan Java 11: /home/ganeshiny.sridharan/miniconda3/envs/dgg_interproscan_java11/bin/java
+DeepFRI environment ok
+usage: predict.py [-h] [-s SEQ] [-cm CMAP] [-pdb PDB_FN] [--cmap_csv CMAP_CSV]
+                  [--pdb_dir PDB_DIR] [--fasta_fn FASTA_FN]
+                  [--model_config MODEL_CONFIG] -ont {mf,bp,cc,ec}
+                  [{mf,bp,cc,ec} ...] [-o OUTPUT_FN_PREFIX] [-v]
+                  [--use_guided_grads] [--saliency]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -s SEQ, --seq SEQ     Protein sequence to be annotated. (default: None)
+  -cm CMAP, --cmap CMAP
+                        Protein contact map to be annotated (in *npz file
+                        format). (default: None)
+  -pdb PDB_FN, --pdb_fn PDB_FN
+                        Protein PDB file to be annotated. (default: None)
+  --cmap_csv CMAP_CSV   Catalogue with chain to file path mapping. (default:
+                        None)
+  --pdb_dir PDB_DIR     Directory with PDB files of predicted Rosetta/DMPFold
+                        structures. (default: None)
+  --fasta_fn FASTA_FN   Fasta file with protein sequences. (default: None)
+  --model_config MODEL_CONFIG
+                        JSON file with model names. (default:
+                        ./trained_models/model_config.json)
+  -ont {mf,bp,cc,ec} [{mf,bp,cc,ec} ...], --ontology {mf,bp,cc,ec} [{mf,bp,cc,ec} ...]
+                        Gene Ontology/Enzyme Commission. (default: ['mf'])
+  -o OUTPUT_FN_PREFIX, --output_fn_prefix OUTPUT_FN_PREFIX
+                        Save predictions/saliency in file. (default: DeepFRI)
+  -v, --verbose         Prints predictions. (default: False)
+  --use_guided_grads    Use guided grads to compute gradCAM. (default: False)
+  --saliency            Compute saliency maps for every protein and every MF-
+                        GO term/EC number. (default: False)
+usage: build_data_demo.py [-h] --manifest MANIFEST --workspace WORKSPACE
+                          --ontology {mf,bp,cc} [--pdb-dir PDB_DIR]
+                          [--inter-idx INTER_IDX] [--go-obo GO_OBO]
+                          [--mlb-source MLB_SOURCE]
+                          [--distance-threshold DISTANCE_THRESHOLD]
+                          [--esm-batch-size ESM_BATCH_SIZE] [--device DEVICE]
+                          [--train-chunk-size TRAIN_CHUNK_SIZE]
+                          [--force-rebuild-esm]
+
+Build optimized DPFunc data-processing demo workspace
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --manifest MANIFEST   TSV/CSV with protein_id/split and optional columns
+  --workspace WORKSPACE
+                        Output workspace directory
+  --ontology {mf,bp,cc}
+  --pdb-dir PDB_DIR     Default directory for <protein_id>.pdb(.gz)
+  --inter-idx INTER_IDX
+                        Path to interpro index dict
+  --go-obo GO_OBO       Optional go.obo copy source
+  --mlb-source MLB_SOURCE
+                        Optional pretrained mlb to copy into workspace/mlb
+  --distance-threshold DISTANCE_THRESHOLD
+  --esm-batch-size ESM_BATCH_SIZE
+  --device DEVICE
+  --train-chunk-size TRAIN_CHUNK_SIZE
+  --force-rebuild-esm   Recompute ESM embeddings even if cached
+usage: run_dpfunc.py [-h] {train,predict} ...
+
+Run DPFunc training/prediction in demo workspace
+
+positional arguments:
+  {train,predict}
+    train          Call DPFunc_main.py
+    predict        Call DPFunc_pred.py
+
+optional arguments:
+  -h, --help       show this help message and exit
+DPFunc environment and ESM import ok
+DeepGO-SE environment ok
+Usage: predict.py [OPTIONS]
+
+Options:
+  -if, --in-file TEXT        Input FASTA file  [required]
+  -dr, --data-root TEXT      Prediction model
+  -t, --threshold FLOAT      Prediction threshold
+  -bs, --batch-size INTEGER  Batch size for prediction model
+  -d, --device TEXT          Device
+  --help                     Show this message and exit.
+NVIDIA L40S, 46068 MiB
+Preflight passed
+[SKIP] 01_prepare_inputs already completed and required artifacts are present
+[START] 01b_structure_views 2026-07-27T01:02:52-06:00
+[DONE] 01b_structure_views
+[SKIP] 02_hybrid already completed and required artifacts are present
+[RERUN] 03_sequence_baselines_naive_blast_diamond: forced or a required artifact is missing
+[START] 03_sequence_baselines_naive_blast_diamond 2026-07-27T01:05:21-06:00
+[benchmark] reusing complete search output /home/ganeshiny.sridharan/dgg/deep-green-GO/arc_benchmark/nominal_30_identity_80_coverage/raw/blast_hits.tsv
+[benchmark] reusing complete search output /home/ganeshiny.sridharan/dgg/deep-green-GO/arc_benchmark/nominal_30_identity_80_coverage/raw/diamond_hits.tsv
+[DONE] 03_sequence_baselines_naive_blast_diamond
+[START] 04_foldseek_unique_structures 2026-07-27T01:05:57-06:00
+[benchmark] reusing complete search output /home/ganeshiny.sridharan/dgg/deep-green-GO/arc_benchmark/nominal_30_identity_80_coverage/raw/foldseek_hits.tsv
+[DONE] 04_foldseek_unique_structures
+[START] 05_interproscan 2026-07-27T01:06:14-06:00
+27/07/2026 01:06:23:436 Welcome to InterProScan-5.78-109.0
+27/07/2026 01:06:23:437 Running InterProScan v5 in STANDALONE mode... on Linux
+27/07/2026 01:06:37:372 RunID: mlg4_20260727_010635227_fc0p
+27/07/2026 01:06:45:892 Loading file /home/ganeshiny.sridharan/dgg/deep-green-GO/arc_benchmark/nominal_30_identity_80_coverage/inputs/valid_test.fasta
+27/07/2026 01:06:45:899 Running the following analyses:
+[AntiFam-8.0,CDD-3.21,Coils-2.2.1,FunFam-4.3.0,Gene3D-4.3.0,Hamap-2026_01,MobiDBLite-4.0,NCBIfam-19.0,PANTHER-19.0,Pfam-38.2,PIRSF-3.10,PIRSR-2025_05,PRINTS-42.0,ProSitePatterns-2026_01,ProSiteProfiles-2026_01,SFLD-4,SMART-9.0,SUPERFAMILY-1.75]
+Pre-calculated match lookup service DISABLED.  Please wait for match calculations to complete...
+27/07/2026 01:07:12:553 25% completed
+27/07/2026 01:09:07:283 50% completed
+27/07/2026 01:13:38:303 75% completed
+27/07/2026 01:17:19:709 91% completed
+27/07/2026 01:23:10:509 100% done:  InterProScan analyses completed 
+
+2026-07-27 01:23:11,036 [main] [uk.ac.ebi.interpro.scan.jms.master.AbstractMaster:259] WARN - Master process unable to delete temporary directory /home/ganeshiny.sridharan/dgg/deep-green-GO/temp/mlg4_20260727_010635227_fc0p
+[DONE] 05_interproscan
+[START] 06_deepfri_sequence 2026-07-27T01:23:34-06:00
