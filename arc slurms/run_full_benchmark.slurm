@@ -110,6 +110,17 @@ prediction_complete() {
     done
 }
 
+best_hit_prediction_current() {
+    local method="$1"
+    local ontology
+    local metadata
+    for ontology in mf bp cc; do
+        metadata="${BENCHMARK_ROOT}/predictions/${method}/${ontology}.metadata.json"
+        nonempty_file "${metadata}" || return 1
+        grep -q "one highest-identity.*top-k pool" "${metadata}" || return 1
+    done
+}
+
 stage_artifacts_ok() {
     local name="$1"
     local ontology
@@ -140,17 +151,20 @@ stage_artifacts_ok() {
                 nonempty_file "${RAW}/blast_hits.tsv" || return 1
                 prediction_complete blast || return 1
                 prediction_complete blast_max || return 1
+                best_hit_prediction_current blast_max || return 1
             fi
             if method_enabled diamond; then
                 nonempty_file "${RAW}/diamond_hits.tsv" || return 1
                 prediction_complete diamond || return 1
                 prediction_complete diamond_max || return 1
+                best_hit_prediction_current diamond_max || return 1
             fi
             ;;
         04_foldseek_unique_structures)
             nonempty_file "${RAW}/foldseek_hits.tsv" || return 1
             prediction_complete foldseek || return 1
             prediction_complete foldseek_max || return 1
+            best_hit_prediction_current foldseek_max || return 1
             ;;
         05_interproscan)
             nonempty_file "${RAW}/interpro/interpro.tsv" || return 1
@@ -387,12 +401,14 @@ preflight() {
     if method_enabled deepgoplus; then
         CURRENT_METHOD=deepgoplus
         preflight_check require_dir "${DEEPGOPLUS_ROOT}/data"
+        # DeepGOPlus 1.0.2 consumes these five files. The official 1.0.2 data
+        # archive does not contain metadata/last_release.json, and the
+        # deepgoplus command does not read it.
         preflight_check require_file "${DEEPGOPLUS_ROOT}/data/go.obo"
         preflight_check require_file "${DEEPGOPLUS_ROOT}/data/model.h5"
         preflight_check require_file "${DEEPGOPLUS_ROOT}/data/terms.pkl"
         preflight_check require_file "${DEEPGOPLUS_ROOT}/data/train_data.pkl"
         preflight_check require_file "${DEEPGOPLUS_ROOT}/data/train_data.dmnd"
-        preflight_check require_file "${DEEPGOPLUS_ROOT}/data/metadata/last_release.json"
         preflight_check conda_run "${DEEPGOPLUS_ENV}" deepgoplus --help >/dev/null
         preflight_check resolve_deepgoplus_diamond
     fi
@@ -537,9 +553,11 @@ run_sequence_baselines() {
 }
 
 run_foldseek() {
+    local force_search=()
+    [[ "${DGG_FORCE_FOLDSEEK_SEARCH:-0}" == "1" ]] && force_search=(--force-search)
     benchmark_cli foldseek \
         --workspace "${BENCHMARK_ROOT}" --foldseek "${FOLDSEEK}" --threads "${THREADS}" \
-        --top-k 10 --max-hits 50 --min-qcov 0.5 --min-tcov 0.5 --force-search
+        --top-k 10 --max-hits 50 --min-qcov 0.5 --min-tcov 0.5 "${force_search[@]}"
 }
 
 run_interpro() {
@@ -752,8 +770,24 @@ run_gomap() {
 run_evaluation() {
     local required="${METHODS//hybrid/deepgreengo}"
     benchmark_cli evaluate \
-        --workspace "${BENCHMARK_ROOT}" --bootstraps 1000 --require-methods "${required}"
+        --workspace "${BENCHMARK_ROOT}" --bootstraps 1000 --aupr-workers "${THREADS}" --require-methods "${required}"
     benchmark_cli plot --workspace "${BENCHMARK_ROOT}"
+}
+
+run_stratified_analysis() {
+    # Homology / term-IC / GO-depth stratification and IC-weighted PR curves,
+    # computed from the stored per-protein score matrices. Depends only on
+    # predictions/ and labels/, so it runs after every method has been
+    # normalized but needs no GPU.
+    conda_run "${BASE_ENV}" python -m src.benchmark.run_stratified \
+        --workspace "${BENCHMARK_ROOT}" --data-root "${DATA_ROOT}"
+    conda_run "${BASE_ENV}" python "${PROJECT_DIR}/src/plot_stratified.py" \
+        --workspace "${BENCHMARK_ROOT}"
+}
+
+run_comparison_figures() {
+    conda_run "${BASE_ENV}" python "${PROJECT_DIR}/src/plot_baselines_only.py" \
+        --workspace "${BENCHMARK_ROOT}"
 }
 
 echo "Project: ${PROJECT_DIR}"
@@ -779,4 +813,6 @@ method_enabled deepgose && stage 10_deepgose run_deepgose
 method_enabled hayai && stage 11_hayai run_hayai
 method_enabled gomap && stage 12_gomap run_gomap
 run_evaluation
+run_comparison_figures
+run_stratified_analysis
 echo "Benchmark completed: ${BENCHMARK_ROOT}"

@@ -167,6 +167,12 @@ def main() -> None:
                               "re-evaluating a workspace produced on another host).")
     command.add_argument("--bootstraps", type=int, default=1000)
     command.add_argument("--bootstrap-seed", type=int, default=20260720)
+    command.add_argument(
+        "--aupr-workers",
+        type=int,
+        default=8,
+        help="Threads used for paired AUPR bootstrap calculations.",
+    )
     command.add_argument("--require-methods", default="")
     command.set_defaults(func=evaluate)
 

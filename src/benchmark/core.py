@@ -474,11 +474,17 @@ def export_hybrid(args: argparse.Namespace) -> None:
     datasets = load_locked_datasets(data_root)
     for short, ontology in ONTOLOGIES.items():
         split_predictions: dict[str, list[np.ndarray]] = {"valid": [], "test": []}
+        model_variants: set[str] = set()
         for seed in SEEDS:
             checkpoint_path = checkpoint_root / ontology / f"seed_{seed}" / "best_checkpoint.pt"
             if not checkpoint_path.is_file():
                 raise FileNotFoundError(f"Missing five-seed checkpoint: {checkpoint_path}")
             checkpoint = torch.load(checkpoint_path, map_location="cpu", weights_only=False)
+            checkpoint_config = checkpoint.get("config", {})
+            model_variant = str(
+                checkpoint_config.get("model", checkpoint_config.get("model_type", "Hybrid"))
+            )
+            model_variants.add(model_variant)
             model = model_from_checkpoint(checkpoint, device=device)
             for split in ("valid", "test"):
                 dataset = datasets[short][split]
@@ -500,11 +506,22 @@ def export_hybrid(args: argparse.Namespace) -> None:
                     dataset.protein_ids,
                     dataset.terms,
                     scores,
-                    metadata={"seed": seed, "split": split, "checkpoint": str(checkpoint_path)},
+                    metadata={
+                        "seed": seed,
+                        "split": split,
+                        "checkpoint": str(checkpoint_path),
+                        "model_variant": model_variant,
+                    },
                 )
             del model
             if device.type == "cuda":
                 torch.cuda.empty_cache()
+        if len(model_variants) != 1:
+            raise ValueError(
+                f"{ontology}: ensemble checkpoints disagree on model variant: "
+                f"{sorted(model_variants)}"
+            )
+        model_variant = next(iter(model_variants))
         valid_scores = np.mean(split_predictions["valid"], axis=0)
         test_scores = np.mean(split_predictions["test"], axis=0)
         valid_dataset = datasets[short]["valid"]
@@ -513,7 +530,7 @@ def export_hybrid(args: argparse.Namespace) -> None:
         save_prediction(
             workspace, "deepgreengo_valid", short,
             valid_dataset.protein_ids, valid_dataset.terms, valid_scores,
-            metadata={"ensemble_seeds": list(SEEDS), "split": "valid"},
+            metadata={"ensemble_seeds": list(SEEDS), "split": "valid", "model_variant": model_variant},
         )
         save_prediction(
             workspace, "deepgreengo", short,
@@ -523,6 +540,7 @@ def export_hybrid(args: argparse.Namespace) -> None:
                 "split": "test",
                 "validation_micro_f1": valid_f1,
                 "validation_threshold": validation_threshold,
+                "model_variant": model_variant,
             },
         )
 

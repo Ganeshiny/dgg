@@ -9,10 +9,30 @@ sys.path.insert(0, str(PROJECT_ROOT))
 
 from src.benchmark import methods as benchmark_methods  # noqa: E402
 from src.benchmark.methods import (  # noqa: E402
+    best_identity_transfer,
     canonicalize_similarity_id,
     parse_similarity_hits,
     transfer_scores,
 )
+
+
+def test_best_identity_transfer_uses_exactly_one_hit_and_is_subset_of_top_k():
+    hits = {
+        "QUERY": [
+            ("BEST", 80.0, 90.0, 1.0, 1.0),
+            ("OTHER", 100.0, 70.0, 1.0, 1.0),
+        ]
+    }
+    labels = np.asarray([[1, 0, 0], [0, 1, 1]], dtype=np.float32)
+    best = best_identity_transfer(
+        ["QUERY"], ["BEST", "OTHER"], labels, hits, 10, 0.5, 0.5
+    )
+    top_k = transfer_scores(
+        ["QUERY"], ["BEST", "OTHER"], labels, hits, 10, 0.5, 0.5
+    )
+
+    np.testing.assert_array_equal(best > 0, [[True, False, False]])
+    assert np.all(np.logical_or(~(best > 0), top_k > 0))
 
 
 def test_canonicalize_similarity_id_handles_blast_and_structure_ids():

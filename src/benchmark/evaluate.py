@@ -4,9 +4,12 @@
 from __future__ import annotations
 
 import csv
+from concurrent.futures import ProcessPoolExecutor
 import json
 import math
+import multiprocessing as mp
 from pathlib import Path
+import warnings
 
 import numpy as np
 
@@ -140,6 +143,123 @@ def scalar_metrics(y_true: np.ndarray, scores: np.ndarray, score_type: str):
     return result
 
 
+_AUPR_CONTEXT: dict[str, np.ndarray | int] = {}
+
+
+def _calculate_aupr_bootstrap(weight: np.ndarray) -> tuple[float, float]:
+    """Worker using fork-inherited read-only arrays to avoid large IPC copies."""
+    from sklearn.metrics import average_precision_score
+
+    y_true = np.asarray(_AUPR_CONTEXT["y_true"])
+    scores = np.asarray(_AUPR_CONTEXT["scores"])
+    observed_truth = np.asarray(_AUPR_CONTEXT["observed_truth"])
+    observed_scores = np.asarray(_AUPR_CONTEXT["observed_scores"])
+    flat_truth = np.asarray(_AUPR_CONTEXT["flat_truth"])
+    flat_scores = np.asarray(_AUPR_CONTEXT["flat_scores"])
+    term_count = int(_AUPR_CONTEXT["term_count"])
+    sample_weight = np.asarray(weight, dtype=np.float64)
+    micro = average_precision_score(
+        flat_truth,
+        flat_scores,
+        sample_weight=np.repeat(sample_weight, term_count),
+    )
+    present = (sample_weight @ observed_truth) > 0
+    if not np.any(present):
+        return float(micro), float("nan")
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", category=UserWarning)
+        per_term = average_precision_score(
+            observed_truth[:, present],
+            observed_scores[:, present],
+            average=None,
+            sample_weight=sample_weight,
+        )
+    return float(micro), float(np.mean(per_term))
+
+
+def bootstrap_aupr(
+    y_true: np.ndarray,
+    scores: np.ndarray,
+    weights: np.ndarray,
+    workers: int = 1,
+) -> tuple[np.ndarray, np.ndarray]:
+    """Paired protein-bootstrap micro/macro AUPR distributions."""
+    observed = y_true.sum(axis=0) > 0
+    _AUPR_CONTEXT.clear()
+    _AUPR_CONTEXT.update({
+        "y_true": y_true,
+        "scores": scores,
+        "observed_truth": y_true[:, observed],
+        "observed_scores": scores[:, observed],
+        "flat_truth": y_true.ravel(),
+        "flat_scores": scores.ravel(),
+        "term_count": y_true.shape[1],
+    })
+    if workers > 1:
+        context = mp.get_context("fork")
+        with ProcessPoolExecutor(
+            max_workers=workers,
+            mp_context=context,
+        ) as executor:
+            values = list(
+                executor.map(
+                    _calculate_aupr_bootstrap,
+                    weights,
+                    chunksize=max(1, len(weights) // (workers * 8)),
+                )
+            )
+    else:
+        values = [_calculate_aupr_bootstrap(weight) for weight in weights]
+    _AUPR_CONTEXT.clear()
+    return (
+        np.asarray([value[0] for value in values], dtype=np.float64),
+        np.asarray([value[1] for value in values], dtype=np.float64),
+    )
+
+_AUPR_BATCH_CONTEXT: dict[str, np.ndarray] = {}
+
+
+def _bootstrap_aupr_method(
+    item: tuple[str, np.ndarray],
+) -> tuple[str, np.ndarray, np.ndarray]:
+    method, scores = item
+    micro, macro = bootstrap_aupr(
+        np.asarray(_AUPR_BATCH_CONTEXT["y_true"]),
+        scores,
+        np.asarray(_AUPR_BATCH_CONTEXT["weights"]),
+        workers=1,
+    )
+    return method, micro, macro
+
+
+def bootstrap_aupr_methods(
+    y_true: np.ndarray,
+    method_scores: dict[str, np.ndarray],
+    weights: np.ndarray,
+    workers: int,
+) -> dict[str, tuple[np.ndarray, np.ndarray]]:
+    """Parallelize independent method distributions across worker processes."""
+    if not method_scores:
+        return {}
+    _AUPR_BATCH_CONTEXT.clear()
+    _AUPR_BATCH_CONTEXT.update({"y_true": y_true, "weights": weights})
+    items = list(method_scores.items())
+    if workers > 1 and len(items) > 1:
+        context = mp.get_context("fork")
+        with ProcessPoolExecutor(
+            max_workers=min(workers, len(items)),
+            mp_context=context,
+        ) as executor:
+            values = list(executor.map(_bootstrap_aupr_method, items))
+    else:
+        values = [_bootstrap_aupr_method(item) for item in items]
+    _AUPR_BATCH_CONTEXT.clear()
+    return {
+        method: (micro, macro)
+        for method, micro, macro in values
+    }
+
+
 def fixed_threshold_metrics(y_true: np.ndarray, scores: np.ndarray, threshold: float) -> dict:
     predicted = scores >= threshold if threshold > 0 else scores > 0
     true_mask = y_true > 0
@@ -251,66 +371,129 @@ def evaluate(args) -> None:
         row_indices = np.repeat(np.arange(args.bootstraps), n)
         np.add.at(weights, (row_indices, draws.ravel()), 1.0)
         method_bootstrap = {}
+        continuous_scores: dict[str, np.ndarray] = {}
         for method in methods:
             path = workspace / "predictions" / method / f"{short}.npz"
-            scores, mapped_ids, mapped_terms = None, None, None
-            scores, mapped_ids, mapped_terms = (*align_prediction(path, test_ids, terms),)
+            scores, mapped_ids, mapped_terms = (
+                *align_prediction(path, test_ids, terms),
+            )
             kind = score_type(path)
-            validation_path = workspace / "predictions" / f"{method}_valid" / f"{short}.npz"
+            validation_path = (
+                workspace / "predictions" / f"{method}_valid" / f"{short}.npz"
+            )
             if not validation_path.is_file():
                 raise FileNotFoundError(
-                    f"Validation predictions are required for fixed-threshold reporting: {validation_path}"
+                    "Validation predictions are required for fixed-threshold "
+                    f"reporting: {validation_path}"
                 )
-            validation_scores, _, _ = align_prediction(validation_path, valid_ids, terms)
+            validation_scores, _, _ = align_prediction(
+                validation_path, valid_ids, terms
+            )
             validation_point = aggregate_curves(
                 per_protein_curves(valid_true, validation_scores, ia)
             )
-            validation_threshold = float(validation_point["fmax_threshold"][0])
+            validation_threshold = float(
+                validation_point["fmax_threshold"][0]
+            )
             curves = per_protein_curves(y_true, scores, ia)
             point = aggregate_curves(curves)
             boot = aggregate_curves(curves, weights)
+            if kind == "binary":
+                boot["micro_aupr"] = np.full(args.bootstraps, np.nan)
+                boot["macro_aupr"] = np.full(args.bootstraps, np.nan)
+            else:
+                continuous_scores[method] = scores
             method_bootstrap[method] = boot
             scalar = scalar_metrics(y_true, scores, kind)
-            fixed = fixed_threshold_metrics(y_true, scores, validation_threshold)
+            fixed = fixed_threshold_metrics(
+                y_true, scores, validation_threshold
+            )
             calibration = calibration_metrics(y_true, scores, kind)
             row = {
-                "method": method, "ontology": ontology, "ontology_short": short,
-                "score_type": kind, "test_proteins": n, "test_terms": len(terms),
-                "mapped_proteins": mapped_ids, "mapped_terms": mapped_terms,
+                "method": method,
+                "ontology": ontology,
+                "ontology_short": short,
+                "score_type": kind,
+                "test_proteins": n,
+                "test_terms": len(terms),
+                "mapped_proteins": mapped_ids,
+                "mapped_terms": mapped_terms,
                 "cafa_fmax": float(point["fmax"][0]),
                 "cafa_fmax_threshold": float(point["fmax_threshold"][0]),
                 "cafa_smin": float(point["smin"][0]),
                 "cafa_smin_threshold": float(point["smin_threshold"][0]),
                 "coverage_at_fmax": float(point["coverage_at_fmax"][0]),
                 "validation_threshold": validation_threshold,
-                "validation_cafa_fmax": float(validation_point["fmax"][0]),
+                "validation_cafa_fmax": float(
+                    validation_point["fmax"][0]
+                ),
                 **fixed,
                 **scalar,
                 **calibration,
             }
             for metric in ("fmax", "smin"):
                 values = boot[metric]
-                row[f"cafa_{metric}_ci_low"] = float(np.quantile(values, 0.025))
-                row[f"cafa_{metric}_ci_high"] = float(np.quantile(values, 0.975))
+                row[f"cafa_{metric}_ci_low"] = float(
+                    np.quantile(values, 0.025)
+                )
+                row[f"cafa_{metric}_ci_high"] = float(
+                    np.quantile(values, 0.975)
+                )
             summary_rows.append(row)
-            audit_rows.append({key: row[key] for key in (
-                "method", "ontology", "score_type", "test_proteins", "test_terms",
-                "mapped_proteins", "mapped_terms", "protein_coverage_any_score", "predicted_term_coverage")})
+            audit_rows.append({
+                key: row[key]
+                for key in (
+                    "method",
+                    "ontology",
+                    "score_type",
+                    "test_proteins",
+                    "test_terms",
+                    "mapped_proteins",
+                    "mapped_terms",
+                    "protein_coverage_any_score",
+                    "predicted_term_coverage",
+                )
+            })
+
+        print(
+            f"[evaluate] {ontology}: {args.bootstraps} paired AUPR "
+            f"replicates for {len(continuous_scores)} methods",
+            flush=True,
+        )
+        aupr_by_method = bootstrap_aupr_methods(
+            y_true,
+            continuous_scores,
+            weights,
+            workers=args.aupr_workers,
+        )
+        for method, (micro_aupr, macro_aupr) in aupr_by_method.items():
+            method_bootstrap[method]["micro_aupr"] = micro_aupr
+            method_bootstrap[method]["macro_aupr"] = macro_aupr
+
+        for method, boot in method_bootstrap.items():
             for index in range(args.bootstraps):
-                bootstrap_rows.append({"bootstrap": index, "method": method, "ontology": ontology,
-                                       "cafa_fmax": float(boot["fmax"][index]),
-                                       "cafa_smin": float(boot["smin"][index])})
+                bootstrap_rows.append({
+                    "bootstrap": index,
+                    "method": method,
+                    "ontology": ontology,
+                    "cafa_fmax": float(boot["fmax"][index]),
+                    "cafa_smin": float(boot["smin"][index]),
+                    "micro_aupr": float(boot["micro_aupr"][index]),
+                    "macro_aupr": float(boot["macro_aupr"][index]),
+                })
+
         if "deepgreengo" in method_bootstrap:
             reference = method_bootstrap["deepgreengo"]
             for method, boot in method_bootstrap.items():
                 if method == "deepgreengo":
                     continue
-                for metric in ("fmax", "smin"):
+                for metric in ("fmax", "smin", "micro_aupr", "macro_aupr"):
                     delta = reference[metric] - boot[metric]
                     if metric == "smin":
                         delta = -delta  # positive always means DeepGreenGO is better
+                    metric_name = f"cafa_{metric}" if metric in {"fmax", "smin"} else metric
                     delta_rows.append({
-                        "ontology": ontology, "competitor": method, "metric": f"cafa_{metric}",
+                        "ontology": ontology, "competitor": method, "metric": metric_name,
                         "deepgreengo_advantage_mean": float(np.mean(delta)),
                         "ci_low": float(np.quantile(delta, 0.025)),
                         "ci_high": float(np.quantile(delta, 0.975)),
@@ -327,6 +510,7 @@ def evaluate(args) -> None:
             "CAFA Fmax is protein-centric; precision averages over covered targets and recall over all targets.",
             "Smin uses training-derived conditional information accretion and is minimized over the same threshold grid.",
             "Bootstrap resampling is paired by protein across methods.",
+            "Micro- and macro-AUPR uncertainty uses the same paired protein bootstrap.",
             "AUPR/AUROC and calibration are not reported for binary annotation pipelines.",
             "Fixed-threshold test precision, recall and F1 use thresholds selected only on validation proteins.",
             "The split is nominal 30% identity/80% coverage and is not described as leakage-free.",

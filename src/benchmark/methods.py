@@ -140,19 +140,32 @@ def transfer_scores(query_ids, train_ids, train_labels, hits, top_k, min_qcov, m
     return scores
 
 
-def max_similarity_transfer(query_ids, train_ids, train_labels, hits, min_qcov, min_tcov):
-    """Score a GO term by the maximum normalized identity of a supporting hit."""
+def best_identity_transfer(
+    query_ids, train_ids, train_labels, hits, top_k, min_qcov, min_tcov
+):
+    """Transfer annotations from exactly one eligible highest-identity hit.
+
+    The previous implementation took the union of annotations over every hit
+    and assigned each term the maximum identity among its supporting hits. That
+    was not a single-best-hit baseline and could cover more terms than top-k.
+    """
     train_index = {protein_id: index for index, protein_id in enumerate(train_ids)}
     scores = np.zeros((len(query_ids), train_labels.shape[1]), dtype=np.float32)
     for query_index, query in enumerate(query_ids):
-        for target, _, identity, qcov, tcov in hits.get(query, ()):
-            if target not in train_index or qcov < min_qcov or tcov < min_tcov:
-                continue
-            similarity = identity / 100.0 if identity > 1.0 else identity
-            annotated = train_labels[train_index[target]] > 0
-            scores[query_index, annotated] = np.maximum(
-                scores[query_index, annotated], np.clip(similarity, 0.0, 1.0)
-            )
+        eligible = [
+            hit for hit in hits.get(query, ())
+            if hit[0] in train_index and hit[3] >= min_qcov and hit[4] >= min_tcov
+        ]
+        eligible.sort(key=lambda hit: hit[1], reverse=True)
+        selected = eligible[:top_k]
+        if not selected:
+            continue
+        target, _, identity, _, _ = max(
+            selected, key=lambda hit: (hit[2], hit[1])
+        )
+        similarity = identity / 100.0 if identity > 1.0 else identity
+        annotated = train_labels[train_index[target]] > 0
+        scores[query_index, annotated] = np.clip(similarity, 0.0, 1.0)
     return scores
 
 
@@ -221,13 +234,13 @@ def sequence_baselines(args) -> None:
             save_prediction(workspace, method, short, test_ids, terms,
                             scores[len(valid_ids):], metadata={**meta, "split": "test"})
 
-            max_scores = max_similarity_transfer(
+            max_scores = best_identity_transfer(
                 all_ids, train_ids, train_labels, parsed_hits,
-                args.min_qcov, args.min_tcov
+                args.top_k, args.min_qcov, args.min_tcov
             )
             max_meta = {
                 **meta,
-                "transfer": "maximum normalized identity among supporting training hits",
+                "transfer": "annotations from one highest-identity hit within the eligible top-k pool",
             }
             save_prediction(workspace, method + "_max_valid", short, valid_ids, terms,
                             max_scores[:len(valid_ids)], metadata={**max_meta, "split": "valid"})
@@ -265,13 +278,13 @@ def foldseek_baseline(args) -> None:
                         scores[:len(valid_ids)], metadata={**meta, "split": "valid"})
         save_prediction(workspace, "foldseek", short, test_ids, terms,
                         scores[len(valid_ids):], metadata={**meta, "split": "test"})
-        max_scores = max_similarity_transfer(
+        max_scores = best_identity_transfer(
             all_ids, train_ids, train_labels, parsed,
-            args.min_qcov, args.min_tcov
+            args.top_k, args.min_qcov, args.min_tcov
         )
         max_meta = {
             **meta,
-            "transfer": "maximum normalized identity among supporting structural hits",
+            "transfer": "annotations from one highest-identity structural hit within the eligible top-k pool",
         }
         save_prediction(workspace, "foldseek_max_valid", short, valid_ids, terms,
                         max_scores[:len(valid_ids)], metadata={**max_meta, "split": "valid"})

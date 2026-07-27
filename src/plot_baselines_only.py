@@ -21,7 +21,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from matplotlib.lines import Line2D
+
 from matplotlib.patches import Patch
 
 
@@ -62,8 +62,16 @@ METHOD_ORDER = [
     "eggnog_mapper", "hayai", "gomap",
 ]
 
+COVERAGE_METHOD_ORDER = [
+    "blast", "blast_max",
+    "diamond", "diamond_max",
+    "foldseek", "foldseek_max",
+    "interproscan", "eggnog_mapper", "hayai", "gomap",
+]
+
+
 METHOD_LABEL = {
-    "deepgreengo": "DeepGreenGO (this work)",
+    "deepgreengo": "DeepGreenGO Hybrid (this work)",
     "naive": "Naive frequency",
     "blast": "BLAST (top-10)",
     "blast_max": "BLAST (max identity)",
@@ -97,7 +105,7 @@ METHOD_FAMILY = {
 }
 
 FAMILY_COLOR = {
-    "proposed": CATEGORICAL_PALETTE[6],
+    "proposed": "#1B5E20",
     "frequency": CATEGORICAL_PALETTE[2],
     "sequence": CATEGORICAL_PALETTE[0],
     "structure": CATEGORICAL_PALETTE[4],
@@ -108,7 +116,7 @@ FAMILY_COLOR = {
 }
 
 FAMILY_LABEL = {
-    "proposed": "DeepGreenGO (this work)",
+    "proposed": "DeepGreenGO Hybrid (this work)",
     "frequency": "Frequency prior",
     "sequence": "Sequence alignment",
     "structure": "Structure alignment",
@@ -187,78 +195,45 @@ def family(method: str) -> str:
     return METHOD_FAMILY.get(method, "other")
 
 
-def marker(method: str) -> str:
-    if method == "deepgreengo":
-        return "*"
-    if method.endswith("_max"):
-        return "D"
-    if method == "naive":
-        return "s"
-    return "o"
-
-
-def marker_size(method: str, default: float) -> float:
-    return 8.5 if method == "deepgreengo" else default
-
-
 def add_proposed_separator(ax: plt.Axes, methods: list[str]) -> None:
     if methods and methods[0] == "deepgreengo" and len(methods) > 1:
         ax.axhline(0.5, color="#777777", linewidth=0.65, zorder=1)
 
 
-def marker_face(method: str, color: str) -> str:
-    return "white" if method.endswith("_max") else color
-
-
-def build_legend_handles(methods: list[str], bars: bool = False) -> list:
+def build_legend_handles(methods: list[str]) -> list:
     """Explain family colour and transfer-rule styling once per figure."""
     family_order = list(FAMILY_LABEL)
     families_present = sorted(
         {family(method) for method in methods},
         key=lambda name: family_order.index(name),
     )
-    if bars:
-        handles = [
-            Patch(
-                facecolor=FAMILY_COLOR[name], edgecolor="#333333",
-                linewidth=0.5, label=FAMILY_LABEL[name],
-            )
-            for name in families_present
-        ]
-        handles += [
-            Patch(facecolor="#777777", edgecolor="#333333",
-                  label="Top-10 hits (summed)"),
-            Patch(facecolor="white", edgecolor="#444444", hatch="//",
-                  label="Best single hit (max identity)"),
-        ]
-    else:
-        handles = [
-            Line2D(
-                [0], [0],
-                marker="*" if name == "proposed" else "o",
-                linestyle="none", markersize=8 if name == "proposed" else 6,
-                markerfacecolor=FAMILY_COLOR[name],
-                markeredgecolor=FAMILY_COLOR[name], label=FAMILY_LABEL[name],
-            )
-            for name in families_present
-        ]
-        handles += [
-            Line2D(
-                [0], [0], marker="o", linestyle="none", markersize=6,
-                markerfacecolor="#444444", markeredgecolor="#444444",
-                label="Top-10 hits (summed)",
-            ),
-            Line2D(
-                [0], [0], marker="D", linestyle="none", markersize=6,
-                markerfacecolor="white", markeredgecolor="#444444",
-                label="Best single hit (max identity)",
-            ),
-        ]
+    handles = [
+        Patch(
+            facecolor=FAMILY_COLOR[name],
+            edgecolor="#333333",
+            linewidth=0.5,
+            label=FAMILY_LABEL[name],
+        )
+        for name in families_present
+    ]
+    handles += [
+        Patch(
+            facecolor="#777777",
+            edgecolor="#333333",
+            label="Top-10 weighted transfer",
+        ),
+        Patch(
+            facecolor="white",
+            edgecolor="#444444",
+            hatch="//",
+            label="Single best identity (within top-10)",
+        ),
+    ]
     return handles
 
 
-def add_shared_legend(fig: plt.Figure, methods: list[str], bars: bool = False) -> None:
-    handles = build_legend_handles(methods, bars=bars)
+def add_shared_legend(fig: plt.Figure, methods: list[str]) -> None:
+    handles = build_legend_handles(methods)
     fig.legend(
         handles=handles, loc="lower center", ncol=min(len(handles), 4),
         bbox_to_anchor=(0.5, -0.045), frameon=False,
@@ -295,7 +270,13 @@ def assert_print_fonts(fig: plt.Figure) -> None:
         raise ValueError("; ".join(warnings))
 
 
-def plot_cafa(metrics: pd.DataFrame, methods: list[str], out: Path) -> None:
+def plot_cafa(
+    metrics: pd.DataFrame,
+    bootstrap: pd.DataFrame,
+    methods: list[str],
+    out: Path,
+) -> None:
+    """CAFA point estimates as horizontal bars with paired-bootstrap CIs."""
     fig, axes = plt.subplots(
         2, 3,
         figsize=(DOUBLE_COLUMN_IN, max(4.8, 0.38 * len(methods) + 2.4)),
@@ -304,29 +285,49 @@ def plot_cafa(metrics: pd.DataFrame, methods: list[str], out: Path) -> None:
     y = np.arange(len(methods))
     panel_index = 0
     specifications = [
-        ("cafa_fmax", "cafa_fmax_ci_low", "cafa_fmax_ci_high", "CAFA F$_{max}$"),
-        ("cafa_smin", "cafa_smin_ci_low", "cafa_smin_ci_high", "CAFA S$_{min}$"),
+        ("cafa_fmax", "CAFA F$_{max}$"),
+        ("cafa_smin", "CAFA S$_{min}$"),
     ]
-    for row_index, (value_col, low_col, high_col, xlabel) in enumerate(specifications):
+    for row_index, (value_col, xlabel) in enumerate(specifications):
         for column_index, ontology in enumerate(ONTOLOGY_ORDER):
             ax = axes[row_index, column_index]
-            subset = metrics[metrics["ontology"] == ontology].set_index("method")
+            point = metrics[metrics["ontology"] == ontology].set_index("method")
+            boot = bootstrap[bootstrap["ontology"] == ontology]
             upper_values = []
             for yi, method in enumerate(methods):
-                record = subset.loc[method]
-                value = float(record[value_col])
-                low = float(record[low_col])
-                high = float(record[high_col])
-                upper_values.append(high)
+                value = float(point.loc[method, value_col])
+                values = boot.loc[
+                    boot["method"] == method, value_col
+                ].dropna().to_numpy()
+                if len(values) != 1000:
+                    raise ValueError(
+                        "Expected 1,000 bootstrap values for "
+                        f"{method}/{ontology}/{value_col}; found {len(values)}"
+                    )
+                low, high = np.quantile(values, [0.025, 0.975])
+                upper_values.append(float(high))
                 color = FAMILY_COLOR[family(method)]
-                ax.errorbar(
-                    value, yi,
-                    xerr=np.array([[max(0.0, value - low)], [max(0.0, high - value)]]),
-                    fmt=marker(method), markersize=marker_size(method, 5.2),
-                    markerfacecolor=marker_face(method, color),
-                    markeredgecolor=color, markeredgewidth=1.0,
-                    ecolor=color, elinewidth=1.0, capsize=2.2, capthick=0.8,
+                bar = ax.barh(
+                    yi,
+                    value,
+                    height=0.56,
+                    color=color,
+                    edgecolor="#2B2B2B",
+                    linewidth=0.6,
                     zorder=3,
+                )[0]
+                if method.endswith("_max"):
+                    bar.set_hatch("//")
+                ax.errorbar(
+                    value,
+                    yi,
+                    xerr=np.asarray([[max(0.0, value - low)], [max(0.0, high - value)]]),
+                    fmt="none",
+                    ecolor="#202020",
+                    elinewidth=0.8,
+                    capsize=2.0,
+                    capthick=0.8,
+                    zorder=4,
                 )
             add_proposed_separator(ax, methods)
             maximum = max(upper_values)
@@ -334,15 +335,20 @@ def plot_cafa(metrics: pd.DataFrame, methods: list[str], out: Path) -> None:
             set_method_axis(ax, y, methods, column_index)
             style_axis(ax, ontology, xlabel, chr(97 + panel_index))
             panel_index += 1
-    # All panels share y; invert exactly once so METHOD_ORDER is top-to-bottom.
     axes[0, 0].invert_yaxis()
     add_shared_legend(fig, methods)
-    fig.subplots_adjust(left=0.15, bottom=0.22, hspace=0.42, wspace=0.24)
+    fig.subplots_adjust(left=0.17, bottom=0.22, hspace=0.42, wspace=0.24)
     assert_print_fonts(fig)
     savefig(fig, out / "comparison_cafa_performance", MAIN)
 
-
-def plot_aupr(metrics: pd.DataFrame, methods: list[str], out: Path) -> None:
+def plot_aupr(
+    metrics: pd.DataFrame,
+    bootstrap: pd.DataFrame,
+    methods: list[str],
+    out: Path,
+) -> bool:
+    """AUPR bars; add 95% CIs when the evaluation produced bootstrap draws."""
+    has_uncertainty = {"micro_aupr", "macro_aupr"}.issubset(bootstrap.columns)
     fig, axes = plt.subplots(
         2, 3,
         figsize=(DOUBLE_COLUMN_IN, max(4.8, 0.38 * len(methods) + 2.4)),
@@ -356,37 +362,156 @@ def plot_aupr(metrics: pd.DataFrame, methods: list[str], out: Path) -> None:
     )):
         for column_index, ontology in enumerate(ONTOLOGY_ORDER):
             ax = axes[row_index, column_index]
-            subset = metrics[metrics["ontology"] == ontology].set_index("method")
-            values = []
+            point = metrics[metrics["ontology"] == ontology].set_index("method")
+            boot = bootstrap[bootstrap["ontology"] == ontology]
+            upper_values = []
             for yi, method in enumerate(methods):
-                value = float(subset.loc[method, column])
-                values.append(value)
+                value = float(point.loc[method, column])
                 color = FAMILY_COLOR[family(method)]
-                ax.plot(
-                    value, yi, marker=marker(method), linestyle="none",
-                    markersize=marker_size(method, 5.5),
-                    markerfacecolor=marker_face(method, color), markeredgecolor=color,
-                    markeredgewidth=1.0, zorder=3,
-                )
+                bar = ax.barh(
+                    yi,
+                    value,
+                    height=0.56,
+                    color=color,
+                    edgecolor="#2B2B2B",
+                    linewidth=0.6,
+                    zorder=3,
+                )[0]
+                if method.endswith("_max"):
+                    bar.set_hatch("//")
+                upper = value
+                if has_uncertainty:
+                    values = boot.loc[
+                        boot["method"] == method, column
+                    ].dropna().to_numpy()
+                    if len(values) != 1000:
+                        raise ValueError(
+                            "Expected 1,000 AUPR bootstrap values for "
+                            f"{method}/{ontology}/{column}; found {len(values)}"
+                        )
+                    low, high = np.quantile(values, [0.025, 0.975])
+                    upper = float(high)
+                    ax.errorbar(
+                        value,
+                        yi,
+                        xerr=np.asarray(
+                            [[max(0.0, value - low)], [max(0.0, high - value)]]
+                        ),
+                        fmt="none",
+                        ecolor="#202020",
+                        elinewidth=0.8,
+                        capsize=2.0,
+                        capthick=0.8,
+                        zorder=4,
+                    )
+                upper_values.append(upper)
             add_proposed_separator(ax, methods)
-            maximum = max(values)
+            maximum = max(upper_values)
             ax.set_xlim(0, maximum * 1.12 if maximum > 0 else 1)
             set_method_axis(ax, y, methods, column_index)
             style_axis(ax, ontology, xlabel, chr(97 + panel_index))
             panel_index += 1
-    # All panels share y; invert exactly once so METHOD_ORDER is top-to-bottom.
     axes[0, 0].invert_yaxis()
     add_shared_legend(fig, methods)
-    fig.subplots_adjust(left=0.15, bottom=0.22, hspace=0.42, wspace=0.24)
+    fig.subplots_adjust(left=0.17, bottom=0.22, hspace=0.42, wspace=0.24)
     assert_print_fonts(fig)
     savefig(fig, out / "comparison_aupr", MAIN)
+    return has_uncertainty
 
-
-def plot_coverage(metrics: pd.DataFrame, methods: list[str], out: Path) -> None:
+def plot_coverage(metrics: pd.DataFrame, methods: list[str], out: Path) -> list[str]:
+    """Plot abstention/retrieval coverage only for sparse retrieval pipelines."""
+    coverage_methods = [
+        method for method in COVERAGE_METHOD_ORDER if method in methods
+    ]
+    if not coverage_methods:
+        raise ValueError("No sparse retrieval baselines are available for coverage plotting")
     plot_data = metrics.copy()
-    plot_data["protein_coverage_percent"] = 100 * plot_data["protein_coverage_any_score"]
+    plot_data["protein_coverage_percent"] = (
+        100 * plot_data["protein_coverage_any_score"]
+    )
     plot_data["term_coverage_percent"] = (
         100 * plot_data["predicted_term_coverage"] / plot_data["test_terms"]
+    )
+    fig, axes = plt.subplots(
+        2, 3,
+        figsize=(
+            DOUBLE_COLUMN_IN,
+            max(4.4, 0.38 * len(coverage_methods) + 2.4),
+        ),
+        sharey=True,
+    )
+    y = np.arange(len(coverage_methods))
+    panel_index = 0
+    for row_index, (column, xlabel) in enumerate((
+        ("protein_coverage_percent", "Proteins with an eligible hit (%)"),
+        ("term_coverage_percent", "GO terms transferred (%)"),
+    )):
+        for column_index, ontology in enumerate(ONTOLOGY_ORDER):
+            ax = axes[row_index, column_index]
+            subset = plot_data[
+                plot_data["ontology"] == ontology
+            ].set_index("method")
+            values = np.asarray(
+                [float(subset.loc[method, column]) for method in coverage_methods]
+            )
+            colors = [
+                FAMILY_COLOR[family(method)] for method in coverage_methods
+            ]
+            bars = ax.barh(
+                y,
+                values,
+                height=0.62,
+                color=colors,
+                edgecolor="#222222",
+                linewidth=0.5,
+                zorder=3,
+            )
+            for bar, method in zip(bars, coverage_methods):
+                if method.endswith("_max"):
+                    bar.set_hatch("//")
+            for yi, value in enumerate(values):
+                ax.text(
+                    min(value + 1.4, 97.0),
+                    yi,
+                    f"{value:.1f}",
+                    va="center",
+                    ha="left" if value < 92 else "right",
+                )
+            ax.set_xlim(0, 105)
+            set_method_axis(ax, y, coverage_methods, column_index)
+            style_axis(ax, ontology, xlabel, chr(97 + panel_index))
+            panel_index += 1
+    axes[0, 0].invert_yaxis()
+    add_shared_legend(fig, coverage_methods)
+    fig.subplots_adjust(left=0.17, bottom=0.22, hspace=0.42, wspace=0.24)
+    assert_print_fonts(fig)
+    savefig(fig, out / "comparison_prediction_coverage", MAIN)
+    return coverage_methods
+
+
+def plot_threshold_coverage(
+    metrics: pd.DataFrame,
+    methods: list[str],
+    out: Path,
+) -> None:
+    """Coverage at an actual decision threshold, every method included.
+
+    protein_coverage_any_score (used above) is "does at least one score exceed
+    zero" - for a sigmoid-family dense model that is essentially guaranteed and
+    not evidence of anything. This figure uses
+    test_coverage_at_validation_threshold instead: the threshold is selected on
+    the validation split (never on test) and coverage is the fraction of test
+    proteins with at least one prediction that clears it. That is a real,
+    non-saturating quantity for a dense model - DeepGreenGO scores
+    0.97/0.81/0.88 across MF/BP/CC here, not 1.00 - so DeepGreenGO belongs in
+    this comparison rather than being excluded from it. The frequency prior
+    still saturates at exactly 1.00 everywhere, but for a different and still
+    structural reason (see caption), so its bar is not read the same way as a
+    per-protein model's.
+    """
+    plot_data = metrics.copy()
+    plot_data["coverage_percent"] = (
+        100 * plot_data["test_coverage_at_validation_threshold"]
     )
     fig, axes = plt.subplots(
         2, 3,
@@ -396,40 +521,38 @@ def plot_coverage(metrics: pd.DataFrame, methods: list[str], out: Path) -> None:
     y = np.arange(len(methods))
     panel_index = 0
     for row_index, (column, xlabel) in enumerate((
-        ("protein_coverage_percent", "Proteins covered (%)"),
-        ("term_coverage_percent", "GO terms covered (%)"),
+        ("coverage_percent", "Coverage at threshold (%)"),
+        ("mean_terms_per_protein_at_validation_threshold", "GO terms / protein (mean)"),
     )):
         for column_index, ontology in enumerate(ONTOLOGY_ORDER):
             ax = axes[row_index, column_index]
             subset = plot_data[plot_data["ontology"] == ontology].set_index("method")
-            values = np.array([float(subset.loc[method, column]) for method in methods])
+            values = np.asarray([float(subset.loc[method, column]) for method in methods])
             colors = [FAMILY_COLOR[family(method)] for method in methods]
             bars = ax.barh(
-                y, values, height=0.66, color=colors,
-                edgecolor="#222222", linewidth=0.45,
+                y, values, height=0.62, color=colors,
+                edgecolor="#222222", linewidth=0.5, zorder=3,
             )
             for bar, method in zip(bars, methods):
                 if method.endswith("_max"):
                     bar.set_hatch("//")
-            for yi, value in enumerate(values):
-                ax.text(
-                    min(value + 1.4, 97.0), yi, f"{value:.1f}",
-                    va="center", ha="left" if value < 92 else "right",
-                )
             add_proposed_separator(ax, methods)
-            ax.set_xlim(0, 105)
+            top = max(values) * 1.15 if max(values) > 0 else 1.0
+            ax.set_xlim(0, top)
+            for yi, value in enumerate(values):
+                label = f"{value:.1f}" if row_index == 1 else f"{value:.1f}"
+                ax.text(min(value + top * 0.02, top * 0.97), yi, label,
+                       va="center", ha="left" if value < top * 0.85 else "right")
             set_method_axis(ax, y, methods, column_index)
             style_axis(ax, ontology, xlabel, chr(97 + panel_index))
             panel_index += 1
-    # All panels share y; invert exactly once so METHOD_ORDER is top-to-bottom.
     axes[0, 0].invert_yaxis()
-    add_shared_legend(fig, methods, bars=True)
-    fig.subplots_adjust(left=0.15, bottom=0.22, hspace=0.42, wspace=0.24)
+    add_shared_legend(fig, methods)
+    fig.subplots_adjust(left=0.17, bottom=0.22, hspace=0.42, wspace=0.24)
     assert_print_fonts(fig)
-    savefig(fig, out / "comparison_prediction_coverage", MAIN)
+    savefig(fig, out / "comparison_threshold_coverage", MAIN)
 
-
-def load_deepgreengo_ensemble_seeds(workspace: Path) -> list[int]:
+def load_deepgreengo_provenance(workspace: Path) -> tuple[list[int], str]:
     metadata_paths = sorted(
         (workspace / "predictions" / "deepgreengo").glob("*.metadata.json")
     )
@@ -439,6 +562,7 @@ def load_deepgreengo_ensemble_seeds(workspace: Path) -> list[int]:
             f"found {len(metadata_paths)}"
         )
     seed_sets: set[tuple[int, ...]] = set()
+    variants: set[str] = set()
     for path in metadata_paths:
         metadata = json.loads(path.read_text(encoding="utf-8"))
         if metadata.get("method") != "deepgreengo" or metadata.get("split") != "test":
@@ -447,39 +571,210 @@ def load_deepgreengo_ensemble_seeds(workspace: Path) -> list[int]:
         if not seeds:
             raise ValueError(f"Missing ensemble seeds in {path}")
         seed_sets.add(seeds)
+        if metadata.get("model_variant"):
+            variants.add(str(metadata["model_variant"]))
+
     if len(seed_sets) != 1:
         raise ValueError(f"Inconsistent DeepGreenGO ensemble seeds: {seed_sets}")
-    return list(next(iter(seed_sets)))
+    ensemble_seeds = list(next(iter(seed_sets)))
+
+    if not variants:
+        seed_metadata = sorted(
+            (workspace / "predictions").glob(
+                "deepgreengo_seed_*_test/*.metadata.json"
+            )
+        )
+        for path in seed_metadata:
+            metadata = json.loads(path.read_text(encoding="utf-8"))
+            if metadata.get("model_variant"):
+                variants.add(str(metadata["model_variant"]))
+                continue
+            checkpoint = Path(str(metadata.get("checkpoint", "")))
+            try:
+                project_index = checkpoint.parts.index(PROJECT_DIR.name)
+            except ValueError:
+                continue
+            local_checkpoint = PROJECT_DIR.joinpath(
+                *checkpoint.parts[project_index + 1:]
+            )
+            config_path = local_checkpoint.with_name("config.json")
+            if config_path.is_file():
+                config = json.loads(config_path.read_text(encoding="utf-8"))
+                variants.add(str(config.get("model", "Hybrid")))
+
+    if len(variants) != 1:
+        raise ValueError(
+            "Could not verify one DeepGreenGO model variant across ensemble "
+            f"checkpoints; found {sorted(variants)}"
+        )
+    return ensemble_seeds, next(iter(variants))
 
 
-def build_captions(ensemble_seeds: list[int]) -> str:
+def set_focal_variant_label(model_variant: str) -> None:
+    label = f"DeepGreenGO {model_variant} (this work)"
+    METHOD_LABEL["deepgreengo"] = label
+    FAMILY_LABEL["proposed"] = label
+
+
+def validate_best_hit_provenance(workspace: Path, methods: list[str]) -> None:
+    for method in methods:
+        if not method.endswith("_max"):
+            continue
+        metadata_paths = sorted(
+            (workspace / "predictions" / method).glob("*.metadata.json")
+        )
+        for path in metadata_paths:
+            metadata = json.loads(path.read_text(encoding="utf-8"))
+            transfer = str(metadata.get("transfer", ""))
+            if "one highest-identity" not in transfer or "top-k pool" not in transfer:
+                raise ValueError(
+                    f"{path} contains the legacy per-term max-identity transfer. "
+                    "Regenerate the similarity baselines and reevaluate before plotting."
+                )
+
+
+def paired_fmax_report(
+    metrics: pd.DataFrame,
+    bootstrap: pd.DataFrame,
+) -> pd.DataFrame:
+    rows = []
+    for ontology in ONTOLOGY_ORDER:
+        point = metrics[metrics["ontology"] == ontology].set_index("method")
+        baselines = point.drop(index="deepgreengo")
+        competitor = str(baselines["cafa_fmax"].idxmax())
+        subset = bootstrap[bootstrap["ontology"] == ontology]
+        focal = subset[subset["method"] == "deepgreengo"].set_index("bootstrap")
+        other = subset[subset["method"] == competitor].set_index("bootstrap")
+        paired = focal[["cafa_fmax"]].join(
+            other[["cafa_fmax"]],
+            how="inner",
+            lsuffix="_deepgreengo",
+            rsuffix="_competitor",
+        )
+        if len(paired) != 1000:
+            raise ValueError(
+                f"Expected 1,000 paired Fmax draws for {ontology}/{competitor}; "
+                f"found {len(paired)}"
+            )
+        delta = (
+            paired["cafa_fmax_deepgreengo"]
+            - paired["cafa_fmax_competitor"]
+        ).to_numpy()
+        rows.append({
+            "ontology": ontology,
+            "competitor": competitor,
+            "competitor_label": METHOD_LABEL.get(competitor, competitor),
+            "deepgreengo_fmax": float(point.loc["deepgreengo", "cafa_fmax"]),
+            "competitor_fmax": float(point.loc[competitor, "cafa_fmax"]),
+            "fmax_difference": float(
+                point.loc["deepgreengo", "cafa_fmax"]
+                - point.loc[competitor, "cafa_fmax"]
+            ),
+            "paired_difference_ci_low": float(np.quantile(delta, 0.025)),
+            "paired_difference_ci_high": float(np.quantile(delta, 0.975)),
+            "fraction_bootstraps_deepgreengo_better": float(np.mean(delta > 0)),
+            "bootstrap_replicates": len(delta),
+        })
+    return pd.DataFrame(rows)
+
+
+def build_captions(
+    ensemble_seeds: list[int],
+    model_variant: str,
+    paired_report: pd.DataFrame,
+    aupr_has_uncertainty: bool,
+) -> str:
     seeds = ", ".join(str(seed) for seed in ensemble_seeds)
+    paired_parts = []
+    for row in paired_report.itertuples(index=False):
+        paired_parts.append(
+            f"{ONTOLOGY_SHORT[row.ontology]}: ΔFmax={row.fmax_difference:+.3f} "
+            f"versus {row.competitor_label}, "
+            f"bootstrap fraction better={row.fraction_bootstraps_deepgreengo_better:.3f}"
+        )
+    paired_text = "; ".join(paired_parts)
+    if aupr_has_uncertainty:
+        aupr_uncertainty = (
+            "Error bars are percentile 95% confidence intervals from the same "
+            "1,000 paired protein-level bootstrap replicates."
+        )
+    else:
+        aupr_uncertainty = (
+            "The pulled bootstrap file predates AUPR resampling, so these are "
+            "point estimates only; rerun the evaluation before manuscript use "
+            "to add paired-bootstrap confidence intervals."
+        )
+
     return f"""Unless noted, higher values indicate better performance for all metrics except CAFA Smin, where lower is better.
 
 comparison_cafa_performance
-DeepGreenGO versus completed baselines on the nominal 30%-identity/80%-coverage test split (n = 754 proteins). DeepGreenGO is the five-seed ensemble ({seeds}) and is marked by a pink star. Points show test-set CAFA Fmax and Smin; error bars show percentile 95% confidence intervals from 1,000 paired protein-level bootstrap replicates. Colors denote method family. Filled circles denote top-10 summed transfer, and open diamonds denote best-single-hit maximum-identity transfer.
+DeepGreenGO versus completed baselines on the nominal 30%-identity/80%-coverage test split (n = 754 proteins). The focal method is the five-seed {model_variant} GCN-GAT ensemble ({seeds}). Bars show test-set point estimates and error bars show percentile 95% confidence intervals from 1,000 paired protein-level bootstrap replicates. Colors denote method family; solid bars denote top-10 weighted transfer and hatched bars denote one highest-identity hit selected from the same eligible top-10 pool. Paired Fmax comparisons against the strongest baseline in each ontology: {paired_text}.
 
 comparison_aupr
-DeepGreenGO versus completed baselines on the same test split. Micro-AUPR pools protein-term decisions; macro-AUPR averages per-term average precision across GO terms observed in the test set. The plotted values are test-set point estimates. Colors denote method family; the star, filled circles, and open diamonds follow the same method and transfer-rule definitions as above.
+DeepGreenGO versus completed baselines on the same test split. Micro-AUPR pools protein-term decisions; macro-AUPR averages per-term average precision across GO terms observed in the test set. Bars show test-set point estimates. {aupr_uncertainty} Colors and hatching follow the definitions above.
 
 comparison_prediction_coverage
-DeepGreenGO and baseline prediction coverage on the same test split. Protein coverage is the percentage of test proteins receiving at least one nonzero score; term coverage is the percentage of evaluated test GO terms receiving at least one nonzero score. Coverage is not an accuracy measure. Colors denote method family; solid bars denote top-10 summed transfer and hatched bars denote best-single-hit maximum-identity transfer.
+Retrieval coverage for sparse similarity-search baselines only. DeepGreenGO, the frequency prior, and other dense-output models are excluded from THIS figure because their nonzero score matrices make raw "any nonzero score" coverage saturate by construction - it is not a meaningful comparison at this specific definition. Protein coverage is the percentage of test proteins with at least one eligible training hit; term coverage is the percentage of evaluated test GO terms transferred from eligible hits. Hits must pass E-value 1e-3 and both query- and target-coverage thresholds of 50%. Coverage measures retrieval/abstention, not predictive accuracy. Solid bars denote top-10 weighted transfer and hatched bars denote one highest-identity hit selected from the same eligible top-10 pool. See comparison_threshold_coverage for a coverage definition that includes DeepGreenGO on equal footing.
+
+comparison_threshold_coverage
+Coverage at an operating decision threshold, all methods together. The threshold is selected on the validation split only (never on test), so this is not the trivial "any nonzero score" coverage above - it is the fraction of test proteins receiving at least one prediction that clears a real decision boundary, and the mean number of GO terms predicted per protein at that boundary. DeepGreenGO scores below 100% here (97.2% MF, 81.2% BP, 88.3% CC) because its per-protein sigmoid outputs genuinely vary; this is the coverage comparison in which DeepGreenGO's breadth of prediction is a real, non-tautological finding rather than a construction artifact. The frequency prior still reaches exactly 100% at this threshold too, but for a different, still-structural reason: it assigns every protein the same training-prevalence score per term, so a term's score either clears the threshold for every protein or for none - it cannot vary by protein and is not evidence of per-protein discrimination the way DeepGreenGO's variable coverage is. Solid bars denote top-10 weighted transfer and hatched bars denote one highest-identity hit selected from the same eligible top-10 pool.
 """
+
+
+def build_manuscript_notes(
+    metrics: pd.DataFrame,
+    model_variant: str,
+) -> str:
+    mf = metrics[metrics["ontology"] == "molecular_function"].set_index("method")
+    baselines = mf.drop(index="deepgreengo")
+    best_fmax_method = str(baselines["cafa_fmax"].idxmax())
+    best_smin_method = str(baselines["cafa_smin"].idxmin())
+    dgg_fmax = float(mf.loc["deepgreengo", "cafa_fmax"])
+    baseline_fmax = float(mf.loc[best_fmax_method, "cafa_fmax"])
+    dgg_smin = float(mf.loc["deepgreengo", "cafa_smin"])
+    baseline_smin = float(mf.loc[best_smin_method, "cafa_smin"])
+    return (
+        f"Model identity and ablation framing: The headline benchmark uses the "
+        f"five-seed DeepGreenGO {model_variant} GCN-GAT ensemble. Input ablations "
+        "show that the ProtBERT sequence representation drives most of the "
+        "performance; the comparison should not imply that graph fusion alone "
+        "explains the result.\n\n"
+        f"MF interpretation: DeepGreenGO Fmax is {dgg_fmax:.3f}, versus "
+        f"{baseline_fmax:.3f} for {METHOD_LABEL.get(best_fmax_method, best_fmax_method)}. "
+        f"Its Smin is {dgg_smin:.3f}, versus the best baseline value of "
+        f"{baseline_smin:.3f} for {METHOD_LABEL.get(best_smin_method, best_smin_method)}. "
+        "Thus the MF gain is clearer for the optimal precision-recall tradeoff "
+        "than for information-theoretic error."
+    )
 
 
 def write_supporting_files(
     metrics: pd.DataFrame,
     bootstrap: pd.DataFrame,
     methods: list[str],
+    coverage_methods: list[str],
     workspace: Path,
     out: Path,
+    aupr_has_uncertainty: bool,
 ) -> None:
     out.mkdir(parents=True, exist_ok=True)
-    ensemble_seeds = load_deepgreengo_ensemble_seeds(workspace)
+    ensemble_seeds, model_variant = load_deepgreengo_provenance(workspace)
+    paired_report = paired_fmax_report(metrics, bootstrap)
     metrics.to_csv(out / "comparison_metrics_plotted.csv", index=False)
     bootstrap.to_csv(out / "comparison_bootstrap_plotted.csv", index=False)
+    paired_report.to_csv(out / "paired_fmax_vs_best_baseline.csv", index=False)
     (out / "captions.txt").write_text(
-        build_captions(ensemble_seeds), encoding="utf-8"
+        build_captions(
+            ensemble_seeds,
+            model_variant,
+            paired_report,
+            aupr_has_uncertainty,
+        ),
+        encoding="utf-8",
+    )
+    (out / "manuscript_results_notes.txt").write_text(
+        build_manuscript_notes(metrics, model_variant) + "\n",
+        encoding="utf-8",
     )
     manifest = {
         "source_workspace": str(workspace.resolve()),
@@ -488,9 +783,15 @@ def write_supporting_files(
         "source_bootstrap": "results/bootstrap_metrics.csv",
         "focal_method": "deepgreengo",
         "focal_method_label": METHOD_LABEL["deepgreengo"],
+        "focal_model_variant": model_variant,
         "focal_method_ensemble_seeds": ensemble_seeds,
         "caption_file": "captions.txt",
+        "manuscript_results_notes": "manuscript_results_notes.txt",
+        "paired_fmax_report": "paired_fmax_vs_best_baseline.csv",
         "included_methods": methods,
+        "coverage_methods": coverage_methods,
+        "coverage_excludes_dense_outputs": True,
+        "aupr_bootstrap_available": aupr_has_uncertainty,
         "ontologies": ONTOLOGY_ORDER,
         "outputs": [
             f"{stem}.{suffix}"
@@ -498,6 +799,7 @@ def write_supporting_files(
                 "comparison_cafa_performance",
                 "comparison_aupr",
                 "comparison_prediction_coverage",
+                "comparison_threshold_coverage",
             )
             for suffix in ("pdf", SPEC["raster"])
         ],
@@ -510,17 +812,38 @@ def write_supporting_files(
 def main() -> None:
     args = parse_args()
     workspace = args.workspace.expanduser().resolve()
-    output = (args.output or workspace / "plots" / "main_comparison").expanduser().resolve()
+    output = (
+        args.output or workspace / "plots" / "main_comparison"
+    ).expanduser().resolve()
     apply_style()
     metrics, bootstrap = load_comparison(workspace)
     methods = ordered_methods(metrics)
-    plot_cafa(metrics, methods, output)
-    plot_aupr(metrics, methods, output)
-    plot_coverage(metrics, methods, output)
-    write_supporting_files(metrics, bootstrap, methods, workspace, output)
-    print(f"Plotted DeepGreenGO with {len(methods) - 1} comparators: {', '.join(methods)}")
+    _, model_variant = load_deepgreengo_provenance(workspace)
+    set_focal_variant_label(model_variant)
+    validate_best_hit_provenance(workspace, methods)
+    plot_cafa(metrics, bootstrap, methods, output)
+    aupr_has_uncertainty = plot_aupr(metrics, bootstrap, methods, output)
+    coverage_methods = plot_coverage(metrics, methods, output)
+    plot_threshold_coverage(metrics, methods, output)
+    write_supporting_files(
+        metrics,
+        bootstrap,
+        methods,
+        coverage_methods,
+        workspace,
+        output,
+        aupr_has_uncertainty,
+    )
+    print(
+        f"Plotted DeepGreenGO with {len(methods) - 1} comparators: "
+        f"{', '.join(methods)}"
+    )
+    if not aupr_has_uncertainty:
+        print(
+            "WARNING: AUPR confidence intervals require reevaluation with the "
+            "updated paired-bootstrap pipeline."
+        )
     print(f"Output: {output}")
-
 
 if __name__ == "__main__":
     main()
