@@ -1,4 +1,0 @@
-eggnog_mapper
-transfun
-hayai
-gomap

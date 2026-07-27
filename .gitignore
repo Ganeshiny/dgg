@@ -114,3 +114,6 @@ plots/figures/**/*.svg
 # The small results CSVs are the only thing worth versioning; copy those to a
 # tracked location deliberately rather than committing the whole workspace.
 arc_benchmark/
+
+# Never track the accidental top-level directory whose name is one space.
+/\ /
