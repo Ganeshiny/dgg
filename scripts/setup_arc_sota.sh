@@ -204,6 +204,13 @@ setup_dpfunc() {
     if ! conda_env_exists "${DPFUNC_ENV}"; then
         conda env create -n "${DPFUNC_ENV}" -f "${DPFUNC_ROOT}/DPFunc_env.yml"
     fi
+    # Upstream DPFunc passes mmap=True to torch.load(), but the PyTorch version
+    # pinned by DPFunc_env.yml predates that keyword. Remove only that optional
+    # optimization so pretrained checkpoints load normally on ARC.
+    if grep -q 'mmap=True' "${DPFUNC_ROOT}/DPFunc_pred.py"; then
+        sed -i 's/, mmap=True//g' "${DPFUNC_ROOT}/DPFunc_pred.py"
+        echo "[SETUP] Patched DPFunc checkpoint loading for the pinned PyTorch runtime."
+    fi
     # The current DPFunc preprocessing pipeline imports `esm` and loads
     # esm2_t33_650M_UR50D, but upstream DPFunc_env.yml does not declare the
     # package that provides that module. Install it explicitly and populate the
