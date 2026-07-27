@@ -348,13 +348,7 @@ def normalize_scored_rows(workspace: Path, method: str, files: dict[str, Path],
 
 
 def normalize_deepgoplus(workspace: Path, path: Path) -> None:
-    """Normalize DeepGOPlus's protein<TAB>GO|score wide-row output.
-
-    DeepGOPlus 1.0.2 does not emit one three-column record per prediction.
-    Each line starts with the protein ID and is followed by any number of
-    GO:nnnnnnn|score fields. Parsing it as a generic scored table silently
-    produces zero predictions.
-    """
+    """Normalize official three-column and legacy GO|score DeepGOPlus output."""
     terms_by_ontology = {
         short: set(load_label_npz(workspace, short, "test")[1])
         for short in ONTOLOGIES
@@ -366,6 +360,19 @@ def normalize_deepgoplus(workspace: Path, path: Path) -> None:
             if not fields or not fields[0]:
                 continue
             protein = fields[0]
+            if len(fields) == 3 and "|" not in fields[1]:
+                term = fields[1]
+                try:
+                    score = float(fields[2])
+                except ValueError as exc:
+                    raise ValueError(
+                        f"{path}:{line_number}: invalid DeepGOPlus score {fields[2]!r}"
+                    ) from exc
+                for short in ONTOLOGIES:
+                    if term in terms_by_ontology[short]:
+                        rows[short].append((protein, term, score))
+                        break
+                continue
             for item in fields[1:]:
                 try:
                     term, raw_score = item.rsplit("|", 1)
@@ -513,4 +520,6 @@ def normalize_dpfunc(workspace: Path, method: str, files: dict[str, Path]) -> No
                 for term, score in predictions.items()
                 if float(score) > 0
             )
+        if not rows[short]:
+            raise ValueError(f"{path}: DPFunc produced no positive scores for {short}")
     normalize_scored_rows(workspace, method, write_rows(workspace, method, rows), "\t")

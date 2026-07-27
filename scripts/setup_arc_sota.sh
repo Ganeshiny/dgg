@@ -244,6 +244,15 @@ setup_deepgoplus() {
         download_file "${DEEPGOPLUS_DATA_URL}" "${archive}"
         extract_archive "${archive}" "${DEEPGOPLUS_ROOT}"
     fi
+    # The 1.0.2 console entry point requires release-specific ensemble weights,
+    # but the published data archive can omit this metadata file. These are the
+    # latest-model weights documented by the upstream predictor.
+    local metadata="${DEEPGOPLUS_ROOT}/data/metadata/last_release.json"
+    if [[ ! -s "${metadata}" ]]; then
+        mkdir -p "$(dirname "${metadata}")"
+        printf '%s\n' '{"alphas":{"mf":0.55,"bp":0.59,"cc":0.46}}' > "${metadata}"
+        echo "[SETUP] Restored required DeepGOPlus 1.0.2 release metadata."
+    fi
 }
 
 setup_deepgose() {
@@ -318,12 +327,10 @@ verify_setup() {
             "import dgl, esm, logzero, torch; print('DPFunc runtime imports and ESM2 cache files verified')"
     fi
     if method_enabled deepgoplus; then
-        # DeepGOPlus 1.0.2 consumes these five files. last_release.json belongs
-        # to a different/newer data layout and is not present in the official
-        # 1.0.2 archive or read by the benchmark command.
         for file in go.obo model.h5 terms.pkl train_data.pkl train_data.dmnd; do
             check require_file "${DEEPGOPLUS_ROOT}/data/${file}"
         done
+        check require_file "${DEEPGOPLUS_ROOT}/data/metadata/last_release.json"
         check conda run -n "${DEEPGOPLUS_ENV}" deepgoplus --help
     fi
     if method_enabled deepgose; then

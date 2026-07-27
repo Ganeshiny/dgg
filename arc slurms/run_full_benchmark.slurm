@@ -401,14 +401,12 @@ preflight() {
     if method_enabled deepgoplus; then
         CURRENT_METHOD=deepgoplus
         preflight_check require_dir "${DEEPGOPLUS_ROOT}/data"
-        # DeepGOPlus 1.0.2 consumes these five files. The official 1.0.2 data
-        # archive does not contain metadata/last_release.json, and the
-        # deepgoplus command does not read it.
         preflight_check require_file "${DEEPGOPLUS_ROOT}/data/go.obo"
         preflight_check require_file "${DEEPGOPLUS_ROOT}/data/model.h5"
         preflight_check require_file "${DEEPGOPLUS_ROOT}/data/terms.pkl"
         preflight_check require_file "${DEEPGOPLUS_ROOT}/data/train_data.pkl"
         preflight_check require_file "${DEEPGOPLUS_ROOT}/data/train_data.dmnd"
+        preflight_check require_file "${DEEPGOPLUS_ROOT}/data/metadata/last_release.json"
         preflight_check conda_run "${DEEPGOPLUS_ENV}" deepgoplus --help >/dev/null
         preflight_check resolve_deepgoplus_diamond
     fi

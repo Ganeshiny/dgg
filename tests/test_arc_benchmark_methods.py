@@ -94,3 +94,39 @@ def test_deepgoplus_wide_rows_are_parsed_by_go_score_field(monkeypatch, tmp_path
         "bp": [("QUERY_A", "GO:0000002", 0.875)],
         "cc": [("QUERY_B", "GO:0000003", 0.5)],
     }
+
+
+def test_deepgoplus_official_three_column_rows_are_parsed(monkeypatch, tmp_path):
+    source = tmp_path / "deepgoplus.tsv"
+    source.write_text(
+        "QUERY_A\tGO:0000001\t0.125\n"
+        "QUERY_A\tGO:0000002\t0.875\n"
+        "QUERY_B\tGO:0000003\t0.500\n"
+    )
+    terms = {
+        "mf": ["GO:0000001"],
+        "bp": ["GO:0000002"],
+        "cc": ["GO:0000003"],
+    }
+    captured = {}
+
+    def fake_load_label_npz(workspace, ontology, split):
+        return [], terms[ontology], np.empty((0, 1), dtype=np.uint8)
+
+    def fake_write_rows(workspace, prefix, rows):
+        captured.update(rows)
+        return {short: tmp_path / f"{short}.tsv" for short in terms}
+
+    monkeypatch.setattr(benchmark_methods, "load_label_npz", fake_load_label_npz)
+    monkeypatch.setattr(benchmark_methods, "write_rows", fake_write_rows)
+    monkeypatch.setattr(
+        benchmark_methods, "normalize_scored_rows", lambda *args, **kwargs: None
+    )
+
+    benchmark_methods.normalize_deepgoplus(tmp_path, source)
+
+    assert captured == {
+        "mf": [("QUERY_A", "GO:0000001", 0.125)],
+        "bp": [("QUERY_A", "GO:0000002", 0.875)],
+        "cc": [("QUERY_B", "GO:0000003", 0.5)],
+    }
