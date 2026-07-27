@@ -362,7 +362,7 @@ preflight() {
         preflight_check require_file "${DEEPFRI_ROOT}/predict.py"
         preflight_check require_file "${DEEPFRI_ROOT}/trained_models/model_config.json"
         preflight_check conda_run "${TF_ENV}" python -c "import tensorflow; print('DeepFRI environment ok')"
-        preflight_check conda_run "${TF_ENV}" python "${DEEPFRI_ROOT}/predict.py" --help
+        preflight_check conda_run "${TF_ENV}" env --chdir="${DEEPFRI_ROOT}" python predict.py --help
     fi
     if method_enabled transfun; then
         CURRENT_METHOD=transfun
@@ -626,7 +626,7 @@ run_deepfri_sequence() {
             continue
         fi
         rm -f "${output}"
-        conda_run "${TF_ENV}" python "${DEEPFRI_ROOT}/predict.py" \
+        conda_run "${TF_ENV}" env --chdir="${DEEPFRI_ROOT}" python predict.py \
             --fasta_fn "${BENCHMARK_ROOT}/inputs/valid_test.fasta" -ont "${ont}" \
             -o "${RAW}/deepfri/sequence"
         conda_run "${BASE_ENV}" python -m json.tool "${output}" >/dev/null
@@ -648,7 +648,7 @@ run_deepfri_structure() {
             continue
         fi
         rm -f "${output}"
-        conda_run "${TF_ENV}" python "${DEEPFRI_ROOT}/predict.py" \
+        conda_run "${TF_ENV}" env --chdir="${DEEPFRI_ROOT}" python predict.py \
             --pdb_dir "${BENCHMARK_ROOT}/inputs/structures/valid_test" -ont "${ont}" \
             -o "${RAW}/deepfri/structure"
         conda_run "${BASE_ENV}" python -m json.tool "${output}" >/dev/null

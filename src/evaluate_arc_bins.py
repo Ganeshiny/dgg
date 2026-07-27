@@ -67,11 +67,11 @@ def ensure_validation_homology(path: Path, data_root: Path, blastp: str, threads
     if path.is_file() and path.stat().st_size > 0:
         return path
     split_root = data_root / "pdb_splits" / "threshold_30"
-    query = split_root / "n_valid_sequences.fasta"
+    query = split_root / "_valid_sequences.fasta"
     database = split_root / "blast_train_db"
     if not query.is_file() or not Path(str(database) + ".pin").is_file():
         raise FileNotFoundError(
-            "Validation homology requires n_valid_sequences.fasta and the existing "
+            "Validation homology requires _valid_sequences.fasta and the existing "
             f"blast_train_db under {split_root}"
         )
     partial = path.with_name(path.name + ".partial")
