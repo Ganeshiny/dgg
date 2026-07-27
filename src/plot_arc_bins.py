@@ -48,6 +48,7 @@ from plot_style import (
 
 DEFAULT_DATA_ROOT = Path("preprocessing/data_arc_rebuild_2026_07_14/datasets")
 DEFAULT_HOMOLOGY = Path("preprocessing/data_arc_rebuild_2026_07_14/pdb_splits/threshold_30/blast_te_vs_tr.tsv")
+DEFAULT_VALIDATION_HOMOLOGY = Path("preprocessing/data_arc_rebuild_2026_07_14/pdb_splits/threshold_30/blast_va_vs_tr.tsv")
 
 
 def _records(path: Path) -> list[dict]:
@@ -109,45 +110,64 @@ def _ic_groups(test: list[dict], train: list[dict]) -> dict[str, str]:
     return result
 
 
-def build_integrity_audit(dataset_root: Path, homology_path: Path, threshold: int) -> pd.DataFrame:
+def build_integrity_audit(dataset_root: Path, homology_path: Path, threshold: int,
+                          evaluation_splits: tuple[str, ...] = ("test",),
+                          validation_homology_path: Path | None = None) -> pd.DataFrame:
     rows = []
-    for ontology in ONTOLOGY_ORDER:
-        train_path = dataset_root / f"threshold_{threshold}" / f"{ontology}_train.pkl"
-        test_path = dataset_root / f"threshold_{threshold}" / f"{ontology}_test.pkl"
-        if not test_path.exists():
-            raise FileNotFoundError(f"Missing test labels for {ontology}: {test_path}")
-        train = _records(train_path) if train_path.exists() else []
-        test = _records(test_path)
-        term_vocab = sorted(set(term for row in train + test for term in row.get("labels", [])))
-        groups_by_type = {
-            "homology": _homology_groups(homology_path, [row["id"] for row in test]),
-            "ic": _ic_groups(test, train),
-        }
-        for bin_type, group_map in groups_by_type.items():
-            for group in BIN_ORDER[bin_type]:
-                selected = [row for row in test if group_map.get(row["id"]) == group]
-                matrix = np.asarray([[term in set(row.get("labels", [])) for term in term_vocab] for row in selected], dtype=int)
-                if not selected:
-                    positive_terms = valid_terms = all_positive_terms = positive_assignments = 0
-                else:
-                    counts = matrix.sum(axis=0)
-                    positive_terms = int(np.sum(counts > 0))
-                    valid_terms = int(np.sum((counts > 0) & (counts < len(selected))))
-                    all_positive_terms = int(np.sum(counts == len(selected)))
-                    positive_assignments = int(matrix.sum())
-                rows.append({
-                    "ontology": ontology,
-                    "bin_type": bin_type,
-                    "bin": group,
-                    "examples": len(selected),
-                    "positive_examples": int(sum(bool(row.get("labels")) for row in selected)),
-                    "positive_term_assignments": positive_assignments,
-                    "positive_terms": positive_terms,
-                    "valid_auroc_terms": valid_terms,
-                    "all_positive_terms": all_positive_terms,
-                    "zero_positive_terms": max(len(term_vocab) - positive_terms, 0),
-                    "support_status": "empty" if not selected else "low_support" if len(selected) < 10 else "ok",
-                })
+    homology_paths = {
+        "test": Path(homology_path),
+        "valid": Path(validation_homology_path or DEFAULT_VALIDATION_HOMOLOGY),
+    }
+    for evaluation_split in evaluation_splits:
+        for ontology in ONTOLOGY_ORDER:
+            train_path = dataset_root / f"threshold_{threshold}" / f"{ontology}_train.pkl"
+            query_path = dataset_root / f"threshold_{threshold}" / f"{ontology}_{evaluation_split}.pkl"
+            if not query_path.exists():
+                raise FileNotFoundError(
+                    f"Missing {evaluation_split} labels for {ontology}: {query_path}"
+                )
+            train = _records(train_path) if train_path.exists() else []
+            query = _records(query_path)
+            term_vocab = sorted(set(
+                term for row in train + query for term in row.get("labels", [])
+            ))
+            groups_by_type = {
+                "homology": _homology_groups(
+                    homology_paths[evaluation_split], [row["id"] for row in query]
+                ),
+                "ic": _ic_groups(query, train),
+            }
+            for bin_type, group_map in groups_by_type.items():
+                for group in BIN_ORDER[bin_type]:
+                    selected = [row for row in query if group_map.get(row["id"]) == group]
+                    matrix = np.asarray([
+                        [term in set(row.get("labels", [])) for term in term_vocab]
+                        for row in selected
+                    ], dtype=int)
+                    if not selected:
+                        positive_terms = valid_terms = all_positive_terms = positive_assignments = 0
+                    else:
+                        counts = matrix.sum(axis=0)
+                        positive_terms = int(np.sum(counts > 0))
+                        valid_terms = int(np.sum((counts > 0) & (counts < len(selected))))
+                        all_positive_terms = int(np.sum(counts == len(selected)))
+                        positive_assignments = int(matrix.sum())
+                    rows.append({
+                        "evaluation_split": evaluation_split,
+                        "ontology": ontology,
+                        "bin_type": bin_type,
+                        "bin": group,
+                        "examples": len(selected),
+                        "positive_examples": int(sum(bool(row.get("labels")) for row in selected)),
+                        "positive_term_assignments": positive_assignments,
+                        "positive_terms": positive_terms,
+                        "valid_auroc_terms": valid_terms,
+                        "all_positive_terms": all_positive_terms,
+                        "zero_positive_terms": max(len(term_vocab) - positive_terms, 0),
+                        "support_status": (
+                            "empty" if not selected else "low_support" if len(selected) < 10 else "ok"
+                        ),
+                    })
     return pd.DataFrame(rows)
 
 
@@ -164,7 +184,24 @@ def _audit_status(row: pd.Series) -> str:
 
 
 def merge_and_validate(frame: pd.DataFrame, audit: pd.DataFrame) -> pd.DataFrame:
-    keys = ["ontology", "bin_type", "bin"]
+    frame = frame.copy()
+    audit = audit.copy()
+    if "evaluation_split" not in frame:
+        frame["evaluation_split"] = "test"
+    if "evaluation_split" not in audit:
+        audit["evaluation_split"] = "test"
+    keys = ["evaluation_split", "ontology", "bin_type", "bin"]
+    # bin_metrics.csv may itself be a previously audited archive. Remove only
+    # derived audit columns before attaching the freshly reconstructed audit;
+    # otherwise pandas creates duplicate examples_audit columns whose Series
+    # cannot be used as a scalar validity check.
+    derived = [
+        column for column in audit.columns
+        if column not in keys and column != "examples" and column in frame.columns
+    ]
+    derived.extend(column for column in ("examples_audit", "audit_status")
+                   if column in frame.columns)
+    frame = frame.drop(columns=sorted(set(derived)))
     merged = frame.merge(audit, on=keys, how="left", suffixes=("", "_audit"))
     if merged["examples_audit"].isna().any():
         missing = merged.loc[merged["examples_audit"].isna(), keys].drop_duplicates()
@@ -211,12 +248,9 @@ def _marker_legend(max_n: float) -> list[Line2D]:
 
 def load_audited_bins(bin_csv: Path, dataset_root: Path,
                       homology_path: Path | None = None,
+                      validation_homology_path: Path | None = None,
                       logs_hint=None) -> pd.DataFrame | None:
-    """Read the bin metrics table and attach the raw-support integrity audit.
-
-    Factored out of main() so the two-tier figure driver reuses exactly the
-    same audit path rather than a second, drifting copy of it.
-    """
+    """Read bin metrics and attach split-specific raw-support audits."""
     bin_csv = Path(bin_csv)
     if not bin_csv.exists():
         print(f"NOTE: bin metrics not found at {bin_csv}; skipping bin figures.")
@@ -226,9 +260,15 @@ def load_audited_bins(bin_csv: Path, dataset_root: Path,
     missing = required - set(frame.columns)
     if missing:
         raise SystemExit(f"Missing required bin columns: {sorted(missing)}")
+    if "evaluation_split" not in frame:
+        frame["evaluation_split"] = "test"
     threshold = _threshold_from_label(frame)
     hom = Path(homology_path) if homology_path else DEFAULT_HOMOLOGY
-    audit = build_integrity_audit(Path(dataset_root), Path(hom).resolve(), threshold)
+    valid_hom = Path(validation_homology_path) if validation_homology_path else DEFAULT_VALIDATION_HOMOLOGY
+    splits = tuple(frame["evaluation_split"].dropna().astype(str).unique())
+    audit = build_integrity_audit(
+        Path(dataset_root), Path(hom).resolve(), threshold, splits, Path(valid_hom).resolve()
+    )
     merged = merge_and_validate(frame, audit)
     for bin_type, order in BIN_ORDER.items():
         mask = merged.bin_type == bin_type
@@ -237,86 +277,147 @@ def load_audited_bins(bin_csv: Path, dataset_root: Path,
     return merged
 
 
+def export_bin_tables(frame: pd.DataFrame, out: Path) -> None:
+    """Write raw support and tidy per-metric summaries for supplementary use."""
+    table_dir = out / "supplementary_tables"
+    table_dir.mkdir(parents=True, exist_ok=True)
+    frame.to_csv(table_dir / "supp_table_bin_metrics_audited_raw.csv", index=False)
+    metrics = [metric for metric in METRIC_ORDER if metric in frame]
+    support_columns = [
+        "evaluation_split", "ontology", "bin_type", "bin", "examples_audit",
+        "positive_examples", "positive_term_assignments", "positive_terms",
+        "valid_auroc_terms", "all_positive_terms", "zero_positive_terms",
+        "support_status", "audit_status",
+    ]
+    support = frame[[c for c in support_columns if c in frame]].drop_duplicates()
+    support.to_csv(table_dir / "supp_table_bin_support.csv", index=False)
+
+    id_columns = [
+        "evaluation_split", "ontology", "model", "input_modality", "bin_type", "bin",
+        "examples_audit", "audit_status",
+    ]
+    long = frame.melt(
+        id_vars=[c for c in id_columns if c in frame], value_vars=metrics,
+        var_name="metric", value_name="value",
+    )
+    group_columns = [
+        "evaluation_split", "ontology", "model", "input_modality", "bin_type", "bin",
+        "metric", "examples_audit", "audit_status",
+    ]
+    summary = long.groupby(group_columns, dropna=False, observed=True)["value"].agg(
+        seed_replicates="count", mean="mean", sd="std", median="median", minimum="min", maximum="max"
+    ).reset_index()
+    summary.to_csv(table_dir / "supp_table_bin_metric_summary.csv", index=False)
+    summary[summary.metric == "Smin"].to_csv(
+        table_dir / "supp_table_bin_smin.csv", index=False
+    )
+
+
 def plot_bin_grid(frame: pd.DataFrame, out: Path, bin_type: str, order: list[str],
                   metric: str, min_n: int, err_kind: str,
-                  tier: str = SUPPLEMENTARY) -> None:
-    higher_better = METRIC_HIGHER_IS_BETTER[metric]
-    ymin, ymax = _metric_limits(frame, metric)
-    fig, axes = plt.subplots(
-        len(VARIANT_ORDER), len(ONTOLOGY_ORDER),
-        figsize=(DOUBLE_COLUMN_IN, 2.65 * len(VARIANT_ORDER)),
-        sharex=True, sharey=True,
-    )
-    axes = np.asarray(axes)
-    x = np.arange(len(order), dtype=float)
-    max_n = float(frame["examples_audit"].max())
-    any_data = False
-    panel = 0
-    for row, variant in enumerate(VARIANT_ORDER):
-        for col, ontology in enumerate(ONTOLOGY_ORDER):
-            ax = axes[row, col]
+                  tier: str = SUPPLEMENTARY) -> bool:
+    """Grouped dynamite panels with exact sample counts in x-axis labels.
+
+    Models are grouped, not stacked: stacking would incorrectly imply that
+    performance scores are additive. Empty bins and empty panels are omitted.
+    Smin is deliberately table-only because the binwise values are dominated
+    by scale/support and do not form an interpretable visual comparison.
+    """
+    if metric == "Smin":
+        return False
+    frame = frame.copy()
+    if "evaluation_split" not in frame:
+        frame["evaluation_split"] = "test"
+    split_values = frame["evaluation_split"].dropna().astype(str).unique()
+    if len(split_values) != 1:
+        raise ValueError("plot_bin_grid expects exactly one evaluation split")
+    evaluation_split = split_values[0]
+    support_column = "examples_audit" if "examples_audit" in frame else "examples"
+    panels = []
+    for variant in VARIANT_ORDER:
+        for ontology in ONTOLOGY_ORDER:
             sub = frame[(frame.ontology == ontology) & (frame.input_modality == variant)]
-            observed_bins = set(sub["bin"].dropna().astype(str))
-            for index, label in enumerate(order):
-                if label not in observed_bins:
-                    ax.text(x[index], ymin + .04 * (ymax - ymin), "no data", ha="center",
-                            va="bottom", rotation=90, fontsize=4.5, color="#777777")
-            if sub.empty:
-                annotate_insufficient_data(ax)
-            for model in MODEL_ORDER:
-                group = sub[sub.model == model]
-                if group.empty:
-                    continue
-                any_data = True
-                stats = group.groupby("bin", observed=False)[metric].agg(["mean", "std", "count"]).reindex(order)
-                audit_rows = group.groupby("bin", observed=False)["examples_audit"].first().reindex(order)
-                status_rows = group.groupby("bin", observed=False)["audit_status"].first().reindex(order)
-                for index, label in enumerate(order):
-                    n = float(audit_rows.iloc[index]) if pd.notna(audit_rows.iloc[index]) else 0.0
-                    mean = stats["mean"].iloc[index]
-                    err = stats["std"].iloc[index] if stats["count"].iloc[index] > 1 else 0.0
-                    if n <= 0 or not np.isfinite(mean):
-                        ax.text(x[index], ymin + .04 * (ymax - ymin), "no data", ha="center",
-                                va="bottom", rotation=90, fontsize=4.5, color="#777777")
-                        continue
-                    marker = MODEL_MARKER[model]
-                    ax.errorbar(x[index], mean, yerr=err, fmt="none", ecolor=MODEL_COLOR[model],
-                                elinewidth=.7, capsize=1.8, zorder=3)
-                    ax.scatter([x[index]], [mean], s=_size_for_n(n, max_n),
-                               color=MODEL_COLOR[model], marker=marker, edgecolor="#111111",
-                               linewidth=.25, zorder=4)
-                    if n < min_n or "bug" in str(status_rows.iloc[index]):
-                        ax.annotate("*", (x[index], mean), xytext=(3, 3),
-                                    textcoords="offset points", fontsize=6, fontweight="bold")
-            ax.set_ylim(ymin, ymax)
-            if row == 0:
-                ax.set_title(ONTOLOGY_SHORT[ontology])
-            if col == 0:
-                ax.set_ylabel(f"{VARIANT_LABEL[variant]}\n{METRIC_LABEL[metric]}", fontsize=7)
-            if row == len(VARIANT_ORDER) - 1:
-                ax.set_xticks(x, order, rotation=35, ha="right")
-            label_panel(ax, chr(97 + panel))
-            ax.set_xlim(-.5, len(order) - .5)
-            panel += 1
-    if not any_data:
-        plt.close(fig)
-        return
-    fig.supxlabel(BIN_AXIS_LABEL[bin_type], fontsize=8)
-    direction = "higher is better" if higher_better else "lower is better"
-    fig.text(.5, -.035, f"Error bars = {ERROR_KIND_LABEL[err_kind]} across five seed checkpoints; "
-             f"marker area ∝ sqrt(test examples); no connecting lines; '*' = n<{min_n} or archived "
-             f"one-class-AUROC evaluator artifact; empty bins are explicit no-data gaps; {direction}.",
-             ha="center", fontsize=5.6)
-    model_handles = [
-        Line2D([0], [0], color=MODEL_COLOR[m], marker=MODEL_MARKER[m], linestyle="",
-               markersize=5, label=m) for m in MODEL_ORDER
+            usable_bins = []
+            for label in order:
+                cell = sub[sub["bin"].astype(str) == label]
+                has_support = pd.to_numeric(cell[support_column], errors="coerce").fillna(0).gt(0).any()
+                has_value = np.isfinite(pd.to_numeric(cell[metric], errors="coerce")).any()
+                if has_support and has_value:
+                    usable_bins.append(label)
+            if usable_bins:
+                panels.append((variant, ontology, sub, usable_bins))
+    if not panels:
+        return False
+
+    ncols = min(3, len(panels))
+    nrows = int(np.ceil(len(panels) / ncols))
+    fig, axes = plt.subplots(
+        nrows, ncols, figsize=(DOUBLE_COLUMN_IN, 2.45 * nrows),
+        sharey=True, squeeze=False,
+    )
+    axes_flat = axes.ravel()
+    ymin, ymax = _metric_limits(frame, metric)
+    width = .78 / len(MODEL_ORDER)
+    for panel_index, (variant, ontology, sub, usable_bins) in enumerate(panels):
+        ax = axes_flat[panel_index]
+        x = np.arange(len(usable_bins), dtype=float)
+        counts = []
+        for label in usable_bins:
+            cell = sub[sub["bin"].astype(str) == label]
+            values = pd.to_numeric(cell[support_column], errors="coerce").dropna()
+            counts.append(int(values.iloc[0]) if len(values) else 0)
+        for model_index, model in enumerate(MODEL_ORDER):
+            group = sub[sub.model == model]
+            stats = group.groupby("bin", observed=True)[metric].agg(["mean", "std", "count"])
+            means = np.asarray([
+                float(stats.loc[label, "mean"]) if label in stats.index else np.nan
+                for label in usable_bins
+            ])
+            errors = np.asarray([
+                float(stats.loc[label, "std"]) if label in stats.index and stats.loc[label, "count"] > 1 else 0.0
+                for label in usable_bins
+            ])
+            valid = np.isfinite(means)
+            positions = x + (model_index - (len(MODEL_ORDER) - 1) / 2) * width
+            ax.bar(
+                positions[valid], means[valid], width=width * .92,
+                yerr=errors[valid], color=MODEL_COLOR[model], edgecolor="#111111",
+                linewidth=.35, error_kw=dict(elinewidth=.65, capsize=1.5, ecolor="#111111"),
+                label=model,
+            )
+            for pos, mean, count in zip(positions[valid], means[valid], np.asarray(counts)[valid]):
+                if count < min_n:
+                    ax.annotate("*", (pos, mean), xytext=(0, 3), textcoords="offset points",
+                                ha="center", fontsize=6, fontweight="bold")
+        labels = [f"{label.replace('_', ' ')}\n[n={count}]" for label, count in zip(usable_bins, counts)]
+        ax.set_xticks(x, labels, rotation=30, ha="right")
+        ax.set_ylim(ymin, ymax)
+        ax.set_xlim(-.55, len(usable_bins) - .45)
+        ax.set_title(
+            f"{ONTOLOGY_SHORT[ontology]} — {VARIANT_LABEL[variant]} ({evaluation_split})",
+            fontsize=7,
+        )
+        label_panel(ax, chr(97 + panel_index))
+        ax.set_ylabel(METRIC_LABEL[metric])
+    for ax in axes_flat[len(panels):]:
+        ax.remove()
+    handles = [
+        plt.Rectangle((0, 0), 1, 1, facecolor=MODEL_COLOR[m], edgecolor="#111111", label=m)
+        for m in MODEL_ORDER
     ]
-    legend = fig.legend(handles=model_handles, title="Model", loc="upper left",
-                        bbox_to_anchor=(1.0, 1.0), frameon=False, fontsize=6.5)
-    fig.add_artist(legend)
-    fig.legend(handles=_marker_legend(max_n), title="Test examples", loc="upper left",
-               bbox_to_anchor=(1.0, .62), frameon=False, fontsize=6.5)
-    savefig(fig, out / f"{bin_type}_{metric.lower()}.png", tier)
+    fig.legend(handles=handles, title="Model", loc="upper center", ncol=len(MODEL_ORDER),
+               bbox_to_anchor=(.5, 1.01), frameon=False, fontsize=6.2, title_fontsize=6.5)
+    direction = "higher is better" if METRIC_HIGHER_IS_BETTER[metric] else "lower is better"
+    fig.text(
+        .5, -.015,
+        f"Grouped bars show the mean with {ERROR_KIND_LABEL[err_kind]} across five seeds. "
+        f"Exact {evaluation_split} examples are printed in brackets; '*' marks n<{min_n}. "
+        f"Bins/panels without finite data are omitted; {direction}. Models are not stacked because "
+        "performance scores are not additive.",
+        ha="center", fontsize=5.6, wrap=True,
+    )
+    savefig(fig, out / f"{evaluation_split}_{bin_type}_{metric.lower()}.png", tier)
+    return True
 
 
 def main() -> None:
@@ -325,42 +426,40 @@ def main() -> None:
     ap.add_argument("--output-dir", type=Path, default=Path("plots/arc_tuning_cafa/bin_evaluation"))
     ap.add_argument("--dataset-root", type=Path, default=DEFAULT_DATA_ROOT)
     ap.add_argument("--homology-tsv", type=Path, default=DEFAULT_HOMOLOGY)
+    ap.add_argument("--validation-homology-tsv", type=Path, default=DEFAULT_VALIDATION_HOMOLOGY)
     ap.add_argument("--metrics", nargs="+", default=METRIC_ORDER, choices=METRIC_ORDER)
-    ap.add_argument("--min-n", type=int, default=10, help="Flag points with fewer than this many test examples.")
+    ap.add_argument("--min-n", type=int, default=10)
     ap.add_argument("--err", choices=["sd", "sem", "ci95"], default="sd")
     args = ap.parse_args()
     apply_style()
     print("Palette fingerprint:", assert_palette_locked())
     report_colorblind_audit()
-    source = args.bin_csv.resolve()
-    frame = pd.read_csv(source)
-    required = {"ontology", "model", "input_modality", "bin_type", "bin", "examples"}
-    missing = required - set(frame.columns)
-    if missing:
-        raise SystemExit(f"Missing required bin columns: {sorted(missing)}")
-    threshold = _threshold_from_label(frame)
-    dataset_root = args.dataset_root.resolve()
-    audit = build_integrity_audit(dataset_root, args.homology_tsv.resolve(), threshold)
-    merged = merge_and_validate(frame, audit)
+    merged = load_audited_bins(
+        args.bin_csv.resolve(), args.dataset_root.resolve(), args.homology_tsv.resolve(),
+        args.validation_homology_tsv.resolve(),
+    )
+    if merged is None:
+        return
     out = args.output_dir.resolve()
     out.mkdir(parents=True, exist_ok=True)
-    audit.to_csv(out / "bin_integrity_audit.csv", index=False)
-    merged.to_csv(out / "bin_metrics.csv", index=False)
-    flagged = merged[(merged["Macro_AUROC"].isna()) | (merged["Macro_AUPRC"].abs() <= 1e-12)]
-    if not flagged.empty:
-        print("Integrity flags (deduplicated by ontology/bin):")
-        print(flagged[["ontology", "bin_type", "bin", "examples_audit", "positive_examples",
-                       "positive_term_assignments", "positive_terms", "valid_auroc_terms",
-                       "audit_status"]].drop_duplicates().to_string(index=False))
-    found_bin_types = set(merged["bin_type"].dropna().unique())
-    for bin_type in [value for value in BIN_ORDER if value in found_bin_types]:
-        order = BIN_ORDER[bin_type]
-        subset = merged[merged.bin_type == bin_type].copy()
-        subset["bin"] = pd.Categorical(subset["bin"], categories=order, ordered=True)
-        for metric in args.metrics:
-            if metric in subset:
-                plot_bin_grid(subset, out, bin_type, order, metric, args.min_n, args.err)
-    print(f"Wrote audited bin metrics and plots to {out}")
+    export_bin_tables(merged, out)
+    support_columns = [
+        "evaluation_split", "ontology", "bin_type", "bin", "examples_audit",
+        "positive_examples", "positive_term_assignments", "positive_terms",
+        "valid_auroc_terms", "audit_status",
+    ]
+    merged[[c for c in support_columns if c in merged]].drop_duplicates().to_csv(
+        out / "bin_integrity_audit.csv", index=False
+    )
+    for evaluation_split in merged["evaluation_split"].dropna().astype(str).unique():
+        split_frame = merged[merged.evaluation_split == evaluation_split]
+        for bin_type in [value for value in BIN_ORDER if value in set(split_frame.bin_type)]:
+            subset = split_frame[split_frame.bin_type == bin_type].copy()
+            for metric in args.metrics:
+                if metric in subset and metric != "Smin":
+                    plot_bin_grid(subset, out, bin_type, BIN_ORDER[bin_type], metric,
+                                  args.min_n, args.err)
+    print(f"Wrote audited bin tables and non-empty grouped-bar plots to {out}")
 
 
 if __name__ == "__main__":

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Evaluate ARC ablation checkpoints in sequence-homology and IC bins.
 
-Homology is the maximum BLAST identity of each test query against training
-sequences. IC is the maximum information content of a protein's positive
+Homology is the maximum BLAST identity of each validation/test query against
+training sequences. IC is the maximum information content of a protein's positive
 training-derived GO terms. Both are computed without using predictions to
 define bins.
 """
@@ -13,6 +13,7 @@ import csv
 import json
 import os
 import pickle
+import subprocess
 import warnings
 from pathlib import Path
 
@@ -36,10 +37,18 @@ def parse_args():
     p.add_argument("--tuning-root", type=Path, default=None)
     p.add_argument("--ablations-root", type=Path, default=None)
     p.add_argument("--graph-root", type=Path, default=None)
-    p.add_argument("--homology-tsv", type=Path, default=None)
+    p.add_argument("--homology-tsv", type=Path, default=None,
+                   help="Test-vs-train BLAST table.")
+    p.add_argument("--validation-homology-tsv", type=Path, default=None,
+                   help="Validation-vs-train BLAST table.")
+    p.add_argument("--splits", nargs="+", choices=("valid", "test"),
+                   default=("valid", "test"),
+                   help="Evaluation splits to write (default: validation and test).")
     p.add_argument("--output-dir", type=Path, default=None)
     p.add_argument("--batch-size", type=int, default=32)
     p.add_argument("--workers", type=int, default=0)
+    p.add_argument("--blastp", default="blastp")
+    p.add_argument("--threads", type=int, default=int(os.environ.get("SLURM_CPUS_PER_TASK", 8)))
     return p.parse_args()
 
 
@@ -51,6 +60,34 @@ def load_dataset(path: Path, graph_root: Path, split: str):
     dataset.graph_dir = str(graph_root.resolve())
     return dataset
 
+
+
+def ensure_validation_homology(path: Path, data_root: Path, blastp: str, threads: int) -> Path:
+    """Build validation-vs-training BLAST hits once from the locked split."""
+    if path.is_file() and path.stat().st_size > 0:
+        return path
+    split_root = data_root / "pdb_splits" / "threshold_30"
+    query = split_root / "n_valid_sequences.fasta"
+    database = split_root / "blast_train_db"
+    if not query.is_file() or not Path(str(database) + ".pin").is_file():
+        raise FileNotFoundError(
+            "Validation homology requires n_valid_sequences.fasta and the existing "
+            f"blast_train_db under {split_root}"
+        )
+    partial = path.with_name(path.name + ".partial")
+    partial.unlink(missing_ok=True)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    command = [
+        blastp, "-query", str(query), "-db", str(database), "-out", str(partial),
+        "-evalue", "1e-3", "-max_target_seqs", "50", "-num_threads", str(threads),
+        "-outfmt", "6 qseqid sseqid pident length qlen slen evalue bitscore qcovs",
+    ]
+    print("RUN " + " ".join(command), flush=True)
+    subprocess.run(command, check=True)
+    if not partial.is_file() or partial.stat().st_size == 0:
+        raise RuntimeError(f"Validation BLAST wrote no hits to {partial}")
+    os.replace(partial, path)
+    return path
 
 def homology_bins(path: Path, test_ids: list[str]) -> list[str]:
     maximum = {protein: 0.0 for protein in test_ids}
@@ -134,50 +171,94 @@ def grouped_metrics(y_true, probabilities, groups, ic):
 
 def main():
     args = parse_args()
-    data_root = Path(args.data_root or os.environ.get("DGG_DATA_ROOT", PROJECT_DIR / "preprocessing" / "data_arc_rebuild_2026_07_14")).expanduser().resolve()
-    tuning_root = Path(args.tuning_root or os.environ.get("DGG_TUNING_ROOT", PROJECT_DIR / "arc_tuning")).expanduser().resolve()
-    graph_root = Path(args.graph_root or os.environ.get("DGG_GRAPH_ROOT", PROJECT_DIR / "arc_tuning" / "graphs_protbert")).expanduser().resolve()
-    ablations_root = Path(args.ablations_root or tuning_root / "ablations" / "nominal_30_identity_80_coverage").expanduser().resolve()
-    homology_path = Path(args.homology_tsv or data_root / "pdb_splits" / "threshold_30" / "blast_te_vs_tr.tsv").expanduser().resolve()
+    data_root = Path(args.data_root or os.environ.get(
+        "DGG_DATA_ROOT", PROJECT_DIR / "preprocessing" / "data_arc_rebuild_2026_07_14"
+    )).expanduser().resolve()
+    tuning_root = Path(args.tuning_root or os.environ.get(
+        "DGG_TUNING_ROOT", PROJECT_DIR / "arc_tuning"
+    )).expanduser().resolve()
+    graph_root = Path(args.graph_root or os.environ.get(
+        "DGG_GRAPH_ROOT", PROJECT_DIR / "arc_tuning" / "graphs_protbert"
+    )).expanduser().resolve()
+    ablations_root = Path(args.ablations_root or tuning_root / "ablations" /
+                          "nominal_30_identity_80_coverage").expanduser().resolve()
+    homology_paths = {
+        "test": Path(args.homology_tsv or data_root / "pdb_splits" / "threshold_30" /
+                     "blast_te_vs_tr.tsv").expanduser().resolve(),
+        "valid": Path(args.validation_homology_tsv or data_root / "pdb_splits" /
+                      "threshold_30" / "blast_va_vs_tr.tsv").expanduser().resolve(),
+    }
+    if "valid" in args.splits:
+        homology_paths["valid"] = ensure_validation_homology(
+            homology_paths["valid"], data_root, args.blastp, args.threads
+        )
     output_dir = Path(args.output_dir or ablations_root / "bin_evaluation").expanduser().resolve()
     output_dir.mkdir(parents=True, exist_ok=True)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     rows = []
 
     for ontology in ONTOLOGIES:
-        train = load_dataset(tuning_root / "datasets" / f"{ontology}_train.pkl", graph_root, "train")
-        test = load_dataset(tuning_root / "datasets" / f"{ontology}_test.pkl", graph_root, "test")
+        train = load_dataset(tuning_root / "datasets" / f"{ontology}_train.pkl",
+                             graph_root, "train")
         ic = compute_ic(train.labels)
-        hgroups = homology_bins(homology_path, test.protein_ids)
-        igroups = ic_bins(test.labels, ic)
-        loader = make_dataloader(test, args.batch_size, False, args.workers)
-        checkpoint_paths = sorted(ablations_root.joinpath(ontology).rglob("best_checkpoint.pt"))
-        for checkpoint_path in sorted(set(checkpoint_paths)):
-            checkpoint = torch.load(checkpoint_path, map_location=device, weights_only=False)
-            config = checkpoint["config"]
-            model_name = config["model"]
-            modality = config.get("input_modality", "full")
-            model = build(model_name, int(test[0].x.shape[1]), int(config.get("hidden_dim", 512)), test.num_classes, float(config.get("dropout", 0.2))).to(device)
-            model.load_state_dict(checkpoint["model_state_dict"]); model.eval()
-            labels, probabilities = [], []
-            with torch.inference_mode():
-                for batch in loader:
-                    batch = transform(batch.to(device), modality)
-                    labels.append(batch.y.cpu().numpy()); probabilities.append(torch.sigmoid(model(batch.x, batch.edge_index, batch.batch)).cpu().numpy())
-            y_true = np.vstack(labels); y_probability = np.vstack(probabilities)
-            relative = checkpoint_path.relative_to(ablations_root)
-            base = {"ontology": ontology, "model": model_name, "input_modality": modality, "checkpoint": str(checkpoint_path), "split_label": config.get("split_label")}
-            for kind, groups in (("homology", hgroups), ("ic", igroups)):
-                for metric_row in grouped_metrics(y_true, y_probability, groups, ic):
-                    rows.append({**base, "bin_type": kind, **metric_row})
-            del model
-            if device.type == "cuda": torch.cuda.empty_cache()
+        checkpoint_paths = sorted(set(
+            ablations_root.joinpath(ontology).rglob("best_checkpoint.pt")
+        ))
+        for evaluation_split in args.splits:
+            dataset = load_dataset(
+                tuning_root / "datasets" / f"{ontology}_{evaluation_split}.pkl",
+                graph_root, evaluation_split,
+            )
+            hgroups = homology_bins(homology_paths[evaluation_split], dataset.protein_ids)
+            igroups = ic_bins(dataset.labels, ic)
+            loader = make_dataloader(dataset, args.batch_size, False, args.workers)
+            for checkpoint_path in checkpoint_paths:
+                checkpoint = torch.load(checkpoint_path, map_location=device, weights_only=False)
+                config = checkpoint["config"]
+                model_name = config["model"]
+                modality = config.get("input_modality", "full")
+                model = build(
+                    model_name, int(dataset[0].x.shape[1]),
+                    int(config.get("hidden_dim", 512)), dataset.num_classes,
+                    float(config.get("dropout", 0.2)),
+                ).to(device)
+                model.load_state_dict(checkpoint["model_state_dict"])
+                model.eval()
+                labels, probabilities = [], []
+                with torch.inference_mode():
+                    for batch in loader:
+                        batch = transform(batch.to(device), modality)
+                        labels.append(batch.y.cpu().numpy())
+                        probabilities.append(
+                            torch.sigmoid(model(batch.x, batch.edge_index, batch.batch)).cpu().numpy()
+                        )
+                y_true = np.vstack(labels)
+                y_probability = np.vstack(probabilities)
+                base = {
+                    "ontology": ontology,
+                    "model": model_name,
+                    "input_modality": modality,
+                    "checkpoint": str(checkpoint_path),
+                    "split_label": config.get("split_label"),
+                    "evaluation_split": evaluation_split,
+                }
+                for kind, groups in (("homology", hgroups), ("ic", igroups)):
+                    for metric_row in grouped_metrics(y_true, y_probability, groups, ic):
+                        rows.append({**base, "bin_type": kind, **metric_row})
+                del model
+                if device.type == "cuda":
+                    torch.cuda.empty_cache()
 
-    fields = list(rows[0]) if rows else ["ontology", "model", "input_modality", "checkpoint", "split_label", "bin_type", "bin", "examples"]
+    fields = list(rows[0]) if rows else [
+        "ontology", "model", "input_modality", "checkpoint", "split_label",
+        "evaluation_split", "bin_type", "bin", "examples",
+    ]
     with (output_dir / "bin_metrics.csv").open("w", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=fields); writer.writeheader(); writer.writerows(rows)
+        writer = csv.DictWriter(handle, fieldnames=fields)
+        writer.writeheader()
+        writer.writerows(rows)
     (output_dir / "bin_metrics.json").write_text(json.dumps(rows, indent=2) + "\n")
-    print(f"Wrote {len(rows)} grouped model/bin rows to {output_dir}")
+    print(f"Wrote {len(rows)} grouped model/bin rows for {', '.join(args.splits)} to {output_dir}")
 
 
 if __name__ == "__main__": main()

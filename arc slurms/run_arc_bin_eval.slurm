@@ -32,4 +32,5 @@ export PYTHONUNBUFFERED=1 OMP_NUM_THREADS="${SLURM_CPUS_PER_TASK}" DGG_GRAPH_ROO
 python3 src/evaluate_arc_bins.py \
   --data-root "${DATA_ROOT}" --tuning-root "${TUNING_ROOT}" \
   --ablations-root "${ABLATIONS_ROOT}" --graph-root "${GRAPH_ROOT}" \
-  --output-dir "${OUTPUT_DIR}" --workers "${SLURM_CPUS_PER_TASK}"
+  --output-dir "${OUTPUT_DIR}" --splits valid test \
+  --threads "${SLURM_CPUS_PER_TASK}" --workers "${SLURM_CPUS_PER_TASK}"

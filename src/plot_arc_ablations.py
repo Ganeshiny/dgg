@@ -249,63 +249,60 @@ def annotate_constant_predictor(ax, x: float, y: float, metric: str) -> None:
 
 def plot_dynamite(df: pd.DataFrame, out: Path, metric: str, err_kind: str = "sd",
                   tier: str = SUPPLEMENTARY) -> None:
-    higher_better = METRIC_HIGHER_IS_BETTER[metric]
-    extra = 0.12 if metric == "Micro_Fmax" else 0.0
-    ymin, ymax = _metric_limits(df, metric, extra)
-    fig, axes = plt.subplots(1, 3, figsize=(DOUBLE_COLUMN_IN, 3.35), sharey=True)
-    x, offsets = _bar_positions(len(MODEL_ORDER), len(VARIANT_ORDER))
-    any_data = False
-    for panel, (ax, ontology) in enumerate(zip(axes, ONTOLOGY_ORDER)):
-        sub = df[df.ontology == ontology]
-        if sub.empty:
-            _empty_panel(ax, panel, ontology)
-            continue
-        any_data = True
-        for j, variant in enumerate(VARIANT_ORDER):
-            means, errs, ns = [], [], []
+    """Vertically faceted grouped bars; modalities are never additively stacked."""
+    ymin, ymax = _metric_limits(df, metric, .08 if metric == "Micro_Fmax" else 0.0)
+    fig, axes = plt.subplots(
+        len(VARIANT_ORDER), len(ONTOLOGY_ORDER),
+        figsize=(DOUBLE_COLUMN_IN, 2.05 * len(VARIANT_ORDER)),
+        sharex=True, sharey=True, squeeze=False,
+    )
+    x = np.arange(len(MODEL_ORDER), dtype=float)
+    panel = 0
+    for row, variant in enumerate(VARIANT_ORDER):
+        for col, ontology in enumerate(ONTOLOGY_ORDER):
+            ax = axes[row, col]
+            sub = df[(df.ontology == ontology) & (df.input == variant)]
+            means, errors, counts = [], [], []
             for model in MODEL_ORDER:
-                vals = sub[(sub.model == model) & (sub.input == variant)][metric].to_numpy()
-                m, e, n = mean_and_error(vals, err_kind)
-                means.append(m); errs.append(e); ns.append(n)
-            xi = x + offsets[j]
-            ax.bar(xi, means, width=.25 * .95, yerr=errs,
-                   color=[MODEL_COLOR[m] for m in MODEL_ORDER],
-                   hatch=VARIANT_HATCH[variant], edgecolor="#111111", linewidth=.45,
-                   error_kw=dict(elinewidth=.7, capsize=2, ecolor="#111111"))
-            for xii, n in zip(xi, ns):
-                _n_label(ax, xii, n)
-        ax.set_ylim(ymin, ymax)
-        ax.set_xticks(x, MODEL_ORDER, rotation=30, ha="right")
-        ax.set_title(ONTOLOGY_SHORT[ontology])
-        label_panel(ax, chr(97 + panel))
-        if not higher_better:
-            ax.text(.01, 1.03, "lower is better", transform=ax.transAxes,
-                    fontsize=5.8, color="#555555", va="bottom", clip_on=False)
-    if not any_data:
-        plt.close(fig)
-        raise SystemExit(f"No ablation data found for {metric!r}")
-    if metric == "Micro_Fmax":
-        model_index = MODEL_ORDER.index("Hybrid")
-        left = x[model_index] + offsets[0]
-        right = x[model_index] + offsets[1]
-        sub = df[df.ontology == ONTOLOGY_ORDER[0]]
-        values = []
-        for variant in VARIANT_ORDER[:2]:
-            values.extend(sub[(sub.model == "Hybrid") & (sub.input == variant)][metric].dropna().tolist())
-        y = min(ymax * .88, max(values) + .04 if values else ymax * .8)
-        axes[0].plot([left, left, right, right], [y - .012, y, y, y - .012],
-                     color="#333333", linewidth=.65)
-        axes[0].text((left + right) / 2, y + .006, "Full ≈ Seq-only",
-                     ha="center", va="bottom", fontsize=5.2)
-    axes[0].set_ylabel(f"{METRIC_LABEL[metric]}\n({ERROR_KIND_LABEL[err_kind]}, n≤5 seeds)")
-    variant_handles = [
-        Patch(facecolor="white", edgecolor="#111111", hatch=VARIANT_HATCH[v], label=VARIANT_LABEL[v])
-        for v in VARIANT_ORDER
-    ]
-    _legend(fig, variant_handles)
-    fig.text(.5, -.055, f"{ERROR_CAPTION[err_kind]}. {_metric_note(metric)} "
-             + provenance("src/plot_arc_ablations.py", "ablations/**/test_metrics.json + logs/arc_ablation_*.out"),
-             ha="center", fontsize=5.2, wrap=True)
+                values = pd.to_numeric(
+                    sub[sub.model == model][metric], errors="coerce"
+                ).dropna().to_numpy(float)
+                mean, error, count = mean_and_error(values, err_kind)
+                means.append(mean)
+                errors.append(error)
+                counts.append(count)
+            means_array = np.asarray(means, dtype=float)
+            errors_array = np.asarray(errors, dtype=float)
+            valid = np.isfinite(means_array)
+            if not valid.any():
+                ax.remove()
+                continue
+            ax.bar(
+                x[valid], means_array[valid], width=.72,
+                yerr=errors_array[valid],
+                color=[MODEL_COLOR[model] for model, keep in zip(MODEL_ORDER, valid) if keep],
+                edgecolor="#111111", linewidth=.45,
+                error_kw=dict(elinewidth=.75, capsize=2, ecolor="#111111"),
+            )
+            for position, count in zip(x, counts):
+                _n_label(ax, position, count)
+            if row == 0:
+                ax.set_title(ONTOLOGY_SHORT[ontology])
+            if col == 0:
+                ax.set_ylabel(f"{VARIANT_LABEL[variant]}\n{METRIC_LABEL[metric]}", fontsize=6.7)
+            if row == len(VARIANT_ORDER) - 1:
+                ax.set_xticks(x, MODEL_ORDER, rotation=30, ha="right", fontsize=6)
+            ax.set_ylim(ymin, ymax)
+            label_panel(ax, chr(97 + panel))
+            panel += 1
+    direction = "higher is better" if METRIC_HIGHER_IS_BETTER[metric] else "lower is better"
+    fig.text(
+        .5, -.025,
+        f"Rows are input modalities and columns are ontologies. Bars show the mean with "
+        f"{ERROR_KIND_LABEL[err_kind]} across five seeds; {direction}. Bars are grouped/faceted, "
+        f"not stacked, because model scores are not additive. {_metric_note(metric)}",
+        ha="center", fontsize=5.4, wrap=True,
+    )
     savefig(fig, out / f"dynamite_{metric.lower()}.png", tier)
 
 
@@ -337,9 +334,9 @@ def plot_strip(df: pd.DataFrame, out: Path, metric: str, err_kind: str = "sd",
                 if n:
                     mean_x = xi + .075
                     ax.plot([xi, mean_x], [mean, mean], color="#777777", linewidth=.45, alpha=.7, zorder=4)
-                    ax.errorbar([mean_x], [mean], yerr=[err], fmt="D", markersize=5.2,
-                                markerfacecolor="white", markeredgecolor="#111111",
-                                markeredgewidth=1.2, ecolor="#111111", elinewidth=1.0,
+                    ax.errorbar([mean_x], [mean], yerr=[err], fmt="D", markersize=3.2,
+                                markerfacecolor="#111111", markeredgecolor="#111111",
+                                markeredgewidth=.6, ecolor="#111111", elinewidth=1.0,
                                 capsize=2.2, zorder=5)
                     if model == "MLP" and variant == "struct_only":
                         annotate_constant_predictor(ax, mean_x, mean, metric)
@@ -354,13 +351,13 @@ def plot_strip(df: pd.DataFrame, out: Path, metric: str, err_kind: str = "sd",
     if not any_data:
         plt.close(fig)
         raise SystemExit(f"No ablation data found for {metric!r}")
-    axes[0].set_ylabel(f"{METRIC_LABEL[metric]}\n(points = seeds; diamond = {ERROR_KIND_LABEL[err_kind]})")
+    axes[0].set_ylabel(f"{METRIC_LABEL[metric]}\n(points = seeds; black diamond = {ERROR_KIND_LABEL[err_kind]})")
     variant_handles = [
         Line2D([0], [0], marker=VARIANT_MARKER[v], linestyle="", color="#555555",
                label=VARIANT_LABEL[v], markersize=5) for v in VARIANT_ORDER
     ]
     _legend(fig, variant_handles)
-    fig.text(.5, -.055, f"{ERROR_CAPTION[err_kind]}; points are individual seeds and the open diamond is offset to its right. "
+    fig.text(.5, -.055, f"{ERROR_CAPTION[err_kind]}; points are individual seeds and the small black diamond is offset to its right. "
              f"† marks the MLP structure-only constant-predictor control. {_metric_note(metric)} "
              + provenance("src/plot_arc_ablations.py", "ablations/**/test_metrics.json + logs/arc_ablation_*.out"),
              ha="center", fontsize=5.2, wrap=True)
@@ -539,9 +536,9 @@ def plot_metric_family_composite(df: pd.DataFrame, out: Path,
                         mean_x = xi + .075
                         ax.plot([xi, mean_x], [mean, mean], color="#777777",
                                 linewidth=.4, alpha=.7, zorder=4)
-                        ax.errorbar([mean_x], [mean], yerr=[err], fmt="D", markersize=4.4,
-                                    markerfacecolor="white", markeredgecolor="#111111",
-                                    markeredgewidth=1.0, ecolor="#111111", elinewidth=.9,
+                        ax.errorbar([mean_x], [mean], yerr=[err], fmt="D", markersize=3.0,
+                                    markerfacecolor="#111111", markeredgecolor="#111111",
+                                    markeredgewidth=.5, ecolor="#111111", elinewidth=.9,
                                     capsize=1.9, zorder=5)
                         if model == "MLP" and variant == "struct_only":
                             annotate_constant_predictor(ax, mean_x, mean, metric)
@@ -561,7 +558,7 @@ def plot_metric_family_composite(df: pd.DataFrame, out: Path,
              f"Top row: {METRIC_LABEL[top_metric]}. Bottom row: {METRIC_LABEL[bottom_metric]}. "
              f"Identical layout and colour mapping in both rows — only the metric changes, and the "
              f"model ranking inverts with it, so neither family alone supports a single "
-             f"'best model' claim. {ERROR_CAPTION[err_kind]}; points are seeds, open diamonds the "
+             f"'best model' claim. {ERROR_CAPTION[err_kind]}; points are seeds, small black diamonds the "
              f"mean. † marks the MLP structure-only constant-predictor control "
              f"(Macro-AUROC 0.500 = chance). "
              + provenance("src/plot_arc_ablations.py", "ablations/**/test_metrics.json"),
@@ -598,16 +595,21 @@ def plot_heatmap(df: pd.DataFrame, out: Path, metric: str = "Micro_Fmax",
     if vmax <= vmin:
         vmax = vmin + .05
     norm = Normalize(vmin=vmin, vmax=vmax)
-    cmap = cm.get_cmap("viridis")
-    fig, axes = plt.subplots(1, 3, figsize=(DOUBLE_COLUMN_IN, 3.45), sharey=True)
+    cmap = plt.get_cmap("viridis")
+    fig = plt.figure(figsize=(DOUBLE_COLUMN_IN, 3.55), layout="constrained")
+    grid = fig.add_gridspec(2, 3, height_ratios=(1.0, .055), hspace=.42, wspace=.16)
+    axes = [fig.add_subplot(grid[0, index]) for index in range(3)]
     image = None
     for panel, (ax, ontology) in enumerate(zip(axes, ONTOLOGY_ORDER)):
         sub = df[df.ontology == ontology]
-        table = sub.pivot_table(index="model", columns="input", values=metric, aggfunc="mean").reindex(
-            index=MODEL_ORDER, columns=VARIANT_ORDER)
+        table = sub.pivot_table(
+            index="model", columns="input", values=metric, aggfunc="mean"
+        ).reindex(index=MODEL_ORDER, columns=VARIANT_ORDER)
         image = ax.imshow(table.values, cmap=cmap, aspect="auto", norm=norm)
-        ax.set_xticks(range(len(VARIANT_ORDER)), [VARIANT_LABEL[v] for v in VARIANT_ORDER],
-                      rotation=20, ha="right")
+        ax.set_xticks(
+            range(len(VARIANT_ORDER)), [VARIANT_LABEL[v] for v in VARIANT_ORDER],
+            rotation=22, ha="right",
+        )
         ax.set_yticks(range(len(MODEL_ORDER)), MODEL_ORDER)
         ax.set_title(ONTOLOGY_SHORT[ontology])
         label_panel(ax, chr(97 + panel))
@@ -617,22 +619,61 @@ def plot_heatmap(df: pd.DataFrame, out: Path, metric: str = "Micro_Fmax",
                 value = table.iloc[i, j]
                 if pd.notna(value):
                     color, effects = _contrast_text(cmap(norm(float(value))))
-                    ax.text(j, i, f"{value:.3f}", ha="center", va="center",
-                            color=color, fontweight="bold", fontsize=6.3,
-                            path_effects=effects)
-    # A colourbar attached to `ax=axes` steals width from the panel group but
-    # is drawn over the rightmost panel's tick labels once tight_layout runs.
-    # A dedicated horizontal axis below the row avoids the collision entirely.
-    fig.tight_layout()
-    cax = fig.add_axes([0.30, -0.06, 0.40, 0.030])
+                    ax.text(
+                        j, i, f"{value:.3f}", ha="center", va="center",
+                        color=color, fontweight="bold", fontsize=6.3,
+                        path_effects=effects,
+                    )
+    cax = fig.add_subplot(grid[1, :])
     bar = fig.colorbar(image, cax=cax, orientation="horizontal")
-    bar.set_label(f"Mean {METRIC_LABEL[metric]} (scale clipped to observed {vmin:.3f}–{vmax:.3f})",
-                  fontsize=6)
+    bar.set_label(
+        f"Mean {METRIC_LABEL[metric]} (observed range {vmin:.3f}–{vmax:.3f})",
+        fontsize=6,
+    )
     cax.tick_params(labelsize=5.4)
-    fig.text(.5, -.16, "Cell text uses the highest-contrast black/white treatment; "
-             "Fmax comparisons use the same data-driven range as strip/dynamite figures. "
-             f"{_metric_note(metric)}", ha="center", fontsize=5.8)
+    fig.text(
+        .5, -.025,
+        "The colorbar occupies a dedicated grid row and cannot overlap heatmap cells or labels. "
+        f"Exact cell values are also exported as a supplementary table. {_metric_note(metric)}",
+        ha="center", fontsize=5.6, wrap=True,
+    )
     savefig(fig, out / f"{metric.lower()}_model_input_heatmap.png", tier)
+
+
+def export_ablation_tables(df: pd.DataFrame, coverage: pd.DataFrame, out: Path) -> None:
+    """Export raw, summary, and heatmap-ready values for the supplement."""
+    table_dir = out / "supplementary_tables"
+    table_dir.mkdir(parents=True, exist_ok=True)
+    metrics = [metric for metric in METRIC_ORDER if metric in df]
+    raw_columns = ["ontology", "model", "input", "seed", *metrics]
+    df[raw_columns].to_csv(table_dir / "supp_table_ablation_seed_metrics.csv", index=False)
+    long = df[raw_columns].melt(
+        id_vars=["ontology", "model", "input", "seed"],
+        value_vars=metrics, var_name="metric", value_name="value",
+    )
+    summary = long.groupby(
+        ["ontology", "model", "input", "metric"], dropna=False, observed=True
+    )["value"].agg(
+        seeds="count", mean="mean", sd="std", median="median",
+        q1=lambda values: values.quantile(.25),
+        q3=lambda values: values.quantile(.75),
+        minimum="min", maximum="max",
+    ).reset_index()
+    summary.to_csv(table_dir / "supp_table_ablation_metric_summary.csv", index=False)
+    coverage.to_csv(table_dir / "supp_table_ablation_coverage.csv", index=False)
+    summary[summary.metric == "Micro_Fmax"].to_csv(
+        table_dir / "supp_table_ablation_heatmap_micro_fmax.csv", index=False
+    )
+    control = summary[
+        (summary.model == "MLP") & (summary.input == "struct_only") &
+        summary.metric.isin(["Macro_AUPRC", "Macro_AUROC"])
+    ].copy()
+    control["interpretation"] = np.where(
+        control.metric == "Macro_AUROC",
+        "approximately 0.5: chance ranking from a constant per-term predictor",
+        "tracks term prevalence; tied-score trapezoidal PR estimate is upward-biased",
+    )
+    control.to_csv(table_dir / "supp_table_mlp_structure_constant_control.csv", index=False)
 
 
 def main() -> None:
@@ -646,7 +687,7 @@ def main() -> None:
                     help="Consolidated per-seed table to fall back on when per-run artifacts are "
                          "incomplete locally (default: plots/arc_tuning_cafa/ablations/ablation_test_metrics.csv).")
     ap.add_argument("--metrics", nargs="+", default=METRIC_ORDER, choices=METRIC_ORDER)
-    ap.add_argument("--style", choices=["dynamite", "strip", "both"], default="both")
+    ap.add_argument("--style", choices=["dynamite", "strip", "both"], default="dynamite")
     ap.add_argument("--err", choices=["sd", "sem", "ci95"], default="sd")
     args = ap.parse_args()
 
@@ -657,6 +698,7 @@ def main() -> None:
     out.mkdir(parents=True, exist_ok=True)
     ablations_root = args.ablations_root.resolve()
     df = read_results(ablations_root, args.logs_dir.resolve())
+    used_archive = False
     complete_csv = out / "ablation_test_metrics.csv"
     expected_rows = len(ONTOLOGY_ORDER) * len(MODEL_ORDER) * len(VARIANT_ORDER) * EXPECTED_SEEDS
     # The archive is a property of the dataset, not of wherever this run happens
@@ -671,13 +713,16 @@ def main() -> None:
             print(f"Using complete consolidated table {archive_csv} ({len(archived)} rows); "
                   f"local per-run JSON/log artifacts contain only {len(df)} rows.")
             df = archived
+            used_archive = True
     if df.empty:
         raise SystemExit("No ablation result JSON, logs, or complete consolidated table found")
-    df.to_csv(complete_csv, index=False)
+    if not used_archive and complete_csv.resolve() != archive_csv:
+        df.to_csv(complete_csv, index=False)
     audit_ablation_integrity(df, args.support_root.resolve(), ablations_root, out)
     coverage = coverage_table(df)
     coverage.to_csv(out / "ablation_coverage.csv", index=False)
     report_coverage(coverage)
+    export_ablation_tables(df, coverage, out)
     for metric in args.metrics:
         if metric not in df:
             print(f"Skipping {metric}: not present in loaded data")

@@ -295,9 +295,15 @@ def savefig(fig: plt.Figure, path: Path, tier: str = SUPPLEMENTARY,
     path.parent.mkdir(parents=True, exist_ok=True)
     dpi = TIER_DPI[tier]
     if formats is None:
-        formats = ("pdf", SPEC["raster"])
+        # Manuscript source, reviewer-friendly vector, and both common raster
+        # companions are emitted together so figures never need to be rerun
+        # merely to satisfy a supplementary-file format request.
+        formats = ("svg", "pdf", "png", "tiff")
     try:
-        fig.tight_layout()
+        # Respect figures that deliberately use constrained/GridSpec layout
+        # (notably the heatmap with its dedicated colorbar row).
+        if fig.get_layout_engine() is None:
+            fig.tight_layout()
     except Exception:
         pass
     for suffix in formats:

@@ -38,18 +38,17 @@ from plot_style import (
 
 REPO = Path(__file__).resolve().parents[1]
 DEFAULT_ABLATIONS = REPO / "arc_tuning_cafa/ablations/nominal_30_identity_80_coverage"
-DEFAULT_BINCSV = DEFAULT_ABLATIONS / "bin_evaluation/bin_metrics.csv"
+DEFAULT_BINCSV = REPO / "plots/arc_tuning_cafa/bin_evaluation/bin_metrics.csv"
 DEFAULT_ARCHIVE = REPO / "plots/arc_tuning_cafa/ablations/ablation_test_metrics.csv"
 
 # Main-text figures, in order. Each entry is (filename stem, caption).
 MAIN_FIGURES = [
-    ("figure1_ablation_faceted_micro_fmax",
+    ("figure1_ablation_dynamite_micro_fmax",
      "Architecture and input-modality ablation. Micro-F$_{max}$ on the held-out test split for "
-     "five architectures under three input modalities, across the three GO sub-ontologies. Points "
-     "Rows are input modality and columns are ontology; points are individual training seeds (n = 5) "
-     "and the horizontal bar is the mean ± s.d. Modality is faceted rather than encoded as a marker "
-     "shape, so no symbol decoding is required. Full and sequence-only are near-identical for every "
-     "architecture, while structure-only collapses — the sequence representation carries the signal."),
+     "five architectures under three input modalities and three GO sub-ontologies. Input modality "
+     "is stacked vertically as panel rows; within every panel, non-additive model scores are shown "
+     "as separate grouped bars with mean ± s.d. across five seeds. Full and sequence-only are "
+     "near-identical, while structure-only collapses — the sequence representation carries the signal."),
     ("figure2_metric_family_micro_fmax_vs_micro_auroc",
      "Model ranking depends on the metric family. Identical layout and colour mapping in both rows; "
      "only the metric changes. F$_{max}$ (top) favours the graph-aware Hybrid variants, while AUROC "
@@ -58,8 +57,8 @@ MAIN_FIGURES = [
     ("figure3_homology_micro_fmax",
      "Generalisation across sequence-homology bins. Micro-F$_{max}$ by maximum BLAST identity of each "
      "test protein against the training set, per input modality (rows) and ontology (columns). "
-     "Marker area is proportional to the square root of the number of test proteins in the bin; "
-     "points are not connected across bins with insufficient support."),
+     "Models are separate grouped bars; exact test-bin counts are printed in brackets on the "
+     "x-axis, and bins without finite data are omitted."),
 ]
 
 
@@ -98,24 +97,44 @@ def build(tier_wanted: str, out_root: Path, ablations_root: Path, bin_csv: Path,
             df = archived
     if df.empty:
         raise SystemExit("No ablation data found.")
-    abl.audit_ablation_integrity(df, support_root, ablations_root, work)
-    abl.report_coverage(abl.coverage_table(df))
+    ablation_audit = abl.audit_ablation_integrity(df, support_root, ablations_root, work)
+    ablation_coverage = abl.coverage_table(df)
+    abl.report_coverage(ablation_coverage)
+    table_dir = out_root / "supplementary_tables"
+    abl.export_ablation_tables(df, ablation_coverage, out_root)
+    ablation_audit.to_csv(table_dir / "supp_table_ablation_integrity.csv", index=False)
+    (table_dir / "README.md").write_text(
+        "# Supplementary tables\n\n"
+        "- `supp_table_ablation_seed_metrics.csv`: every seed-level ablation value.\n"
+        "- `supp_table_ablation_metric_summary.csv`: n, mean, SD, median, quartiles, min and max.\n"
+        "- `supp_table_ablation_heatmap_micro_fmax.csv`: exact heatmap values.\n"
+        "- `supp_table_mlp_structure_constant_control.csv`: null-control Macro-AUPRC/AUROC audit.\n"
+        "- `supp_table_bin_metrics_audited_raw.csv`: every audited split/model/bin row.\n"
+        "- `supp_table_bin_metric_summary.csv`: per-bin seed summaries for every metric.\n"
+        "- `supp_table_bin_support.csv`: exact examples and positive-label support.\n"
+        "- `supp_table_bin_smin.csv`: Smin bin values (table-only).\n\n"
+        "The current archive contains test-bin predictions only. Validation rows are added by "
+        "`run_arc_bin_eval.slurm`, which now evaluates both `valid` and `test`.\n"
+    )
 
     supp_entries: list[tuple[str, str]] = []
 
     # ---------------- MAIN TEXT ----------------
     if tier_wanted in ("main", "both"):
-        abl.plot_strip_faceted(df, work, "Micro_Fmax", err, MAIN)
-        _copy(work, "faceted_micro_fmax", main_dir, MAIN_FIGURES[0][0])
+        abl.plot_dynamite(df, work, "Micro_Fmax", err, MAIN)
+        _copy(work, "dynamite_micro_fmax", main_dir, MAIN_FIGURES[0][0])
 
         abl.plot_metric_family_composite(df, work, "Micro_Fmax", "Micro_AUROC", err, MAIN)
         _copy(work, "metric_family_micro_fmax_vs_micro_auroc", main_dir, MAIN_FIGURES[1][0])
 
         bin_frame = bins.load_audited_bins(bin_csv, support_root.parent, logs_hint=None)
         if bin_frame is not None:
-            bins.plot_bin_grid(bin_frame[bin_frame.bin_type == "homology"], work, "homology",
-                               bins.BIN_ORDER["homology"], "Micro_Fmax", 10, err, MAIN)
-            _copy(work, "homology_micro_fmax", main_dir, MAIN_FIGURES[2][0])
+            test_bins = bin_frame[(bin_frame.bin_type == "homology") &
+                                  (bin_frame.evaluation_split == "test")]
+            if not test_bins.empty:
+                bins.plot_bin_grid(test_bins, work, "homology", bins.BIN_ORDER["homology"],
+                                   "Micro_Fmax", 10, err, MAIN)
+                _copy(work, "test_homology_micro_fmax", main_dir, MAIN_FIGURES[2][0])
 
         legend = ["# Main-text figure legends", ""]
         for i, (stem, caption) in enumerate(MAIN_FIGURES, start=1):
@@ -133,52 +152,45 @@ def build(tier_wanted: str, out_root: Path, ablations_root: Path, bin_csv: Path,
 
     # ---------------- SUPPLEMENTARY ----------------
     if tier_wanted in ("supplementary", "both"):
-        # Every remaining ablation metric, both encodings, plus the heatmap.
+        # One clear encoding per metric: vertically faceted grouped bars. The
+        # raw seeds and full summaries are exported as tables below.
         for metric in METRIC_ORDER:
             if metric not in df:
                 continue
-            abl.plot_strip_faceted(df, work, metric, err, SUPPLEMENTARY)
-            supp_entries.append((f"faceted_{metric.lower()}",
-                                 f"{metric.replace('_', '-')} with input modality as rows and "
-                                 f"ontology as columns. {abl._metric_note(metric)}"))
-            abl.plot_box_faceted(df, work, metric, err, SUPPLEMENTARY)
-            supp_entries.append((f"box_{metric.lower()}",
-                                 f"Boxplot rendering of {metric.replace('_', '-')} across seeds, "
-                                 f"with every seed overlaid because n = 5 is a thin basis for "
-                                 f"quartiles. {abl._metric_note(metric)}"))
-            abl.plot_strip(df, work, metric, err, SUPPLEMENTARY)
-            supp_entries.append((f"strip_{metric.lower()}",
-                                 f"Per-seed {metric.replace('_', '-')} for all architectures and "
-                                 f"input modalities. {abl._metric_note(metric)}"))
             abl.plot_dynamite(df, work, metric, err, SUPPLEMENTARY)
             supp_entries.append((f"dynamite_{metric.lower()}",
-                                 f"Bar-and-error-bar rendering of the same {metric.replace('_', '-')} "
-                                 f"data shown per-seed elsewhere; retained for readers who expect "
-                                 f"this encoding. {abl._metric_note(metric)}"))
+                                 f"Vertically faceted grouped-bar rendering of "
+                                 f"{metric.replace('_', '-')}; rows are input modalities and columns "
+                                 f"are ontologies. {abl._metric_note(metric)}"))
         abl.plot_heatmap(df, work, "Micro_Fmax", SUPPLEMENTARY)
         supp_entries.append(("micro_fmax_model_input_heatmap",
                              "Mean Micro-F$_{max}$ per architecture and input modality as a "
                              "quick-reference grid; colour scale clipped to the observed range."))
 
-        # All bin-stratified metrics, both stratification axes.
+        # All non-Smin bin metrics. Smin is table-only; empty bins/panels are
+        # omitted by plot_bin_grid, and validation appears automatically once
+        # the split-aware ARC evaluator has generated those rows.
         bin_frame = bins.load_audited_bins(bin_csv, support_root.parent, logs_hint=None)
         if bin_frame is not None:
-            for bin_type in ("homology", "ic"):
-                subset = bin_frame[bin_frame.bin_type == bin_type]
-                if subset.empty:
-                    continue
-                for metric in METRIC_ORDER:
-                    if metric not in subset:
+            bins.export_bin_tables(bin_frame, out_root)
+            for evaluation_split in bin_frame.evaluation_split.dropna().astype(str).unique():
+                for bin_type in ("homology", "ic"):
+                    subset = bin_frame[(bin_frame.bin_type == bin_type) &
+                                       (bin_frame.evaluation_split == evaluation_split)]
+                    if subset.empty:
                         continue
-                    stem = f"{bin_type}_{metric.lower()}"
-                    if tier_wanted == "both" and stem == "homology_micro_fmax":
-                        continue  # promoted to main text
-                    bins.plot_bin_grid(subset, work, bin_type, bins.BIN_ORDER[bin_type],
-                                       metric, 10, err, SUPPLEMENTARY)
-                    supp_entries.append((stem,
-                                         f"{metric.replace('_', '-')} stratified by "
-                                         f"{'sequence homology' if bin_type == 'homology' else 'information content'} "
-                                         f"bin, per input modality and ontology."))
+                    for metric in METRIC_ORDER:
+                        if metric == "Smin" or metric not in subset:
+                            continue
+                        stem = f"{evaluation_split}_{bin_type}_{metric.lower()}"
+                        if tier_wanted == "both" and stem == "test_homology_micro_fmax":
+                            continue  # promoted to main text
+                        if bins.plot_bin_grid(subset, work, bin_type, bins.BIN_ORDER[bin_type],
+                                              metric, 10, err, SUPPLEMENTARY):
+                            supp_entries.append((stem,
+                                f"{metric.replace('_', '-')} for the {evaluation_split} split, "
+                                f"stratified by {'sequence homology' if bin_type == 'homology' else 'information content'}; "
+                                "exact bin counts are printed on the x-axis and empty cells are omitted."))
 
         lines = ["# Supplementary figure legends", ""]
         number = 0
