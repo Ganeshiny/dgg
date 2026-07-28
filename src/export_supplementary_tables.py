@@ -105,6 +105,7 @@ def main() -> None:
 
     metrics = require_csv(results / "benchmark_metrics.csv")
     homology = require_csv(results / "stratified_homology.csv")
+    homology_aupr = require_csv(results / "stratified_homology_aupr.csv")
     ic = require_csv(results / "stratified_ic.csv")
     depth = require_csv(results / "stratified_depth.csv")
     curves = require_csv(results / "ic_weighted_pr.csv")
@@ -129,7 +130,19 @@ def main() -> None:
     ]
     coverage = metrics[[c for c in coverage_columns if c in metrics]].copy()
     write_table(coverage, output / "supp_table_s3_prediction_coverage.csv")
-    write_table(homology, output / "supp_table_s4_homology_fmax.csv")
+    keys = ["ontology", "method", "bin", "bin_unit", "bin_n", "below_min_bin_size"]
+    fmax = homology.rename(columns={
+        "value": "fmax", "seed_mean": "fmax_seed_mean",
+        "seed_sd": "fmax_seed_sd", "seed_n": "fmax_seed_n",
+    })
+    aupr = homology_aupr.rename(columns={
+        "value": "micro_aupr", "seed_mean": "micro_aupr_seed_mean",
+        "seed_sd": "micro_aupr_seed_sd", "seed_n": "micro_aupr_seed_n",
+    })
+    homology_table = fmax.merge(
+        aupr, on=keys, how="outer", validate="one_to_one"
+    )
+    write_table(homology_table, output / "supp_table_s4_homology_fmax_aupr.csv")
     write_table(ic, output / "supp_table_s5_term_ic_auprc.csv")
     write_table(depth, output / "supp_table_s6_go_depth_auprc.csv")
 

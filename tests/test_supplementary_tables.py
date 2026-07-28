@@ -7,9 +7,15 @@ import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from src.export_supplementary_tables import comparison_audit, ic_weighted_aupr
+from src.benchmark.stratified import micro_auprc
 
 
 class SupplementaryTableTests(unittest.TestCase):
+    def test_micro_auprc_is_pooled_over_protein_term_pairs(self):
+        truth = np.asarray([[1, 0], [0, 1]])
+        scores = np.asarray([[0.9, 0.1], [0.2, 0.8]])
+        self.assertAlmostEqual(micro_auprc(truth, scores), 1.0)
+
     def test_ic_weighted_aupr_integrates_recall_order(self):
         curves = pd.DataFrame({
             "method": ["deepgreengo"] * 3,

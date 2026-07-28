@@ -7,6 +7,7 @@ python -m src.benchmark.run_stratified --workspace arc_benchmark/nominal_30_iden
 
 Outputs, all under <workspace>/results/:
   stratified_homology.csv    Fmax per homology bin, per method, per ontology
+  stratified_homology_aupr.csv  micro-AUPR per homology bin
   stratified_ic.csv          AUPRC per term-IC bin
   stratified_depth.csv       AUPRC per GO-depth bin
   ic_weighted_pr.csv         IC-weighted precision/recall sweep
@@ -34,6 +35,7 @@ from .stratified import (
     information_content,
     load_scores,
     max_identity_by_protein,
+    micro_auprc,
     protein_centric_fmax,
     seed_score_matrices,
     term_centric_auprc,
@@ -92,7 +94,7 @@ def main() -> None:
     print(f"[stratified] parsing {obo_path}")
     parents, _aliases = parse_obo(obo_path)
 
-    homology_rows, ic_rows, depth_rows, pr_rows = [], [], [], []
+    homology_rows, homology_aupr_rows, ic_rows, depth_rows, pr_rows = [], [], [], [], []
     manifest: dict = {
         "workspace": str(workspace),
         "homology_tsv": str(homology_tsv),
@@ -164,6 +166,14 @@ def main() -> None:
                 homology_rows.append(_row(
                     ontology, method, name, n, value, replicates, "proteins"
                 ))
+                aupr_value = micro_auprc(y_true[mask], scores[mask])
+                aupr_replicates = [
+                    micro_auprc(y_true[mask], matrix[mask]) for matrix in per_seed
+                ]
+                homology_aupr_rows.append(_row(
+                    ontology, method, name, n, aupr_value, aupr_replicates, "proteins"
+                ))
+
 
             # --- panel c: AUPRC by term IC bin (term subsets) -----------
             for name in IC_BINS:
@@ -210,13 +220,14 @@ def main() -> None:
     results = workspace / "results"
     results.mkdir(parents=True, exist_ok=True)
     _write(results / "stratified_homology.csv", homology_rows)
+    _write(results / "stratified_homology_aupr.csv", homology_aupr_rows)
     _write(results / "stratified_ic.csv", ic_rows)
     _write(results / "stratified_depth.csv", depth_rows)
     _write(results / "ic_weighted_pr.csv", pr_rows)
     (results / "stratified_manifest.json").write_text(
         json.dumps(manifest, indent=2) + "\n", encoding="utf-8"
     )
-    print(f"[stratified] wrote 4 tables + manifest to {results}")
+    print(f"[stratified] wrote 5 tables + manifest to {results}")
 
 
 def _clean(value) -> float | str:

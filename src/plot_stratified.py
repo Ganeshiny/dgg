@@ -366,6 +366,9 @@ def build_captions(low_n: dict[str, list[str]], manifest: dict) -> str:
 stratified_homology_fmax
 Protein-centric CAFA Fmax as a function of the maximum sequence identity between each test protein and the locked DeepGreenGO training set, computed by BLAST. Bins are defined on the proteins alone, never on any model's predictions, so no method is favoured by the binning. The "no hit" bin (612 of 754 test proteins) contains proteins with no detectable homolog in that locked training set, where project-trained homology-transfer baselines have nothing to transfer from. For externally pretrained methods, these bins are descriptive and do not measure overlap with each method's original training corpus; they therefore cannot by themselves establish external-training leakage.{flagged} Bin sizes: {counts_for('homology_bin_counts')}.
 
+stratified_homology_micro_aupr
+Pooled micro-AUPR as a function of the maximum sequence identity between each test protein and the locked DeepGreenGO training set. Unlike Fmax, micro-AUPR evaluates the ranking of protein-term scores without selecting a decision threshold. The identity bins, sample sizes, and external-pretraining caveat are the same as in stratified_homology_fmax; these bins do not measure similarity to each externally pretrained method's own training corpus. Bin sizes: {counts_for('homology_bin_counts')}.
+
 stratified_ic_auprc
 Term-centric AUPRC as a function of GO term information content, IC = -log2(frequency) measured on the training labels only. Higher IC means a rarer, more informative term. Terms never seen in training have undefined IC and are excluded. Term counts per bin: {counts_for('ic_bin_term_counts')}.
 
@@ -390,6 +393,7 @@ def main() -> None:
 
     manifest = json.loads((results / "stratified_manifest.json").read_text())
     homology = pd.read_csv(results / "stratified_homology.csv")
+    homology_aupr = pd.read_csv(results / "stratified_homology_aupr.csv")
     ic = pd.read_csv(results / "stratified_ic.csv")
     depth = pd.read_csv(results / "stratified_depth.csv")
     curves = pd.read_csv(results / "ic_weighted_pr.csv")
@@ -399,6 +403,11 @@ def main() -> None:
         homology, HOMOLOGY_BINS,
         "CAFA F$_{max}$", "Max identity to training set",
         "stratified_homology_fmax", output, "",
+    )
+    plot_binned(
+        homology_aupr, HOMOLOGY_BINS,
+        "Micro-AUPR", "Max identity to training set",
+        "stratified_homology_micro_aupr", output, "",
     )
     low_n["ic"] = plot_binned(
         ic, IC_BINS,

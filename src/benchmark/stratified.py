@@ -184,6 +184,17 @@ def term_centric_auprc(y_true: np.ndarray, scores: np.ndarray) -> float:
     return float(np.mean(values)) if values else float("nan")
 
 
+def micro_auprc(y_true: np.ndarray, scores: np.ndarray) -> float:
+    """Pooled protein-term average precision for a protein subset."""
+    from sklearn.metrics import average_precision_score
+
+    truth = np.asarray(y_true).reshape(-1)
+    prediction = np.asarray(scores).reshape(-1)
+    if truth.sum() == 0:
+        return float("nan")
+    return float(average_precision_score(truth, prediction))
+
+
 def ic_weighted_pr_curve(
     y_true: np.ndarray,
     scores: np.ndarray,
