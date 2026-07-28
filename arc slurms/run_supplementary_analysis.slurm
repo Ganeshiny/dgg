@@ -25,6 +25,7 @@ set -u
 export PYTHONUNBUFFERED=1
 export OMP_NUM_THREADS="${SLURM_CPUS_PER_TASK}"
 
+python src/audit_dpfunc_integration.py --workspace "${WORKSPACE}"
 python -m src.benchmark.run_stratified --workspace "${WORKSPACE}"
 python src/plot_baselines_only.py --workspace "${WORKSPACE}"
 python src/plot_stratified.py --workspace "${WORKSPACE}"
