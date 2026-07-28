@@ -723,7 +723,7 @@ comparison_prediction_coverage
 Retrieval coverage for sparse similarity-search baselines only. DeepGreenGO, the frequency prior, and other dense-output models are excluded from THIS figure because their nonzero score matrices make raw "any nonzero score" coverage saturate by construction - it is not a meaningful comparison at this specific definition. Protein coverage is the percentage of test proteins with at least one eligible training hit; term coverage is the percentage of evaluated test GO terms transferred from eligible hits. Hits must pass E-value 1e-3 and both query- and target-coverage thresholds of 50%. Coverage measures retrieval/abstention, not predictive accuracy. Solid bars denote top-10 weighted transfer and hatched bars denote one highest-identity hit selected from the same eligible top-10 pool. See comparison_threshold_coverage for a coverage definition that includes DeepGreenGO on equal footing.
 
 comparison_threshold_coverage
-Coverage at an operating decision threshold, all methods together. The threshold is selected on the validation split only (never on test), so this is not the trivial "any nonzero score" coverage above - it is the fraction of test proteins receiving at least one prediction that clears a real decision boundary, and the mean number of GO terms predicted per protein at that boundary. DeepGreenGO scores below 100% here (97.2% MF, 81.2% BP, 88.3% CC) because its per-protein sigmoid outputs genuinely vary; this is the coverage comparison in which DeepGreenGO's breadth of prediction is a real, non-tautological finding rather than a construction artifact. The frequency prior still reaches exactly 100% at this threshold too, but for a different, still-structural reason: it assigns every protein the same training-prevalence score per term, so a term's score either clears the threshold for every protein or for none - it cannot vary by protein and is not evidence of per-protein discrimination the way DeepGreenGO's variable coverage is. Solid bars denote top-10 weighted transfer and hatched bars denote one highest-identity hit selected from the same eligible top-10 pool.
+Coverage at an operating decision threshold, all methods together. The threshold is selected on the validation split only (never on test), so this is not the trivial "any nonzero score" coverage above - it is the fraction of test proteins receiving at least one prediction that clears a real decision boundary, and the mean number of GO terms predicted per protein at that boundary. DeepGreenGO scores below 100% here (97.2% MF, 81.2% BP, 88.3% CC) because its per-protein sigmoid outputs genuinely vary. This establishes non-tautological coverage relative to the frequency and retrieval controls, but it is not a distinctive advantage over dense external models such as DeepGOPlus or DeepGO-SE, whose coverage is also protein-specific. The frequency prior still reaches exactly 100% at this threshold for a structural reason: it assigns every protein the same training-prevalence score per term, so a term's score either clears the threshold for every protein or for none. Solid bars denote top-10 weighted transfer and hatched bars denote one highest-identity hit selected from the same eligible top-10 pool.
 """
 
 
@@ -739,18 +739,34 @@ def build_manuscript_notes(
     baseline_fmax = float(mf.loc[best_fmax_method, "cafa_fmax"])
     dgg_smin = float(mf.loc["deepgreengo", "cafa_smin"])
     baseline_smin = float(mf.loc[best_smin_method, "cafa_smin"])
+    fmax_delta = dgg_fmax - baseline_fmax
+    smin_delta = dgg_smin - baseline_smin
+    if fmax_delta > 0 and smin_delta < 0:
+        interpretation = (
+            "DeepGreenGO outperforms the strongest baseline on both MF metrics."
+        )
+    elif fmax_delta < 0 and smin_delta > 0:
+        interpretation = (
+            "DeepGreenGO underperforms the strongest baseline on both MF metrics; "
+            "the benchmark does not support an MF accuracy-gain claim."
+        )
+    else:
+        interpretation = (
+            "The MF comparison is mixed across Fmax and Smin and should not be "
+            "summarized as an unqualified accuracy gain."
+        )
     return (
         f"Model identity and ablation framing: The headline benchmark uses the "
         f"five-seed DeepGreenGO {model_variant} GCN-GAT ensemble. Input ablations "
         "show that the ProtBERT sequence representation drives most of the "
         "performance; the comparison should not imply that graph fusion alone "
         "explains the result.\n\n"
-        f"MF interpretation: DeepGreenGO Fmax is {dgg_fmax:.3f}, versus "
+        f"MF comparison: DeepGreenGO Fmax is {dgg_fmax:.3f}, versus "
         f"{baseline_fmax:.3f} for {METHOD_LABEL.get(best_fmax_method, best_fmax_method)}. "
         f"Its Smin is {dgg_smin:.3f}, versus the best baseline value of "
         f"{baseline_smin:.3f} for {METHOD_LABEL.get(best_smin_method, best_smin_method)}. "
-        "Thus the MF gain is clearer for the optimal precision-recall tradeoff "
-        "than for information-theoretic error."
+        f"The corresponding differences are {fmax_delta:+.3f} Fmax and "
+        f"{smin_delta:+.3f} Smin (lower Smin is better). {interpretation}"
     )
 
 

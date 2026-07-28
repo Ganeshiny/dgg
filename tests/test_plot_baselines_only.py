@@ -78,6 +78,26 @@ class MainComparisonPlotTests(unittest.TestCase):
         self.assertEqual(plot.SPEC["raster"], "png")
         self.assertGreaterEqual(plot.SPEC["main_dpi"], 300)
 
+    def test_manuscript_note_reports_baseline_win_in_correct_direction(self):
+        metrics = plot.pd.DataFrame([
+            {
+                "method": "deepgreengo",
+                "ontology": "molecular_function",
+                "cafa_fmax": 0.384,
+                "cafa_smin": 5.02,
+            },
+            {
+                "method": "deepgoplus",
+                "ontology": "molecular_function",
+                "cafa_fmax": 0.543,
+                "cafa_smin": 2.07,
+            },
+        ])
+        note = plot.build_manuscript_notes(metrics, "Hybrid")
+        self.assertIn("underperforms the strongest baseline on both MF metrics", note)
+        self.assertIn("does not support an MF accuracy-gain claim", note)
+        self.assertNotIn("MF gain is clearer", note)
+
 
 if __name__ == "__main__":
     unittest.main()
