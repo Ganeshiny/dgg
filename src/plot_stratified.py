@@ -41,9 +41,8 @@ from plot_style import (  # noqa: E402
     savefig,
 )
 from plot_baselines_only import (  # noqa: E402
-    FAMILY_COLOR,
     METHOD_LABEL,
-    family,
+    method_color,
 )
 
 # Ordered bins, mirroring src/benchmark/stratified.py.
@@ -131,7 +130,7 @@ def _draw_binned_row(
         ax = axes_row[column_index]
         for method in methods:
             values, sds, counts = _series(frame, method, ontology, keep)
-            color = FAMILY_COLOR[family(method)]
+            color = method_color(method)
             has_sd = np.isfinite(sds).any()
             ax.errorbar(
                 x, values,
@@ -184,7 +183,7 @@ def plot_binned(
     )
 
     handles = [
-        Line2D([0], [0], color=FAMILY_COLOR[family(method)],
+        Line2D([0], [0], color=method_color(method),
                marker=MARKERS.get(method, "o"), markersize=4.5, linewidth=1.3,
                markeredgecolor="#222222", markeredgewidth=0.4,
                label=METHOD_LABEL.get(method, method))
@@ -243,7 +242,7 @@ def _draw_pr_row(axes_row, frame: pd.DataFrame, panel_offset: int, show_xlabel: 
                 continue
             ax.plot(
                 recall[valid], precision[valid],
-                color=FAMILY_COLOR[family(method)],
+                color=method_color(method),
                 linewidth=1.5 if method == "deepgreengo" else 1.1,
                 zorder=4 if method == "deepgreengo" else 3,
                 alpha=1.0 if method == "deepgreengo" else 0.85,
@@ -267,7 +266,7 @@ def plot_ic_weighted_pr(frame: pd.DataFrame, out: Path) -> None:
     _draw_pr_row(axes, frame, panel_offset=0)
 
     handles = [
-        Line2D([0], [0], color=FAMILY_COLOR[family(method)], linewidth=1.5,
+        Line2D([0], [0], color=method_color(method), linewidth=1.5,
                label=METHOD_LABEL.get(method, method))
         for method in methods
     ]
@@ -331,7 +330,7 @@ def plot_combined(
     )
 
     handles = [
-        Line2D([0], [0], color=FAMILY_COLOR[family(method)],
+        Line2D([0], [0], color=method_color(method),
                marker=MARKERS.get(method, "o"), markersize=4.5, linewidth=1.3,
                markeredgecolor="#222222", markeredgewidth=0.4,
                label=METHOD_LABEL.get(method, method))

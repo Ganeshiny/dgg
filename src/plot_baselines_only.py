@@ -115,6 +115,37 @@ FAMILY_COLOR = {
     "other": "#777777",
 }
 
+# Stable method-level colours used by every comparison and stratified plot.
+# External deep-learning methods deliberately do not share a family colour:
+# overlapping curves must remain identifiable without tiny marker differences.
+METHOD_COLOR = {
+    "deepgreengo": "#1B5E20",
+    "naive": "#E69F00",
+    "blast": "#0072B2",
+    "diamond": "#56B4E9",
+    "foldseek": "#6A3D9A",
+    "interproscan": "#D55E00",
+    "deepfri_sequence": "#CC79A7",
+    "deepfri_structure": "#332288",
+    "dpfunc": "#009E73",
+    "deepgoplus": "#E31A1C",
+    "deepgose": "#8C510A",
+    "transfun": "#666666",
+    "eggnog_mapper": "#B79F00",
+    "hayai": "#44AA99",
+    "gomap": "#AA4499",
+}
+
+
+def method_color(method: str) -> str:
+    """Return a stable method colour; transfer variants share their parent."""
+    base = method.removesuffix("_max")
+    if method in METHOD_COLOR:
+        return METHOD_COLOR[method]
+    if base in METHOD_COLOR:
+        return METHOD_COLOR[base]
+    return FAMILY_COLOR[family(method)]
+
 FAMILY_LABEL = {
     "proposed": "DeepGreenGO Hybrid (this work)",
     "frequency": "Frequency prior",
@@ -201,22 +232,8 @@ def add_proposed_separator(ax: plt.Axes, methods: list[str]) -> None:
 
 
 def build_legend_handles(methods: list[str]) -> list:
-    """Explain family colour and transfer-rule styling once per figure."""
-    family_order = list(FAMILY_LABEL)
-    families_present = sorted(
-        {family(method) for method in methods},
-        key=lambda name: family_order.index(name),
-    )
+    """Explain transfer-rule styling; method colours are labelled on the axis."""
     handles = [
-        Patch(
-            facecolor=FAMILY_COLOR[name],
-            edgecolor="#333333",
-            linewidth=0.5,
-            label=FAMILY_LABEL[name],
-        )
-        for name in families_present
-    ]
-    handles += [
         Patch(
             facecolor="#777777",
             edgecolor="#333333",
@@ -306,7 +323,7 @@ def plot_cafa(
                     )
                 low, high = np.quantile(values, [0.025, 0.975])
                 upper_values.append(float(high))
-                color = FAMILY_COLOR[family(method)]
+                color = method_color(method)
                 bar = ax.barh(
                     yi,
                     value,
@@ -370,7 +387,7 @@ def plot_aupr(
                 if not np.isfinite(value):
                     upper_values.append(0.0)
                     continue
-                color = FAMILY_COLOR[family(method)]
+                color = method_color(method)
                 bar = ax.barh(
                     yi,
                     value,
@@ -461,7 +478,7 @@ def plot_coverage(metrics: pd.DataFrame, methods: list[str], out: Path) -> list[
                 [float(subset.loc[method, column]) for method in coverage_methods]
             )
             colors = [
-                FAMILY_COLOR[family(method)] for method in coverage_methods
+                method_color(method) for method in coverage_methods
             ]
             bars = ax.barh(
                 y,
@@ -534,7 +551,7 @@ def plot_threshold_coverage(
             ax = axes[row_index, column_index]
             subset = plot_data[plot_data["ontology"] == ontology].set_index("method")
             values = np.asarray([float(subset.loc[method, column]) for method in methods])
-            colors = [FAMILY_COLOR[family(method)] for method in methods]
+            colors = [method_color(method) for method in methods]
             bars = ax.barh(
                 y, values, height=0.62, color=colors,
                 edgecolor="#222222", linewidth=0.5, zorder=3,
