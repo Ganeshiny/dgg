@@ -1,0 +1,534 @@
+2026-07-27 14:00:53.835213: I tensorflow/core/util/port.cc:110] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-07-27 14:00:54.275116: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2026-07-27 14:00:58.467641: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2026-07-27 14:00:58.475110: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F AVX512_VNNI AVX512_BF16 AVX_VNNI AMX_TILE AMX_INT8 AMX_BF16 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2026-07-27 14:01:14.535844: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+2026-07-27 14:02:05.603796: I tensorflow/core/util/port.cc:110] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-07-27 14:02:05.605513: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2026-07-27 14:02:05.646508: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2026-07-27 14:02:05.646924: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F AVX512_VNNI AVX512_BF16 AVX_VNNI AMX_TILE AMX_INT8 AMX_BF16 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2026-07-27 14:02:10.715681: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+2026-07-27 14:06:04.426012: W tensorflow/stream_executor/platform/default/dso_loader.cc:59] Could not load dynamic library 'libcudart.so.10.1'; dlerror: libcudart.so.10.1: cannot open shared object file: No such file or directory
+2026-07-27 14:06:04.426038: I tensorflow/stream_executor/cuda/cudart_stub.cc:29] Ignore above cudart dlerror if you do not have a GPU set up on your machine.
+2026-07-27 14:09:38.068649: W tensorflow/stream_executor/platform/default/dso_loader.cc:59] Could not load dynamic library 'libcudart.so.10.1'; dlerror: libcudart.so.10.1: cannot open shared object file: No such file or directory
+2026-07-27 14:09:38.068691: I tensorflow/stream_executor/cuda/cudart_stub.cc:29] Ignore above cudart dlerror if you do not have a GPU set up on your machine.
+diamond v2.2.2.182 (C) Max Planck Society for the Advancement of Science, Benjamin J. Buchfink, University of Tuebingen
+Documentation, support and updates available at http://www.diamondsearch.org
+Please cite: http://dx.doi.org/10.1038/s41592-021-01101-x Nature Methods (2021)
+
+#CPU threads: 32
+Scoring parameters: (Matrix=BLOSUM62 Lambda=0.267 K=0.041 Penalties=11/1)
+Temporary directory: /tmp
+#Target sequences to report alignments for: 25
+Opening the database...  [0.02s]
+Database: /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/deepgoplus/data/train_data.dmnd (type: Diamond database, sequences: 79698, letters: 41889981, build version: 152)
+Block size = 2000000000
+Opening the input file...  [0.022s]
+Opening the output file...  [0.025s]
+Loading query sequences...  [0.011s]
+Loaded 678352 bytes from disk at 54.9687 MB/s
+Masking queries...  [0.057s]
+Algorithm: Double-indexed
+Building query histograms...  [0.008s]
+Seeking in database...  [0s]
+Loading reference sequences...  [0.35s]
+Masking reference...  [0.14s]
+Initializing temporary storage...  [0.006s]
+Building reference histograms...  [0.349s]
+Allocating buffers...  [0s]
+Processing query block 1, reference block 1/1, shape 1/16, index chunk 1/4.
+Building reference seed array...  [0.064s]
+Building query seed array...  [0.002s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.015s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 1/16, index chunk 2/4.
+Building reference seed array...  [0.058s]
+Building query seed array...  [0.002s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.006s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 1/16, index chunk 3/4.
+Building reference seed array...  [0.055s]
+Building query seed array...  [0.002s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.006s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 1/16, index chunk 4/4.
+Building reference seed array...  [0.053s]
+Building query seed array...  [0.002s]
+Computing hash join...  [0.002s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.005s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 2/16, index chunk 1/4.
+Building reference seed array...  [0.048s]
+Building query seed array...  [0.001s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.011s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 2/16, index chunk 2/4.
+Building reference seed array...  [0.055s]
+Building query seed array...  [0.002s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.005s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 2/16, index chunk 3/4.
+Building reference seed array...  [0.048s]
+Building query seed array...  [0.002s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.005s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 2/16, index chunk 4/4.
+Building reference seed array...  [0.054s]
+Building query seed array...  [0.002s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.005s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 3/16, index chunk 1/4.
+Building reference seed array...  [0.048s]
+Building query seed array...  [0.001s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.006s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 3/16, index chunk 2/4.
+Building reference seed array...  [0.056s]
+Building query seed array...  [0.002s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.005s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 3/16, index chunk 3/4.
+Building reference seed array...  [0.048s]
+Building query seed array...  [0.001s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.005s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 3/16, index chunk 4/4.
+Building reference seed array...  [0.048s]
+Building query seed array...  [0.002s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.005s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 4/16, index chunk 1/4.
+Building reference seed array...  [0.048s]
+Building query seed array...  [0.002s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.008s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 4/16, index chunk 2/4.
+Building reference seed array...  [0.048s]
+Building query seed array...  [0.002s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.005s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 4/16, index chunk 3/4.
+Building reference seed array...  [0.049s]
+Building query seed array...  [0.002s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.006s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 4/16, index chunk 4/4.
+Building reference seed array...  [0.048s]
+Building query seed array...  [0.002s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.005s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 5/16, index chunk 1/4.
+Building reference seed array...  [0.054s]
+Building query seed array...  [0.002s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.006s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 5/16, index chunk 2/4.
+Building reference seed array...  [0.048s]
+Building query seed array...  [0.002s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.005s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 5/16, index chunk 3/4.
+Building reference seed array...  [0.048s]
+Building query seed array...  [0.001s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.006s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 5/16, index chunk 4/4.
+Building reference seed array...  [0.048s]
+Building query seed array...  [0.002s]
+Computing hash join...  [0.002s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.005s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 6/16, index chunk 1/4.
+Building reference seed array...  [0.056s]
+Building query seed array...  [0.001s]
+Computing hash join...  [0.005s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.006s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 6/16, index chunk 2/4.
+Building reference seed array...  [0.049s]
+Building query seed array...  [0.002s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.005s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 6/16, index chunk 3/4.
+Building reference seed array...  [0.042s]
+Building query seed array...  [0.002s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.005s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 6/16, index chunk 4/4.
+Building reference seed array...  [0.048s]
+Building query seed array...  [0.002s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.005s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 7/16, index chunk 1/4.
+Building reference seed array...  [0.053s]
+Building query seed array...  [0.002s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.01s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 7/16, index chunk 2/4.
+Building reference seed array...  [0.045s]
+Building query seed array...  [0.002s]
+Computing hash join...  [0.002s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.005s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 7/16, index chunk 3/4.
+Building reference seed array...  [0.042s]
+Building query seed array...  [0.001s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.005s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 7/16, index chunk 4/4.
+Building reference seed array...  [0.058s]
+Building query seed array...  [0.002s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.005s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 8/16, index chunk 1/4.
+Building reference seed array...  [0.048s]
+Building query seed array...  [0.002s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.006s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 8/16, index chunk 2/4.
+Building reference seed array...  [0.048s]
+Building query seed array...  [0.002s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.005s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 8/16, index chunk 3/4.
+Building reference seed array...  [0.051s]
+Building query seed array...  [0.001s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.005s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 8/16, index chunk 4/4.
+Building reference seed array...  [0.055s]
+Building query seed array...  [0.002s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.005s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 9/16, index chunk 1/4.
+Building reference seed array...  [0.048s]
+Building query seed array...  [0.002s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.006s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 9/16, index chunk 2/4.
+Building reference seed array...  [0.056s]
+Building query seed array...  [0.002s]
+Computing hash join...  [0.002s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.005s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 9/16, index chunk 3/4.
+Building reference seed array...  [0.047s]
+Building query seed array...  [0.002s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.005s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 9/16, index chunk 4/4.
+Building reference seed array...  [0.043s]
+Building query seed array...  [0.002s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.005s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 10/16, index chunk 1/4.
+Building reference seed array...  [0.047s]
+Building query seed array...  [0.002s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.006s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 10/16, index chunk 2/4.
+Building reference seed array...  [0.047s]
+Building query seed array...  [0.002s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.005s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 10/16, index chunk 3/4.
+Building reference seed array...  [0.052s]
+Building query seed array...  [0.002s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.005s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 10/16, index chunk 4/4.
+Building reference seed array...  [0.047s]
+Building query seed array...  [0.002s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.005s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 11/16, index chunk 1/4.
+Building reference seed array...  [0.047s]
+Building query seed array...  [0.001s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.006s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 11/16, index chunk 2/4.
+Building reference seed array...  [0.048s]
+Building query seed array...  [0.002s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.002s]
+Searching alignments...  [0.005s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 11/16, index chunk 3/4.
+Building reference seed array...  [0.046s]
+Building query seed array...  [0.002s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.005s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 11/16, index chunk 4/4.
+Building reference seed array...  [0.047s]
+Building query seed array...  [0.002s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.005s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 12/16, index chunk 1/4.
+Building reference seed array...  [0.048s]
+Building query seed array...  [0.001s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.005s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 12/16, index chunk 2/4.
+Building reference seed array...  [0.047s]
+Building query seed array...  [0.002s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.005s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 12/16, index chunk 3/4.
+Building reference seed array...  [0.055s]
+Building query seed array...  [0.001s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.005s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 12/16, index chunk 4/4.
+Building reference seed array...  [0.055s]
+Building query seed array...  [0.002s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.005s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 13/16, index chunk 1/4.
+Building reference seed array...  [0.047s]
+Building query seed array...  [0.001s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.005s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 13/16, index chunk 2/4.
+Building reference seed array...  [0.048s]
+Building query seed array...  [0.002s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.002s]
+Searching alignments...  [0.005s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 13/16, index chunk 3/4.
+Building reference seed array...  [0.047s]
+Building query seed array...  [0.002s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.005s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 13/16, index chunk 4/4.
+Building reference seed array...  [0.054s]
+Building query seed array...  [0.002s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.005s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 14/16, index chunk 1/4.
+Building reference seed array...  [0.047s]
+Building query seed array...  [0.002s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.006s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 14/16, index chunk 2/4.
+Building reference seed array...  [0.048s]
+Building query seed array...  [0.002s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.006s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 14/16, index chunk 3/4.
+Building reference seed array...  [0.048s]
+Building query seed array...  [0.001s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.005s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 14/16, index chunk 4/4.
+Building reference seed array...  [0.048s]
+Building query seed array...  [0.002s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.005s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 15/16, index chunk 1/4.
+Building reference seed array...  [0.048s]
+Building query seed array...  [0.002s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.006s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 15/16, index chunk 2/4.
+Building reference seed array...  [0.056s]
+Building query seed array...  [0.002s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.006s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 15/16, index chunk 3/4.
+Building reference seed array...  [0.063s]
+Building query seed array...  [0.002s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.005s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 15/16, index chunk 4/4.
+Building reference seed array...  [0.055s]
+Building query seed array...  [0.002s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.005s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 16/16, index chunk 1/4.
+Building reference seed array...  [0.055s]
+Building query seed array...  [0.002s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.006s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 16/16, index chunk 2/4.
+Building reference seed array...  [0.048s]
+Building query seed array...  [0.002s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.005s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 16/16, index chunk 3/4.
+Building reference seed array...  [0.047s]
+Building query seed array...  [0.001s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.005s]
+Deallocating memory...  [0s]
+Processing query block 1, reference block 1/1, shape 16/16, index chunk 4/4.
+Building reference seed array...  [0.055s]
+Building query seed array...  [0.002s]
+Computing hash join...  [0.003s]
+Masking low complexity seeds...  [0.001s]
+Searching alignments...  [0.005s]
+Deallocating memory...  [0s]
+Deallocating buffers...  [0s]
+Clearing query masking...  [0s]
+Computing alignments...  [0.969s]
+Deallocating reference...  [0s]
+Loading reference sequences...  [0s]
+Deallocating buffers...  [0s]
+Deallocating queries...  [0s]
+Loading query sequences...  [0.001s]
+Closing the input file...  [0s]
+Closing the output file...  [0.005s]
+Closing the database...  [0s]
+Cleaning up...  [0s]
+Total time = 6.172s
+Reported 21495 pairwise alignments, 21495 HSPs.
+1478 queries aligned.
+2026-07-27 14:10:00.969983: I tensorflow/stream_executor/platform/default/dso_loader.cc:48] Successfully opened dynamic library libcuda.so.1
+2026-07-27 14:10:01.056476: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1716] Found device 0 with properties: 
+pciBusID: 0000:0d:00.0 name: NVIDIA L40S computeCapability: 8.9
+coreClock: 2.52GHz coreCount: 142 deviceMemorySize: 44.42GiB deviceMemoryBandwidth: 804.75GiB/s
+2026-07-27 14:10:01.056552: W tensorflow/stream_executor/platform/default/dso_loader.cc:59] Could not load dynamic library 'libcudart.so.10.1'; dlerror: libcudart.so.10.1: cannot open shared object file: No such file or directory
+2026-07-27 14:10:01.061325: W tensorflow/stream_executor/platform/default/dso_loader.cc:59] Could not load dynamic library 'libcublas.so.10'; dlerror: libcublas.so.10: cannot open shared object file: No such file or directory
+2026-07-27 14:10:01.063655: W tensorflow/stream_executor/platform/default/dso_loader.cc:59] Could not load dynamic library 'libcufft.so.10'; dlerror: libcufft.so.10: cannot open shared object file: No such file or directory
+2026-07-27 14:10:01.067862: W tensorflow/stream_executor/platform/default/dso_loader.cc:59] Could not load dynamic library 'libcurand.so.10'; dlerror: libcurand.so.10: cannot open shared object file: No such file or directory
+2026-07-27 14:10:01.070996: W tensorflow/stream_executor/platform/default/dso_loader.cc:59] Could not load dynamic library 'libcusolver.so.10'; dlerror: libcusolver.so.10: cannot open shared object file: No such file or directory
+2026-07-27 14:10:01.076269: W tensorflow/stream_executor/platform/default/dso_loader.cc:59] Could not load dynamic library 'libcusparse.so.10'; dlerror: libcusparse.so.10: cannot open shared object file: No such file or directory
+2026-07-27 14:10:01.079528: W tensorflow/stream_executor/platform/default/dso_loader.cc:59] Could not load dynamic library 'libcudnn.so.7'; dlerror: libcudnn.so.7: cannot open shared object file: No such file or directory
+2026-07-27 14:10:01.079545: W tensorflow/core/common_runtime/gpu/gpu_device.cc:1753] Cannot dlopen some GPU libraries. Please make sure the missing libraries mentioned above are installed properly if you would like to use GPU. Follow the guide at https://www.tensorflow.org/install/gpu for how to download and setup the required libraries for your platform.
+Skipping registering GPU devices...
+2026-07-27 14:10:01.079818: I tensorflow/core/platform/cpu_feature_guard.cc:142] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN)to use the following CPU instructions in performance-critical operations:  AVX2 AVX512F FMA
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2026-07-27 14:10:01.153730: I tensorflow/core/platform/profile_utils/cpu_utils.cc:104] CPU Frequency: 2000000000 Hz
+2026-07-27 14:10:01.154915: I tensorflow/compiler/xla/service/service.cc:168] XLA service 0x19a6df0 initialized for platform Host (this does not guarantee that XLA will be used). Devices:
+2026-07-27 14:10:01.154932: I tensorflow/compiler/xla/service/service.cc:176]   StreamExecutor device (0): Host, Default Version
+2026-07-27 14:10:01.159104: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1257] Device interconnect StreamExecutor with strength 1 edge matrix:
+2026-07-27 14:10:01.159111: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1263]      
+Downloading: "https://dl.fbaipublicfiles.com/fair-esm/models/esm2_t36_3B_UR50D.pt" to /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/torch_cache/hub/checkpoints/esm2_t36_3B_UR50D.pt
+Downloading: "https://dl.fbaipublicfiles.com/fair-esm/regression/esm2_t36_3B_UR50D-contact-regression.pt" to /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/torch_cache/hub/checkpoints/esm2_t36_3B_UR50D-contact-regression.pt
+Traceback (most recent call last):
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/src/plot_baselines_only.py", line 849, in <module>
+    main()
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/src/plot_baselines_only.py", line 825, in main
+    aupr_has_uncertainty = plot_aupr(metrics, bootstrap, methods, output)
+  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/src/plot_baselines_only.py", line 388, in plot_aupr
+    raise ValueError(
+ValueError: Expected 1,000 AUPR bootstrap values for interproscan/molecular_function/micro_aupr; found 0
+ERROR conda.cli.main_run:execute(148): `conda run python /home/ganeshiny.sridharan/dgg/deep-green-GO/src/plot_baselines_only.py --workspace /home/ganeshiny.sridharan/dgg/deep-green-GO/arc_benchmark/nominal_30_identity_80_coverage` failed. (See above for error)
