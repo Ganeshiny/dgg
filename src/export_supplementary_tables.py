@@ -1,0 +1,169 @@
+#!/usr/bin/env python3
+"""Export publication-ready supplementary tables for the ARC benchmark."""
+
+from __future__ import annotations
+
+import argparse
+import json
+from pathlib import Path
+
+import numpy as np
+import pandas as pd
+
+
+PROJECT_DIR = Path(__file__).resolve().parents[1]
+DEFAULT_WORKSPACE = PROJECT_DIR / "arc_benchmark" / "nominal_30_identity_80_coverage"
+ONTOLOGY_LABEL = {
+    "molecular_function": "MF",
+    "biological_process": "BP",
+    "cellular_component": "CC",
+}
+EXTERNAL_PRETRAINED = {
+    "deepfri_sequence", "deepfri_structure", "dpfunc", "deepgoplus",
+    "deepgose", "transfun", "eggnog_mapper", "hayai", "gomap",
+}
+SPLIT_TRAINED = {
+    "deepgreengo", "naive", "blast", "blast_max", "diamond",
+    "diamond_max", "foldseek", "foldseek_max",
+}
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--workspace", type=Path, default=DEFAULT_WORKSPACE)
+    parser.add_argument("--output-dir", type=Path, default=None)
+    return parser.parse_args()
+
+
+def require_csv(path: Path) -> pd.DataFrame:
+    if not path.is_file():
+        raise FileNotFoundError(f"Required supplementary source table is missing: {path}")
+    return pd.read_csv(path)
+
+
+def ic_weighted_aupr(curves: pd.DataFrame) -> pd.DataFrame:
+    rows = []
+    for (method, ontology), frame in curves.groupby(["method", "ontology"]):
+        precision = pd.to_numeric(frame["ic_weighted_precision"], errors="coerce").to_numpy()
+        recall = pd.to_numeric(frame["ic_weighted_recall"], errors="coerce").to_numpy()
+        valid = np.isfinite(precision) & np.isfinite(recall)
+        if valid.sum() < 2:
+            area = np.nan
+        else:
+            order = np.argsort(recall[valid])
+            area = float(np.trapezoid(precision[valid][order], recall[valid][order]))
+        rows.append({
+            "method": method,
+            "ontology": ontology,
+            "ontology_short": ONTOLOGY_LABEL.get(str(ontology), str(ontology)),
+            "ic_weighted_aupr": area,
+            "threshold_points": int(valid.sum()),
+        })
+    return pd.DataFrame(rows).sort_values(["method", "ontology"])
+
+
+def comparison_audit(methods: list[str]) -> pd.DataFrame:
+    rows = []
+    for method in methods:
+        if method in SPLIT_TRAINED:
+            training_relation = "trained/derived only from the locked project split"
+            overlap_status = "not applicable beyond the locked split audit"
+            bin_interpretation = "direct similarity to the method's available training/reference set"
+        elif method == "interproscan":
+            training_relation = "rule/domain-database annotation system; not retrained here"
+            overlap_status = "external database coverage not audited as a training corpus"
+            bin_interpretation = "descriptive only; bins use the DeepGreenGO training proteins"
+        elif method in EXTERNAL_PRETRAINED:
+            training_relation = "externally pretrained/released model or annotation pipeline"
+            overlap_status = "not audited against the method's original training corpus"
+            bin_interpretation = "descriptive only; cannot establish external-training homology leakage"
+        else:
+            training_relation = "comparison provenance requires manual review"
+            overlap_status = "not audited"
+            bin_interpretation = "descriptive only"
+        rows.append({
+            "method": method,
+            "training_relation": training_relation,
+            "external_training_overlap_status": overlap_status,
+            "project_homology_bin_interpretation": bin_interpretation,
+        })
+    return pd.DataFrame(rows)
+
+
+def write_table(frame: pd.DataFrame, path: Path) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    frame.to_csv(path, index=False, float_format="%.6f")
+    print(f"[supplement] {path.name}: {len(frame)} rows")
+
+
+def main() -> None:
+    args = parse_args()
+    workspace = args.workspace.expanduser().resolve()
+    results = workspace / "results"
+    output = (args.output_dir or workspace / "plots" / "supplementary_tables").expanduser().resolve()
+    output.mkdir(parents=True, exist_ok=True)
+
+    metrics = require_csv(results / "benchmark_metrics.csv")
+    homology = require_csv(results / "stratified_homology.csv")
+    ic = require_csv(results / "stratified_ic.csv")
+    depth = require_csv(results / "stratified_depth.csv")
+    curves = require_csv(results / "ic_weighted_pr.csv")
+    metrics = metrics.copy()
+    metrics["ontology_short"] = metrics["ontology"].map(ONTOLOGY_LABEL)
+
+    performance_columns = [
+        "method", "ontology", "ontology_short", "test_proteins", "test_terms",
+        "cafa_fmax", "cafa_fmax_ci_low", "cafa_fmax_ci_high", "cafa_smin",
+        "cafa_smin_ci_low", "cafa_smin_ci_high", "micro_aupr", "macro_aupr",
+        "micro_auroc", "macro_auroc", "brier_score", "expected_calibration_error",
+    ]
+    performance = metrics[[c for c in performance_columns if c in metrics]].copy()
+    write_table(performance, output / "supp_table_s1_overall_performance.csv")
+    write_table(ic_weighted_aupr(curves), output / "supp_table_s2_ic_weighted_aupr.csv")
+
+    coverage_columns = [
+        "method", "ontology", "ontology_short", "protein_coverage_any_score",
+        "predicted_term_coverage", "validation_threshold",
+        "test_coverage_at_validation_threshold",
+        "mean_terms_per_protein_at_validation_threshold",
+    ]
+    coverage = metrics[[c for c in coverage_columns if c in metrics]].copy()
+    write_table(coverage, output / "supp_table_s3_prediction_coverage.csv")
+    write_table(homology, output / "supp_table_s4_homology_fmax.csv")
+    write_table(ic, output / "supp_table_s5_term_ic_auprc.csv")
+    write_table(depth, output / "supp_table_s6_go_depth_auprc.csv")
+
+    paired_path = results / "paired_differences_vs_deepgreengo.csv"
+    if paired_path.is_file():
+        write_table(pd.read_csv(paired_path), output / "supp_table_s7_paired_differences.csv")
+
+    methods = sorted(set(metrics["method"].astype(str)))
+    write_table(comparison_audit(methods), output / "supp_table_s8_comparison_audit.csv")
+    tables = sorted(path.name for path in output.glob("supp_table_*.csv"))
+    manifest = {
+        "workspace": str(workspace),
+        "reference_design": "DPFunc supplementary Figures S1-S3 and Tables S1-S3",
+        "method_count": len(methods),
+        "methods": methods,
+        "caveat": (
+            "Homology bins use similarity to the locked DeepGreenGO training set. "
+            "They do not measure overlap with external methods' original training corpora."
+        ),
+        "tables": tables,
+    }
+    (output / "supplementary_table_manifest.json").write_text(
+        json.dumps(manifest, indent=2) + "\n", encoding="utf-8"
+    )
+    (output / "README.txt").write_text(
+        "Supplementary benchmark tables\n\n"
+        "S1: overall accuracy and calibration; S2: IC-weighted AUPR; "
+        "S3: prediction coverage; S4-S6: values underlying stratified figures; "
+        "S7: paired differences when available; S8: comparison provenance and "
+        "interpretation limits. Blank values are unavailable/undefined, never zero-filled.\n",
+        encoding="utf-8",
+    )
+    print(f"[supplement] output={output}")
+
+
+if __name__ == "__main__":
+    main()
