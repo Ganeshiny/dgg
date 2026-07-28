@@ -175,10 +175,10 @@ def main():
         "DGG_DATA_ROOT", PROJECT_DIR / "preprocessing" / "data_arc_rebuild_2026_07_14"
     )).expanduser().resolve()
     tuning_root = Path(args.tuning_root or os.environ.get(
-        "DGG_TUNING_ROOT", PROJECT_DIR / "arc_tuning"
+        "DGG_TUNING_ROOT", PROJECT_DIR / "arc_tuning_cafa"
     )).expanduser().resolve()
     graph_root = Path(args.graph_root or os.environ.get(
-        "DGG_GRAPH_ROOT", PROJECT_DIR / "arc_tuning" / "graphs_protbert"
+        "DGG_GRAPH_ROOT", PROJECT_DIR / "arc_tuning_cafa" / "graphs_protbert"
     )).expanduser().resolve()
     ablations_root = Path(args.ablations_root or tuning_root / "ablations" /
                           "nominal_30_identity_80_coverage").expanduser().resolve()
@@ -196,14 +196,20 @@ def main():
     output_dir.mkdir(parents=True, exist_ok=True)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     rows = []
+    all_checkpoint_paths = sorted(set(ablations_root.rglob("best_checkpoint.pt")))
+    if not all_checkpoint_paths:
+        raise FileNotFoundError(
+            "No best_checkpoint.pt files found under "
+            f"{ablations_root}. Check --tuning-root/--ablations-root; the ARC CAFA "
+            "checkpoints normally live under arc_tuning_cafa."
+        )
 
     for ontology in ONTOLOGIES:
         train = load_dataset(tuning_root / "datasets" / f"{ontology}_train.pkl",
                              graph_root, "train")
         ic = compute_ic(train.labels)
-        checkpoint_paths = sorted(set(
-            ablations_root.joinpath(ontology).rglob("best_checkpoint.pt")
-        ))
+        checkpoint_paths = [path for path in all_checkpoint_paths
+                            if ablations_root.joinpath(ontology) in path.parents]
         for evaluation_split in args.splits:
             dataset = load_dataset(
                 tuning_root / "datasets" / f"{ontology}_{evaluation_split}.pkl",
@@ -249,6 +255,8 @@ def main():
                 if device.type == "cuda":
                     torch.cuda.empty_cache()
 
+    if not rows:
+        raise RuntimeError(f"No bin-evaluation rows were produced from {ablations_root}")
     fields = list(rows[0]) if rows else [
         "ontology", "model", "input_modality", "checkpoint", "split_label",
         "evaluation_split", "bin_type", "bin", "examples",

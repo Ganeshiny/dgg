@@ -367,6 +367,9 @@ def plot_aupr(
             upper_values = []
             for yi, method in enumerate(methods):
                 value = float(point.loc[method, column])
+                if not np.isfinite(value):
+                    upper_values.append(0.0)
+                    continue
                 color = FAMILY_COLOR[family(method)]
                 bar = ax.barh(
                     yi,
@@ -384,11 +387,14 @@ def plot_aupr(
                     values = boot.loc[
                         boot["method"] == method, column
                     ].dropna().to_numpy()
-                    if len(values) != 1000:
+                    if len(values) not in (0, 1000):
                         raise ValueError(
-                            "Expected 1,000 AUPR bootstrap values for "
+                            "Expected either 0 or 1,000 AUPR bootstrap values for "
                             f"{method}/{ontology}/{column}; found {len(values)}"
                         )
+                    if len(values) == 0:
+                        upper_values.append(upper)
+                        continue
                     low, high = np.quantile(values, [0.025, 0.975])
                     upper = float(high)
                     ax.errorbar(
