@@ -30,7 +30,7 @@ arc_benchmark/nominal_30_identity_80_coverage/
     `-- 02_prediction_coverage.png/.pdf
 ```
 
-The primary metrics are protein-centric CAFA Fmax, conditional-information Smin, micro/macro AUPR, and coverage. Confidence intervals use 1,000 paired protein bootstraps. AUPR and AUROC are deliberately left undefined for binary annotation pipelines such as InterProScan, eggNOG-mapper, GOMAP, and Hayai.
+The primary metrics are protein-centric CAFA Fmax, conditional-information Smin, micro/macro AUPR, and coverage. Confidence intervals use 1,000 paired identical-sequence-cluster bootstraps. AUPR and AUROC are deliberately left undefined for binary annotation pipelines such as InterProScan, eggNOG-mapper, GOMAP, and Hayai.
 
 The deadline-safe default comparison includes:
 
@@ -76,6 +76,8 @@ Expected defaults:
 | DPFunc | `SOTA/DPFunc`, environment `dgg_dpfunc` |
 | DeepGOPlus | `SOTA/deepgoplus/data`, environment `dgg_deepgoplus_py37` (Python 3.7) |
 | DeepGO-SE | `SOTA/deepgo2`, environment `dgg_deepgose` |
+| HEAL | `SOTA/HEAL`, environment `dgg_heal`; ESM-1b under `SOTA/torch_cache` |
+| Struct2GO | `SOTA/Struct2GO`; externally prepared ARC score files are required |
 | eggNOG-mapper | `SOTA/eggnog-mapper`, database under its `data/`, environment `dgg_eggnog` |
 | Hayai v3.2 | `SOTA/HayaiAnnotation`, environment `hayai_v3.2` |
 | GOMAP | completed GAF or a site-specific command; see below |
@@ -128,6 +130,76 @@ DGG_SOTA_SETUP_METHODS=transfun sbatch 'arc slurms/arc_01_setup_sota.slurm'
 
 It is not necessary for the deadline-safe five-model deep-learning comparison.
 
+## HEAL opt-in
+
+HEAL is runnable on the locked experimental PDB chains with its released
+PDBch-only checkpoints. Install the repository, modernized GPU environment,
+and ESM-1b checkpoint once:
+
+```bash
+DGG_SOTA_SETUP_METHODS=heal sbatch 'arc slurms/arc_01_setup_sota.slurm'
+```
+
+Then include `heal` in the requested method list and submit the normal
+benchmark. The default variant is `pdb-only` (upstream `*CL.pt` checkpoints).
+
+```bash
+export DGG_BENCHMARK_METHODS=hybrid,naive,blast,diamond,foldseek,interproscan,deepfri_sequence,deepfri_structure,dpfunc,deepgoplus,deepgose,heal
+sbatch 'arc slurms/run_full_benchmark.slurm'
+```
+
+The combined PDBch+AFch checkpoints are not labeled as this benchmark method.
+
+HEAL uses ESM-1b, whose released model accepts at most 1,022 residues. The
+current validation+test FASTA has 40 of 1,508 chains above that limit. The
+runner does not truncate them: it records them in `raw/heal/manifest.json`
+and their predictions remain zero. Per-protein score caches make the stage
+resumable across ARC's 24-hour job limit.
+
+## Struct2GO opt-in and upstream limitation
+
+The Struct2GO repository can be installed for provenance and checkpoint
+inspection:
+
+```bash
+DGG_SOTA_SETUP_METHODS=struct2go sbatch 'arc slurms/arc_01_setup_sota.slurm'
+```
+
+The released Struct2GO code is not a general PDB predictor. Its evaluation
+entry point consumes pickled, precomputed human-protein datasets containing
+SeqVec features, contact maps, Node2Vec structural features, and label
+networks. Its documented raw-data workflow additionally calls a Spark/Angel
+Node2Vec job through IntelliJ. Running its bundled test pickle would therefore
+not predict the locked ARC proteins and must not be reported as an ARC result.
+
+The benchmark supports genuine externally generated Struct2GO scores in
+three tab-separated files with rows `protein_id GO:nnnnnnn score`:
+
+```bash
+export DGG_STRUCT2GO_MF=/absolute/path/struct2go_mf.tsv
+export DGG_STRUCT2GO_BP=/absolute/path/struct2go_bp.tsv
+export DGG_STRUCT2GO_CC=/absolute/path/struct2go_cc.tsv
+export DGG_BENCHMARK_METHODS=hybrid,naive,blast,diamond,foldseek,interproscan,deepfri_sequence,deepfri_structure,dpfunc,deepgoplus,deepgose,struct2go
+sbatch 'arc slurms/run_full_benchmark.slurm'
+```
+
+Preflight fails if any file is missing, so an unavailable Struct2GO run cannot
+silently appear in plots.
+
+## SProf-GO
+
+Use the tracked v3 launcher:
+
+```bash
+sbatch 'arc slurms/run_sprof_go_arc_v3.slurm'
+```
+
+All three dataset readers (input preparation, evaluation, and Smin) use a
+narrow compatibility unpickler that maps NumPy 2's `numpy._core` pickle
+namespace to NumPy 1's `numpy.core`. This keeps the legacy SProf-GO runtime
+unchanged while allowing it to read datasets serialized in the newer
+DeepGreenGO environment.
+
 ## Fairness controls
 
 - BLAST, DIAMOND, and Foldseek search only the locked training proteins/structures.
@@ -135,6 +207,6 @@ It is not necessary for the deadline-safe five-model deep-learning comparison.
 - Validation and test proteins are predicted together, but only validation labels are used for DeepGreenGO's fixed operating threshold.
 - Every output is mapped to the locked GO vocabulary and propagated to represented ancestors at evaluation time under one common true-path rule; external adapters may also pre-propagate, which is idempotent. Protein and term coverage are audited.
 - Missing predictions remain zero in the full 754-protein analysis.
-- Pretrained external models are not described as leakage-free because historical training overlap may be unknown. In particular, DeepGOPlus combines a CNN with DIAMOND transfer from its own released Swiss-Prot-derived reference set, and DeepGO-SE uses released models trained on an external Swiss-Prot corpus. Their scores are descriptive unless those original corpora are explicitly audited against the locked test sequences.
+- Pretrained external models are not described as leakage-free because historical training overlap may be unknown. In particular, DeepGOPlus combines a CNN with DIAMOND transfer from its own released Swiss-Prot-derived reference set, DeepGO-SE uses released models trained on an external Swiss-Prot corpus, and HEAL/Struct2GO use released checkpoints trained outside the locked ARC split. Their scores are descriptive unless those original corpora are explicitly audited against the locked test sequences.
 - The locked test set contains 754 PDB chains but only 140 unique amino-acid sequences. Point estimates remain chain-level for compatibility with the locked benchmark; confidence intervals use an identical-sequence cluster bootstrap so duplicate chains are not treated as independent evidence.
 - Structural quality analysis uses experimental-chain residue coverage, not pLDDT.

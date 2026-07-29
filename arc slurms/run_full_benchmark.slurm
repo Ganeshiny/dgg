@@ -29,7 +29,8 @@ CHECKPOINT_ROOT="${DGG_CHECKPOINT_ROOT:-${TUNING_ROOT}/five_seed_hybrid}"
 BENCHMARK_ROOT="${DGG_BENCHMARK_ROOT:-${PROJECT_DIR}/arc_benchmark/nominal_30_identity_80_coverage}"
 # Deadline-safe profile: only methods whose repositories, model files, and
 # environments passed the ARC setup checks. TransFun, eggNOG, Hayai, and GOMAP
-# remain explicit opt-ins; they are not silently advertised as completed.
+# remain explicit opt-ins. HEAL and Struct2GO are also opt-ins under the
+# constraints documented in ARC_BENCHMARK_README.md.
 METHODS="${DGG_BENCHMARK_METHODS:-hybrid,naive,blast,diamond,foldseek,interproscan,deepfri_sequence,deepfri_structure,dpfunc,deepgoplus,deepgose}"
 # Strict by default: a requested comparator must pass preflight before any
 # expensive stage starts. Set to 1 only for an intentionally incomplete run.
@@ -42,6 +43,7 @@ TRANSFUN_ENV="${DGG_TRANSFUN_ENV:-dgg_transfun}"
 DPFUNC_ENV="${DGG_DPFUNC_ENV:-dgg_dpfunc}"
 DEEPGO_ENV="${DGG_DEEPGO_ENV:-dgg_deepgose}"
 DEEPGOPLUS_ENV="${DGG_DEEPGOPLUS_ENV:-dgg_deepgoplus_py37}"
+HEAL_ENV="${DGG_HEAL_ENV:-dgg_heal}"
 EGGNOG_ENV="${DGG_EGGNOG_ENV:-dgg_eggnog}"
 # Keep Foldseek isolated from the trained-model environment by default. If it
 # was already installed in BASE_ENV, preflight falls back to that environment.
@@ -53,6 +55,8 @@ TRANSFUN_ROOT="${DGG_TRANSFUN_ROOT:-${PROJECT_DIR}/SOTA/TransFun}"
 DPFUNC_ROOT="${DGG_DPFUNC_ROOT:-${PROJECT_DIR}/SOTA/DPFunc}"
 DEEPGO_ROOT="${DGG_DEEPGO_ROOT:-${PROJECT_DIR}/SOTA/deepgo2}"
 DEEPGOPLUS_ROOT="${DGG_DEEPGOPLUS_ROOT:-${PROJECT_DIR}/SOTA/deepgoplus}"
+HEAL_ROOT="${DGG_HEAL_ROOT:-${PROJECT_DIR}/SOTA/HEAL}"
+STRUCT2GO_ROOT="${DGG_STRUCT2GO_ROOT:-${PROJECT_DIR}/SOTA/Struct2GO}"
 EGGNOG_ROOT="${DGG_EGGNOG_ROOT:-${PROJECT_DIR}/SOTA/eggnog-mapper}"
 EGGNOG_DATA="${DGG_EGGNOG_DATA:-${EGGNOG_ROOT}/data}"
 HAYAI_ROOT="${DGG_HAYAI_ROOT:-${PROJECT_DIR}/SOTA/HayaiAnnotation}"
@@ -61,6 +65,11 @@ INTERPRO_JAVA_ENV="${DGG_INTERPROSCAN_JAVA_ENV:-dgg_interproscan_java11}"
 INTERPRO_JAVA_HOME="${DGG_INTERPROSCAN_JAVA_HOME:-}"
 TORCH_HOME="${DGG_TORCH_HOME:-${PROJECT_DIR}/SOTA/torch_cache}"
 export TORCH_HOME
+HEAL_ESM1B_MODEL="${DGG_HEAL_ESM1B_MODEL:-${TORCH_HOME}/hub/checkpoints/esm1b_t33_650M_UR50S.pt}"
+HEAL_MODEL_VARIANT="${DGG_HEAL_MODEL_VARIANT:-pdb-only}"
+STRUCT2GO_MF="${DGG_STRUCT2GO_MF:-}"
+STRUCT2GO_BP="${DGG_STRUCT2GO_BP:-}"
+STRUCT2GO_CC="${DGG_STRUCT2GO_CC:-}"
 FOLDSEEK="${DGG_FOLDSEEK:-foldseek}"
 DPFUNC_PRENAME="${DGG_DPFUNC_PRENAME:-DPFunc_model}"
 DEEPGOPLUS_DIAMOND_DIR=""
@@ -72,6 +81,7 @@ PYTHON_FILES=(
     "${PROJECT_DIR}/src/benchmark/cli.py"
     "${PROJECT_DIR}/src/benchmark/core.py"
     "${PROJECT_DIR}/src/benchmark/methods.py"
+    "${PROJECT_DIR}/scripts/run_heal_arc.py"
     "${PROJECT_DIR}/src/benchmark/external.py"
     "${PROJECT_DIR}/src/benchmark/evaluate.py"
 )
@@ -177,6 +187,8 @@ stage_artifacts_ok() {
         09_dpfunc) prediction_complete dpfunc || return 1 ;;
         09b_deepgoplus) prediction_complete deepgoplus || return 1 ;;
         10_deepgose) prediction_complete deepgose || return 1 ;;
+        10b_heal) prediction_complete heal || return 1 ;;
+        10c_struct2go) prediction_complete struct2go || return 1 ;;
         11_hayai) prediction_complete hayai || return 1 ;;
         12_gomap) prediction_complete gomap || return 1 ;;
     esac
@@ -424,6 +436,30 @@ preflight() {
         for model_index in 1 3 4 5 6 7; do preflight_check require_file "${DEEPGO_ROOT}/data/cc/deepgozero_esm_plus_${model_index}.th"; done
         preflight_check conda_run "${DEEPGO_ENV}" python -c "import dgl, esm, torch; print('DeepGO-SE environment ok')"
         preflight_check conda_run "${DEEPGO_ENV}" python "${DEEPGO_ROOT}/predict.py" --help
+    fi
+    if method_enabled heal; then
+        CURRENT_METHOD=heal
+        preflight_check require_file "${HEAL_ROOT}/network.py"
+        preflight_check require_file "${HEAL_ROOT}/utils.py"
+        preflight_check require_file "${HEAL_ROOT}/data/nrPDB-GO_2019.06.18_annot.tsv"
+        local heal_suffix
+        case "${HEAL_MODEL_VARIANT}" in
+            pdb-only) heal_suffix=CL ;;
+            *) echo "[PREFLIGHT ERROR] The benchmark method 'heal' is the PDB-only checkpoint variant" >&2; note_failure; heal_suffix=CL ;;
+        esac
+        for ontology in mf bp cc; do
+            preflight_check require_file "${HEAL_ROOT}/model/model_${ontology}${heal_suffix}.pt"
+        done
+        preflight_check require_file "${HEAL_ESM1B_MODEL}"
+        preflight_check conda_run "${HEAL_ENV}" python -c "import Bio, esm, numpy, torch, torch_geometric; print('HEAL environment ok')"
+        preflight_check conda_run "${HEAL_ENV}" python "${PROJECT_DIR}/scripts/run_heal_arc.py" --help
+    fi
+    if method_enabled struct2go; then
+        CURRENT_METHOD=struct2go
+        preflight_check require_file "${STRUCT2GO_ROOT}/eval_Struct2GO.py"
+        preflight_check require_file "${STRUCT2GO_MF}"
+        preflight_check require_file "${STRUCT2GO_BP}"
+        preflight_check require_file "${STRUCT2GO_CC}"
     fi
     if method_enabled hayai; then
         CURRENT_METHOD=hayai
@@ -745,6 +781,16 @@ run_deepgose() {
         --cc "${RAW}/deepgose/queries_preds_cc.tsv.gz"
 }
 
+run_heal() {
+    mkdir -p "${RAW}/heal"
+    conda_run "${HEAL_ENV}" python "${PROJECT_DIR}/scripts/run_heal_arc.py" --heal-root "${HEAL_ROOT}" --structure-dir "${BENCHMARK_ROOT}/inputs/structures/valid_test" --esm1b-model "${HEAL_ESM1B_MODEL}" --output-dir "${RAW}/heal" --device cuda:0 --model-variant "${HEAL_MODEL_VARIANT}" --expected-structures 1508
+    benchmark_cli normalize-scored --workspace "${BENCHMARK_ROOT}" --method heal --delimiter tab --mf "${RAW}/heal/heal_mf.tsv" --bp "${RAW}/heal/heal_bp.tsv" --cc "${RAW}/heal/heal_cc.tsv"
+}
+
+run_struct2go() {
+    benchmark_cli normalize-scored --workspace "${BENCHMARK_ROOT}" --method struct2go --delimiter tab --mf "${STRUCT2GO_MF}" --bp "${STRUCT2GO_BP}" --cc "${STRUCT2GO_CC}"
+}
+
 run_hayai() {
     local orthologer=()
     [[ "${DGG_HAYAI_USE_ORTHOLOGER:-1}" == "1" ]] && orthologer=(--orthologer)
@@ -808,6 +854,8 @@ method_enabled transfun && stage 08_transfun run_transfun
 method_enabled dpfunc && stage 09_dpfunc run_dpfunc
 method_enabled deepgoplus && stage 09b_deepgoplus run_deepgoplus
 method_enabled deepgose && stage 10_deepgose run_deepgose
+method_enabled heal && stage 10b_heal run_heal
+method_enabled struct2go && stage 10c_struct2go run_struct2go
 method_enabled hayai && stage 11_hayai run_hayai
 method_enabled gomap && stage 12_gomap run_gomap
 run_evaluation

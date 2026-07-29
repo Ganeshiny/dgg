@@ -58,7 +58,7 @@ METHOD_ORDER = [
     "foldseek", "foldseek_max",
     "interproscan",
     "deepfri_sequence", "deepfri_structure",
-    "dpfunc", "deepgoplus", "deepgose", "transfun",
+    "dpfunc", "heal", "struct2go", "deepgoplus", "deepgose", "transfun",
     "eggnog_mapper", "hayai", "gomap",
 ]
 
@@ -83,6 +83,8 @@ METHOD_LABEL = {
     "deepfri_sequence": "DeepFRI (sequence)",
     "deepfri_structure": "DeepFRI (structure)",
     "dpfunc": "DPFunc",
+    "heal": "HEAL (PDB-only)",
+    "struct2go": "Struct2GO",
     "deepgoplus": "DeepGOPlus",
     "deepgose": "DeepGO-SE",
     "transfun": "TransFun",
@@ -90,6 +92,16 @@ METHOD_LABEL = {
     "hayai": "Hayai",
     "gomap": "GOMAP",
 }
+
+EXTERNAL_PRETRAINED_METHODS = (
+    "deepgoplus",
+    "deepgose",
+    "deepfri_sequence",
+    "deepfri_structure",
+    "dpfunc",
+    "heal",
+    "struct2go",
+)
 
 METHOD_FAMILY = {
     "deepgreengo": "proposed",
@@ -99,7 +111,8 @@ METHOD_FAMILY = {
     "foldseek": "structure", "foldseek_max": "structure",
     "interproscan": "domain",
     "deepfri_sequence": "deep_learning", "deepfri_structure": "deep_learning",
-    "dpfunc": "deep_learning", "deepgoplus": "deep_learning",
+    "dpfunc": "deep_learning", "heal": "deep_learning",
+    "struct2go": "deep_learning", "deepgoplus": "deep_learning",
     "deepgose": "deep_learning", "transfun": "deep_learning",
     "eggnog_mapper": "orthology", "hayai": "orthology", "gomap": "orthology",
 }
@@ -128,6 +141,8 @@ METHOD_COLOR = {
     "deepfri_sequence": "#CC79A7",
     "deepfri_structure": "#332288",
     "dpfunc": "#009E73",
+    "heal": "#117733",
+    "struct2go": "#88CCEE",
     "deepgoplus": "#E31A1C",
     "deepgose": "#8C510A",
     "transfun": "#666666",
@@ -708,8 +723,16 @@ def build_captions(
     aupr_has_uncertainty: bool,
     bootstrap_unit: str = "protein",
     unique_sequences: int | None = None,
+    methods: list[str] | None = None,
 ) -> str:
     seeds = ", ".join(str(seed) for seed in ensemble_seeds)
+    external_labels = [
+        METHOD_LABEL[method]
+        for method in EXTERNAL_PRETRAINED_METHODS
+        if methods is None or method in methods
+    ]
+    external_text = ", ".join(external_labels)
+    external_verb = "uses" if len(external_labels) == 1 else "use"
     paired_parts = []
     for row in paired_report.itertuples(index=False):
         paired_parts.append(
@@ -754,7 +777,7 @@ def build_captions(
     return f"""Unless noted, higher values indicate better performance for all metrics except CAFA Smin, where lower is better.
 
 comparison_cafa_performance
-DeepGreenGO versus completed baselines on the nominal 30%-identity/80%-coverage test split (n = 754 PDB chains). The focal method is the five-seed {model_variant} GCN-GAT ensemble ({seeds}). Bars show chain-level test-set point estimates and error bars show percentile 95% confidence intervals from {bootstrap_description}.{bootstrap_warning} Colors denote method family; solid bars denote top-10 weighted transfer and hatched bars denote one highest-identity hit selected from the same eligible top-10 pool. Paired Fmax comparisons against the strongest baseline in each ontology: {paired_text}. DeepGOPlus, DeepGO-SE, DeepFRI, and DPFunc use externally released pretrained parameters or reference data that were not restricted to the locked ARC training split; their scores are descriptive comparators, not leakage-controlled generalization estimates.
+DeepGreenGO versus completed baselines on the nominal 30%-identity/80%-coverage test split (n = 754 PDB chains). The focal method is the five-seed {model_variant} GCN-GAT ensemble ({seeds}). Bars show chain-level test-set point estimates and error bars show percentile 95% confidence intervals from {bootstrap_description}.{bootstrap_warning} Colors denote method family; solid bars denote top-10 weighted transfer and hatched bars denote one highest-identity hit selected from the same eligible top-10 pool. Paired Fmax comparisons against the strongest baseline in each ontology: {paired_text}. {external_text} {external_verb} externally released pretrained parameters or reference data that were not restricted to the locked ARC training split; their scores are descriptive comparators, not leakage-controlled generalization estimates.
 
 comparison_aupr
 DeepGreenGO versus completed baselines on the same test split. Micro-AUPR pools protein-term decisions; macro-AUPR averages per-term average precision across GO terms observed in the test set. Bars show test-set point estimates. {aupr_uncertainty} Colors and hatching follow the definitions above. External pretrained comparators were not audited against their original training corpora, so apparent gains from those methods cannot be attributed solely to architecture.
@@ -795,6 +818,14 @@ def build_manuscript_notes(
             "The MF comparison is mixed across Fmax and Smin and should not be "
             "summarized as an unqualified accuracy gain."
         )
+    present_methods = set(metrics["method"].astype(str))
+    external_labels = [
+        METHOD_LABEL[method]
+        for method in EXTERNAL_PRETRAINED_METHODS
+        if method in present_methods
+    ]
+    external_text = ", ".join(external_labels)
+    external_verb = "was" if len(external_labels) == 1 else "were"
     return (
         f"Model identity and ablation framing: The headline benchmark uses the "
         f"five-seed DeepGreenGO {model_variant} GCN-GAT ensemble. Input ablations "
@@ -807,8 +838,8 @@ def build_manuscript_notes(
         f"{baseline_smin:.3f} for {METHOD_LABEL.get(best_smin_method, best_smin_method)}. "
         f"The corresponding differences are {fmax_delta:+.3f} Fmax and "
         f"{smin_delta:+.3f} Smin (lower Smin is better). {interpretation}\n\n"
-        "External-pretraining caveat: DeepGOPlus, DeepGO-SE, DeepFRI, and DPFunc "
-        "were evaluated with released pretrained parameters or reference data. "
+        f"External-pretraining caveat: {external_text} "
+        f"{external_verb} evaluated with released pretrained parameters or reference data. "
         "Their original training corpora were not restricted to the locked ARC "
         "training split, so these comparisons are descriptive and cannot establish "
         "leakage-controlled generalization."
@@ -860,6 +891,7 @@ def write_supporting_files(
             aupr_has_uncertainty,
             bootstrap_unit,
             unique_sequences,
+            methods,
         ),
         encoding="utf-8",
     )

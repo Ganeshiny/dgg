@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 """Align official SPROF-GO scores to ARC vocabularies and compute held-out metrics."""
 from __future__ import annotations
-import argparse, csv, json, pickle
+import argparse, csv, json
 from pathlib import Path
 import numpy as np
 from sklearn.metrics import average_precision_score, roc_auc_score
+
+from pickle_compat import load_pickle_compat
 
 MAP = {"MF":"molecular_function", "BP":"biological_process", "CC":"cellular_component"}
 
@@ -52,7 +54,7 @@ def unpack_dataset(obj):
 def metrics(y, p):
     thresholds = np.linspace(0, 1, 101); best_micro = best_macro = 0.0
     for t in thresholds:
-        q = p >= t; tp = (q & (y==1)).sum(); fp = (q & (y==0)).sum(); fn = ((~q) & (y==1)).sum()
+        q = p > t if t == 0 else p >= t; tp = (q & (y==1)).sum(); fp = (q & (y==0)).sum(); fn = ((~q) & (y==1)).sum()
         pr = tp/(tp+fp) if tp+fp else 0; rc = tp/(tp+fn) if tp+fn else 0
         best_micro = max(best_micro, 2*pr*rc/(pr+rc) if pr+rc else 0)
         spp = (q & (y==1)).sum(1); pp=q.sum(1); ap=(y==1).sum(1)
@@ -71,7 +73,7 @@ def main():
     with (a.output_dir/"predictions_long.csv").open("w",newline="") as fh:
       wr=csv.writer(fh); wr.writerow(["ontology","protein_id","go_id","score","truth"])
       for task,ont in MAP.items():
-        with (a.tuning_root/"datasets"/f"{ont}_test.pkl").open("rb") as f: ids,terms,y=unpack_dataset(pickle.load(f))
+        with (a.tuning_root/"datasets"/f"{ont}_test.pkl").open("rb") as f: ids,terms,y=unpack_dataset(load_pickle_compat(f))
         src_idx={t:i for i,t in enumerate(src_terms[task])}; p=np.zeros(y.shape,dtype=np.float32); missing_proteins=[]
         for i,pid in enumerate(ids):
           if pid not in src_scores: missing_proteins.append(pid); continue

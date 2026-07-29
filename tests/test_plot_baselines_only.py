@@ -102,6 +102,27 @@ class MainComparisonPlotTests(unittest.TestCase):
         self.assertIn("only 140 unique sequences among 754 chains", caption)
         self.assertIn("not leakage-controlled generalization estimates", caption)
 
+    def test_caption_mentions_only_completed_external_methods(self):
+        report = plot.pd.DataFrame([
+            {
+                "ontology": ontology,
+                "fmax_difference": -0.1,
+                "competitor_label": "DeepGOPlus",
+                "fraction_bootstraps_deepgreengo_better": 0.0,
+            }
+            for ontology in plot.ONTOLOGY_ORDER
+        ])
+        caption = plot.build_captions(
+            [1103, 2207, 3301, 4409, 5501],
+            "Hybrid",
+            report,
+            True,
+            methods=["deepgreengo", "deepgoplus"],
+        )
+        self.assertIn("DeepGOPlus uses externally released", caption)
+        self.assertNotIn("HEAL", caption)
+        self.assertNotIn("Struct2GO", caption)
+
     def test_manuscript_note_reports_baseline_win_in_correct_direction(self):
         metrics = plot.pd.DataFrame([
             {

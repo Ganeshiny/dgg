@@ -15,6 +15,7 @@ TRANSFUN_ENV="${DGG_TRANSFUN_ENV:-dgg_transfun}"
 DPFUNC_ENV="${DGG_DPFUNC_ENV:-dgg_dpfunc}"
 DEEPGOPLUS_ENV="${DGG_DEEPGOPLUS_ENV:-dgg_deepgoplus_py37}"
 DEEPGO_ENV="${DGG_DEEPGO_ENV:-dgg_deepgose}"
+HEAL_ENV="${DGG_HEAL_ENV:-dgg_heal}"
 INTERPRO_JAVA_ENV="${DGG_INTERPROSCAN_JAVA_ENV:-dgg_interproscan_java11}"
 
 DEEPFRI_ROOT="${DGG_DEEPFRI_ROOT:-${PROJECT_DIR}/baselines/DeepFRI}"
@@ -22,6 +23,8 @@ TRANSFUN_ROOT="${DGG_TRANSFUN_ROOT:-${SOTA_ROOT}/TransFun}"
 DPFUNC_ROOT="${DGG_DPFUNC_ROOT:-${SOTA_ROOT}/DPFunc}"
 DEEPGOPLUS_ROOT="${DGG_DEEPGOPLUS_ROOT:-${SOTA_ROOT}/deepgoplus}"
 DEEPGO_ROOT="${DGG_DEEPGO_ROOT:-${SOTA_ROOT}/deepgo2}"
+HEAL_ROOT="${DGG_HEAL_ROOT:-${SOTA_ROOT}/HEAL}"
+STRUCT2GO_ROOT="${DGG_STRUCT2GO_ROOT:-${SOTA_ROOT}/Struct2GO}"
 INTERPRO_VERSION="${DGG_INTERPRO_VERSION:-5.78-109.0}"
 INTERPRO_ROOT="${DGG_INTERPRO_ROOT:-${SOTA_ROOT}/interproscan-${INTERPRO_VERSION}}"
 TORCH_HOME="${DGG_TORCH_HOME:-${SOTA_ROOT}/torch_cache}"
@@ -32,6 +35,7 @@ TRANSFUN_DATA_URL="${DGG_TRANSFUN_DATA_URL:-https://calla.rnet.missouri.edu/rnam
 DPFUNC_MODELS_GDRIVE_ID="${DGG_DPFUNC_MODELS_GDRIVE_ID:-1V0VTFTiB29ilbAIOZn0okBQWPlbOI3wN}"
 DPFUNC_ESM2_MODEL_URL="${DGG_DPFUNC_ESM2_MODEL_URL:-https://dl.fbaipublicfiles.com/fair-esm/models/esm2_t33_650M_UR50D.pt}"
 DPFUNC_ESM2_REGRESSION_URL="${DGG_DPFUNC_ESM2_REGRESSION_URL:-https://dl.fbaipublicfiles.com/fair-esm/regression/esm2_t33_650M_UR50D-contact-regression.pt}"
+HEAL_ESM1B_MODEL_URL="${DGG_HEAL_ESM1B_MODEL_URL:-https://dl.fbaipublicfiles.com/fair-esm/models/esm1b_t33_650M_UR50S.pt}"
 DEEPGOPLUS_DATA_URL="${DGG_DEEPGOPLUS_DATA_URL:-http://deepgoplus.bio2vec.net/data/data.tar.gz}"
 DEEPGO_DATA_URL="${DGG_DEEPGO_DATA_URL:-https://deepgo.cbrc.kaust.edu.sa/data/deepgo2/data.tar.gz}"
 INTERPRO_URL="${DGG_INTERPRO_URL:-https://ftp.ebi.ac.uk/pub/software/unix/iprscan/5/${INTERPRO_VERSION}/interproscan-${INTERPRO_VERSION}-64-bit.tar.gz}"
@@ -45,7 +49,7 @@ fi
 IFS=',' read -r -a requested_methods <<< "${SETUP_METHODS}"
 for requested_method in "${requested_methods[@]}"; do
     case "${requested_method}" in
-        deepfri|transfun|dpfunc|deepgoplus|deepgose|interproscan) ;;
+        deepfri|transfun|dpfunc|deepgoplus|deepgose|heal|struct2go|interproscan) ;;
         *)
             echo "[SETUP ERROR] Unknown SOTA setup method: ${requested_method}" >&2
             exit 1
@@ -270,6 +274,23 @@ setup_deepgose() {
     fi
 }
 
+
+setup_heal() {
+    clone_repo https://github.com/ZhonghuiGu/HEAL.git "${HEAL_ROOT}"
+    ensure_named_env "${HEAL_ENV}" 3.10
+    conda install -y -n "${HEAL_ENV}" -c pytorch -c nvidia "pytorch=2.1.2" "pytorch-cuda=11.8"
+    conda run -n "${HEAL_ENV}" python -m pip install "torch-geometric==2.5.3" "fair-esm==2.0.0" "biopython>=1.81,<2" "numpy<2" "scikit-learn<2" joblib tqdm
+    download_file "${HEAL_ESM1B_MODEL_URL}" "${TORCH_HOME}/hub/checkpoints/esm1b_t33_650M_UR50S.pt"
+}
+
+setup_struct2go() {
+    clone_repo https://github.com/lyjps/Struct2GO.git "${STRUCT2GO_ROOT}"
+    echo "[SETUP NOTICE] Struct2GO ships fixed human-protein datasets, not a"
+    echo "general PDB inference entry point. The ARC benchmark accepts externally"
+    echo "prepared Struct2GO score files but does not relabel its bundled test set"
+    echo "as predictions for the locked ARC proteins."
+}
+
 setup_interproscan() {
     if ! conda_env_exists "${INTERPRO_JAVA_ENV}"; then
         conda create -y -n "${INTERPRO_JAVA_ENV}" --override-channels \
@@ -352,6 +373,25 @@ verify_setup() {
         check conda run -n "${DEEPGO_ENV}" python -c "import dgl, esm, torch"
         check conda run -n "${DEEPGO_ENV}" python "${DEEPGO_ROOT}/predict.py" --help
     fi
+    if method_enabled heal; then
+        check require_file "${HEAL_ROOT}/network.py"
+        check require_file "${HEAL_ROOT}/utils.py"
+        check require_file "${HEAL_ROOT}/data/nrPDB-GO_2019.06.18_annot.tsv"
+        for ontology in mf bp cc; do
+            check require_file "${HEAL_ROOT}/model/model_${ontology}CL.pt"
+            check require_file "${HEAL_ROOT}/model/model_${ontology}CLaf.pt"
+        done
+        check require_file "${TORCH_HOME}/hub/checkpoints/esm1b_t33_650M_UR50S.pt"
+        check conda run -n "${HEAL_ENV}" python -c "import Bio, esm, numpy, torch, torch_geometric; print('HEAL runtime imports ok')"
+        check conda run -n "${HEAL_ENV}" python "${PROJECT_DIR}/scripts/run_heal_arc.py" --help
+    fi
+    if method_enabled struct2go; then
+        check require_file "${STRUCT2GO_ROOT}/eval_Struct2GO.py"
+        for ontology in mf bp cc; do
+            check require_file "${STRUCT2GO_ROOT}/save_models/mymodel_${ontology}_1_0.0005_0.45.pkl"
+            check require_file "${STRUCT2GO_ROOT}/processed_data/label_${ontology}_network"
+        done
+    fi
     if method_enabled interproscan; then
         check require_executable "${INTERPRO_ROOT}/interproscan.sh"
         check require_executable "${SOTA_ROOT}/interproscan/interproscan.sh"
@@ -373,6 +413,8 @@ method_enabled transfun && setup_transfun
 method_enabled dpfunc && setup_dpfunc
 method_enabled deepgoplus && setup_deepgoplus
 method_enabled deepgose && setup_deepgose
+method_enabled heal && setup_heal
+method_enabled struct2go && setup_struct2go
 method_enabled interproscan && setup_interproscan
 
 verify_setup
