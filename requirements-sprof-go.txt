@@ -1,0 +1,7 @@
+# Install PyTorch separately for the ARC CUDA version, then install these.
+numpy>=1.23,<2
+scipy>=1.9
+sentencepiece>=0.1.96
+transformers>=4.17,<5
+tqdm>=4.59
+scikit-learn>=1.2
