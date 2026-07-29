@@ -15,20 +15,40 @@ SPROF_ROOT=${SPROF_ROOT:-/home/ganeshiny.sridharan/dgg/external/SPROF-GO}
 PROTT5_ROOT=${PROTT5_ROOT:-/home/ganeshiny.sridharan/dgg/external/prot_t5_xl_uniref50}
 OUT=${SPROF_OUT:-$TUNING_ROOT/external_benchmarks/sprof_go}
 DGG_METRICS=${DGG_METRICS:-$TUNING_ROOT/test_evaluation/metrics.json}
+CONDA_ROOT=${DGG_CONDA_ROOT:-/home/ganeshiny.sridharan/miniconda3}
+DGG_BASE_ENV=${DGG_BASE_ENV:-deepgreengo}
+SPROF_CONDA_ENV=${SPROF_CONDA_ENV:-dgg_sprof_go}
+
 # ARC dataset pickles reference src.arc_dataset, so the project root must be
 # importable in every preparation/evaluation process.
 export PYTHONPATH="$DGG_ROOT${PYTHONPATH:+:$PYTHONPATH}"
 mkdir -p "$OUT/raw" "$OUT/evaluation"
-source /home/ganeshiny.sridharan/miniconda3/etc/profile.d/conda.sh
-conda activate "${SPROF_CONDA_ENV:-deepgreengo}"
+source "$CONDA_ROOT/etc/profile.d/conda.sh"
 set -u
-python -c 'import src.arc_dataset, sentencepiece, sklearn, scipy, transformers, torch'
-python "$DGG_ROOT/scripts/prepare_sprof_go_input.py" --tuning-root "$TUNING_ROOT" --all-fasta "$DATA_ROOT/all_sequences.fasta" --output "$OUT/arc_test.fa"
-python "$DGG_ROOT/scripts/run_sprof_go_official.py" --sprof-root "$SPROF_ROOT" --prott5-root "$PROTT5_ROOT" --fasta "$OUT/arc_test.fa" --outpath "$OUT/raw" --feat-bs "${SPROF_FEAT_BS:-2}" --pred-bs "${SPROF_PRED_BS:-4}"
-python "$DGG_ROOT/scripts/evaluate_sprof_go.py" --predictions "$OUT/raw/arc_test_all_preds.txt" --tuning-root "$TUNING_ROOT" --output-dir "$OUT/evaluation"
-python "$DGG_ROOT/scripts/add_sprof_go_smin.py" --evaluation-dir "$OUT/evaluation" --tuning-root "$TUNING_ROOT"
+conda run --no-capture-output -n "$DGG_BASE_ENV" \
+  python -c 'import src.arc_dataset, sklearn, scipy'
+conda run --no-capture-output -n "$DGG_BASE_ENV" \
+  python "$DGG_ROOT/scripts/prepare_sprof_go_input.py" \
+  --tuning-root "$TUNING_ROOT" --all-fasta "$DATA_ROOT/all_sequences.fasta" \
+  --output "$OUT/arc_test.fa"
+conda run --no-capture-output -n "$SPROF_CONDA_ENV" \
+  python "$DGG_ROOT/scripts/check_sprof_go_environment.py" \
+  --prott5-root "$PROTT5_ROOT" --require-cuda
+conda run --no-capture-output -n "$SPROF_CONDA_ENV" \
+  python "$DGG_ROOT/scripts/run_sprof_go_official.py" \
+  --sprof-root "$SPROF_ROOT" --prott5-root "$PROTT5_ROOT" \
+  --fasta "$OUT/arc_test.fa" --outpath "$OUT/raw" \
+  --feat-bs "${SPROF_FEAT_BS:-2}" --pred-bs "${SPROF_PRED_BS:-4}"
+conda run --no-capture-output -n "$DGG_BASE_ENV" \
+  python "$DGG_ROOT/scripts/evaluate_sprof_go.py" \
+  --predictions "$OUT/raw/arc_test_all_preds.txt" \
+  --tuning-root "$TUNING_ROOT" --output-dir "$OUT/evaluation"
+conda run --no-capture-output -n "$DGG_BASE_ENV" \
+  python "$DGG_ROOT/scripts/add_sprof_go_smin.py" \
+  --evaluation-dir "$OUT/evaluation" --tuning-root "$TUNING_ROOT"
 if [[ -s "$DGG_METRICS" ]]; then
-  python "$DGG_ROOT/src/plot_sprof_go_benchmark.py" --sprof "$OUT/evaluation/metrics.json" --deepgreengo "$DGG_METRICS" --output-dir "$DGG_ROOT/plots/sprof_go_benchmark"
+  conda run --no-capture-output -n "$DGG_BASE_ENV" \
+    python "$DGG_ROOT/src/plot_sprof_go_benchmark.py" --sprof "$OUT/evaluation/metrics.json" --deepgreengo "$DGG_METRICS" --output-dir "$DGG_ROOT/plots/sprof_go_benchmark"
 else
   echo "Benchmark complete; plot skipped because DeepGreenGO metrics were not found at $DGG_METRICS"
 fi

@@ -25,6 +25,13 @@ EVAL_SPEC = importlib.util.spec_from_file_location(
 evaluate = importlib.util.module_from_spec(EVAL_SPEC)
 assert EVAL_SPEC.loader is not None
 EVAL_SPEC.loader.exec_module(evaluate)
+CHECK_SPEC = importlib.util.spec_from_file_location(
+    "check_sprof_go_environment", MODULE_PATH.parent / "check_sprof_go_environment.py"
+)
+checker = importlib.util.module_from_spec(CHECK_SPEC)
+assert CHECK_SPEC.loader is not None
+CHECK_SPEC.loader.exec_module(checker)
+
 
 
 class SprofGoPickleCompatibilityTests(unittest.TestCase):
@@ -60,3 +67,22 @@ class SprofGoPickleCompatibilityTests(unittest.TestCase):
 
         self.assertEqual(result["micro_fmax"], 0.0)
         self.assertEqual(result["macro_fmax"], 0.0)
+
+
+class SprofGoEnvironmentTests(unittest.TestCase):
+    def test_pytorch_26_is_accepted(self):
+        checker.require_safe_torch("2.6.0+cu118")
+        checker.require_safe_torch("2.10.1")
+
+    def test_pytorch_25_is_rejected_with_setup_command(self):
+        with self.assertRaisesRegex(RuntimeError, "setup_sprof_go_arc.sh"):
+            checker.require_safe_torch("2.5.1+cu118")
+
+    def test_arc_job_uses_isolated_secure_environment(self):
+        setup = (PROJECT_ROOT / "arc slurms" / "setup_sprof_go_arc.sh").read_text()
+        runner = (PROJECT_ROOT / "arc slurms" / "run_sprof_go_arc_v3.slurm").read_text()
+
+        self.assertIn('"torch==2.6.0"', setup)
+        self.assertIn("--load-prott5", setup)
+        self.assertIn("dgg_sprof_go", runner)
+        self.assertIn("check_sprof_go_environment.py", runner)

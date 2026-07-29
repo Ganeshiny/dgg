@@ -4,6 +4,8 @@ from __future__ import annotations
 import argparse, importlib, sys
 from pathlib import Path
 
+from check_sprof_go_environment import require_safe_torch
+
 def main():
     p = argparse.ArgumentParser()
     p.add_argument("--sprof-root", type=Path, required=True)
@@ -15,6 +17,12 @@ def main():
     p.add_argument("--save-feat", action="store_true")
     p.add_argument("--cpu", action="store_true")
     a = p.parse_args()
+    import torch
+
+    try:
+        require_safe_torch(torch.__version__)
+    except RuntimeError as exc:
+        raise SystemExit(str(exc)) from exc
     script_dir = (a.sprof_root / "script").resolve()
     required = [script_dir / "predict.py", script_dir / "diamond", a.prott5_root]
     missing = [str(x) for x in required if not x.exists()]

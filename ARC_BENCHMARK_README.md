@@ -188,17 +188,26 @@ silently appear in plots.
 
 ## SProf-GO
 
-Use the tracked v3 launcher:
+Create the isolated secure runtime, then submit the v3 launcher only after the
+setup job succeeds:
 
 ```bash
-sbatch 'arc slurms/run_sprof_go_arc_v3.slurm'
+mkdir -p logs
+setup_job=$(sbatch --parsable 'arc slurms/setup_sprof_go_arc.sh')
+sbatch --dependency=afterok:${setup_job} 'arc slurms/run_sprof_go_arc_v3.slurm'
 ```
+
+The setup job creates `dgg_sprof_go` without modifying the main `deepgreengo`
+environment. It pins PyTorch 2.6.0 with CUDA 11.8 and performs a full local
+ProtT5 load before marking setup complete. PyTorch versions below 2.6 are
+rejected because the bundled `.bin` checkpoint otherwise reaches the
+`torch.load` path affected by CVE-2025-32434.
 
 All three dataset readers (input preparation, evaluation, and Smin) use a
 narrow compatibility unpickler that maps NumPy 2's `numpy._core` pickle
-namespace to NumPy 1's `numpy.core`. This keeps the legacy SProf-GO runtime
-unchanged while allowing it to read datasets serialized in the newer
-DeepGreenGO environment.
+namespace to NumPy 1's `numpy.core`. The official SProf-GO prediction code
+remains unchanged while the preparation and evaluation stages run in the
+project environment.
 
 ## Fairness controls
 
