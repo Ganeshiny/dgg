@@ -1,6 +1,7 @@
 import importlib.util
 from pathlib import Path
 import sys
+import tempfile
 import unittest
 
 import numpy as np
@@ -67,6 +68,36 @@ class SprofGoPickleCompatibilityTests(unittest.TestCase):
 
         self.assertEqual(result["micro_fmax"], 0.0)
         self.assertEqual(result["macro_fmax"], 0.0)
+
+    def test_predictions_without_blank_after_cc_vocabulary(self):
+        content = """GO term id and name:
+MF:
+GO:0001
+name
+
+BP:
+GO:0002
+name
+
+CC:
+GO:0003
+name
+1ABC_A
+MF:
+0.1
+BP:
+0.2
+CC:
+0.3
+"""
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "all_preds.txt"
+            output.write_text(content)
+            terms, scores = evaluate.parse_sprof(output)
+
+        self.assertEqual(terms["CC"], ["GO:0003"])
+        np.testing.assert_allclose(scores["1ABC_A"]["CC"], [0.3])
+
 
 
 class SprofGoEnvironmentTests(unittest.TestCase):

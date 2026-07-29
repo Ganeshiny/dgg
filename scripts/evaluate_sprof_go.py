@@ -11,11 +11,24 @@ from pickle_compat import load_pickle_compat
 MAP = {"MF":"molecular_function", "BP":"biological_process", "CC":"cellular_component"}
 
 def parse_sprof(path):
-    lines = [x.rstrip("\n") for x in Path(path).open()]
+    lines = Path(path).read_text().splitlines()
     pos, terms = 1, {}
     for task in MAP:
         while pos < len(lines) and lines[pos].strip() != f"{task}:": pos += 1
-        terms[task] = [x.strip() for x in lines[pos+1].split(";")]; pos += 4
+        terms[task] = [x.strip() for x in lines[pos+1].split(";")]
+        # Some official SPROF-GO releases omit the blank separator after the
+        # final CC vocabulary block. Locate the first protein block instead of
+        # assuming a fixed four-line offset after CC.
+        if task != "CC":
+            pos += 4
+    while pos < len(lines):
+        if (
+            lines[pos].strip()
+            and pos + 1 < len(lines)
+            and lines[pos + 1].strip() == "MF:"
+        ):
+            break
+        pos += 1
     scores = {}
     while pos < len(lines):
         if not lines[pos].strip(): pos += 1; continue
