@@ -74,11 +74,9 @@ class SprofGoPickleCompatibilityTests(unittest.TestCase):
 MF:
 GO:0001
 name
-
 BP:
 GO:0002
 name
-
 CC:
 GO:0003
 name

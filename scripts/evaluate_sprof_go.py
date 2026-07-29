@@ -16,11 +16,9 @@ def parse_sprof(path):
     for task in MAP:
         while pos < len(lines) and lines[pos].strip() != f"{task}:": pos += 1
         terms[task] = [x.strip() for x in lines[pos+1].split(";")]
-        # Some official SPROF-GO releases omit the blank separator after the
-        # final CC vocabulary block. Locate the first protein block instead of
-        # assuming a fixed four-line offset after CC.
-        if task != "CC":
-            pos += 4
+        # Vocabulary blocks are not guaranteed to contain blank separators.
+        # Resume after the GO-ID line and scan for the next ontology header.
+        pos += 2
     while pos < len(lines):
         if (
             lines[pos].strip()
