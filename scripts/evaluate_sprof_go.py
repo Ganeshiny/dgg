@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Align official SPROF-GO scores to ARC vocabularies and compute held-out metrics."""
 from __future__ import annotations
-import argparse, csv, json
+import argparse, json
 from pathlib import Path
 import numpy as np
 from sklearn.metrics import average_precision_score, roc_auc_score
@@ -9,6 +9,7 @@ from sklearn.metrics import average_precision_score, roc_auc_score
 from pickle_compat import load_pickle_compat
 
 MAP = {"MF":"molecular_function", "BP":"biological_process", "CC":"cellular_component"}
+EXPECTED_SOURCE_TERMS = {"MF": 790, "BP": 4766, "CC": 667}
 
 def parse_sprof(path):
     lines = Path(path).read_text().splitlines()
@@ -80,18 +81,26 @@ def metrics(y, p):
 
 def main():
     ap=argparse.ArgumentParser(); ap.add_argument("--predictions",type=Path,required=True); ap.add_argument("--tuning-root",type=Path,required=True); ap.add_argument("--output-dir",type=Path,required=True); a=ap.parse_args()
-    src_terms, src_scores=parse_sprof(a.predictions); a.output_dir.mkdir(parents=True,exist_ok=True); report={"model":"SPROF-GO","alignment_policy":"target-vocabulary; missing SPROF terms assigned score 0","ontologies":{}}
-    with (a.output_dir/"predictions_long.csv").open("w",newline="") as fh:
-      wr=csv.writer(fh); wr.writerow(["ontology","protein_id","go_id","score","truth"])
-      for task,ont in MAP.items():
-        with (a.tuning_root/"datasets"/f"{ont}_test.pkl").open("rb") as f: ids,terms,y=unpack_dataset(load_pickle_compat(f))
-        src_idx={t:i for i,t in enumerate(src_terms[task])}; p=np.zeros(y.shape,dtype=np.float32); missing_proteins=[]
-        for i,pid in enumerate(ids):
-          if pid not in src_scores: missing_proteins.append(pid); continue
-          for j,term in enumerate(terms):
-            k=src_idx.get(term); p[i,j]=src_scores[pid][task][k] if k is not None else 0
-          for j,term in enumerate(terms): wr.writerow([ont,pid,term,float(p[i,j]),int(y[i,j])])
-        m=metrics(y,p); m.update({"proteins":len(ids),"missing_proteins":len(missing_proteins),"target_terms":len(terms),"common_terms":sum(t in src_idx for t in terms),"sprof_terms":len(src_idx)})
-        report["ontologies"][ont]=m
+    src_terms, src_scores=parse_sprof(a.predictions)
+    observed={task:len(terms) for task,terms in src_terms.items()}
+    if observed != EXPECTED_SOURCE_TERMS:
+        raise ValueError(f"Unexpected SPROF-GO vocabulary sizes: {observed}; expected {EXPECTED_SOURCE_TERMS}")
+    a.output_dir.mkdir(parents=True,exist_ok=True)
+    array_dir=a.output_dir/"prediction_arrays"; array_dir.mkdir(exist_ok=True)
+    (a.output_dir/"predictions_long.csv").unlink(missing_ok=True)
+    report={"model":"SPROF-GO","alignment_policy":"target-vocabulary; missing SPROF terms assigned score 0","prediction_storage":"per-ontology NumPy arrays","ontologies":{}}
+    for task,ont in MAP.items():
+      with (a.tuning_root/"datasets"/f"{ont}_test.pkl").open("rb") as f: ids,terms,y=unpack_dataset(load_pickle_compat(f))
+      src_idx={t:i for i,t in enumerate(src_terms[task])}; p=np.zeros(y.shape,dtype=np.float32); missing_proteins=[]
+      common=[(j,src_idx[term]) for j,term in enumerate(terms) if term in src_idx]
+      target_columns=np.asarray([item[0] for item in common],dtype=np.int64)
+      source_columns=np.asarray([item[1] for item in common],dtype=np.int64)
+      for i,pid in enumerate(ids):
+        if pid not in src_scores: missing_proteins.append(pid); continue
+        p[i,target_columns]=src_scores[pid][task][source_columns]
+      array_path=array_dir/f"{ont}.npz"
+      np.savez(array_path,protein_ids=np.asarray(ids),terms=np.asarray(terms),scores=p,truth=y)
+      m=metrics(y,p); m.update({"proteins":len(ids),"missing_proteins":len(missing_proteins),"target_terms":len(terms),"common_terms":len(common),"sprof_terms":len(src_idx),"prediction_array":str(array_path)})
+      report["ontologies"][ont]=m
     (a.output_dir/"metrics.json").write_text(json.dumps(report,indent=2)+"\n"); print(json.dumps(report,indent=2))
 if __name__=="__main__": main()
