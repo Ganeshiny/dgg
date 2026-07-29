@@ -53,8 +53,11 @@ class MainComparisonPlotTests(unittest.TestCase):
             handle.get_label()
             for handle in plot.build_legend_handles(methods)
         ]
-        self.assertIn("DeepGreenGO Hybrid (this work)", labels)
-        self.assertIn("Sequence alignment", labels)
+        self.assertEqual(
+            plot.METHOD_LABEL["deepgreengo"],
+            "DeepGreenGO Hybrid (this work)",
+        )
+        self.assertEqual(plot.FAMILY_LABEL["sequence"], "Sequence alignment")
         self.assertIn("Top-10 weighted transfer", labels)
         self.assertIn("Single best identity (within top-10)", labels)
 
@@ -77,6 +80,27 @@ class MainComparisonPlotTests(unittest.TestCase):
     def test_bmc_export_is_pdf_and_high_resolution_png(self):
         self.assertEqual(plot.SPEC["raster"], "png")
         self.assertGreaterEqual(plot.SPEC["main_dpi"], 300)
+
+    def test_caption_discloses_duplicate_sequences_and_external_pretraining(self):
+        report = plot.pd.DataFrame([
+            {
+                "ontology": ontology,
+                "fmax_difference": -0.1,
+                "competitor_label": "DeepGOPlus",
+                "fraction_bootstraps_deepgreengo_better": 0.0,
+            }
+            for ontology in plot.ONTOLOGY_ORDER
+        ])
+        caption = plot.build_captions(
+            [1103, 2207, 3301, 4409, 5501],
+            "Hybrid",
+            report,
+            True,
+            bootstrap_unit="protein",
+            unique_sequences=140,
+        )
+        self.assertIn("only 140 unique sequences among 754 chains", caption)
+        self.assertIn("not leakage-controlled generalization estimates", caption)
 
     def test_manuscript_note_reports_baseline_win_in_correct_direction(self):
         metrics = plot.pd.DataFrame([

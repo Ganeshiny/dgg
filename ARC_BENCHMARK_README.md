@@ -133,7 +133,8 @@ It is not necessary for the deadline-safe five-model deep-learning comparison.
 - BLAST, DIAMOND, and Foldseek search only the locked training proteins/structures.
 - Each reports a bitscore-weighted top-10 score and a separate maximum-normalized-identity score; all use identical 50% query/target coverage filters.
 - Validation and test proteins are predicted together, but only validation labels are used for DeepGreenGO's fixed operating threshold.
-- Every external output is mapped to the locked GO vocabulary, propagated to represented ancestors, and audited for protein and term coverage.
+- Every output is mapped to the locked GO vocabulary and propagated to represented ancestors at evaluation time under one common true-path rule; external adapters may also pre-propagate, which is idempotent. Protein and term coverage are audited.
 - Missing predictions remain zero in the full 754-protein analysis.
-- Pretrained external models are not described as leakage-free because historical training overlap may be unknown.
+- Pretrained external models are not described as leakage-free because historical training overlap may be unknown. In particular, DeepGOPlus combines a CNN with DIAMOND transfer from its own released Swiss-Prot-derived reference set, and DeepGO-SE uses released models trained on an external Swiss-Prot corpus. Their scores are descriptive unless those original corpora are explicitly audited against the locked test sequences.
+- The locked test set contains 754 PDB chains but only 140 unique amino-acid sequences. Point estimates remain chain-level for compatibility with the locked benchmark; confidence intervals use an identical-sequence cluster bootstrap so duplicate chains are not treated as independent evidence.
 - Structural quality analysis uses experimental-chain residue coverage, not pLDDT.

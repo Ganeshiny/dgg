@@ -24,6 +24,7 @@ from pathlib import Path
 import numpy as np
 
 from .core import ONTOLOGIES, ROOT_TERMS, load_label_npz, parse_obo
+from .evaluate import propagate_scores_to_ancestors
 from .stratified import (
     DEPTH_BINS,
     HOMOLOGY_BINS,
@@ -64,9 +65,12 @@ MIN_BIN_SIZE = 5
 
 
 def resolve_data_root(workspace: Path, override: Path | None) -> Path:
-    manifest = json.loads((workspace / "benchmark_manifest.json").read_text())
     if override is not None:
-        return override.expanduser().resolve()
+        root = override.expanduser().resolve()
+        if not root.is_dir():
+            raise SystemExit(f"--data-root does not exist: {root}")
+        return root
+    manifest = json.loads((workspace / "benchmark_manifest.json").read_text())
     recorded = Path(manifest["data_root"])
     if recorded.is_dir():
         return recorded
@@ -100,6 +104,7 @@ def main() -> None:
         "homology_tsv": str(homology_tsv),
         "obo": str(obo_path),
         "min_bin_size": MIN_BIN_SIZE,
+        "prediction_ancestor_propagation": True,
         "bins": {"homology": HOMOLOGY_BINS, "ic": IC_BINS, "depth": DEPTH_BINS},
         "ontologies": {},
     }
@@ -145,12 +150,18 @@ def main() -> None:
         }
         print(f"[stratified] {ontology}: {len(protein_ids)} proteins, {len(go_terms)} terms")
 
-        seeds = seed_score_matrices(workspace, short, protein_ids, go_terms)
+        seeds = [
+            propagate_scores_to_ancestors(matrix, go_terms, parents)
+            for matrix in seed_score_matrices(
+                workspace, short, protein_ids, go_terms
+            )
+        ]
 
         for method in METHODS:
             scores = load_scores(workspace, method, short, protein_ids, go_terms)
             if scores is None:
                 continue
+            scores = propagate_scores_to_ancestors(scores, go_terms, parents)
             per_seed = seeds if method == "deepgreengo" else []
 
             # --- panel a: Fmax by homology bin (protein subsets) --------

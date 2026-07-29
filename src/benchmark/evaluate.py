@@ -13,7 +13,69 @@ import warnings
 
 import numpy as np
 
-from .core import ONTOLOGIES, load_label_npz, load_prediction, parse_obo
+from .core import (
+    ONTOLOGIES,
+    ancestors,
+    load_label_npz,
+    load_prediction,
+    parse_obo,
+    read_fasta,
+)
+
+
+def sequence_cluster_bootstrap_weights(
+    sequences: list[str],
+    bootstraps: int,
+    rng: np.random.Generator,
+) -> tuple[np.ndarray, int]:
+    """Return cluster-bootstrap weights for identical protein sequences.
+
+    The locked ARC benchmark is chain based, but many PDB chains have exactly
+    the same amino-acid sequence. Resampling chains independently treats those
+    copies as independent biological evidence and produces anti-conservative
+    confidence intervals. Point estimates remain chain weighted; uncertainty
+    resamples unique-sequence clusters and keeps every member of a sampled
+    cluster together.
+    """
+    if not sequences:
+        raise ValueError("Cannot bootstrap an empty sequence collection")
+    members: dict[str, list[int]] = {}
+    for index, sequence in enumerate(sequences):
+        if not sequence:
+            raise ValueError(f"Sequence at index {index} is empty")
+        members.setdefault(sequence, []).append(index)
+    groups = list(members.values())
+    cluster_count = len(groups)
+    draws = rng.integers(
+        0, cluster_count, size=(bootstraps, cluster_count), endpoint=False
+    )
+    cluster_weights = np.zeros((bootstraps, cluster_count), dtype=np.float32)
+    row_indices = np.repeat(np.arange(bootstraps), cluster_count)
+    np.add.at(cluster_weights, (row_indices, draws.ravel()), 1.0)
+    weights = np.zeros((bootstraps, len(sequences)), dtype=np.float32)
+    for cluster_index, indices in enumerate(groups):
+        weights[:, indices] = cluster_weights[:, cluster_index, None]
+    return weights, cluster_count
+
+
+def propagate_scores_to_ancestors(
+    scores: np.ndarray,
+    terms: list[str],
+    parents: dict[str, set[str]],
+) -> np.ndarray:
+    """Apply the GO true-path rule to every method at evaluation time."""
+    propagated = np.asarray(scores, dtype=np.float32).copy()
+    term_index = {term: index for index, term in enumerate(terms)}
+    cache: dict[str, set[str]] = {}
+    for child_index, term in enumerate(terms):
+        child_scores = propagated[:, child_index]
+        for parent in ancestors(term, parents, cache):
+            parent_index = term_index.get(parent)
+            if parent_index is not None:
+                propagated[:, parent_index] = np.maximum(
+                    propagated[:, parent_index], child_scores
+                )
+    return propagated
 
 
 def align_prediction(path: Path, target_ids: list[str], target_terms: list[str]):
@@ -341,8 +403,13 @@ def resolve_data_root(manifest: dict, override: Path | None = None) -> Path:
 
 def evaluate(args) -> None:
     workspace = args.workspace.resolve()
-    manifest = json.loads((workspace / "benchmark_manifest.json").read_text())
-    data_root = resolve_data_root(manifest, getattr(args, "data_root", None))
+    data_root_override = getattr(args, "data_root", None)
+    manifest = (
+        {}
+        if data_root_override is not None
+        else json.loads((workspace / "benchmark_manifest.json").read_text())
+    )
+    data_root = resolve_data_root(manifest, data_root_override)
     obo_path = data_root / "go-basic.obo"
     if not obo_path.is_file():
         raise SystemExit(f"go-basic.obo not found under {data_root}")
@@ -358,6 +425,8 @@ def evaluate(args) -> None:
     result_dir.mkdir(parents=True, exist_ok=True)
     summary_rows, bootstrap_rows, delta_rows, audit_rows = [], [], [], []
     rng = np.random.default_rng(args.bootstrap_seed)
+    test_sequences_by_id = read_fasta(workspace / "inputs" / "test.fasta")
+    ontology_parents, _ = parse_obo(obo_path)
     for short, ontology in ONTOLOGIES.items():
         train_ids, train_terms, train_labels = load_label_npz(workspace, short, "train")
         valid_ids, valid_terms, valid_true = load_label_npz(workspace, short, "valid")
@@ -366,16 +435,27 @@ def evaluate(args) -> None:
             raise ValueError(f"{short}: train/valid/test term universes differ")
         ia = information_accretion(train_labels, terms, obo_path)
         n = len(test_ids)
-        draws = rng.integers(0, n, size=(args.bootstraps, n), endpoint=False)
-        weights = np.zeros((args.bootstraps, n), dtype=np.float32)
-        row_indices = np.repeat(np.arange(args.bootstraps), n)
-        np.add.at(weights, (row_indices, draws.ravel()), 1.0)
+        missing_sequences = [
+            protein for protein in test_ids if protein not in test_sequences_by_id
+        ]
+        if missing_sequences:
+            raise ValueError(
+                f"{short}: test FASTA is missing {len(missing_sequences)} locked proteins"
+            )
+        weights, unique_sequence_count = sequence_cluster_bootstrap_weights(
+            [test_sequences_by_id[protein] for protein in test_ids],
+            args.bootstraps,
+            rng,
+        )
         method_bootstrap = {}
         continuous_scores: dict[str, np.ndarray] = {}
         for method in methods:
             path = workspace / "predictions" / method / f"{short}.npz"
             scores, mapped_ids, mapped_terms = (
                 *align_prediction(path, test_ids, terms),
+            )
+            scores = propagate_scores_to_ancestors(
+                scores, terms, ontology_parents
             )
             kind = score_type(path)
             validation_path = (
@@ -388,6 +468,9 @@ def evaluate(args) -> None:
                 )
             validation_scores, _, _ = align_prediction(
                 validation_path, valid_ids, terms
+            )
+            validation_scores = propagate_scores_to_ancestors(
+                validation_scores, terms, ontology_parents
             )
             validation_point = aggregate_curves(
                 per_protein_curves(valid_true, validation_scores, ia)
@@ -415,6 +498,9 @@ def evaluate(args) -> None:
                 "ontology_short": short,
                 "score_type": kind,
                 "test_proteins": n,
+                "test_unique_sequences": unique_sequence_count,
+                "bootstrap_unit": "identical_sequence_cluster",
+                "prediction_ancestor_propagation": True,
                 "test_terms": len(terms),
                 "mapped_proteins": mapped_ids,
                 "mapped_terms": mapped_terms,
@@ -506,11 +592,14 @@ def evaluate(args) -> None:
     (result_dir / "evaluation_manifest.json").write_text(json.dumps({
         "methods": methods, "bootstraps": args.bootstraps,
         "bootstrap_seed": args.bootstrap_seed,
+        "bootstrap_unit": "identical_sequence_cluster",
+        "test_unique_sequences": int(len(set(test_sequences_by_id.values()))),
         "notes": [
             "CAFA Fmax is protein-centric; precision averages over covered targets and recall over all targets.",
             "Smin uses training-derived conditional information accretion and is minimized over the same threshold grid.",
-            "Bootstrap resampling is paired by protein across methods.",
-            "Micro- and macro-AUPR uncertainty uses the same paired protein bootstrap.",
+            "All prediction matrices are propagated to represented GO ancestors at evaluation time so every method follows the same true-path rule.",
+            "Bootstrap resampling is paired by identical-sequence cluster across methods; all PDB chains with the same sequence remain together in each resample.",
+            "Micro- and macro-AUPR uncertainty uses the same paired identical-sequence-cluster bootstrap.",
             "AUPR/AUROC and calibration are not reported for binary annotation pipelines.",
             "Fixed-threshold test precision, recall and F1 use thresholds selected only on validation proteins.",
             "The split is nominal 30% identity/80% coverage and is not described as leakage-free.",

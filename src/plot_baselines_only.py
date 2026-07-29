@@ -706,6 +706,8 @@ def build_captions(
     model_variant: str,
     paired_report: pd.DataFrame,
     aupr_has_uncertainty: bool,
+    bootstrap_unit: str = "protein",
+    unique_sequences: int | None = None,
 ) -> str:
     seeds = ", ".join(str(seed) for seed in ensemble_seeds)
     paired_parts = []
@@ -716,10 +718,31 @@ def build_captions(
             f"bootstrap fraction better={row.fraction_bootstraps_deepgreengo_better:.3f}"
         )
     paired_text = "; ".join(paired_parts)
+    if bootstrap_unit == "identical_sequence_cluster":
+        bootstrap_description = (
+            "1,000 paired identical-sequence-cluster bootstrap replicates"
+        )
+        if unique_sequences is not None:
+            bootstrap_description += (
+                f" ({unique_sequences} unique sequences represented by 754 PDB chains)"
+            )
+        bootstrap_warning = ""
+    else:
+        bootstrap_description = "1,000 paired protein-level bootstrap replicates"
+        bootstrap_warning = (
+            f" The saved results predate identical-sequence cluster resampling"
+            + (
+                f" and contain only {unique_sequences} unique sequences among 754 chains"
+                if unique_sequences is not None
+                else ""
+            )
+            + "; these confidence intervals treat duplicate chains as independent "
+            "and must be regenerated before manuscript use."
+        )
     if aupr_has_uncertainty:
         aupr_uncertainty = (
             "Error bars are percentile 95% confidence intervals from the same "
-            "1,000 paired protein-level bootstrap replicates."
+            f"{bootstrap_description}."
         )
     else:
         aupr_uncertainty = (
@@ -731,10 +754,10 @@ def build_captions(
     return f"""Unless noted, higher values indicate better performance for all metrics except CAFA Smin, where lower is better.
 
 comparison_cafa_performance
-DeepGreenGO versus completed baselines on the nominal 30%-identity/80%-coverage test split (n = 754 proteins). The focal method is the five-seed {model_variant} GCN-GAT ensemble ({seeds}). Bars show test-set point estimates and error bars show percentile 95% confidence intervals from 1,000 paired protein-level bootstrap replicates. Colors denote method family; solid bars denote top-10 weighted transfer and hatched bars denote one highest-identity hit selected from the same eligible top-10 pool. Paired Fmax comparisons against the strongest baseline in each ontology: {paired_text}.
+DeepGreenGO versus completed baselines on the nominal 30%-identity/80%-coverage test split (n = 754 PDB chains). The focal method is the five-seed {model_variant} GCN-GAT ensemble ({seeds}). Bars show chain-level test-set point estimates and error bars show percentile 95% confidence intervals from {bootstrap_description}.{bootstrap_warning} Colors denote method family; solid bars denote top-10 weighted transfer and hatched bars denote one highest-identity hit selected from the same eligible top-10 pool. Paired Fmax comparisons against the strongest baseline in each ontology: {paired_text}. DeepGOPlus, DeepGO-SE, DeepFRI, and DPFunc use externally released pretrained parameters or reference data that were not restricted to the locked ARC training split; their scores are descriptive comparators, not leakage-controlled generalization estimates.
 
 comparison_aupr
-DeepGreenGO versus completed baselines on the same test split. Micro-AUPR pools protein-term decisions; macro-AUPR averages per-term average precision across GO terms observed in the test set. Bars show test-set point estimates. {aupr_uncertainty} Colors and hatching follow the definitions above.
+DeepGreenGO versus completed baselines on the same test split. Micro-AUPR pools protein-term decisions; macro-AUPR averages per-term average precision across GO terms observed in the test set. Bars show test-set point estimates. {aupr_uncertainty} Colors and hatching follow the definitions above. External pretrained comparators were not audited against their original training corpora, so apparent gains from those methods cannot be attributed solely to architecture.
 
 comparison_prediction_coverage
 Retrieval coverage for sparse similarity-search baselines only. DeepGreenGO, the frequency prior, and other dense-output models are excluded from THIS figure because their nonzero score matrices make raw "any nonzero score" coverage saturate by construction - it is not a meaningful comparison at this specific definition. Protein coverage is the percentage of test proteins with at least one eligible training hit; term coverage is the percentage of evaluated test GO terms transferred from eligible hits. Hits must pass E-value 1e-3 and both query- and target-coverage thresholds of 50%. Coverage measures retrieval/abstention, not predictive accuracy. Solid bars denote top-10 weighted transfer and hatched bars denote one highest-identity hit selected from the same eligible top-10 pool. See comparison_threshold_coverage for a coverage definition that includes DeepGreenGO on equal footing.
@@ -783,7 +806,12 @@ def build_manuscript_notes(
         f"Its Smin is {dgg_smin:.3f}, versus the best baseline value of "
         f"{baseline_smin:.3f} for {METHOD_LABEL.get(best_smin_method, best_smin_method)}. "
         f"The corresponding differences are {fmax_delta:+.3f} Fmax and "
-        f"{smin_delta:+.3f} Smin (lower Smin is better). {interpretation}"
+        f"{smin_delta:+.3f} Smin (lower Smin is better). {interpretation}\n\n"
+        "External-pretraining caveat: DeepGOPlus, DeepGO-SE, DeepFRI, and DPFunc "
+        "were evaluated with released pretrained parameters or reference data. "
+        "Their original training corpora were not restricted to the locked ARC "
+        "training split, so these comparisons are descriptive and cannot establish "
+        "leakage-controlled generalization."
     )
 
 
@@ -799,6 +827,28 @@ def write_supporting_files(
     out.mkdir(parents=True, exist_ok=True)
     ensemble_seeds, model_variant = load_deepgreengo_provenance(workspace)
     paired_report = paired_fmax_report(metrics, bootstrap)
+    bootstrap_unit = (
+        str(metrics["bootstrap_unit"].dropna().iloc[0])
+        if "bootstrap_unit" in metrics and metrics["bootstrap_unit"].notna().any()
+        else "protein"
+    )
+    if "test_unique_sequences" in metrics and metrics["test_unique_sequences"].notna().any():
+        unique_sequences = int(metrics["test_unique_sequences"].dropna().iloc[0])
+    else:
+        sequence_path = workspace / "inputs" / "test.fasta"
+        sequences = []
+        current = []
+        if sequence_path.is_file():
+            for line in sequence_path.read_text().splitlines():
+                if line.startswith(">"):
+                    if current:
+                        sequences.append("".join(current))
+                    current = []
+                else:
+                    current.append(line.strip())
+            if current:
+                sequences.append("".join(current))
+        unique_sequences = len(set(sequences)) if sequences else None
     metrics.to_csv(out / "comparison_metrics_plotted.csv", index=False)
     bootstrap.to_csv(out / "comparison_bootstrap_plotted.csv", index=False)
     paired_report.to_csv(out / "paired_fmax_vs_best_baseline.csv", index=False)
@@ -808,6 +858,8 @@ def write_supporting_files(
             model_variant,
             paired_report,
             aupr_has_uncertainty,
+            bootstrap_unit,
+            unique_sequences,
         ),
         encoding="utf-8",
     )
