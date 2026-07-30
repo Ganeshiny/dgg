@@ -18,6 +18,7 @@ DEEPGO_ENV="${DGG_DEEPGO_ENV:-dgg_deepgose}"
 HEAL_ENV="${DGG_HEAL_ENV:-dgg_heal}"
 GATGO_ENV="${DGG_GATGO_ENV:-dgg_gat_go}"
 DEEPGRAPHGO_ENV="${DGG_DEEPGRAPHGO_ENV:-dgg_deepgraphgo}"
+SETUP_TOOLS_ENV="${DGG_SETUP_TOOLS_ENV:-dgg_setup_tools}"
 INTERPRO_JAVA_ENV="${DGG_INTERPROSCAN_JAVA_ENV:-dgg_interproscan_java11}"
 
 DEEPFRI_ROOT="${DGG_DEEPFRI_ROOT:-${PROJECT_DIR}/baselines/DeepFRI}"
@@ -106,22 +107,48 @@ clone_repo() {
         echo "[SETUP ERROR] ${destination} exists but is not a Git checkout" >&2
         return 1
     fi
-    git clone --filter=blob:none "${url}" "${destination}"
+    ensure_setup_git
+    git_run clone --filter=blob:none "${url}" "${destination}"
+}
+
+ensure_setup_git() {
+    [[ -n "${GIT_MODE:-}" ]] && return
+    if command -v git >/dev/null 2>&1; then
+        GIT_MODE=system
+        echo "[OK] Setup Git: $(command -v git)"
+        return
+    fi
+    GIT_MODE=conda
+    if ! conda_env_exists "${SETUP_TOOLS_ENV}"; then
+        conda create -y -n "${SETUP_TOOLS_ENV}" -c conda-forge git
+    fi
+    conda run -n "${SETUP_TOOLS_ENV}" git --version
+}
+
+git_run() {
+    if [[ "${GIT_MODE:-}" == "system" ]]; then
+        command git "$@"
+    else
+        conda run -n "${SETUP_TOOLS_ENV}" git "$@"
+    fi
 }
 
 pin_repo() {
+    ensure_setup_git
     local destination="$1"
     local revision="$2"
     local current
-    current="$(git -C "${destination}" rev-parse HEAD)"
+    current="$(git_run -C "${destination}" rev-parse HEAD | tail -n 1)"
     if [[ "${current}" == "${revision}" ]]; then
         echo "[OK] Pinned repository: ${destination} @ ${revision}"
+        printf '%s\n' "${revision}" > "${destination}/.dgg_upstream_revision"
         return
     fi
-    if ! git -C "${destination}" cat-file -e "${revision}^{commit}" 2>/dev/null; then
-        git -C "${destination}" fetch origin "${revision}"
+    if ! git_run -C "${destination}" cat-file -e "${revision}^{commit}" 2>/dev/null; then
+        git_run -C "${destination}" fetch origin "${revision}"
     fi
-    git -C "${destination}" checkout --detach "${revision}"
+    git_run -C "${destination}" checkout --detach "${revision}"
+    printf '%s\n' "${revision}" > "${destination}/.dgg_upstream_revision"
 }
 
 download_file() {
@@ -299,7 +326,8 @@ setup_deepgose() {
 setup_heal() {
     clone_repo https://github.com/ZhonghuiGu/HEAL.git "${HEAL_ROOT}"
     ensure_named_env "${HEAL_ENV}" 3.10
-    conda install -y -n "${HEAL_ENV}" -c pytorch -c nvidia "pytorch=2.1.2" "pytorch-cuda=11.8"
+    conda install -y -n "${HEAL_ENV}" -c pytorch -c nvidia -c defaults \
+        "pytorch=2.1.2" "pytorch-cuda=11.8" "mkl<2024.1"
     conda run -n "${HEAL_ENV}" python -m pip install "torch-geometric==2.5.3" "fair-esm==2.0.0" "biopython>=1.81,<2" "numpy<2" "scikit-learn<2" joblib tqdm
     download_file "${HEAL_ESM1B_MODEL_URL}" "${TORCH_HOME}/hub/checkpoints/esm1b_t33_650M_UR50S.pt"
 }
@@ -308,8 +336,8 @@ setup_gat_go() {
     clone_repo https://github.com/bl-2633/GAT-GO.git "${GATGO_ROOT}"
     pin_repo "${GATGO_ROOT}" "${GATGO_REVISION}"
     ensure_named_env "${GATGO_ENV}" 3.10
-    conda install -y -n "${GATGO_ENV}" -c pytorch -c nvidia \
-        "pytorch=2.1.2" "pytorch-cuda=11.8"
+    conda install -y -n "${GATGO_ENV}" -c pytorch -c nvidia -c defaults \
+        "pytorch=2.1.2" "pytorch-cuda=11.8" "mkl<2024.1"
     conda run -n "${GATGO_ENV}" python -m pip install \
         "torch-geometric==2.5.3" "numpy<2" "gdown>=5,<6"
     if [[ ! -s "${GATGO_ROOT}/trained_models/GAT-GO_modelweights.pt" \
@@ -452,7 +480,7 @@ verify_setup() {
         check conda run -n "${HEAL_ENV}" python "${PROJECT_DIR}/scripts/run_heal_arc.py" --help
     fi
     if method_enabled gat_go; then
-        [[ "$(git -C "${GATGO_ROOT}" rev-parse HEAD)" == "${GATGO_REVISION}" ]] || failures=$((failures + 1))
+        [[ "$(git_run -C "${GATGO_ROOT}" rev-parse HEAD | tail -n 1)" == "${GATGO_REVISION}" ]] || failures=$((failures + 1))
         check require_file "${GATGO_ROOT}/GAT-GO.py"
         check require_file "${GATGO_ROOT}/src/GnnPF.py"
         check require_file "${GATGO_ROOT}/trained_models/GAT-GO_modelweights.pt"
@@ -467,7 +495,7 @@ verify_setup() {
             --go-map "${GATGO_ROOT}/data/data_splits/go2index.pt" --runtime-smoke-test
     fi
     if method_enabled deepgraphgo; then
-        [[ "$(git -C "${DEEPGRAPHGO_ROOT}" rev-parse HEAD)" == "${DEEPGRAPHGO_REVISION}" ]] || failures=$((failures + 1))
+        [[ "$(git_run -C "${DEEPGRAPHGO_ROOT}" rev-parse HEAD | tail -n 1)" == "${DEEPGRAPHGO_REVISION}" ]] || failures=$((failures + 1))
         check require_file "${DEEPGRAPHGO_ROOT}/main.py"
         check require_file "${DEEPGRAPHGO_ROOT}/data/ppi_pid_list.txt"
         check require_file "${DEEPGRAPHGO_ROOT}/data/ppi_interpro.npz"

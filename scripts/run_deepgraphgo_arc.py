@@ -196,9 +196,7 @@ def main() -> None:
         }
     (output / "manifest.json").write_text(json.dumps({
         "method": "DeepGraphGO",
-        "upstream_revision": subprocess.check_output(
-            ["git", "-C", str(root), "rev-parse", "HEAD"], text=True
-        ).strip(),
+        "upstream_revision": (root / ".dgg_upstream_revision").read_text().strip(),
         "proteins": len(records),
         "query_sha256": query_sha256,
         "ensemble_models_per_ontology": 3,

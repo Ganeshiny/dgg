@@ -10,7 +10,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import subprocess
 import sys
 from pathlib import Path
 
@@ -239,10 +238,9 @@ def main() -> None:
             handle.close()
     (args.output_dir / "manifest.json").write_text(json.dumps({
         **audit,
-        "upstream_revision": subprocess.check_output(
-            ["git", "-C", str(args.gat_root.resolve()), "rev-parse", "HEAD"],
-            text=True,
-        ).strip(),
+        "upstream_revision": (
+            args.gat_root.resolve() / ".dgg_upstream_revision"
+        ).read_text().strip(),
         "checkpoint": str(args.model.resolve()),
         "go_map": str(args.go_map.resolve()),
         "target_vocabulary_only": True,

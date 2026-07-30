@@ -46,6 +46,7 @@ DEEPGOPLUS_ENV="${DGG_DEEPGOPLUS_ENV:-dgg_deepgoplus_py37}"
 HEAL_ENV="${DGG_HEAL_ENV:-dgg_heal}"
 GATGO_ENV="${DGG_GATGO_ENV:-dgg_gat_go}"
 DEEPGRAPHGO_ENV="${DGG_DEEPGRAPHGO_ENV:-dgg_deepgraphgo}"
+SETUP_TOOLS_ENV="${DGG_SETUP_TOOLS_ENV:-dgg_setup_tools}"
 EGGNOG_ENV="${DGG_EGGNOG_ENV:-dgg_eggnog}"
 # Keep Foldseek isolated from the trained-model environment by default. If it
 # was already installed in BASE_ENV, preflight falls back to that environment.
@@ -214,7 +215,12 @@ require_git_revision() {
     local repository="$1"
     local expected="$2"
     local actual
-    actual="$(git -C "${repository}" rev-parse HEAD 2>/dev/null)" || {
+    if command -v git >/dev/null 2>&1; then
+        actual="$(command git -C "${repository}" rev-parse HEAD 2>/dev/null)"
+    else
+        actual="$(conda run -n "${SETUP_TOOLS_ENV}" git -C "${repository}" rev-parse HEAD 2>/dev/null | tail -n 1)"
+    fi
+    [[ -n "${actual}" ]] || {
         echo "[PREFLIGHT ERROR] Not a Git checkout: ${repository}" >&2
         return 1
     }
