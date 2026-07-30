@@ -16,6 +16,8 @@ DPFUNC_ENV="${DGG_DPFUNC_ENV:-dgg_dpfunc}"
 DEEPGOPLUS_ENV="${DGG_DEEPGOPLUS_ENV:-dgg_deepgoplus_py37}"
 DEEPGO_ENV="${DGG_DEEPGO_ENV:-dgg_deepgose}"
 HEAL_ENV="${DGG_HEAL_ENV:-dgg_heal}"
+GATGO_ENV="${DGG_GATGO_ENV:-dgg_gat_go}"
+DEEPGRAPHGO_ENV="${DGG_DEEPGRAPHGO_ENV:-dgg_deepgraphgo}"
 INTERPRO_JAVA_ENV="${DGG_INTERPROSCAN_JAVA_ENV:-dgg_interproscan_java11}"
 
 DEEPFRI_ROOT="${DGG_DEEPFRI_ROOT:-${PROJECT_DIR}/baselines/DeepFRI}"
@@ -24,7 +26,8 @@ DPFUNC_ROOT="${DGG_DPFUNC_ROOT:-${SOTA_ROOT}/DPFunc}"
 DEEPGOPLUS_ROOT="${DGG_DEEPGOPLUS_ROOT:-${SOTA_ROOT}/deepgoplus}"
 DEEPGO_ROOT="${DGG_DEEPGO_ROOT:-${SOTA_ROOT}/deepgo2}"
 HEAL_ROOT="${DGG_HEAL_ROOT:-${SOTA_ROOT}/HEAL}"
-STRUCT2GO_ROOT="${DGG_STRUCT2GO_ROOT:-${SOTA_ROOT}/Struct2GO}"
+GATGO_ROOT="${DGG_GATGO_ROOT:-${SOTA_ROOT}/GAT-GO}"
+DEEPGRAPHGO_ROOT="${DGG_DEEPGRAPHGO_ROOT:-${SOTA_ROOT}/DeepGraphGO}"
 INTERPRO_VERSION="${DGG_INTERPRO_VERSION:-5.78-109.0}"
 INTERPRO_ROOT="${DGG_INTERPRO_ROOT:-${SOTA_ROOT}/interproscan-${INTERPRO_VERSION}}"
 TORCH_HOME="${DGG_TORCH_HOME:-${SOTA_ROOT}/torch_cache}"
@@ -36,6 +39,9 @@ DPFUNC_MODELS_GDRIVE_ID="${DGG_DPFUNC_MODELS_GDRIVE_ID:-1V0VTFTiB29ilbAIOZn0okBQ
 DPFUNC_ESM2_MODEL_URL="${DGG_DPFUNC_ESM2_MODEL_URL:-https://dl.fbaipublicfiles.com/fair-esm/models/esm2_t33_650M_UR50D.pt}"
 DPFUNC_ESM2_REGRESSION_URL="${DGG_DPFUNC_ESM2_REGRESSION_URL:-https://dl.fbaipublicfiles.com/fair-esm/regression/esm2_t33_650M_UR50D-contact-regression.pt}"
 HEAL_ESM1B_MODEL_URL="${DGG_HEAL_ESM1B_MODEL_URL:-https://dl.fbaipublicfiles.com/fair-esm/models/esm1b_t33_650M_UR50S.pt}"
+GATGO_DATA_URL="${DGG_GATGO_DATA_URL:-https://drive.google.com/drive/folders/1--1zHFqOzB7pZ75G_td_T2e05qfoSlz6?usp=sharing}"
+GATGO_REVISION="${DGG_GATGO_REVISION:-90ec6d1067a893d4a51be715e41daf9fa4732952}"
+DEEPGRAPHGO_REVISION="${DGG_DEEPGRAPHGO_REVISION:-efdb1cb9425f4f48e4613c0a89e603f5542bcb19}"
 DEEPGOPLUS_DATA_URL="${DGG_DEEPGOPLUS_DATA_URL:-http://deepgoplus.bio2vec.net/data/data.tar.gz}"
 DEEPGO_DATA_URL="${DGG_DEEPGO_DATA_URL:-https://deepgo.cbrc.kaust.edu.sa/data/deepgo2/data.tar.gz}"
 INTERPRO_URL="${DGG_INTERPRO_URL:-https://ftp.ebi.ac.uk/pub/software/unix/iprscan/5/${INTERPRO_VERSION}/interproscan-${INTERPRO_VERSION}-64-bit.tar.gz}"
@@ -49,7 +55,7 @@ fi
 IFS=',' read -r -a requested_methods <<< "${SETUP_METHODS}"
 for requested_method in "${requested_methods[@]}"; do
     case "${requested_method}" in
-        deepfri|transfun|dpfunc|deepgoplus|deepgose|heal|struct2go|interproscan) ;;
+        deepfri|transfun|dpfunc|deepgoplus|deepgose|heal|gat_go|deepgraphgo|interproscan) ;;
         *)
             echo "[SETUP ERROR] Unknown SOTA setup method: ${requested_method}" >&2
             exit 1
@@ -101,6 +107,21 @@ clone_repo() {
         return 1
     fi
     git clone --filter=blob:none "${url}" "${destination}"
+}
+
+pin_repo() {
+    local destination="$1"
+    local revision="$2"
+    local current
+    current="$(git -C "${destination}" rev-parse HEAD)"
+    if [[ "${current}" == "${revision}" ]]; then
+        echo "[OK] Pinned repository: ${destination} @ ${revision}"
+        return
+    fi
+    if ! git -C "${destination}" cat-file -e "${revision}^{commit}" 2>/dev/null; then
+        git -C "${destination}" fetch origin "${revision}"
+    fi
+    git -C "${destination}" checkout --detach "${revision}"
 }
 
 download_file() {
@@ -283,12 +304,57 @@ setup_heal() {
     download_file "${HEAL_ESM1B_MODEL_URL}" "${TORCH_HOME}/hub/checkpoints/esm1b_t33_650M_UR50S.pt"
 }
 
-setup_struct2go() {
-    clone_repo https://github.com/lyjps/Struct2GO.git "${STRUCT2GO_ROOT}"
-    echo "[SETUP NOTICE] Struct2GO ships fixed human-protein datasets, not a"
-    echo "general PDB inference entry point. The ARC benchmark accepts externally"
-    echo "prepared Struct2GO score files but does not relabel its bundled test set"
-    echo "as predictions for the locked ARC proteins."
+setup_gat_go() {
+    clone_repo https://github.com/bl-2633/GAT-GO.git "${GATGO_ROOT}"
+    pin_repo "${GATGO_ROOT}" "${GATGO_REVISION}"
+    ensure_named_env "${GATGO_ENV}" 3.10
+    conda install -y -n "${GATGO_ENV}" -c pytorch -c nvidia \
+        "pytorch=2.1.2" "pytorch-cuda=11.8"
+    conda run -n "${GATGO_ENV}" python -m pip install \
+        "torch-geometric==2.5.3" "numpy<2" "gdown>=5,<6"
+    if [[ ! -s "${GATGO_ROOT}/trained_models/GAT-GO_modelweights.pt" \
+            || ! -s "${GATGO_ROOT}/data/data_splits/go2index.pt" \
+            || ! -d "${GATGO_ROOT}/data/seq_features" ]]; then
+        echo "[SETUP] Downloading the official GAT-GO pretrained model and precomputed features."
+        conda run -n "${GATGO_ENV}" gdown --folder "${GATGO_DATA_URL}" \
+            -O "${GATGO_ROOT}" --remaining-ok
+    fi
+}
+
+setup_deepgraphgo() {
+    clone_repo https://github.com/yourh/DeepGraphGO.git "${DEEPGRAPHGO_ROOT}"
+    pin_repo "${DEEPGRAPHGO_ROOT}" "${DEEPGRAPHGO_REVISION}"
+    ensure_named_env "${DEEPGRAPHGO_ENV}" 3.8
+    conda install -y -n "${DEEPGRAPHGO_ENV}" -c pytorch \
+        "pytorch=1.6.0" cpuonly
+    conda install -y -n "${DEEPGRAPHGO_ENV}" -c conda-forge -c bioconda \
+        "blast>=2.10,<3"
+    conda run -n "${DEEPGRAPHGO_ENV}" python -m pip install "pip<24.1"
+    conda run -n "${DEEPGRAPHGO_ENV}" python -m pip install \
+        "numpy==1.19.2" "scipy==1.5.0" "scikit-learn==0.22.1" \
+        "networkx==2.4" "dgl==0.4.3post2" "click==7.1.2" \
+        "ruamel.yaml==0.16.6" "biopython==1.78" "tqdm==4.47.0" \
+        "logzero==1.5.0" "joblib==0.16.0" "dtrx==8.5.3"
+    if [[ ! -s "${DEEPGRAPHGO_ROOT}/data/ppi_interpro.npz" ]]; then
+        (
+            cd "${DEEPGRAPHGO_ROOT}/data"
+            conda run --no-capture-output -n "${DEEPGRAPHGO_ENV}" dtrx -f data.zip
+        )
+    fi
+    # The published code hard-codes CUDA. Its exact PyTorch 1.6/DGL 0.4 stack
+    # cannot execute on ARC's L40 GPUs, so use the same operations on CPU.
+    if grep -q 'nn.DataParallel(self.network.cuda())' "${DEEPGRAPHGO_ROOT}/deepgraphgo/models.py"; then
+        sed -i 's/\.float()\.cuda()/\.float()/g' "${DEEPGRAPHGO_ROOT}/main.py"
+        sed -i 's/self.dp_network = nn.DataParallel(self.network.cuda())/self.device = torch.device("cpu")\n        self.dp_network = self.network.to(self.device)/' \
+            "${DEEPGRAPHGO_ROOT}/deepgraphgo/models.py"
+        sed -i 's/\.cuda()\.long()/\.to(self.device).long()/g; s/\.cuda()\.float()/\.to(self.device).float()/g; s/train_y\.cuda()/train_y.to(self.device)/g; s/torch.load(self.model_path)/torch.load(self.model_path, map_location=self.device)/g' \
+            "${DEEPGRAPHGO_ROOT}/deepgraphgo/models.py"
+    fi
+    if ! grep -q '^import os$' "${DEEPGRAPHGO_ROOT}/deepgraphgo/psiblast_utils.py"; then
+        sed -i '/^from pathlib import Path$/i import os' "${DEEPGRAPHGO_ROOT}/deepgraphgo/psiblast_utils.py"
+    fi
+    sed -i 's/num_threads=40/num_threads=int(os.environ.get("DGG_DEEPGRAPHGO_THREADS", "8"))/' \
+        "${DEEPGRAPHGO_ROOT}/deepgraphgo/psiblast_utils.py"
 }
 
 setup_interproscan() {
@@ -385,12 +451,41 @@ verify_setup() {
         check conda run -n "${HEAL_ENV}" python -c "import Bio, esm, numpy, torch, torch_geometric; print('HEAL runtime imports ok')"
         check conda run -n "${HEAL_ENV}" python "${PROJECT_DIR}/scripts/run_heal_arc.py" --help
     fi
-    if method_enabled struct2go; then
-        check require_file "${STRUCT2GO_ROOT}/eval_Struct2GO.py"
+    if method_enabled gat_go; then
+        [[ "$(git -C "${GATGO_ROOT}" rev-parse HEAD)" == "${GATGO_REVISION}" ]] || failures=$((failures + 1))
+        check require_file "${GATGO_ROOT}/GAT-GO.py"
+        check require_file "${GATGO_ROOT}/src/GnnPF.py"
+        check require_file "${GATGO_ROOT}/trained_models/GAT-GO_modelweights.pt"
+        check require_file "${GATGO_ROOT}/data/data_splits/go2index.pt"
+        [[ -d "${GATGO_ROOT}/data/seq_features" ]] || failures=$((failures + 1))
+        check conda run -n "${GATGO_ENV}" python -c \
+            "import torch, torch_geometric; from torch_geometric.nn import GATConv, SAGPooling; print(torch.__version__, torch_geometric.__version__, torch.cuda.is_available())"
+        check conda run -n "${GATGO_ENV}" python "${PROJECT_DIR}/scripts/run_gat_go_arc.py" --help
+        check conda run -n "${GATGO_ENV}" python "${PROJECT_DIR}/scripts/run_gat_go_arc.py" \
+            --gat-root "${GATGO_ROOT}" --feature-root "${GATGO_ROOT}/data/seq_features" \
+            --model "${GATGO_ROOT}/trained_models/GAT-GO_modelweights.pt" \
+            --go-map "${GATGO_ROOT}/data/data_splits/go2index.pt" --runtime-smoke-test
+    fi
+    if method_enabled deepgraphgo; then
+        [[ "$(git -C "${DEEPGRAPHGO_ROOT}" rev-parse HEAD)" == "${DEEPGRAPHGO_REVISION}" ]] || failures=$((failures + 1))
+        check require_file "${DEEPGRAPHGO_ROOT}/main.py"
+        check require_file "${DEEPGRAPHGO_ROOT}/data/ppi_pid_list.txt"
+        check require_file "${DEEPGRAPHGO_ROOT}/data/ppi_interpro.npz"
+        check require_file "${DEEPGRAPHGO_ROOT}/data/ppi_dgl_top_100"
+        check require_file "${DEEPGRAPHGO_ROOT}/data/ppi_blastdb.pin"
         for ontology in mf bp cc; do
-            check require_file "${STRUCT2GO_ROOT}/save_models/mymodel_${ontology}_1_0.0005_0.45.pkl"
-            check require_file "${STRUCT2GO_ROOT}/processed_data/label_${ontology}_network"
+            check require_file "${DEEPGRAPHGO_ROOT}/data/${ontology}_go.mlb"
+            for model_index in 0 1 2; do
+                check require_file "${DEEPGRAPHGO_ROOT}/models/DeepGraphGO-Model-${model_index}-${ontology}"
+            done
         done
+        check conda run -n "${DEEPGRAPHGO_ENV}" psiblast -version
+        check conda run -n "${DEEPGRAPHGO_ENV}" python -c \
+            "import dgl, numpy, scipy, sklearn, torch; assert not torch.cuda.is_available(); print('DeepGraphGO legacy CPU runtime ok')"
+        check conda run -n "${DEEPGRAPHGO_ENV}" python "${DEEPGRAPHGO_ROOT}/main.py" --help
+        check conda run -n "${DEEPGRAPHGO_ENV}" python "${PROJECT_DIR}/scripts/run_deepgraphgo_arc.py" --help
+        check conda run -n "${DEEPGRAPHGO_ENV}" python "${PROJECT_DIR}/scripts/run_deepgraphgo_arc.py" \
+            --deepgraphgo-root "${DEEPGRAPHGO_ROOT}" --runtime-smoke-test
     fi
     if method_enabled interproscan; then
         check require_executable "${INTERPRO_ROOT}/interproscan.sh"
@@ -414,7 +509,8 @@ method_enabled dpfunc && setup_dpfunc
 method_enabled deepgoplus && setup_deepgoplus
 method_enabled deepgose && setup_deepgose
 method_enabled heal && setup_heal
-method_enabled struct2go && setup_struct2go
+method_enabled gat_go && setup_gat_go
+method_enabled deepgraphgo && setup_deepgraphgo
 method_enabled interproscan && setup_interproscan
 
 verify_setup

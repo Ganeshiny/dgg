@@ -58,7 +58,7 @@ METHOD_ORDER = [
     "foldseek", "foldseek_max",
     "interproscan",
     "deepfri_sequence", "deepfri_structure",
-    "dpfunc", "heal", "struct2go", "deepgoplus", "deepgose", "transfun",
+    "dpfunc", "heal", "gat_go", "deepgraphgo", "deepgoplus", "deepgose", "transfun",
     "eggnog_mapper", "hayai", "gomap",
 ]
 
@@ -84,7 +84,8 @@ METHOD_LABEL = {
     "deepfri_structure": "DeepFRI (structure)",
     "dpfunc": "DPFunc",
     "heal": "HEAL (PDB-only)",
-    "struct2go": "Struct2GO",
+    "gat_go": "GAT-GO",
+    "deepgraphgo": "DeepGraphGO",
     "deepgoplus": "DeepGOPlus",
     "deepgose": "DeepGO-SE",
     "transfun": "TransFun",
@@ -100,7 +101,8 @@ EXTERNAL_PRETRAINED_METHODS = (
     "deepfri_structure",
     "dpfunc",
     "heal",
-    "struct2go",
+    "gat_go",
+    "deepgraphgo",
 )
 
 METHOD_FAMILY = {
@@ -112,7 +114,8 @@ METHOD_FAMILY = {
     "interproscan": "domain",
     "deepfri_sequence": "deep_learning", "deepfri_structure": "deep_learning",
     "dpfunc": "deep_learning", "heal": "deep_learning",
-    "struct2go": "deep_learning", "deepgoplus": "deep_learning",
+    "gat_go": "deep_learning", "deepgraphgo": "deep_learning",
+    "deepgoplus": "deep_learning",
     "deepgose": "deep_learning", "transfun": "deep_learning",
     "eggnog_mapper": "orthology", "hayai": "orthology", "gomap": "orthology",
 }
@@ -142,7 +145,8 @@ METHOD_COLOR = {
     "deepfri_structure": "#332288",
     "dpfunc": "#009E73",
     "heal": "#117733",
-    "struct2go": "#88CCEE",
+    "gat_go": "#88CCEE",
+    "deepgraphgo": "#882255",
     "deepgoplus": "#E31A1C",
     "deepgose": "#8C510A",
     "transfun": "#666666",

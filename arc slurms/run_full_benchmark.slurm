@@ -29,8 +29,8 @@ CHECKPOINT_ROOT="${DGG_CHECKPOINT_ROOT:-${TUNING_ROOT}/five_seed_hybrid}"
 BENCHMARK_ROOT="${DGG_BENCHMARK_ROOT:-${PROJECT_DIR}/arc_benchmark/nominal_30_identity_80_coverage}"
 # Deadline-safe profile: only methods whose repositories, model files, and
 # environments passed the ARC setup checks. TransFun, eggNOG, Hayai, and GOMAP
-# remain explicit opt-ins. HEAL and Struct2GO are also opt-ins under the
-# constraints documented in ARC_BENCHMARK_README.md.
+# remain explicit opt-ins. HEAL, GAT-GO, and DeepGraphGO are also opt-ins
+# under the constraints documented in ARC_BENCHMARK_README.md.
 METHODS="${DGG_BENCHMARK_METHODS:-hybrid,naive,blast,diamond,foldseek,interproscan,deepfri_sequence,deepfri_structure,dpfunc,deepgoplus,deepgose}"
 # Strict by default: a requested comparator must pass preflight before any
 # expensive stage starts. Set to 1 only for an intentionally incomplete run.
@@ -44,6 +44,8 @@ DPFUNC_ENV="${DGG_DPFUNC_ENV:-dgg_dpfunc}"
 DEEPGO_ENV="${DGG_DEEPGO_ENV:-dgg_deepgose}"
 DEEPGOPLUS_ENV="${DGG_DEEPGOPLUS_ENV:-dgg_deepgoplus_py37}"
 HEAL_ENV="${DGG_HEAL_ENV:-dgg_heal}"
+GATGO_ENV="${DGG_GATGO_ENV:-dgg_gat_go}"
+DEEPGRAPHGO_ENV="${DGG_DEEPGRAPHGO_ENV:-dgg_deepgraphgo}"
 EGGNOG_ENV="${DGG_EGGNOG_ENV:-dgg_eggnog}"
 # Keep Foldseek isolated from the trained-model environment by default. If it
 # was already installed in BASE_ENV, preflight falls back to that environment.
@@ -56,7 +58,8 @@ DPFUNC_ROOT="${DGG_DPFUNC_ROOT:-${PROJECT_DIR}/SOTA/DPFunc}"
 DEEPGO_ROOT="${DGG_DEEPGO_ROOT:-${PROJECT_DIR}/SOTA/deepgo2}"
 DEEPGOPLUS_ROOT="${DGG_DEEPGOPLUS_ROOT:-${PROJECT_DIR}/SOTA/deepgoplus}"
 HEAL_ROOT="${DGG_HEAL_ROOT:-${PROJECT_DIR}/SOTA/HEAL}"
-STRUCT2GO_ROOT="${DGG_STRUCT2GO_ROOT:-${PROJECT_DIR}/SOTA/Struct2GO}"
+GATGO_ROOT="${DGG_GATGO_ROOT:-${PROJECT_DIR}/SOTA/GAT-GO}"
+DEEPGRAPHGO_ROOT="${DGG_DEEPGRAPHGO_ROOT:-${PROJECT_DIR}/SOTA/DeepGraphGO}"
 EGGNOG_ROOT="${DGG_EGGNOG_ROOT:-${PROJECT_DIR}/SOTA/eggnog-mapper}"
 EGGNOG_DATA="${DGG_EGGNOG_DATA:-${EGGNOG_ROOT}/data}"
 HAYAI_ROOT="${DGG_HAYAI_ROOT:-${PROJECT_DIR}/SOTA/HayaiAnnotation}"
@@ -67,9 +70,11 @@ TORCH_HOME="${DGG_TORCH_HOME:-${PROJECT_DIR}/SOTA/torch_cache}"
 export TORCH_HOME
 HEAL_ESM1B_MODEL="${DGG_HEAL_ESM1B_MODEL:-${TORCH_HOME}/hub/checkpoints/esm1b_t33_650M_UR50S.pt}"
 HEAL_MODEL_VARIANT="${DGG_HEAL_MODEL_VARIANT:-pdb-only}"
-STRUCT2GO_MF="${DGG_STRUCT2GO_MF:-}"
-STRUCT2GO_BP="${DGG_STRUCT2GO_BP:-}"
-STRUCT2GO_CC="${DGG_STRUCT2GO_CC:-}"
+GATGO_FEATURE_ROOT="${DGG_GATGO_FEATURE_ROOT:-${GATGO_ROOT}/data/seq_features}"
+GATGO_MODEL="${DGG_GATGO_MODEL:-${GATGO_ROOT}/trained_models/GAT-GO_modelweights.pt}"
+GATGO_GO_MAP="${DGG_GATGO_GO_MAP:-${GATGO_ROOT}/data/data_splits/go2index.pt}"
+GATGO_REVISION="${DGG_GATGO_REVISION:-90ec6d1067a893d4a51be715e41daf9fa4732952}"
+DEEPGRAPHGO_REVISION="${DGG_DEEPGRAPHGO_REVISION:-efdb1cb9425f4f48e4613c0a89e603f5542bcb19}"
 FOLDSEEK="${DGG_FOLDSEEK:-foldseek}"
 DPFUNC_PRENAME="${DGG_DPFUNC_PRENAME:-DPFunc_model}"
 DEEPGOPLUS_DIAMOND_DIR=""
@@ -82,6 +87,8 @@ PYTHON_FILES=(
     "${PROJECT_DIR}/src/benchmark/core.py"
     "${PROJECT_DIR}/src/benchmark/methods.py"
     "${PROJECT_DIR}/scripts/run_heal_arc.py"
+    "${PROJECT_DIR}/scripts/run_gat_go_arc.py"
+    "${PROJECT_DIR}/scripts/run_deepgraphgo_arc.py"
     "${PROJECT_DIR}/src/benchmark/external.py"
     "${PROJECT_DIR}/src/benchmark/evaluate.py"
 )
@@ -188,7 +195,8 @@ stage_artifacts_ok() {
         09b_deepgoplus) prediction_complete deepgoplus || return 1 ;;
         10_deepgose) prediction_complete deepgose || return 1 ;;
         10b_heal) prediction_complete heal || return 1 ;;
-        10c_struct2go) prediction_complete struct2go || return 1 ;;
+        10c_gat_go) prediction_complete gat_go || return 1 ;;
+        10d_deepgraphgo) prediction_complete deepgraphgo || return 1 ;;
         11_hayai) prediction_complete hayai || return 1 ;;
         12_gomap) prediction_complete gomap || return 1 ;;
     esac
@@ -200,6 +208,20 @@ require_file() {
 
 require_dir() {
     [[ -d "$1" ]] || { echo "[PREFLIGHT ERROR] Missing directory: $1" >&2; return 1; }
+}
+
+require_git_revision() {
+    local repository="$1"
+    local expected="$2"
+    local actual
+    actual="$(git -C "${repository}" rev-parse HEAD 2>/dev/null)" || {
+        echo "[PREFLIGHT ERROR] Not a Git checkout: ${repository}" >&2
+        return 1
+    }
+    [[ "${actual}" == "${expected}" ]] || {
+        echo "[PREFLIGHT ERROR] ${repository} is at ${actual}, expected ${expected}" >&2
+        return 1
+    }
 }
 
 java_major() {
@@ -454,12 +476,36 @@ preflight() {
         preflight_check conda_run "${HEAL_ENV}" python -c "import Bio, esm, numpy, torch, torch_geometric; print('HEAL environment ok')"
         preflight_check conda_run "${HEAL_ENV}" python "${PROJECT_DIR}/scripts/run_heal_arc.py" --help
     fi
-    if method_enabled struct2go; then
-        CURRENT_METHOD=struct2go
-        preflight_check require_file "${STRUCT2GO_ROOT}/eval_Struct2GO.py"
-        preflight_check require_file "${STRUCT2GO_MF}"
-        preflight_check require_file "${STRUCT2GO_BP}"
-        preflight_check require_file "${STRUCT2GO_CC}"
+    if method_enabled gat_go; then
+        CURRENT_METHOD=gat_go
+        preflight_check require_git_revision "${GATGO_ROOT}" "${GATGO_REVISION}"
+        preflight_check require_file "${GATGO_ROOT}/src/GnnPF.py"
+        preflight_check require_dir "${GATGO_FEATURE_ROOT}"
+        preflight_check require_file "${GATGO_MODEL}"
+        preflight_check require_file "${GATGO_GO_MAP}"
+        preflight_check conda_run "${GATGO_ENV}" python -c \
+            "import numpy, torch, torch_geometric; assert torch.cuda.is_available(); print('GAT-GO environment ok')"
+        preflight_check conda_run "${GATGO_ENV}" python "${PROJECT_DIR}/scripts/run_gat_go_arc.py" --help
+    fi
+    if method_enabled deepgraphgo; then
+        CURRENT_METHOD=deepgraphgo
+        preflight_check require_git_revision "${DEEPGRAPHGO_ROOT}" "${DEEPGRAPHGO_REVISION}"
+        preflight_check require_file "${DEEPGRAPHGO_ROOT}/main.py"
+        preflight_check require_file "${DEEPGRAPHGO_ROOT}/data/ppi_pid_list.txt"
+        preflight_check require_file "${DEEPGRAPHGO_ROOT}/data/ppi_interpro.npz"
+        preflight_check require_file "${DEEPGRAPHGO_ROOT}/data/ppi_dgl_top_100"
+        preflight_check require_file "${DEEPGRAPHGO_ROOT}/data/ppi_blastdb.pin"
+        local deepgraph_ontology deepgraph_model_index
+        for deepgraph_ontology in mf bp cc; do
+            preflight_check require_file "${DEEPGRAPHGO_ROOT}/data/${deepgraph_ontology}_go.mlb"
+            for deepgraph_model_index in 0 1 2; do
+                preflight_check require_file "${DEEPGRAPHGO_ROOT}/models/DeepGraphGO-Model-${deepgraph_model_index}-${deepgraph_ontology}"
+            done
+        done
+        preflight_check conda_run "${DEEPGRAPHGO_ENV}" psiblast -version
+        preflight_check conda_run "${DEEPGRAPHGO_ENV}" python -c \
+            "import dgl, numpy, scipy, sklearn, torch; assert not torch.cuda.is_available(); print('DeepGraphGO legacy CPU environment ok')"
+        preflight_check conda_run "${DEEPGRAPHGO_ENV}" python "${PROJECT_DIR}/scripts/run_deepgraphgo_arc.py" --help
     fi
     if method_enabled hayai; then
         CURRENT_METHOD=hayai
@@ -787,8 +833,34 @@ run_heal() {
     benchmark_cli normalize-scored --workspace "${BENCHMARK_ROOT}" --method heal --delimiter tab --mf "${RAW}/heal/heal_mf.tsv" --bp "${RAW}/heal/heal_bp.tsv" --cc "${RAW}/heal/heal_cc.tsv"
 }
 
-run_struct2go() {
-    benchmark_cli normalize-scored --workspace "${BENCHMARK_ROOT}" --method struct2go --delimiter tab --mf "${STRUCT2GO_MF}" --bp "${STRUCT2GO_BP}" --cc "${STRUCT2GO_CC}"
+run_gat_go() {
+    mkdir -p "${RAW}/gat_go"
+    conda_run "${GATGO_ENV}" python "${PROJECT_DIR}/scripts/run_gat_go_arc.py" \
+        --gat-root "${GATGO_ROOT}" --feature-root "${GATGO_FEATURE_ROOT}" \
+        --model "${GATGO_MODEL}" --go-map "${GATGO_GO_MAP}" \
+        --fasta "${BENCHMARK_ROOT}/inputs/valid_test.fasta" \
+        --workspace "${BENCHMARK_ROOT}" --output-dir "${RAW}/gat_go" \
+        --expected-proteins 1508 --device cuda:0
+    benchmark_cli normalize-scored --workspace "${BENCHMARK_ROOT}" \
+        --method gat_go --delimiter tab \
+        --mf "${RAW}/gat_go/gat_go_mf.tsv" \
+        --bp "${RAW}/gat_go/gat_go_bp.tsv" \
+        --cc "${RAW}/gat_go/gat_go_cc.tsv"
+}
+
+run_deepgraphgo() {
+    mkdir -p "${RAW}/deepgraphgo"
+    conda_run "${DEEPGRAPHGO_ENV}" env DGG_DEEPGRAPHGO_THREADS="${THREADS}" \
+        python "${PROJECT_DIR}/scripts/run_deepgraphgo_arc.py" \
+        --deepgraphgo-root "${DEEPGRAPHGO_ROOT}" \
+        --fasta "${BENCHMARK_ROOT}/inputs/valid_test.fasta" \
+        --workspace "${BENCHMARK_ROOT}" --output-dir "${RAW}/deepgraphgo" \
+        --expected-proteins 1508
+    benchmark_cli normalize-scored --workspace "${BENCHMARK_ROOT}" \
+        --method deepgraphgo --delimiter tab \
+        --mf "${RAW}/deepgraphgo/deepgraphgo_mf.tsv" \
+        --bp "${RAW}/deepgraphgo/deepgraphgo_bp.tsv" \
+        --cc "${RAW}/deepgraphgo/deepgraphgo_cc.tsv"
 }
 
 run_hayai() {
@@ -855,7 +927,8 @@ method_enabled dpfunc && stage 09_dpfunc run_dpfunc
 method_enabled deepgoplus && stage 09b_deepgoplus run_deepgoplus
 method_enabled deepgose && stage 10_deepgose run_deepgose
 method_enabled heal && stage 10b_heal run_heal
-method_enabled struct2go && stage 10c_struct2go run_struct2go
+method_enabled gat_go && stage 10c_gat_go run_gat_go
+method_enabled deepgraphgo && stage 10d_deepgraphgo run_deepgraphgo
 method_enabled hayai && stage 11_hayai run_hayai
 method_enabled gomap && stage 12_gomap run_gomap
 run_evaluation

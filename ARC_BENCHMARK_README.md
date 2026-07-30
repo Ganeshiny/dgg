@@ -41,7 +41,7 @@ The deadline-safe default comparison includes:
 - verified deep learning: DeepFRI sequence, DeepFRI structure, DPFunc, DeepGOPlus, and DeepGO-SE;
 - DeepGreenGO: the five best seed checkpoints, averaged as the primary ensemble.
 
-TransFun, eggNOG-mapper, Hayai, and GOMAP remain supported as explicit opt-ins, but they are not part of the deadline default because their ARC environments/data or manual upstream steps have not passed end-to-end verification. They must not be named as completed comparisons unless their prediction files are actually present and evaluated.
+TransFun, eggNOG-mapper, Hayai, GOMAP, HEAL, GAT-GO, and DeepGraphGO remain supported as explicit opt-ins. They are not part of the deadline default because of runtime, released-data, or manual upstream constraints documented below. They must not be named as completed comparisons unless their prediction files are actually present and evaluated.
 
 A separate naive-plant or plant-reference-DIAMOND result is not fabricated here. The locked split records do not contain taxonomy identifiers, so they cannot be separated into plant and non-plant training subsets reproducibly. If a verified protein-to-NCBI-taxonomy manifest is added later, those controls should be added explicitly.
 
@@ -77,7 +77,8 @@ Expected defaults:
 | DeepGOPlus | `SOTA/deepgoplus/data`, environment `dgg_deepgoplus_py37` (Python 3.7) |
 | DeepGO-SE | `SOTA/deepgo2`, environment `dgg_deepgose` |
 | HEAL | `SOTA/HEAL`, environment `dgg_heal`; ESM-1b under `SOTA/torch_cache` |
-| Struct2GO | `SOTA/Struct2GO`; externally prepared ARC score files are required |
+| GAT-GO | `SOTA/GAT-GO`, environment `dgg_gat_go`; official feature/model bundle required |
+| DeepGraphGO | `SOTA/DeepGraphGO`, exact legacy CPU environment `dgg_deepgraphgo` |
 | eggNOG-mapper | `SOTA/eggnog-mapper`, database under its `data/`, environment `dgg_eggnog` |
 | Hayai v3.2 | `SOTA/HayaiAnnotation`, environment `hayai_v3.2` |
 | GOMAP | completed GAF or a site-specific command; see below |
@@ -156,35 +157,65 @@ runner does not truncate them: it records them in `raw/heal/manifest.json`
 and their predictions remain zero. Per-protein score caches make the stage
 resumable across ARC's 24-hour job limit.
 
-## Struct2GO opt-in and upstream limitation
+## GAT-GO opt-in and strict feature audit
 
-The Struct2GO repository can be installed for provenance and checkpoint
-inspection:
+Install the official repository, model, GO index, and precomputed feature
+bundle:
 
 ```bash
-DGG_SOTA_SETUP_METHODS=struct2go sbatch 'arc slurms/arc_01_setup_sota.slurm'
+DGG_SOTA_SETUP_METHODS=gat_go sbatch 'arc slurms/arc_01_setup_sota.slurm'
 ```
 
-The released Struct2GO code is not a general PDB predictor. Its evaluation
-entry point consumes pickled, precomputed human-protein datasets containing
-SeqVec features, contact maps, Node2Vec structural features, and label
-networks. Its documented raw-data workflow additionally calls a Spark/Angel
-Node2Vec job through IntelliJ. Running its bundled test pickle would therefore
-not predict the locked ARC proteins and must not be reported as an ARC result.
+Setup pins the audited upstream revision
+`90ec6d1067a893d4a51be715e41daf9fa4732952`.
 
-The benchmark supports genuine externally generated Struct2GO scores in
-three tab-separated files with rows `protein_id GO:nnnnnnn score`:
+The upstream GAT-GO release predicts only from serialized per-protein objects
+containing PSSMs, ESM-1b embeddings, contact edges, and sequence features. It
+does not publish the pipeline needed to create these objects for arbitrary new
+proteins. The ARC adapter therefore audits all 1,508 validation+test proteins
+against the official feature bundle, verifies identifier and tensor dimensions,
+and aborts if even one feature file is absent or incompatible. It explicitly
+does not read the annotation `label` field stored in upstream feature files.
+A subset result is never normalized or plotted.
+
+After setup succeeds, request GAT-GO alone first:
 
 ```bash
-export DGG_STRUCT2GO_MF=/absolute/path/struct2go_mf.tsv
-export DGG_STRUCT2GO_BP=/absolute/path/struct2go_bp.tsv
-export DGG_STRUCT2GO_CC=/absolute/path/struct2go_cc.tsv
-export DGG_BENCHMARK_METHODS=hybrid,naive,blast,diamond,foldseek,interproscan,deepfri_sequence,deepfri_structure,dpfunc,deepgoplus,deepgose,struct2go
+export DGG_BENCHMARK_METHODS=gat_go
 sbatch 'arc slurms/run_full_benchmark.slurm'
 ```
 
-Preflight fails if any file is missing, so an unavailable Struct2GO run cannot
-silently appear in plots.
+If the released feature bundle does not cover all locked proteins, the stage
+writes `raw/gat_go/preflight.json` and exits. Generating substitute features
+would no longer be a reproducible run of the released method.
+
+## DeepGraphGO opt-in
+
+DeepGraphGO supports new FASTA queries through its released one-iteration
+PSI-BLAST mapping into the fixed PPI network. Install its repository, split
+data archive, three checkpoints per ontology, and exact legacy runtime:
+
+```bash
+DGG_SOTA_SETUP_METHODS=deepgraphgo sbatch 'arc slurms/arc_01_setup_sota.slurm'
+```
+
+Setup pins the audited upstream revision
+`efdb1cb9425f4f48e4613c0a89e603f5542bcb19`.
+
+The published PyTorch 1.6/DGL 0.4 code cannot execute on ARC's L40 GPU stack.
+Setup therefore creates a CPU-only legacy environment and changes only device
+placement and the BLAST thread count; model layers, weights, graph sampling,
+and the three-model ensemble are unchanged. ARC protein IDs are replaced by
+synthetic query IDs before BLAST so a coincidental identifier match cannot
+bypass sequence mapping.
+
+Run it independently so a GAT-GO feature-coverage failure cannot prevent this
+valid sequence-to-network evaluation:
+
+```bash
+export DGG_BENCHMARK_METHODS=deepgraphgo
+sbatch 'arc slurms/run_full_benchmark.slurm'
+```
 
 ## SProf-GO
 
@@ -216,6 +247,6 @@ project environment.
 - Validation and test proteins are predicted together, but only validation labels are used for DeepGreenGO's fixed operating threshold.
 - Every output is mapped to the locked GO vocabulary and propagated to represented ancestors at evaluation time under one common true-path rule; external adapters may also pre-propagate, which is idempotent. Protein and term coverage are audited.
 - Missing predictions remain zero in the full 754-protein analysis.
-- Pretrained external models are not described as leakage-free because historical training overlap may be unknown. In particular, DeepGOPlus combines a CNN with DIAMOND transfer from its own released Swiss-Prot-derived reference set, DeepGO-SE uses released models trained on an external Swiss-Prot corpus, and HEAL/Struct2GO use released checkpoints trained outside the locked ARC split. Their scores are descriptive unless those original corpora are explicitly audited against the locked test sequences.
+- Pretrained external models are not described as leakage-free because historical training overlap may be unknown. In particular, DeepGOPlus combines a CNN with DIAMOND transfer from its own released Swiss-Prot-derived reference set, DeepGO-SE, HEAL, GAT-GO, and DeepGraphGO use released checkpoints or reference networks trained outside the locked ARC split. Their scores are descriptive unless those original corpora are explicitly audited against the locked test sequences.
 - The locked test set contains 754 PDB chains but only 140 unique amino-acid sequences. Point estimates remain chain-level for compatibility with the locked benchmark; confidence intervals use an identical-sequence cluster bootstrap so duplicate chains are not treated as independent evidence.
 - Structural quality analysis uses experimental-chain residue coverage, not pLDDT.

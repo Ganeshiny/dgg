@@ -21,20 +21,44 @@ class AddedMethodContractTests(unittest.TestCase):
         self.assertIn('--method heal', benchmark)
         self.assertIn('stage 10b_heal run_heal', benchmark)
 
-    def test_struct2go_requires_real_external_arc_scores(self):
+    def test_gat_go_has_strict_official_feature_integration(self):
         benchmark = BENCHMARK.read_text()
         setup = SETUP.read_text()
+        runner = (PROJECT_ROOT / "scripts" / "run_gat_go_arc.py").read_text()
 
-        self.assertIn("github.com/lyjps/Struct2GO.git", setup)
-        self.assertIn('CURRENT_METHOD=struct2go', benchmark)
-        self.assertIn('require_file "${STRUCT2GO_MF}"', benchmark)
-        self.assertIn('require_file "${STRUCT2GO_BP}"', benchmark)
-        self.assertIn('require_file "${STRUCT2GO_CC}"', benchmark)
-        self.assertIn('--method struct2go', benchmark)
-        self.assertIn('stage 10c_struct2go run_struct2go', benchmark)
+        self.assertIn("github.com/bl-2633/GAT-GO.git", setup)
+        self.assertIn("90ec6d1067a893d4a51be715e41daf9fa4732952", setup)
+        self.assertIn("--runtime-smoke-test", setup)
+        self.assertIn("proteins_missing_or_invalid", runner)
+        self.assertIn("labels_used_for_inference", runner)
+        self.assertIn("Never access obj['label']", runner)
+        self.assertIn('CURRENT_METHOD=gat_go', benchmark)
+        self.assertIn('--method gat_go', benchmark)
+        self.assertIn('stage 10c_gat_go run_gat_go', benchmark)
 
-    def test_comparison_plot_registers_both_methods(self):
+    def test_deepgraphgo_has_cpu_environment_and_synthetic_query_mapping(self):
+        benchmark = BENCHMARK.read_text()
+        setup = SETUP.read_text()
+        runner = (PROJECT_ROOT / "scripts" / "run_deepgraphgo_arc.py").read_text()
+
+        self.assertIn("github.com/yourh/DeepGraphGO.git", setup)
+        self.assertIn("efdb1cb9425f4f48e4613c0a89e603f5542bcb19", setup)
+        self.assertIn("--runtime-smoke-test", setup)
+        self.assertIn('"pytorch=1.6.0" cpuonly', setup)
+        self.assertIn("query_identifiers_synthetic", runner)
+        self.assertIn("DGGQ{index:06d}", runner)
+        self.assertIn('CURRENT_METHOD=deepgraphgo', benchmark)
+        self.assertIn('--method deepgraphgo', benchmark)
+        self.assertIn('stage 10d_deepgraphgo run_deepgraphgo', benchmark)
+
+    def test_struct2go_is_removed_and_plot_registers_new_methods(self):
+        benchmark = BENCHMARK.read_text()
+        setup = SETUP.read_text()
         source = PLOT.read_text()
 
+        self.assertNotIn("struct2go", benchmark.lower())
+        self.assertNotIn("struct2go", setup.lower())
+        self.assertNotIn('"struct2go":', source.lower())
         self.assertIn('"heal": "HEAL (PDB-only)"', source)
-        self.assertIn('"struct2go": "Struct2GO"', source)
+        self.assertIn('"gat_go": "GAT-GO"', source)
+        self.assertIn('"deepgraphgo": "DeepGraphGO"', source)
