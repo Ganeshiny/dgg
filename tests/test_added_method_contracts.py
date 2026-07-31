@@ -174,10 +174,28 @@ class AddedMethodContractTests(unittest.TestCase):
         submit = (PROJECT_ROOT / "arc slurms" / "submit_new_baselines.sh").read_text()
         # A comment explaining the exclusion is fine; actually requesting the
         # method (setup methods or benchmark methods) is not.
-        self.assertNotIn("DGG_SOTA_SETUP_METHODS=heal,gat_go,deepgraphgo", submit)
-        self.assertNotIn("deepgraphgo", submit.split("# Layout and why:")[1])
+        code = submit.split("# Layout and why:")[1]
+        self.assertNotIn("deepgraphgo", code)
         # The wiring itself must stay intact for when training is added.
         self.assertIn("setup_deepgraphgo()", SETUP.read_text())
+
+    def test_gat_go_is_excluded_from_the_submission_chain(self):
+        """The official precomputed features cover only 68/1508 (4.5%) of
+        the locked ARC query set (confirmed by
+        --report-coverage-only during setup); the runner's strict preflight
+        correctly refuses that as full coverage, so submitting it would just
+        fail the GPU job. Removed here per user decision; the state-dict
+        remap and all other GAT-GO wiring stay in place."""
+        submit = (PROJECT_ROOT / "arc slurms" / "submit_new_baselines.sh").read_text()
+        code = submit.split("# Layout and why:")[1]
+        self.assertNotIn("gat_go", code)
+        # The wiring itself must stay intact for whenever fuller feature
+        # coverage becomes available.
+        self.assertIn("setup_gat_go()", SETUP.read_text())
+        self.assertIn(
+            "def remap_legacy_gat_go_state_dict",
+            (PROJECT_ROOT / "scripts" / "run_gat_go_arc.py").read_text(),
+        )
 
     def test_struct2go_is_removed_and_plot_registers_new_methods(self):
         benchmark = BENCHMARK.read_text()

@@ -1,29 +1,34 @@
 #!/usr/bin/env bash
-# Submit the HEAL / GAT-GO benchmark chain in one command.
+# Submit the HEAL benchmark chain in one command.
 #
 #   cd /home/ganeshiny.sridharan/dgg/deep-green-GO
 #   bash 'arc slurms/submit_new_baselines.sh'
 #
-# DeepGraphGO is deliberately not part of this chain: the released repository
-# ships no pretrained checkpoints (verified against the pinned commit
-# efdb1cb9425f4f48e4613c0a89e603f5542bcb19 - no models/ directory, no GitHub
-# Release). Its main.py trains three seeds per ontology from scratch; nothing
-# in this pipeline runs that training, so there is no checkpoint to evaluate.
-# All of its setup/runner/benchmark wiring is left in place for that as a
-# separately scoped task - only this submission chain omits it.
+# GAT-GO and DeepGraphGO are deliberately not part of this chain, both for
+# release-coverage reasons rather than environment bugs. All of their setup,
+# runner, and benchmark wiring (including a verified state-dict remap for
+# GAT-GO's checkpoint) is left in place; only this submission omits them.
+#
+#   - DeepGraphGO: the released repository ships no pretrained checkpoints
+#     (verified against the pinned commit
+#     efdb1cb9425f4f48e4613c0a89e603f5542bcb19 - no models/ directory, no
+#     GitHub Release). Its main.py trains three seeds per ontology from
+#     scratch; nothing in this pipeline runs that training.
+#   - GAT-GO: the official precomputed per-chain features cover only 68 of
+#     the 1508 locked ARC query proteins (4.5%, confirmed via
+#     scripts/run_gat_go_arc.py --report-coverage-only during setup). The
+#     runner's strict preflight correctly refuses to score that small a
+#     subset as if it were full coverage, so the GPU job would fail there
+#     even with a working environment.
 #
 # Layout and why:
-#   A  setup   CPU  HEAL and GAT-GO in one pass. The environments are
-#                   independent, so two separate setup jobs would only
-#                   repeat the same Conda solves.
+#   A  setup   CPU  HEAL only for now.
 #   B  HEAL    GPU  ESM-1b inference over 1508 structures.
-#   C  GAT-GO  GPU  separate from B so a released-feature coverage failure
-#                   cannot discard a completed HEAL run.
-#   D  scoring CPU  one 1000-bootstrap evaluation and one figure build over
-#                   every method present, instead of one per method job.
+#   C  scoring CPU  the 1000-bootstrap evaluation and figure build.
 #
-# B and C use DGG_BENCHMARK_SKIP_EVALUATION=1 and are chained with afterany so
-# one comparator failing still lets the other finish and be scored.
+# B uses DGG_BENCHMARK_SKIP_EVALUATION=1 so the scoring pass in C is computed
+# once rather than repeated per method job (relevant again once more methods
+# are added back to this chain).
 
 set -euo pipefail
 
@@ -39,16 +44,12 @@ for script in "${SETUP_JOB}" "${GPU_JOB}" "${CPU_JOB}"; do
     [[ -f "${script}" ]] || { echo "[ERROR] Missing ${script}" >&2; exit 1; }
 done
 
-setup=$(DGG_SOTA_SETUP_METHODS=heal,gat_go \
+setup=$(DGG_SOTA_SETUP_METHODS=heal \
     sbatch --parsable "${SETUP_JOB}")
 
 heal=$(DGG_BENCHMARK_METHODS=hybrid,heal \
     DGG_BENCHMARK_SKIP_EVALUATION=1 \
     sbatch --parsable --dependency=afterok:"${setup}" "${GPU_JOB}")
-
-gat=$(DGG_BENCHMARK_METHODS=hybrid,gat_go \
-    DGG_BENCHMARK_SKIP_EVALUATION=1 \
-    sbatch --parsable --dependency=afterany:"${heal}" "${GPU_JOB}")
 
 # An empty DGG_BENCHMARK_REQUIRE_METHODS scores every method already normalized
 # into predictions/, so a comparator that failed upstream is simply absent from
@@ -56,15 +57,14 @@ gat=$(DGG_BENCHMARK_METHODS=hybrid,gat_go \
 score=$(DGG_BENCHMARK_METHODS=hybrid \
     DGG_BENCHMARK_REQUIRE_METHODS= \
     DGG_BENCHMARK_SKIP_EVALUATION=0 \
-    sbatch --parsable --dependency=afterany:"${gat}" "${CPU_JOB}")
+    sbatch --parsable --dependency=afterany:"${heal}" "${CPU_JOB}")
 
 printf '%s\n' \
-    "A setup (CPU, heal+gat_go):     ${setup}" \
+    "A setup (CPU, heal):            ${setup}" \
     "B HEAL (GPU):                   ${heal}" \
-    "C GAT-GO (GPU):                 ${gat}" \
-    "D evaluation and figures (CPU): ${score}"
+    "C evaluation and figures (CPU): ${score}"
 
-squeue -j "${setup},${heal},${gat},${score}" || true
+squeue -j "${setup},${heal},${score}" || true
 
 echo
 echo "Watch the setup repair first:"
