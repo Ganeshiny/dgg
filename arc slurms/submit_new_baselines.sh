@@ -44,20 +44,49 @@ for script in "${SETUP_JOB}" "${GPU_JOB}" "${CPU_JOB}"; do
     [[ -f "${script}" ]] || { echo "[ERROR] Missing ${script}" >&2; exit 1; }
 done
 
-setup=$(DGG_SOTA_SETUP_METHODS=heal \
-    sbatch --parsable "${SETUP_JOB}")
+# Resource right-sizing. The #SBATCH directives inside the driver scripts are
+# sized for a *full* benchmark (every method, from scratch); this chain runs
+# only HEAL plus scoring, so the requests below override them on the sbatch
+# command line (CLI flags take precedence over in-script directives). Asking
+# only for what a job uses is both an ARC expectation and the practical way to
+# get scheduled sooner, since a smaller, shorter job backfills far more
+# readily than a 24-hour whole-node reservation.
+#
+# Confirm these against reality after the run and tighten further if needed:
+#   seff <jobid>      # CPU/memory efficiency and actual elapsed time
+# Every stage is resumable (stage markers plus HEAL's per-protein score
+# cache), so an occasional timeout costs a resubmit, not lost work.
 
+# Setup: repo checkouts, Conda solves, and downloads that are already cached
+# from the previous successful run - so this is mostly verification now.
+setup=$(DGG_SOTA_SETUP_METHODS=heal \
+    sbatch --parsable \
+    --time=04:00:00 --cpus-per-task=8 --mem=32G \
+    "${SETUP_JOB}")
+
+# HEAL: GPU-bound ESM-1b inference over 1508 structures, now computing the
+# encoder once per protein rather than once per ontology. The surrounding
+# per-protein work (Biopython parsing, graph construction) is single-threaded
+# Python, so 16 cores and 96 GB on a shared L40 node were both unused
+# reservations that keep other GPU work off the node.
 heal=$(DGG_BENCHMARK_METHODS=hybrid,heal \
     DGG_BENCHMARK_SKIP_EVALUATION=1 \
-    sbatch --parsable --dependency=afterok:"${setup}" "${GPU_JOB}")
+    sbatch --parsable --dependency=afterok:"${setup}" \
+    --time=06:00:00 --cpus-per-task=8 --mem=32G --gres=gpu:1 \
+    "${GPU_JOB}")
 
+# Scoring: the 1000-replicate paired bootstrap genuinely parallelises across
+# --aupr-workers, so the 32 cores here are actually used; only the walltime
+# and memory were over-reserved.
 # An empty DGG_BENCHMARK_REQUIRE_METHODS scores every method already normalized
 # into predictions/, so a comparator that failed upstream is simply absent from
 # the figures rather than aborting the scoring pass.
 score=$(DGG_BENCHMARK_METHODS=hybrid \
     DGG_BENCHMARK_REQUIRE_METHODS= \
     DGG_BENCHMARK_SKIP_EVALUATION=0 \
-    sbatch --parsable --dependency=afterany:"${heal}" "${CPU_JOB}")
+    sbatch --parsable --dependency=afterany:"${heal}" \
+    --time=04:00:00 --cpus-per-task=32 --mem=64G \
+    "${CPU_JOB}")
 
 printf '%s\n' \
     "A setup (CPU, heal):            ${setup}" \

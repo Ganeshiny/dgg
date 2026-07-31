@@ -25,6 +25,15 @@ from matplotlib.lines import Line2D
 PROJECT_DIR = Path(__file__).resolve().parents[1]
 DEFAULT_WORKSPACE = PROJECT_DIR / "arc_benchmark" / "nominal_30_identity_80_coverage"
 
+# numpy 2.0 renamed trapz -> trapezoid. ARC's environment still has numpy < 2,
+# where only `trapz` exists, so calling `np.trapezoid` unconditionally crashed
+# the whole stratified figure build there while working fine on numpy >= 2.
+# Resolve once, preferring the current name. getattr's default is not evaluated
+# unless needed, so this also survives `trapz` eventually being removed.
+_trapezoid = getattr(np, "trapezoid", None)
+if _trapezoid is None:  # numpy < 2.0
+    _trapezoid = np.trapz
+
 _parser = argparse.ArgumentParser(add_help=False)
 _parser.add_argument("--journal", choices=("bmc", "nature"), default=None)
 _known, _ = _parser.parse_known_args()
@@ -221,7 +230,7 @@ def _ic_aupr_summary(frame: pd.DataFrame, methods: list[str]) -> str:
             if valid.sum() < 2:
                 continue
             order = np.argsort(recall[valid])
-            area = float(np.trapezoid(precision[valid][order], recall[valid][order]))
+            area = float(_trapezoid(precision[valid][order], recall[valid][order]))
             parts.append(f"IC_AUPR_{ONTOLOGY_SHORT[ontology]}={area:.2f}")
         if parts:
             lines.append(f"{METHOD_LABEL.get(method, method)}\n  " + "  ".join(parts))

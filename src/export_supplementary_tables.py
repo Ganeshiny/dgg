@@ -13,6 +13,12 @@ import pandas as pd
 
 PROJECT_DIR = Path(__file__).resolve().parents[1]
 DEFAULT_WORKSPACE = PROJECT_DIR / "arc_benchmark" / "nominal_30_identity_80_coverage"
+
+# numpy 2.0 renamed trapz -> trapezoid; ARC's environment still has numpy < 2.
+# See the identical note in plot_stratified.py.
+_trapezoid = getattr(np, "trapezoid", None)
+if _trapezoid is None:  # numpy < 2.0
+    _trapezoid = np.trapz
 ONTOLOGY_LABEL = {
     "molecular_function": "MF",
     "biological_process": "BP",
@@ -21,6 +27,10 @@ ONTOLOGY_LABEL = {
 EXTERNAL_PRETRAINED = {
     "deepfri_sequence", "deepfri_structure", "dpfunc", "deepgoplus",
     "deepgose", "transfun", "eggnog_mapper", "hayai", "gomap",
+    # Graph-based comparators run from their released checkpoints. Without
+    # these, comparison_audit() falls through to "requires manual review",
+    # which would be wrong provenance for a publication table.
+    "heal", "gat_go", "deepgraphgo",
 }
 SPLIT_TRAINED = {
     "deepgreengo", "naive", "blast", "blast_max", "diamond",
@@ -51,7 +61,7 @@ def ic_weighted_aupr(curves: pd.DataFrame) -> pd.DataFrame:
             area = np.nan
         else:
             order = np.argsort(recall[valid])
-            area = float(np.trapezoid(precision[valid][order], recall[valid][order]))
+            area = float(_trapezoid(precision[valid][order], recall[valid][order]))
         rows.append({
             "method": method,
             "ontology": ontology,
