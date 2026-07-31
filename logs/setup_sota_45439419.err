@@ -1,0 +1,121 @@
+Cloning into '/home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/DeepGraphGO'...
+Updating files:   3% (1/30)
+Updating files:   6% (2/30)
+Updating files:  10% (3/30)
+Updating files:  13% (4/30)
+Updating files:  16% (5/30)
+Updating files:  20% (6/30)
+Updating files:  23% (7/30)
+Updating files:  26% (8/30)
+Updating files:  30% (9/30)
+Updating files:  33% (10/30)
+Updating files:  36% (11/30)
+Updating files:  40% (12/30)
+Updating files:  43% (13/30)
+Updating files:  46% (14/30)
+Updating files:  50% (15/30)
+Updating files:  53% (16/30)
+Updating files:  56% (17/30)
+Updating files:  60% (18/30)
+Updating files:  63% (19/30)
+Updating files:  66% (20/30)
+Updating files:  70% (21/30)
+Updating files:  73% (22/30)
+Updating files:  76% (23/30)
+Updating files:  80% (24/30)
+Updating files:  83% (25/30)
+Updating files:  86% (26/30)
+Updating files:  90% (27/30)
+Updating files:  93% (28/30)
+Updating files:  96% (29/30)
+Updating files: 100% (30/30)
+Updating files: 100% (30/30), done.
+
+
+==> WARNING: A newer version of conda exists. <==
+    current version: 26.3.2
+    latest version: 26.5.3
+
+Please update conda by running
+
+    $ conda update -n base -c defaults conda
+
+
+ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.
+torch 1.6.0 requires future, which is not installed.
+
+[notice] A new release of pip is available: 24.0 -> 25.0.1
+[notice] To update, run: pip install --upgrade pip
+dtrx: ERROR: could not handle data.zip
+ERROR:dtrx-log:could not handle data.zip
+dtrx: ERROR: treating as Zip file failed: extraction error: 'unzip -q /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/DeepGraphGO/data/data.zip' returned status code 3
+ERROR:dtrx-log:treating as Zip file failed: extraction error: 'unzip -q /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/DeepGraphGO/data/data.zip' returned status code 3
+dtrx: ERROR: Error output from this process:
+warning [/home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/DeepGraphGO/data/data.zip]:  zipfile claims to be last disk of a multi-part archive;
+  attempting to process anyway, assuming all parts have been concatenated
+  together in order.  Expect "errors" and warnings...true multi-part support
+  doesn't exist yet (coming soon).
+file #1:  bad zipfile offset (local header sig):  4
+file #2:  bad zipfile offset (local header sig):  257014
+file #3:  bad zipfile offset (local header sig):  796021
+file #4:  bad zipfile offset (local header sig):  927401
+file #5:  bad zipfile offset (local header sig):  933560
+file #6:  bad zipfile offset (local header sig):  1280827
+file #7:  bad zipfile offset (local header sig):  1327275
+file #8:  bad zipfile offset (local header sig):  1332097
+file #9:  bad zipfile offset (local header sig):  24897202
+file #10:  bad zipfile offset (local header sig):  27849366
+file #11:  bad zipfile offset (local header sig):  28077466
+file #12:  bad zipfile offset (local header sig):  28386157
+file #13:  bad zipfile offset (local header sig):  28418537
+file #14:  bad zipfile offset (local header sig):  28422186
+file #15:  bad zipfile offset (local header sig):  28538584
+file #16:  bad zipfile offset (local header sig):  28550697
+file #17:  bad zipfile offset (local header sig):  28552456
+file #18:  bad zipfile offset (local header sig):  44545432
+file #19:  bad zipfile offset (local header sig):  46371598
+file #20:  bad zipfile offset (local header sig):  46530173
+file #21:  bad zipfile offset (local header sig):  46685192
+file #22:  bad zipfile offset (local header sig):  46699236
+file #23:  bad zipfile offset (local header sig):  46701245
+file #24:  bad zipfile offset (local header sig):  22113326
+file #25:  bad zipfile offset (local header sig):  23462683
+file #26:  bad zipfile offset (local header sig):  24518807
+file #27:  bad zipfile offset (lseek):  74645504
+file #28:  bad zipfile offset (lseek):  77291520
+ERROR:dtrx-log:Error output from this process:
+warning [/home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/DeepGraphGO/data/data.zip]:  zipfile claims to be last disk of a multi-part archive;
+  attempting to process anyway, assuming all parts have been concatenated
+  together in order.  Expect "errors" and warnings...true multi-part support
+  doesn't exist yet (coming soon).
+file #1:  bad zipfile offset (local header sig):  4
+file #2:  bad zipfile offset (local header sig):  257014
+file #3:  bad zipfile offset (local header sig):  796021
+file #4:  bad zipfile offset (local header sig):  927401
+file #5:  bad zipfile offset (local header sig):  933560
+file #6:  bad zipfile offset (local header sig):  1280827
+file #7:  bad zipfile offset (local header sig):  1327275
+file #8:  bad zipfile offset (local header sig):  1332097
+file #9:  bad zipfile offset (local header sig):  24897202
+file #10:  bad zipfile offset (local header sig):  27849366
+file #11:  bad zipfile offset (local header sig):  28077466
+file #12:  bad zipfile offset (local header sig):  28386157
+file #13:  bad zipfile offset (local header sig):  28418537
+file #14:  bad zipfile offset (local header sig):  28422186
+file #15:  bad zipfile offset (local header sig):  28538584
+file #16:  bad zipfile offset (local header sig):  28550697
+file #17:  bad zipfile offset (local header sig):  28552456
+file #18:  bad zipfile offset (local header sig):  44545432
+file #19:  bad zipfile offset (local header sig):  46371598
+file #20:  bad zipfile offset (local header sig):  46530173
+file #21:  bad zipfile offset (local header sig):  46685192
+file #22:  bad zipfile offset (local header sig):  46699236
+file #23:  bad zipfile offset (local header sig):  46701245
+file #24:  bad zipfile offset (local header sig):  22113326
+file #25:  bad zipfile offset (local header sig):  23462683
+file #26:  bad zipfile offset (local header sig):  24518807
+file #27:  bad zipfile offset (lseek):  74645504
+file #28:  bad zipfile offset (lseek):  77291520
+dtrx: ERROR: treating as 7z file failed: could not run 7z
+ERROR:dtrx-log:treating as 7z file failed: could not run 7z
+ERROR conda.cli.main_run:execute(148): `conda run dtrx -f data.zip` failed. (See above for error)

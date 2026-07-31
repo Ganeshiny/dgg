@@ -1,0 +1,156 @@
+========================================================
+  Job ID      : 45522120
+  Node        : mc62
+  Start time  : Thu Jul 30 21:48:32 MDT 2026
+  Project     : /home/ganeshiny.sridharan/dgg/deep-green-GO
+  Methods     : heal,gat_go
+========================================================
+[OK] Repository exists: /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/HEAL
+2 channel Terms of Service accepted
+Channels:
+ - pytorch
+ - nvidia
+ - defaults
+Platform: linux-64
+Collecting package metadata (repodata.json): - \ | / - \ | / - \ | / - \ | done
+Solving environment: - \ done
+
+# All requested packages already installed.
+
+Requirement already satisfied: torch-geometric==2.5.3 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (2.5.3)
+Requirement already satisfied: fair-esm==2.0.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (2.0.0)
+Requirement already satisfied: biopython<2,>=1.81 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (1.87)
+Requirement already satisfied: numpy<2 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (1.26.4)
+Requirement already satisfied: scikit-learn<2 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (1.7.2)
+Requirement already satisfied: joblib in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (1.5.3)
+Requirement already satisfied: tqdm in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (4.70.0)
+Requirement already satisfied: scipy in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (from torch-geometric==2.5.3) (1.15.3)
+Requirement already satisfied: fsspec in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (from torch-geometric==2.5.3) (2026.7.0)
+Requirement already satisfied: jinja2 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (from torch-geometric==2.5.3) (3.1.6)
+Requirement already satisfied: aiohttp in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (from torch-geometric==2.5.3) (3.14.3)
+Requirement already satisfied: requests in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (from torch-geometric==2.5.3) (2.34.2)
+Requirement already satisfied: pyparsing in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (from torch-geometric==2.5.3) (3.3.2)
+Requirement already satisfied: psutil>=5.8.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (from torch-geometric==2.5.3) (7.2.2)
+Requirement already satisfied: threadpoolctl>=3.1.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (from scikit-learn<2) (3.6.0)
+Requirement already satisfied: aiohappyeyeballs>=2.5.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (from aiohttp->torch-geometric==2.5.3) (2.7.1)
+Requirement already satisfied: aiosignal>=1.4.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (from aiohttp->torch-geometric==2.5.3) (1.4.0)
+Requirement already satisfied: async-timeout<6.0,>=4.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (from aiohttp->torch-geometric==2.5.3) (5.0.1)
+Requirement already satisfied: attrs>=17.3.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (from aiohttp->torch-geometric==2.5.3) (26.1.0)
+Requirement already satisfied: frozenlist>=1.1.1 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (from aiohttp->torch-geometric==2.5.3) (1.8.0)
+Requirement already satisfied: multidict<7.0,>=4.5 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (from aiohttp->torch-geometric==2.5.3) (6.7.1)
+Requirement already satisfied: propcache>=0.2.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (from aiohttp->torch-geometric==2.5.3) (0.5.2)
+Requirement already satisfied: typing_extensions>=4.4 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (from aiohttp->torch-geometric==2.5.3) (4.16.0)
+Requirement already satisfied: yarl<2.0,>=1.17.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (from aiohttp->torch-geometric==2.5.3) (1.24.5)
+Requirement already satisfied: idna>=2.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (from yarl<2.0,>=1.17.0->aiohttp->torch-geometric==2.5.3) (3.18)
+Requirement already satisfied: MarkupSafe>=2.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (from jinja2->torch-geometric==2.5.3) (3.0.3)
+Requirement already satisfied: charset_normalizer<4,>=2 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (from requests->torch-geometric==2.5.3) (3.4.9)
+Requirement already satisfied: urllib3<3,>=1.26 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (from requests->torch-geometric==2.5.3) (2.7.0)
+Requirement already satisfied: certifi>=2023.5.7 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (from requests->torch-geometric==2.5.3) (2026.7.22)
+[OK] Download exists: /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/torch_cache/hub/checkpoints/esm1b_t33_650M_UR50S.pt
+[OK] Download exists: /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/torch_cache/hub/checkpoints/esm1b_t33_650M_UR50S-contact-regression.pt
+[OK] Repository exists: /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/GAT-GO
+git version 2.55.0
+[OK] Pinned repository: /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/GAT-GO @ 90ec6d1067a893d4a51be715e41daf9fa4732952
+2 channel Terms of Service accepted
+Channels:
+ - pytorch
+ - nvidia
+ - defaults
+Platform: linux-64
+Collecting package metadata (repodata.json): - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ done
+Solving environment: / - done
+
+# All requested packages already installed.
+
+Requirement already satisfied: torch-geometric==2.5.3 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_gat_go/lib/python3.10/site-packages (2.5.3)
+Requirement already satisfied: numpy<2 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_gat_go/lib/python3.10/site-packages (1.26.4)
+Requirement already satisfied: gdown<6,>=5 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_gat_go/lib/python3.10/site-packages (5.2.2)
+Requirement already satisfied: tqdm in /home/ganeshiny.sridharan/miniconda3/envs/dgg_gat_go/lib/python3.10/site-packages (from torch-geometric==2.5.3) (4.70.0)
+Requirement already satisfied: scipy in /home/ganeshiny.sridharan/miniconda3/envs/dgg_gat_go/lib/python3.10/site-packages (from torch-geometric==2.5.3) (1.15.3)
+Requirement already satisfied: fsspec in /home/ganeshiny.sridharan/miniconda3/envs/dgg_gat_go/lib/python3.10/site-packages (from torch-geometric==2.5.3) (2026.7.0)
+Requirement already satisfied: jinja2 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_gat_go/lib/python3.10/site-packages (from torch-geometric==2.5.3) (3.1.6)
+Requirement already satisfied: aiohttp in /home/ganeshiny.sridharan/miniconda3/envs/dgg_gat_go/lib/python3.10/site-packages (from torch-geometric==2.5.3) (3.14.3)
+Requirement already satisfied: requests in /home/ganeshiny.sridharan/miniconda3/envs/dgg_gat_go/lib/python3.10/site-packages (from torch-geometric==2.5.3) (2.34.2)
+Requirement already satisfied: pyparsing in /home/ganeshiny.sridharan/miniconda3/envs/dgg_gat_go/lib/python3.10/site-packages (from torch-geometric==2.5.3) (3.3.2)
+Requirement already satisfied: scikit-learn in /home/ganeshiny.sridharan/miniconda3/envs/dgg_gat_go/lib/python3.10/site-packages (from torch-geometric==2.5.3) (1.7.2)
+Requirement already satisfied: psutil>=5.8.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_gat_go/lib/python3.10/site-packages (from torch-geometric==2.5.3) (7.2.2)
+Requirement already satisfied: beautifulsoup4 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_gat_go/lib/python3.10/site-packages (from gdown<6,>=5) (4.15.0)
+Requirement already satisfied: filelock in /home/ganeshiny.sridharan/miniconda3/envs/dgg_gat_go/lib/python3.10/site-packages (from gdown<6,>=5) (3.29.4)
+Requirement already satisfied: aiohappyeyeballs>=2.5.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_gat_go/lib/python3.10/site-packages (from aiohttp->torch-geometric==2.5.3) (2.7.1)
+Requirement already satisfied: aiosignal>=1.4.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_gat_go/lib/python3.10/site-packages (from aiohttp->torch-geometric==2.5.3) (1.4.0)
+Requirement already satisfied: async-timeout<6.0,>=4.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_gat_go/lib/python3.10/site-packages (from aiohttp->torch-geometric==2.5.3) (5.0.1)
+Requirement already satisfied: attrs>=17.3.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_gat_go/lib/python3.10/site-packages (from aiohttp->torch-geometric==2.5.3) (26.1.0)
+Requirement already satisfied: frozenlist>=1.1.1 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_gat_go/lib/python3.10/site-packages (from aiohttp->torch-geometric==2.5.3) (1.8.0)
+Requirement already satisfied: multidict<7.0,>=4.5 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_gat_go/lib/python3.10/site-packages (from aiohttp->torch-geometric==2.5.3) (6.7.1)
+Requirement already satisfied: propcache>=0.2.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_gat_go/lib/python3.10/site-packages (from aiohttp->torch-geometric==2.5.3) (0.5.2)
+Requirement already satisfied: typing_extensions>=4.4 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_gat_go/lib/python3.10/site-packages (from aiohttp->torch-geometric==2.5.3) (4.16.0)
+Requirement already satisfied: yarl<2.0,>=1.17.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_gat_go/lib/python3.10/site-packages (from aiohttp->torch-geometric==2.5.3) (1.24.5)
+Requirement already satisfied: idna>=2.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_gat_go/lib/python3.10/site-packages (from yarl<2.0,>=1.17.0->aiohttp->torch-geometric==2.5.3) (3.18)
+Requirement already satisfied: soupsieve>=1.6.1 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_gat_go/lib/python3.10/site-packages (from beautifulsoup4->gdown<6,>=5) (2.9.1)
+Requirement already satisfied: MarkupSafe>=2.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_gat_go/lib/python3.10/site-packages (from jinja2->torch-geometric==2.5.3) (3.0.3)
+Requirement already satisfied: charset_normalizer<4,>=2 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_gat_go/lib/python3.10/site-packages (from requests->torch-geometric==2.5.3) (3.4.9)
+Requirement already satisfied: urllib3<3,>=1.26 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_gat_go/lib/python3.10/site-packages (from requests->torch-geometric==2.5.3) (2.7.0)
+Requirement already satisfied: certifi>=2023.5.7 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_gat_go/lib/python3.10/site-packages (from requests->torch-geometric==2.5.3) (2026.7.22)
+Requirement already satisfied: PySocks!=1.5.7,>=1.5.6 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_gat_go/lib/python3.10/site-packages (from requests[socks]->gdown<6,>=5) (1.7.1)
+Requirement already satisfied: joblib>=1.2.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_gat_go/lib/python3.10/site-packages (from scikit-learn->torch-geometric==2.5.3) (1.5.3)
+Requirement already satisfied: threadpoolctl>=3.1.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_gat_go/lib/python3.10/site-packages (from scikit-learn->torch-geometric==2.5.3) (3.6.0)
+[SETUP] Unpacked 0 archive(s) under /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/GAT-GO
+[SETUP] Relocating /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/GAT-GO/GAT-GO_modelweights.pt -> /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/GAT-GO/trained_models/GAT-GO_modelweights.pt
+HEAL runtime imports ok
+HEAL ESM-1b checkpoint pair loads
+usage: run_heal_arc.py [-h] --heal-root HEAL_ROOT --structure-dir
+                       STRUCTURE_DIR --esm1b-model ESM1B_MODEL --output-dir
+                       OUTPUT_DIR [--device DEVICE]
+                       [--model-variant {pdb-only,combined}]
+                       [--max-residues MAX_RESIDUES]
+                       [--expected-structures EXPECTED_STRUCTURES]
+
+Run released HEAL checkpoints on ARC PDB chains with resumable score caches.
+
+options:
+  -h, --help            show this help message and exit
+  --heal-root HEAL_ROOT
+  --structure-dir STRUCTURE_DIR
+  --esm1b-model ESM1B_MODEL
+  --output-dir OUTPUT_DIR
+  --device DEVICE
+  --model-variant {pdb-only,combined}
+                        pdb-only uses upstream *CL.pt; combined uses
+                        PDBch+AFch *CLaf.pt
+  --max-residues MAX_RESIDUES
+                        ESM-1b residue limit; longer proteins are reported and
+                        left at zero
+  --expected-structures EXPECTED_STRUCTURES
+2.1.2 2.5.3 False
+usage: run_gat_go_arc.py [-h] --gat-root GAT_ROOT --feature-root FEATURE_ROOT
+                         --model MODEL --go-map GO_MAP [--fasta FASTA]
+                         [--workspace WORKSPACE] [--output-dir OUTPUT_DIR]
+                         [--expected-proteins EXPECTED_PROTEINS]
+                         [--device DEVICE] [--preflight-only]
+                         [--report-coverage-only] [--runtime-smoke-test]
+
+Run the official GAT-GO checkpoint on a fully covered ARC query set. GAT-GO's
+release accepts only precomputed per-chain feature dictionaries. This adapter
+deliberately refuses partial coverage and never reads the bundled ``label``
+field, which is not an inference feature.
+
+options:
+  -h, --help            show this help message and exit
+  --gat-root GAT_ROOT
+  --feature-root FEATURE_ROOT
+  --model MODEL
+  --go-map GO_MAP
+  --fasta FASTA
+  --workspace WORKSPACE
+  --output-dir OUTPUT_DIR
+  --expected-proteins EXPECTED_PROTEINS
+  --device DEVICE
+  --preflight-only
+  --report-coverage-only
+                        Write preflight.json and print feature coverage, then
+                        exit 0 even when coverage is incomplete. Lets the CPU
+                        setup job measure what the released feature bundle
+                        covers without consuming GPU time.
+  --runtime-smoke-test
+GAT-GO released-feature coverage: 68/1508 (4.5%) of the locked ARC query set
+1440 protein(s) have no usable released feature file. GAT-GO cannot be benchmarked on the full query set with the official release alone; see /home/ganeshiny.sridharan/dgg/deep-green-GO/arc_benchmark/nominal_30_identity_80_coverage/raw/gat_go/preflight.json for the first 100 cases.
