@@ -1,0 +1,49 @@
+========================================================
+  Job ID   : 45556912
+  Node     : mc119
+  CPUs     : 32
+  Methods  : hybrid
+  Skip eval: 0
+========================================================
+Project: /home/ganeshiny.sridharan/dgg/deep-green-GO
+Benchmark: /home/ganeshiny.sridharan/dgg/deep-green-GO/arc_benchmark/nominal_30_identity_80_coverage
+Methods: hybrid
+base environment ok
+No GPU-backed method selected; skipping the GPU core check.
+Preflight passed
+[SKIP] 01_prepare_inputs already completed and required artifacts are present
+[SKIP] 01b_structure_views already completed and required artifacts are present
+[SKIP] 02_hybrid already completed and required artifacts are present
+[SKIP] 03_sequence_baselines_naive already completed and required artifacts are present
+[evaluate] molecular_function: 1000 paired AUPR replicates for 14 methods
+[evaluate] biological_process: 1000 paired AUPR replicates for 14 methods
+[evaluate] cellular_component: 1000 paired AUPR replicates for 14 methods
+Evaluated 15 methods; results: /home/ganeshiny.sridharan/dgg/deep-green-GO/arc_benchmark/nominal_30_identity_80_coverage/results
+Plotted DeepGreenGO with 12 comparators: deepgreengo, naive, blast, blast_max, diamond, diamond_max, foldseek, foldseek_max, interproscan, deepfri_sequence, deepfri_structure, dpfunc, heal
+Output: /home/ganeshiny.sridharan/dgg/deep-green-GO/arc_benchmark/nominal_30_identity_80_coverage/plots/main_comparison
+[stratified] workspace=/home/ganeshiny.sridharan/dgg/deep-green-GO/arc_benchmark/nominal_30_identity_80_coverage
+[stratified] parsing /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14/go-basic.obo
+[stratified] molecular_function: 754 proteins, 1052 terms
+[stratified] molecular_function: done
+[stratified] biological_process: 754 proteins, 2193 terms
+[stratified] biological_process: done
+[stratified] cellular_component: 754 proteins, 318 terms
+[stratified] cellular_component: done
+[stratified]   stratified_homology.csv: 210 rows
+[stratified]   stratified_homology_aupr.csv: 210 rows
+[stratified]   stratified_ic.csv: 168 rows
+[stratified]   stratified_depth.csv: 126 rows
+[stratified]   ic_weighted_pr.csv: 4158 rows
+[stratified] wrote 5 tables + manifest to /home/ganeshiny.sridharan/dgg/deep-green-GO/arc_benchmark/nominal_30_identity_80_coverage/results
+Methods plotted: deepgreengo, naive, blast, diamond, foldseek, deepfri_sequence, deepfri_structure, dpfunc, interproscan
+Output: /home/ganeshiny.sridharan/dgg/deep-green-GO/arc_benchmark/nominal_30_identity_80_coverage/plots/stratified
+[supplement] supp_table_s1_overall_performance.csv: 45 rows
+[supplement] supp_table_s2_ic_weighted_aupr.csv: 42 rows
+[supplement] supp_table_s3_prediction_coverage.csv: 45 rows
+[supplement] supp_table_s4_homology_fmax_aupr.csv: 210 rows
+[supplement] supp_table_s5_term_ic_auprc.csv: 168 rows
+[supplement] supp_table_s6_go_depth_auprc.csv: 126 rows
+[supplement] supp_table_s7_paired_differences.csv: 168 rows
+[supplement] supp_table_s8_comparison_audit.csv: 15 rows
+[supplement] output=/home/ganeshiny.sridharan/dgg/deep-green-GO/arc_benchmark/nominal_30_identity_80_coverage/plots/supplementary_tables
+Benchmark completed: /home/ganeshiny.sridharan/dgg/deep-green-GO/arc_benchmark/nominal_30_identity_80_coverage

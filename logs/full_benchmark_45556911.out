@@ -1,0 +1,420 @@
+Project: /home/ganeshiny.sridharan/dgg/deep-green-GO
+Benchmark: /home/ganeshiny.sridharan/dgg/deep-green-GO/arc_benchmark/nominal_30_identity_80_coverage
+Methods: hybrid,heal
+base environment ok
+HEAL environment ok
+usage: run_heal_arc.py [-h] --heal-root HEAL_ROOT --structure-dir
+                       STRUCTURE_DIR --esm1b-model ESM1B_MODEL --output-dir
+                       OUTPUT_DIR [--device DEVICE]
+                       [--model-variant {pdb-only,combined}]
+                       [--max-residues MAX_RESIDUES]
+                       [--expected-structures EXPECTED_STRUCTURES]
+
+Run released HEAL checkpoints on ARC PDB chains with resumable score caches.
+
+options:
+  -h, --help            show this help message and exit
+  --heal-root HEAL_ROOT
+  --structure-dir STRUCTURE_DIR
+  --esm1b-model ESM1B_MODEL
+  --output-dir OUTPUT_DIR
+  --device DEVICE
+  --model-variant {pdb-only,combined}
+                        pdb-only uses upstream *CL.pt; combined uses
+                        PDBch+AFch *CLaf.pt
+  --max-residues MAX_RESIDUES
+                        ESM-1b residue limit; longer proteins are reported and
+                        left at zero
+  --expected-structures EXPECTED_STRUCTURES
+NVIDIA L40S, 46068 MiB
+Preflight passed
+[SKIP] 01_prepare_inputs already completed and required artifacts are present
+[SKIP] 01b_structure_views already completed and required artifacts are present
+[SKIP] 02_hybrid already completed and required artifacts are present
+[SKIP] 03_sequence_baselines_naive already completed and required artifacts are present
+[START] 10b_heal 2026-07-31T12:31:52-06:00
+[HEAL] Remapped 7 legacy GCNConv weight(s) to the installed torch_geometric layout (transposed).
+[HEAL] Remapped 7 legacy GCNConv weight(s) to the installed torch_geometric layout (transposed).
+[HEAL] Remapped 7 legacy GCNConv weight(s) to the installed torch_geometric layout (transposed).
+[HEAL] visited 25/1508 structures (all 3 ontologies)
+[HEAL] visited 50/1508 structures (all 3 ontologies)
+[HEAL] visited 75/1508 structures (all 3 ontologies)
+[HEAL] visited 100/1508 structures (all 3 ontologies)
+[HEAL] visited 125/1508 structures (all 3 ontologies)
+[HEAL] visited 150/1508 structures (all 3 ontologies)
+[HEAL] visited 175/1508 structures (all 3 ontologies)
+[HEAL] visited 200/1508 structures (all 3 ontologies)
+[HEAL] visited 225/1508 structures (all 3 ontologies)
+[HEAL] visited 250/1508 structures (all 3 ontologies)
+[HEAL] visited 275/1508 structures (all 3 ontologies)
+[HEAL] visited 300/1508 structures (all 3 ontologies)
+[HEAL] visited 325/1508 structures (all 3 ontologies)
+[HEAL] visited 350/1508 structures (all 3 ontologies)
+[HEAL] visited 375/1508 structures (all 3 ontologies)
+[HEAL] visited 400/1508 structures (all 3 ontologies)
+[HEAL] visited 425/1508 structures (all 3 ontologies)
+[HEAL] visited 450/1508 structures (all 3 ontologies)
+[HEAL] visited 475/1508 structures (all 3 ontologies)
+[HEAL] visited 500/1508 structures (all 3 ontologies)
+[HEAL] visited 525/1508 structures (all 3 ontologies)
+[HEAL] visited 550/1508 structures (all 3 ontologies)
+[HEAL] visited 575/1508 structures (all 3 ontologies)
+[HEAL] visited 600/1508 structures (all 3 ontologies)
+[HEAL] visited 625/1508 structures (all 3 ontologies)
+[HEAL] visited 650/1508 structures (all 3 ontologies)
+[HEAL] visited 675/1508 structures (all 3 ontologies)
+[HEAL] visited 700/1508 structures (all 3 ontologies)
+[HEAL] visited 725/1508 structures (all 3 ontologies)
+[HEAL] visited 750/1508 structures (all 3 ontologies)
+[HEAL] visited 775/1508 structures (all 3 ontologies)
+[HEAL] visited 800/1508 structures (all 3 ontologies)
+[HEAL] visited 825/1508 structures (all 3 ontologies)
+[HEAL] visited 850/1508 structures (all 3 ontologies)
+[HEAL] visited 875/1508 structures (all 3 ontologies)
+[HEAL] visited 900/1508 structures (all 3 ontologies)
+[HEAL] visited 925/1508 structures (all 3 ontologies)
+[HEAL] visited 950/1508 structures (all 3 ontologies)
+[HEAL] visited 975/1508 structures (all 3 ontologies)
+[HEAL] visited 1000/1508 structures (all 3 ontologies)
+[HEAL] visited 1025/1508 structures (all 3 ontologies)
+[HEAL] visited 1050/1508 structures (all 3 ontologies)
+[HEAL] visited 1075/1508 structures (all 3 ontologies)
+[HEAL] visited 1100/1508 structures (all 3 ontologies)
+[HEAL] visited 1125/1508 structures (all 3 ontologies)
+[HEAL] visited 1150/1508 structures (all 3 ontologies)
+[HEAL] visited 1175/1508 structures (all 3 ontologies)
+[HEAL] visited 1200/1508 structures (all 3 ontologies)
+[HEAL] visited 1225/1508 structures (all 3 ontologies)
+[HEAL] visited 1250/1508 structures (all 3 ontologies)
+[HEAL] visited 1275/1508 structures (all 3 ontologies)
+[HEAL] visited 1300/1508 structures (all 3 ontologies)
+[HEAL] visited 1325/1508 structures (all 3 ontologies)
+[HEAL] visited 1350/1508 structures (all 3 ontologies)
+[HEAL] visited 1375/1508 structures (all 3 ontologies)
+[HEAL] visited 1400/1508 structures (all 3 ontologies)
+[HEAL] visited 1425/1508 structures (all 3 ontologies)
+[HEAL] visited 1450/1508 structures (all 3 ontologies)
+[HEAL] visited 1475/1508 structures (all 3 ontologies)
+[HEAL] visited 1500/1508 structures (all 3 ontologies)
+{
+  "method": "HEAL",
+  "upstream_commit": "def3a3d478e6e809dacba9c24ff1a2ee87468b61",
+  "model_variant": "pdb-only",
+  "max_residues": 1022,
+  "expected_structures": 1508,
+  "ontologies": {
+    "mf": {
+      "terms": 489,
+      "predicted_proteins": 1484,
+      "skipped_proteins": {
+        "3OB4_A": {
+          "reason": "esm1b_length_limit",
+          "residues": 1148
+        },
+        "7KZM_C": {
+          "reason": "esm1b_length_limit",
+          "residues": 4485
+        },
+        "7KZN_C": {
+          "reason": "esm1b_length_limit",
+          "residues": 1161
+        },
+        "7N6G_1N": {
+          "reason": "esm1b_length_limit",
+          "residues": 2764
+        },
+        "7N6G_6A": {
+          "reason": "esm1b_length_limit",
+          "residues": 1928
+        },
+        "7N6G_6B": {
+          "reason": "esm1b_length_limit",
+          "residues": 1928
+        },
+        "7SQC_C0": {
+          "reason": "esm1b_length_limit",
+          "residues": 1584
+        },
+        "7SQC_C1": {
+          "reason": "esm1b_length_limit",
+          "residues": 1765
+        },
+        "7SQC_C2": {
+          "reason": "esm1b_length_limit",
+          "residues": 1928
+        },
+        "7SQC_C3": {
+          "reason": "esm1b_length_limit",
+          "residues": 1928
+        },
+        "7SQC_O0": {
+          "reason": "esm1b_length_limit",
+          "residues": 1647
+        },
+        "7SQC_R0": {
+          "reason": "esm1b_length_limit",
+          "residues": 2762
+        },
+        "7SQC_R1": {
+          "reason": "esm1b_length_limit",
+          "residues": 2762
+        },
+        "8GLV_AD": {
+          "reason": "esm1b_length_limit",
+          "residues": 4484
+        },
+        "8GLV_AX": {
+          "reason": "esm1b_length_limit",
+          "residues": 4484
+        },
+        "8GLV_Co": {
+          "reason": "esm1b_length_limit",
+          "residues": 4500
+        },
+        "8GLV_Fa": {
+          "reason": "esm1b_length_limit",
+          "residues": 4484
+        },
+        "8GLV_Ks": {
+          "reason": "esm1b_length_limit",
+          "residues": 1170
+        },
+        "8GLV_LZ": {
+          "reason": "esm1b_length_limit",
+          "residues": 1147
+        },
+        "8GLV_Lo": {
+          "reason": "esm1b_length_limit",
+          "residues": 4484
+        },
+        "8Z9Y_A": {
+          "reason": "esm1b_length_limit",
+          "residues": 1772
+        },
+        "9KBZ_A": {
+          "reason": "esm1b_length_limit",
+          "residues": 1577
+        },
+        "9QT9_A": {
+          "reason": "esm1b_length_limit",
+          "residues": 1061
+        },
+        "9QT9_B": {
+          "reason": "esm1b_length_limit",
+          "residues": 1061
+        }
+      },
+      "output": "/home/ganeshiny.sridharan/dgg/deep-green-GO/arc_benchmark/nominal_30_identity_80_coverage/raw/heal/heal_mf.tsv"
+    },
+    "bp": {
+      "terms": 1943,
+      "predicted_proteins": 1484,
+      "skipped_proteins": {
+        "3OB4_A": {
+          "reason": "esm1b_length_limit",
+          "residues": 1148
+        },
+        "7KZM_C": {
+          "reason": "esm1b_length_limit",
+          "residues": 4485
+        },
+        "7KZN_C": {
+          "reason": "esm1b_length_limit",
+          "residues": 1161
+        },
+        "7N6G_1N": {
+          "reason": "esm1b_length_limit",
+          "residues": 2764
+        },
+        "7N6G_6A": {
+          "reason": "esm1b_length_limit",
+          "residues": 1928
+        },
+        "7N6G_6B": {
+          "reason": "esm1b_length_limit",
+          "residues": 1928
+        },
+        "7SQC_C0": {
+          "reason": "esm1b_length_limit",
+          "residues": 1584
+        },
+        "7SQC_C1": {
+          "reason": "esm1b_length_limit",
+          "residues": 1765
+        },
+        "7SQC_C2": {
+          "reason": "esm1b_length_limit",
+          "residues": 1928
+        },
+        "7SQC_C3": {
+          "reason": "esm1b_length_limit",
+          "residues": 1928
+        },
+        "7SQC_O0": {
+          "reason": "esm1b_length_limit",
+          "residues": 1647
+        },
+        "7SQC_R0": {
+          "reason": "esm1b_length_limit",
+          "residues": 2762
+        },
+        "7SQC_R1": {
+          "reason": "esm1b_length_limit",
+          "residues": 2762
+        },
+        "8GLV_AD": {
+          "reason": "esm1b_length_limit",
+          "residues": 4484
+        },
+        "8GLV_AX": {
+          "reason": "esm1b_length_limit",
+          "residues": 4484
+        },
+        "8GLV_Co": {
+          "reason": "esm1b_length_limit",
+          "residues": 4500
+        },
+        "8GLV_Fa": {
+          "reason": "esm1b_length_limit",
+          "residues": 4484
+        },
+        "8GLV_Ks": {
+          "reason": "esm1b_length_limit",
+          "residues": 1170
+        },
+        "8GLV_LZ": {
+          "reason": "esm1b_length_limit",
+          "residues": 1147
+        },
+        "8GLV_Lo": {
+          "reason": "esm1b_length_limit",
+          "residues": 4484
+        },
+        "8Z9Y_A": {
+          "reason": "esm1b_length_limit",
+          "residues": 1772
+        },
+        "9KBZ_A": {
+          "reason": "esm1b_length_limit",
+          "residues": 1577
+        },
+        "9QT9_A": {
+          "reason": "esm1b_length_limit",
+          "residues": 1061
+        },
+        "9QT9_B": {
+          "reason": "esm1b_length_limit",
+          "residues": 1061
+        }
+      },
+      "output": "/home/ganeshiny.sridharan/dgg/deep-green-GO/arc_benchmark/nominal_30_identity_80_coverage/raw/heal/heal_bp.tsv"
+    },
+    "cc": {
+      "terms": 320,
+      "predicted_proteins": 1484,
+      "skipped_proteins": {
+        "3OB4_A": {
+          "reason": "esm1b_length_limit",
+          "residues": 1148
+        },
+        "7KZM_C": {
+          "reason": "esm1b_length_limit",
+          "residues": 4485
+        },
+        "7KZN_C": {
+          "reason": "esm1b_length_limit",
+          "residues": 1161
+        },
+        "7N6G_1N": {
+          "reason": "esm1b_length_limit",
+          "residues": 2764
+        },
+        "7N6G_6A": {
+          "reason": "esm1b_length_limit",
+          "residues": 1928
+        },
+        "7N6G_6B": {
+          "reason": "esm1b_length_limit",
+          "residues": 1928
+        },
+        "7SQC_C0": {
+          "reason": "esm1b_length_limit",
+          "residues": 1584
+        },
+        "7SQC_C1": {
+          "reason": "esm1b_length_limit",
+          "residues": 1765
+        },
+        "7SQC_C2": {
+          "reason": "esm1b_length_limit",
+          "residues": 1928
+        },
+        "7SQC_C3": {
+          "reason": "esm1b_length_limit",
+          "residues": 1928
+        },
+        "7SQC_O0": {
+          "reason": "esm1b_length_limit",
+          "residues": 1647
+        },
+        "7SQC_R0": {
+          "reason": "esm1b_length_limit",
+          "residues": 2762
+        },
+        "7SQC_R1": {
+          "reason": "esm1b_length_limit",
+          "residues": 2762
+        },
+        "8GLV_AD": {
+          "reason": "esm1b_length_limit",
+          "residues": 4484
+        },
+        "8GLV_AX": {
+          "reason": "esm1b_length_limit",
+          "residues": 4484
+        },
+        "8GLV_Co": {
+          "reason": "esm1b_length_limit",
+          "residues": 4500
+        },
+        "8GLV_Fa": {
+          "reason": "esm1b_length_limit",
+          "residues": 4484
+        },
+        "8GLV_Ks": {
+          "reason": "esm1b_length_limit",
+          "residues": 1170
+        },
+        "8GLV_LZ": {
+          "reason": "esm1b_length_limit",
+          "residues": 1147
+        },
+        "8GLV_Lo": {
+          "reason": "esm1b_length_limit",
+          "residues": 4484
+        },
+        "8Z9Y_A": {
+          "reason": "esm1b_length_limit",
+          "residues": 1772
+        },
+        "9KBZ_A": {
+          "reason": "esm1b_length_limit",
+          "residues": 1577
+        },
+        "9QT9_A": {
+          "reason": "esm1b_length_limit",
+          "residues": 1061
+        },
+        "9QT9_B": {
+          "reason": "esm1b_length_limit",
+          "residues": 1061
+        }
+      },
+      "output": "/home/ganeshiny.sridharan/dgg/deep-green-GO/arc_benchmark/nominal_30_identity_80_coverage/raw/heal/heal_cc.tsv"
+    }
+  }
+}
+[DONE] 10b_heal
+Predictions complete. Evaluation and figures skipped (DGG_BENCHMARK_SKIP_EVALUATION=1);
+run this script once more without that flag to score every method together.
+Benchmark completed: /home/ganeshiny.sridharan/dgg/deep-green-GO/arc_benchmark/nominal_30_identity_80_coverage

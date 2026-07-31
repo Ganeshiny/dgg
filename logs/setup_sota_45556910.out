@@ -1,0 +1,77 @@
+========================================================
+  Job ID      : 45556910
+  Node        : mc162
+  Start time  : Fri Jul 31 12:23:14 MDT 2026
+  Project     : /home/ganeshiny.sridharan/dgg/deep-green-GO
+  Methods     : heal
+========================================================
+[OK] Repository exists: /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/HEAL
+2 channel Terms of Service accepted
+Channels:
+ - pytorch
+ - nvidia
+ - defaults
+Platform: linux-64
+Collecting package metadata (repodata.json): - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / done
+Solving environment: \ | done
+
+# All requested packages already installed.
+
+Requirement already satisfied: torch-geometric==2.5.3 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (2.5.3)
+Requirement already satisfied: fair-esm==2.0.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (2.0.0)
+Requirement already satisfied: biopython<2,>=1.81 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (1.87)
+Requirement already satisfied: numpy<2 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (1.26.4)
+Requirement already satisfied: scikit-learn<2 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (1.7.2)
+Requirement already satisfied: joblib in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (1.5.3)
+Requirement already satisfied: tqdm in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (4.70.0)
+Requirement already satisfied: scipy in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (from torch-geometric==2.5.3) (1.15.3)
+Requirement already satisfied: fsspec in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (from torch-geometric==2.5.3) (2026.7.0)
+Requirement already satisfied: jinja2 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (from torch-geometric==2.5.3) (3.1.6)
+Requirement already satisfied: aiohttp in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (from torch-geometric==2.5.3) (3.14.3)
+Requirement already satisfied: requests in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (from torch-geometric==2.5.3) (2.34.2)
+Requirement already satisfied: pyparsing in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (from torch-geometric==2.5.3) (3.3.2)
+Requirement already satisfied: psutil>=5.8.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (from torch-geometric==2.5.3) (7.2.2)
+Requirement already satisfied: threadpoolctl>=3.1.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (from scikit-learn<2) (3.6.0)
+Requirement already satisfied: aiohappyeyeballs>=2.5.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (from aiohttp->torch-geometric==2.5.3) (2.7.1)
+Requirement already satisfied: aiosignal>=1.4.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (from aiohttp->torch-geometric==2.5.3) (1.4.0)
+Requirement already satisfied: async-timeout<6.0,>=4.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (from aiohttp->torch-geometric==2.5.3) (5.0.1)
+Requirement already satisfied: attrs>=17.3.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (from aiohttp->torch-geometric==2.5.3) (26.1.0)
+Requirement already satisfied: frozenlist>=1.1.1 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (from aiohttp->torch-geometric==2.5.3) (1.8.0)
+Requirement already satisfied: multidict<7.0,>=4.5 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (from aiohttp->torch-geometric==2.5.3) (6.7.1)
+Requirement already satisfied: propcache>=0.2.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (from aiohttp->torch-geometric==2.5.3) (0.5.2)
+Requirement already satisfied: typing_extensions>=4.4 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (from aiohttp->torch-geometric==2.5.3) (4.16.0)
+Requirement already satisfied: yarl<2.0,>=1.17.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (from aiohttp->torch-geometric==2.5.3) (1.24.5)
+Requirement already satisfied: idna>=2.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (from yarl<2.0,>=1.17.0->aiohttp->torch-geometric==2.5.3) (3.18)
+Requirement already satisfied: MarkupSafe>=2.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (from jinja2->torch-geometric==2.5.3) (3.0.3)
+Requirement already satisfied: charset_normalizer<4,>=2 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (from requests->torch-geometric==2.5.3) (3.4.9)
+Requirement already satisfied: urllib3<3,>=1.26 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (from requests->torch-geometric==2.5.3) (2.7.0)
+Requirement already satisfied: certifi>=2023.5.7 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_heal/lib/python3.10/site-packages (from requests->torch-geometric==2.5.3) (2026.7.22)
+[OK] Download exists: /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/torch_cache/hub/checkpoints/esm1b_t33_650M_UR50S.pt
+[OK] Download exists: /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/torch_cache/hub/checkpoints/esm1b_t33_650M_UR50S-contact-regression.pt
+HEAL runtime imports ok
+HEAL ESM-1b checkpoint pair loads
+usage: run_heal_arc.py [-h] --heal-root HEAL_ROOT --structure-dir
+                       STRUCTURE_DIR --esm1b-model ESM1B_MODEL --output-dir
+                       OUTPUT_DIR [--device DEVICE]
+                       [--model-variant {pdb-only,combined}]
+                       [--max-residues MAX_RESIDUES]
+                       [--expected-structures EXPECTED_STRUCTURES]
+
+Run released HEAL checkpoints on ARC PDB chains with resumable score caches.
+
+options:
+  -h, --help            show this help message and exit
+  --heal-root HEAL_ROOT
+  --structure-dir STRUCTURE_DIR
+  --esm1b-model ESM1B_MODEL
+  --output-dir OUTPUT_DIR
+  --device DEVICE
+  --model-variant {pdb-only,combined}
+                        pdb-only uses upstream *CL.pt; combined uses
+                        PDBch+AFch *CLaf.pt
+  --max-residues MAX_RESIDUES
+                        ESM-1b residue limit; longer proteins are reported and
+                        left at zero
+  --expected-structures EXPECTED_STRUCTURES
+[SETUP COMPLETE] All requested SOTA dependencies and model files passed verification
+Use DGG_INTERPROSCAN=/home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/interproscan-5.78-109.0/interproscan.sh when submitting the benchmark.
