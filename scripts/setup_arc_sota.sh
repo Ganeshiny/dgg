@@ -516,6 +516,16 @@ setup_gat_go() {
         "pytorch=2.1.2" "pytorch-cuda=11.8" "mkl<2024.1"
     conda run -n "${GATGO_ENV}" python -m pip install \
         "torch-geometric==2.5.3" "numpy<2" "gdown>=5,<6"
+    # A previous setup attempt may already have downloaded (and even
+    # extracted) these files without landing them at the canonical path, so
+    # normalize before deciding whether a download is needed at all.
+    # GATGO_DATA_URL is a single personal Google Drive link; Google rate-
+    # limits repeated access to it ("Cannot retrieve the public link ... you
+    # may need to change the permission ... or have had many accesses"), so
+    # treating "not at the canonical path yet" as "never downloaded" risks
+    # re-triggering a ~25.6 GB download into that quota wall every retry.
+    extract_downloaded_archives "${GATGO_ROOT}"
+    normalize_gat_go_layout "${GATGO_ROOT}"
     if [[ ! -s "${GATGO_ROOT}/trained_models/GAT-GO_modelweights.pt" \
             || ! -s "${GATGO_ROOT}/data/data_splits/go2index.pt" \
             || ! -d "${GATGO_ROOT}/data/seq_features" ]]; then

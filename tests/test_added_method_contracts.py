@@ -148,6 +148,24 @@ class AddedMethodContractTests(unittest.TestCase):
         self.assertIn("normalize_gat_go_layout()", setup)
         self.assertIn("normalize_gat_go_layout \"${GATGO_ROOT}\"", setup)
 
+    def test_gat_go_normalizes_before_deciding_whether_to_redownload(self):
+        """GATGO_DATA_URL is a single personal Google Drive link Google
+        rate-limits on repeated access. A previous run's files sitting flat
+        on disk (not yet relocated) must be normalized *before* the
+        if-check that decides whether to invoke gdown, or every retry
+        re-triggers a ~25.6 GB download into that quota wall even when
+        nothing new actually needs fetching."""
+        setup_body = SETUP.read_text()
+        gat_go_fn = setup_body.split("setup_gat_go() {")[1].split("\n}\n")[0]
+        first_normalize_pos = gat_go_fn.index("normalize_gat_go_layout")
+        download_decision_pos = gat_go_fn.index(
+            'if [[ ! -s "${GATGO_ROOT}/trained_models/GAT-GO_modelweights.pt"'
+        )
+        self.assertLess(
+            first_normalize_pos, download_decision_pos,
+            "normalize_gat_go_layout must run before the download-needed check",
+        )
+
     def test_deepgraphgo_is_excluded_from_the_submission_chain(self):
         """No pretrained DeepGraphGO checkpoint exists upstream (verified
         against the pinned commit: no models/ directory, no GitHub Release).
