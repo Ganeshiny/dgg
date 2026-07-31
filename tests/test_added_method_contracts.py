@@ -126,6 +126,41 @@ class AddedMethodContractTests(unittest.TestCase):
         for method in ("heal", "gat_go", "deepgraphgo"):
             self.assertIn(method, focus)
 
+    def test_pin_repo_always_forces_checkout(self):
+        """A SLURM job killed mid-checkout leaves HEAD correct but the
+        working tree incomplete; pin_repo must repair that even when HEAD
+        already equals the pinned revision, not only on the branch that
+        moves HEAD."""
+        setup = SETUP.read_text()
+        pin_repo_body = setup.split("pin_repo() {")[1].split("\n}\n")[0]
+        self.assertIn("checkout -f -- .", pin_repo_body)
+        # That line must sit after the if-block that only fires when HEAD
+        # needs to move, i.e. outside it, so it always executes.
+        if_block_end = pin_repo_body.index("fi")
+        force_checkout_pos = pin_repo_body.index("checkout -f -- .")
+        self.assertGreater(force_checkout_pos, if_block_end)
+
+    def test_gat_go_layout_is_normalized_after_flat_gdown_download(self):
+        """gdown --folder mirrors the Drive folder's actual (flat) layout;
+        the checkpoint and go2index.pt do not land under trained_models/ or
+        data/data_splits/ on their own."""
+        setup = SETUP.read_text()
+        self.assertIn("normalize_gat_go_layout()", setup)
+        self.assertIn("normalize_gat_go_layout \"${GATGO_ROOT}\"", setup)
+
+    def test_deepgraphgo_is_excluded_from_the_submission_chain(self):
+        """No pretrained DeepGraphGO checkpoint exists upstream (verified
+        against the pinned commit: no models/ directory, no GitHub Release).
+        main.py trains from scratch; nothing here does that, so it must not
+        be submitted until that is a scoped, separate task."""
+        submit = (PROJECT_ROOT / "arc slurms" / "submit_new_baselines.sh").read_text()
+        # A comment explaining the exclusion is fine; actually requesting the
+        # method (setup methods or benchmark methods) is not.
+        self.assertNotIn("DGG_SOTA_SETUP_METHODS=heal,gat_go,deepgraphgo", submit)
+        self.assertNotIn("deepgraphgo", submit.split("# Layout and why:")[1])
+        # The wiring itself must stay intact for when training is added.
+        self.assertIn("setup_deepgraphgo()", SETUP.read_text())
+
     def test_struct2go_is_removed_and_plot_registers_new_methods(self):
         benchmark = BENCHMARK.read_text()
         setup = SETUP.read_text()

@@ -173,16 +173,21 @@ pin_repo() {
     local revision="$2"
     local current
     current="$(git_run -C "${destination}" rev-parse HEAD | tail -n 1)"
-    if [[ "${current}" == "${revision}" ]]; then
-        echo "[OK] Pinned repository: ${destination} @ ${revision}"
-        printf '%s\n' "${revision}" > "${destination}/.dgg_upstream_revision"
-        return
+    if [[ "${current}" != "${revision}" ]]; then
+        if ! git_run -C "${destination}" cat-file -e "${revision}^{commit}" 2>/dev/null; then
+            git_run -C "${destination}" fetch origin "${revision}"
+        fi
+        git_run -C "${destination}" checkout --detach "${revision}"
     fi
-    if ! git_run -C "${destination}" cat-file -e "${revision}^{commit}" 2>/dev/null; then
-        git_run -C "${destination}" fetch origin "${revision}"
-    fi
-    git_run -C "${destination}" checkout --detach "${revision}"
+    # A prior setup attempt on this node may have been interrupted (an
+    # scancel'd or timed-out SLURM job) mid-checkout: HEAD already matches
+    # the pinned revision, but files the checkout was still writing never
+    # landed. `checkout -f` re-materializes anything missing or altered
+    # without a fresh clone, and is a no-op when the tree is already
+    # complete, so this always runs rather than only on the branch above.
+    git_run -C "${destination}" checkout -f -- .
     printf '%s\n' "${revision}" > "${destination}/.dgg_upstream_revision"
+    echo "[OK] Pinned repository: ${destination} @ ${revision}"
 }
 
 download_file() {
@@ -465,6 +470,44 @@ setup_heal() {
         "${TORCH_HOME}/hub/checkpoints/esm1b_t33_650M_UR50S-contact-regression.pt"
 }
 
+# gdown --folder mirrors the Google Drive folder's actual layout, which is
+# flat: GAT-GO_modelweights.pt and data.zip land directly under GATGO_ROOT,
+# not nested under trained_models/ or data/ the way the rest of this script
+# assumes. Relocate anything the setup checks expect at a canonical path but
+# find sitting loose elsewhere under the root, rather than assuming gdown
+# reproduced a directory structure the release never had.
+normalize_gat_go_layout() {
+    local root="$1"
+    local target found
+    target="${root}/trained_models/GAT-GO_modelweights.pt"
+    if [[ ! -s "${target}" ]]; then
+        found="$(find "${root}" -maxdepth 3 -name 'GAT-GO_modelweights.pt' -not -path "${target}" -print -quit)"
+        if [[ -n "${found}" ]]; then
+            echo "[SETUP] Relocating ${found} -> ${target}"
+            mkdir -p "$(dirname "${target}")"
+            mv "${found}" "${target}"
+        fi
+    fi
+    target="${root}/data/data_splits/go2index.pt"
+    if [[ ! -s "${target}" ]]; then
+        found="$(find "${root}" -maxdepth 4 -name 'go2index.pt' -not -path "${target}" -print -quit)"
+        if [[ -n "${found}" ]]; then
+            echo "[SETUP] Relocating ${found} -> ${target}"
+            mkdir -p "$(dirname "${target}")"
+            mv "${found}" "${target}"
+        fi
+    fi
+    target="${root}/data/seq_features"
+    if [[ ! -d "${target}" ]]; then
+        found="$(find "${root}" -maxdepth 4 -type d -name 'seq_features' -not -path "${target}" -print -quit)"
+        if [[ -n "${found}" ]]; then
+            echo "[SETUP] Relocating ${found} -> ${target}"
+            mkdir -p "$(dirname "${target}")"
+            mv "${found}" "${target}"
+        fi
+    fi
+}
+
 setup_gat_go() {
     clone_repo https://github.com/bl-2633/GAT-GO.git "${GATGO_ROOT}"
     pin_repo "${GATGO_ROOT}" "${GATGO_REVISION}"
@@ -486,6 +529,7 @@ setup_gat_go() {
         # The release distributes the per-chain features as archives rather
         # than loose .pt files; nothing downstream unpacks them.
         extract_downloaded_archives "${GATGO_ROOT}"
+        normalize_gat_go_layout "${GATGO_ROOT}"
     fi
 }
 

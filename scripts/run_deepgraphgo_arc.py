@@ -68,6 +68,7 @@ def main() -> None:
     root = args.deepgraphgo_root.resolve()
     if args.runtime_smoke_test:
         import dgl
+        import dgl.data.utils  # noqa: F401  (dgl.data is not guaranteed importable as an attribute of a bare `import dgl`; DeepGraphGO's own main.py imports it explicitly for the same reason)
         import scipy.sparse as ssp
         import torch
 
