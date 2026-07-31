@@ -54,6 +54,78 @@ class AddedMethodContractTests(unittest.TestCase):
         self.assertIn('--method deepgraphgo', benchmark)
         self.assertIn('stage 10d_deepgraphgo run_deepgraphgo', benchmark)
 
+    def test_heal_downloads_the_esm1b_contact_regression_sidecar(self):
+        """load_model_and_alphabet_local reads it even with return_contacts=False."""
+        setup = SETUP.read_text()
+        benchmark = BENCHMARK.read_text()
+
+        self.assertIn("esm1b_t33_650M_UR50S-contact-regression.pt", setup)
+        self.assertIn("HEAL_ESM1B_REGRESSION_URL", setup)
+        self.assertIn("fair-esm/regression/", setup)
+        self.assertIn('${HEAL_ESM1B_MODEL%.pt}-contact-regression.pt', benchmark)
+
+    def test_deepgraphgo_uses_a_split_zip_reader_and_not_dtrx(self):
+        """data.zip is the last member of a 7-volume Info-ZIP spanned archive."""
+        setup = SETUP.read_text()
+
+        self.assertIn("extract_split_zip", setup)
+        self.assertIn("p7zip", setup)
+        self.assertIn("7z x", setup)
+        # dtrx and unzip both reject spanned archives, and `zip -s 0` silently
+        # truncates them; none may come back as the extraction path. Prose
+        # explaining that is fine, so match invocation and installation only.
+        self.assertNotIn("dtrx -f", setup)
+        self.assertNotIn('"dtrx==', setup)
+        self.assertNotIn("zip -q -s 0", setup)
+        # torch 1.6.0 imports `future` but does not declare it.
+        self.assertIn('"future==0.18.3"', setup)
+        self.assertIn("ppi_mat.npz", setup)
+
+    def test_benchmark_supports_cpu_only_and_prediction_only_runs(self):
+        benchmark = BENCHMARK.read_text()
+        cpu_job = PROJECT_ROOT / "arc slurms" / "run_benchmark_cpu.slurm"
+
+        self.assertIn("DGG_BENCHMARK_SKIP_EVALUATION", benchmark)
+        self.assertIn("gpu_required()", benchmark)
+        self.assertIn("DGG_BENCHMARK_REQUIRE_GPU", benchmark)
+        self.assertIn("DGG_BENCHMARK_REQUIRE_METHODS", benchmark)
+        self.assertTrue(cpu_job.is_file())
+        self.assertIn("DGG_BENCHMARK_REQUIRE_GPU", cpu_job.read_text())
+        # DeepGraphGO is pinned to a CPU-only PyTorch build, so it must not be
+        # in the set that forces a GPU allocation.
+        gpu_line = next(
+            line for line in benchmark.splitlines() if line.startswith("GPU_METHODS=")
+        )
+        self.assertIn("heal", gpu_line)
+        self.assertIn("gat_go", gpu_line)
+        self.assertNotIn("deepgraphgo", gpu_line)
+
+    def test_gat_go_can_report_coverage_without_consuming_gpu_time(self):
+        runner = (PROJECT_ROOT / "scripts" / "run_gat_go_arc.py").read_text()
+        setup = SETUP.read_text()
+
+        self.assertIn("--report-coverage-only", runner)
+        self.assertIn("report_coverage_only", runner)
+        self.assertIn("--report-coverage-only", setup)
+        # The strict path must survive: a normal run still refuses partial
+        # coverage rather than scoring a subset silently.
+        self.assertIn("GAT-GO feature audit failed for", runner)
+
+    def test_deepgoplus_and_deepgose_are_withheld_from_figures(self):
+        plot = PLOT.read_text()
+        stratified = (PROJECT_ROOT / "src" / "plot_stratified.py").read_text()
+
+        self.assertIn("EXCLUDED_FROM_PLOTS", plot)
+        self.assertIn('frozenset({"deepgoplus", "deepgose"})', plot)
+        external = plot.split("EXTERNAL_PRETRAINED_METHODS = (")[1].split(")")[0]
+        self.assertNotIn("deepgoplus", external)
+        self.assertNotIn("deepgose", external)
+        focus = stratified.split("FOCUS_METHODS = [")[1].split("]")[0]
+        self.assertNotIn("deepgoplus", focus)
+        self.assertNotIn("deepgose", focus)
+        for method in ("heal", "gat_go", "deepgraphgo"):
+            self.assertIn(method, focus)
+
     def test_struct2go_is_removed_and_plot_registers_new_methods(self):
         benchmark = BENCHMARK.read_text()
         setup = SETUP.read_text()

@@ -94,9 +94,14 @@ METHOD_LABEL = {
     "gomap": "GOMAP",
 }
 
+# Comparators withheld from every figure produced by this module. Their
+# predictions and metrics are still computed and remain in
+# benchmark_metrics.csv; only the plotted comparator set is narrowed. Label,
+# colour, and family entries are kept above so the choice is reversible by
+# editing this one set.
+EXCLUDED_FROM_PLOTS = frozenset({"deepgoplus", "deepgose"})
+
 EXTERNAL_PRETRAINED_METHODS = (
-    "deepgoplus",
-    "deepgose",
     "deepfri_sequence",
     "deepfri_structure",
     "dpfunc",
@@ -144,8 +149,13 @@ METHOD_COLOR = {
     "deepfri_sequence": "#CC79A7",
     "deepfri_structure": "#332288",
     "dpfunc": "#009E73",
-    "heal": "#117733",
-    "gat_go": "#88CCEE",
+    # #117733 and #88CCEE were unusable once DeepGOPlus/DeepGO-SE left the
+    # figures and these two became prominent: they sat at CIE76 dE 12 from the
+    # proposed method's green and dE 14 from DIAMOND respectively. These
+    # replacements are Paul Tol colourblind-safe values at dE >= 36 from every
+    # other plotted method.
+    "heal": "#661100",
+    "gat_go": "#EE3377",
     "deepgraphgo": "#882255",
     "deepgoplus": "#E31A1C",
     "deepgose": "#8C510A",
@@ -236,7 +246,10 @@ def load_comparison(workspace: Path) -> tuple[pd.DataFrame, pd.DataFrame]:
 
 
 def ordered_methods(metrics: pd.DataFrame) -> list[str]:
-    present = set(metrics["method"].astype(str))
+    # Filtering here, rather than by trimming METHOD_ORDER, also drops excluded
+    # methods from the unknown-method tail below, so nothing reappears in a
+    # figure just because it is absent from the explicit ordering.
+    present = set(metrics["method"].astype(str)) - EXCLUDED_FROM_PLOTS
     known = [method for method in METHOD_ORDER if method in present]
     return known + sorted(present - set(known))
 
@@ -735,8 +748,19 @@ def build_captions(
         for method in EXTERNAL_PRETRAINED_METHODS
         if methods is None or method in methods
     ]
-    external_text = ", ".join(external_labels)
-    external_verb = "uses" if len(external_labels) == 1 else "use"
+    # Emit the caveat only when an external pretrained comparator is actually
+    # plotted. Interpolating an empty list left a dangling " use externally
+    # released ..." fragment with no subject.
+    if external_labels:
+        external_sentence = (
+            f" {', '.join(external_labels)} "
+            f"{'uses' if len(external_labels) == 1 else 'use'} externally released "
+            "pretrained parameters or reference data that were not restricted to "
+            "the locked ARC training split; their scores are descriptive "
+            "comparators, not leakage-controlled generalization estimates."
+        )
+    else:
+        external_sentence = ""
     paired_parts = []
     for row in paired_report.itertuples(index=False):
         paired_parts.append(
@@ -781,7 +805,7 @@ def build_captions(
     return f"""Unless noted, higher values indicate better performance for all metrics except CAFA Smin, where lower is better.
 
 comparison_cafa_performance
-DeepGreenGO versus completed baselines on the nominal 30%-identity/80%-coverage test split (n = 754 PDB chains). The focal method is the five-seed {model_variant} GCN-GAT ensemble ({seeds}). Bars show chain-level test-set point estimates and error bars show percentile 95% confidence intervals from {bootstrap_description}.{bootstrap_warning} Colors denote method family; solid bars denote top-10 weighted transfer and hatched bars denote one highest-identity hit selected from the same eligible top-10 pool. Paired Fmax comparisons against the strongest baseline in each ontology: {paired_text}. {external_text} {external_verb} externally released pretrained parameters or reference data that were not restricted to the locked ARC training split; their scores are descriptive comparators, not leakage-controlled generalization estimates.
+DeepGreenGO versus completed baselines on the nominal 30%-identity/80%-coverage test split (n = 754 PDB chains). The focal method is the five-seed {model_variant} GCN-GAT ensemble ({seeds}). Bars show chain-level test-set point estimates and error bars show percentile 95% confidence intervals from {bootstrap_description}.{bootstrap_warning} Colors denote method family; solid bars denote top-10 weighted transfer and hatched bars denote one highest-identity hit selected from the same eligible top-10 pool. Paired Fmax comparisons against the strongest baseline in each ontology: {paired_text}.{external_sentence}
 
 comparison_aupr
 DeepGreenGO versus completed baselines on the same test split. Micro-AUPR pools protein-term decisions; macro-AUPR averages per-term average precision across GO terms observed in the test set. Bars show test-set point estimates. {aupr_uncertainty} Colors and hatching follow the definitions above. External pretrained comparators were not audited against their original training corpora, so apparent gains from those methods cannot be attributed solely to architecture.
@@ -828,8 +852,20 @@ def build_manuscript_notes(
         for method in EXTERNAL_PRETRAINED_METHODS
         if method in present_methods
     ]
-    external_text = ", ".join(external_labels)
-    external_verb = "was" if len(external_labels) == 1 else "were"
+    if external_labels:
+        external_caveat = (
+            f"External-pretraining caveat: {', '.join(external_labels)} "
+            f"{'was' if len(external_labels) == 1 else 'were'} evaluated with "
+            "released pretrained parameters or reference data. Their original "
+            "training corpora were not restricted to the locked ARC training "
+            "split, so these comparisons are descriptive and cannot establish "
+            "leakage-controlled generalization."
+        )
+    else:
+        external_caveat = (
+            "External-pretraining caveat: no externally pretrained comparator is "
+            "present in this benchmark, so no such caveat applies."
+        )
     return (
         f"Model identity and ablation framing: The headline benchmark uses the "
         f"five-seed DeepGreenGO {model_variant} GCN-GAT ensemble. Input ablations "
@@ -842,11 +878,7 @@ def build_manuscript_notes(
         f"{baseline_smin:.3f} for {METHOD_LABEL.get(best_smin_method, best_smin_method)}. "
         f"The corresponding differences are {fmax_delta:+.3f} Fmax and "
         f"{smin_delta:+.3f} Smin (lower Smin is better). {interpretation}\n\n"
-        f"External-pretraining caveat: {external_text} "
-        f"{external_verb} evaluated with released pretrained parameters or reference data. "
-        "Their original training corpora were not restricted to the locked ARC "
-        "training split, so these comparisons are descriptive and cannot establish "
-        "leakage-controlled generalization."
+        + external_caveat
     )
 
 

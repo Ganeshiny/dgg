@@ -32,6 +32,15 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--expected-proteins", type=int, default=1508)
     parser.add_argument("--device", default="cuda:0")
     parser.add_argument("--preflight-only", action="store_true")
+    parser.add_argument(
+        "--report-coverage-only",
+        action="store_true",
+        help=(
+            "Write preflight.json and print feature coverage, then exit 0 even "
+            "when coverage is incomplete. Lets the CPU setup job measure what "
+            "the released feature bundle covers without consuming GPU time."
+        ),
+    )
     parser.add_argument("--runtime-smoke-test", action="store_true")
     return parser.parse_args()
 
@@ -177,6 +186,20 @@ def main() -> None:
         "errors": errors[:100],
     }
     (args.output_dir / "preflight.json").write_text(json.dumps(audit, indent=2) + "\n")
+    if args.report_coverage_only:
+        covered = len(resolved)
+        print(
+            f"GAT-GO released-feature coverage: {covered}/{len(records)} "
+            f"({100.0 * covered / len(records):.1f}%) of the locked ARC query set"
+        )
+        if errors:
+            print(
+                f"{len(errors)} protein(s) have no usable released feature file. "
+                "GAT-GO cannot be benchmarked on the full query set with the "
+                "official release alone; see "
+                f"{args.output_dir / 'preflight.json'} for the first 100 cases."
+            )
+        return
     if errors:
         raise RuntimeError(
             f"GAT-GO feature audit failed for {len(errors)}/{len(records)} proteins; "

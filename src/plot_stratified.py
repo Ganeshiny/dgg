@@ -51,18 +51,21 @@ IC_BINS = ["<2 bits", "2-4 bits", "4-6 bits", ">=6 bits"]
 DEPTH_BINS = ["1-3", "4-6", "7-9", ">=10"]
 
 # Keep the panel legible: these are the representative methods, one per
-# evidence family plus both DeepGreenGO comparators of interest.
+# evidence family plus the structure-aware deep comparators of interest.
+# DeepGOPlus and DeepGO-SE are withheld from the figures here for the same
+# reason as in plot_baselines_only.EXCLUDED_FROM_PLOTS; the graph-based
+# baselines HEAL, GAT-GO, and DeepGraphGO take their place.
 FOCUS_METHODS = [
     "deepgreengo", "naive", "blast", "diamond", "foldseek",
     "deepfri_sequence", "deepfri_structure", "dpfunc",
-    "deepgoplus", "deepgose", "transfun", "interproscan",
+    "heal", "gat_go", "deepgraphgo", "transfun", "interproscan",
 ]
 
 MARKERS = {
     "deepgreengo": "o", "naive": "s", "blast": "^", "diamond": "v",
     "foldseek": "D", "deepfri_sequence": "P", "deepfri_structure": "X",
-    "dpfunc": "<", "deepgoplus": ">", "deepgose": "*", "transfun": "h",
-    "interproscan": "p",
+    "dpfunc": "<", "heal": "H", "gat_go": "d", "deepgraphgo": "8",
+    "transfun": "h", "interproscan": "p",
 }
 
 # Bins with fewer items than this cannot support a claim; drawn but flagged.

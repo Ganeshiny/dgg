@@ -36,6 +36,16 @@ METHODS="${DGG_BENCHMARK_METHODS:-hybrid,naive,blast,diamond,foldseek,interprosc
 # expensive stage starts. Set to 1 only for an intentionally incomplete run.
 SKIP_UNAVAILABLE="${DGG_BENCHMARK_SKIP_UNAVAILABLE:-0}"
 FORCE_STAGES="${DGG_BENCHMARK_FORCE_STAGES:-}"
+# Prediction-only mode. The 1000-bootstrap evaluation and every figure depend on
+# all methods, so when several method jobs are chained they should be computed
+# once at the end rather than repeated by each job.
+SKIP_EVALUATION="${DGG_BENCHMARK_SKIP_EVALUATION:-0}"
+# Methods whose prediction stage needs CUDA. The core preflight demands a
+# visible GPU only when one of these is selected, so a CPU-only selection
+# (DeepGraphGO, alignment baselines, or a pure evaluation pass) can be
+# scheduled on a CPU partition instead of idling an L40. Set
+# DGG_BENCHMARK_REQUIRE_GPU to 0 or 1 to override the inference.
+GPU_METHODS="hybrid deepfri_sequence deepfri_structure transfun dpfunc deepgose heal gat_go"
 
 BASE_ENV="${DGG_BASE_ENV:-deepgreengo}"
 TF_ENV="${DGG_DEEPFRI_ENV:-dgg_sota_tf}"
@@ -104,6 +114,20 @@ export OMP_NUM_THREADS="${THREADS}"
 
 method_enabled() {
     [[ ",${METHODS}," == *",$1,"* ]]
+}
+
+gpu_required() {
+    case "${DGG_BENCHMARK_REQUIRE_GPU:-auto}" in
+        1) return 0 ;;
+        0) return 1 ;;
+    esac
+    local method
+    for method in ${GPU_METHODS}; do
+        if method_enabled "${method}"; then
+            return 0
+        fi
+    done
+    return 1
 }
 
 conda_run() {
@@ -479,6 +503,9 @@ preflight() {
             preflight_check require_file "${HEAL_ROOT}/model/model_${ontology}${heal_suffix}.pt"
         done
         preflight_check require_file "${HEAL_ESM1B_MODEL}"
+        # esm.pretrained.load_model_and_alphabet_local() reads this sidecar
+        # unconditionally; catch it here instead of after model construction.
+        preflight_check require_file "${HEAL_ESM1B_MODEL%.pt}-contact-regression.pt"
         preflight_check conda_run "${HEAL_ENV}" python -c "import Bio, esm, numpy, torch, torch_geometric; print('HEAL environment ok')"
         preflight_check conda_run "${HEAL_ENV}" python "${PROJECT_DIR}/scripts/run_heal_arc.py" --help
     fi
@@ -501,6 +528,7 @@ preflight() {
         preflight_check require_file "${DEEPGRAPHGO_ROOT}/data/ppi_interpro.npz"
         preflight_check require_file "${DEEPGRAPHGO_ROOT}/data/ppi_dgl_top_100"
         preflight_check require_file "${DEEPGRAPHGO_ROOT}/data/ppi_blastdb.pin"
+        preflight_check require_file "${DEEPGRAPHGO_ROOT}/data/ppi_mat.npz"
         local deepgraph_ontology deepgraph_model_index
         for deepgraph_ontology in mf bp cc; do
             preflight_check require_file "${DEEPGRAPHGO_ROOT}/data/${deepgraph_ontology}_go.mlb"
@@ -528,7 +556,11 @@ preflight() {
         note_failure
     fi
     CURRENT_METHOD=core
-    preflight_check nvidia-smi --query-gpu=name,memory.total --format=csv,noheader
+    if gpu_required; then
+        preflight_check nvidia-smi --query-gpu=name,memory.total --format=csv,noheader
+    else
+        echo "No GPU-backed method selected; skipping the GPU core check."
+    fi
     if ((PREFLIGHT_FAILURES == 0)); then
         echo "Preflight passed"
         return 0
@@ -890,7 +922,12 @@ run_gomap() {
 }
 
 run_evaluation() {
-    local required="${METHODS//hybrid/deepgreengo}"
+    # Defaults to the selected methods. Set DGG_BENCHMARK_REQUIRE_METHODS to an
+    # explicit list, or to the empty string, when a final scoring pass should
+    # grade every method already present in predictions/ without insisting that
+    # a particular comparator succeeded. Uses ${x-default}, not ${x:-default},
+    # so an intentionally empty value is honoured.
+    local required="${DGG_BENCHMARK_REQUIRE_METHODS-${METHODS//hybrid/deepgreengo}}"
     benchmark_cli evaluate \
         --workspace "${BENCHMARK_ROOT}" --bootstraps 1000 --aupr-workers "${THREADS}" --require-methods "${required}"
     benchmark_cli plot --workspace "${BENCHMARK_ROOT}"
@@ -937,7 +974,12 @@ method_enabled gat_go && stage 10c_gat_go run_gat_go
 method_enabled deepgraphgo && stage 10d_deepgraphgo run_deepgraphgo
 method_enabled hayai && stage 11_hayai run_hayai
 method_enabled gomap && stage 12_gomap run_gomap
-run_evaluation
-run_comparison_figures
-run_stratified_analysis
+if [[ "${SKIP_EVALUATION}" == "1" ]]; then
+    echo "Predictions complete. Evaluation and figures skipped (DGG_BENCHMARK_SKIP_EVALUATION=1);"
+    echo "run this script once more without that flag to score every method together."
+else
+    run_evaluation
+    run_comparison_figures
+    run_stratified_analysis
+fi
 echo "Benchmark completed: ${BENCHMARK_ROOT}"

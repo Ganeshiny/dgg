@@ -29,6 +29,9 @@ DEEPGO_ROOT="${DGG_DEEPGO_ROOT:-${SOTA_ROOT}/deepgo2}"
 HEAL_ROOT="${DGG_HEAL_ROOT:-${SOTA_ROOT}/HEAL}"
 GATGO_ROOT="${DGG_GATGO_ROOT:-${SOTA_ROOT}/GAT-GO}"
 DEEPGRAPHGO_ROOT="${DGG_DEEPGRAPHGO_ROOT:-${SOTA_ROOT}/DeepGraphGO}"
+# Only read during verification, to report released-feature coverage against
+# the locked query set. Setup never writes into the benchmark workspace.
+BENCHMARK_ROOT="${DGG_BENCHMARK_ROOT:-${PROJECT_DIR}/arc_benchmark/nominal_30_identity_80_coverage}"
 INTERPRO_VERSION="${DGG_INTERPRO_VERSION:-5.78-109.0}"
 INTERPRO_ROOT="${DGG_INTERPRO_ROOT:-${SOTA_ROOT}/interproscan-${INTERPRO_VERSION}}"
 TORCH_HOME="${DGG_TORCH_HOME:-${SOTA_ROOT}/torch_cache}"
@@ -40,6 +43,7 @@ DPFUNC_MODELS_GDRIVE_ID="${DGG_DPFUNC_MODELS_GDRIVE_ID:-1V0VTFTiB29ilbAIOZn0okBQ
 DPFUNC_ESM2_MODEL_URL="${DGG_DPFUNC_ESM2_MODEL_URL:-https://dl.fbaipublicfiles.com/fair-esm/models/esm2_t33_650M_UR50D.pt}"
 DPFUNC_ESM2_REGRESSION_URL="${DGG_DPFUNC_ESM2_REGRESSION_URL:-https://dl.fbaipublicfiles.com/fair-esm/regression/esm2_t33_650M_UR50D-contact-regression.pt}"
 HEAL_ESM1B_MODEL_URL="${DGG_HEAL_ESM1B_MODEL_URL:-https://dl.fbaipublicfiles.com/fair-esm/models/esm1b_t33_650M_UR50S.pt}"
+HEAL_ESM1B_REGRESSION_URL="${DGG_HEAL_ESM1B_REGRESSION_URL:-https://dl.fbaipublicfiles.com/fair-esm/regression/esm1b_t33_650M_UR50S-contact-regression.pt}"
 GATGO_DATA_URL="${DGG_GATGO_DATA_URL:-https://drive.google.com/drive/folders/1--1zHFqOzB7pZ75G_td_T2e05qfoSlz6?usp=sharing}"
 GATGO_REVISION="${DGG_GATGO_REVISION:-90ec6d1067a893d4a51be715e41daf9fa4732952}"
 DEEPGRAPHGO_REVISION="${DGG_DEEPGRAPHGO_REVISION:-efdb1cb9425f4f48e4613c0a89e603f5542bcb19}"
@@ -111,6 +115,38 @@ clone_repo() {
     git_run clone --filter=blob:none "${url}" "${destination}"
 }
 
+ensure_setup_tools_env() {
+    if ! conda_env_exists "${SETUP_TOOLS_ENV}"; then
+        conda create -y -n "${SETUP_TOOLS_ENV}" -c conda-forge git p7zip
+    fi
+}
+
+# Conda package that provides a given command, where the two names differ.
+tool_package() {
+    case "$1" in
+        7z) printf 'p7zip\n' ;;
+        *) printf '%s\n' "$1" ;;
+    esac
+}
+
+# ARC compute nodes do not expose git, and do not expose 7z either. Prefer a
+# system binary; otherwise provision it once in the shared setup-tools
+# environment. The per-tool check also repairs environments that an earlier
+# revision of this script created with git alone.
+tool_run() {
+    local tool="$1"
+    shift
+    if command -v "${tool}" >/dev/null 2>&1; then
+        command "${tool}" "$@"
+        return
+    fi
+    ensure_setup_tools_env
+    if ! conda run -n "${SETUP_TOOLS_ENV}" sh -c "command -v ${tool}" >/dev/null 2>&1; then
+        conda install -y -n "${SETUP_TOOLS_ENV}" -c conda-forge "$(tool_package "${tool}")"
+    fi
+    conda run --no-capture-output -n "${SETUP_TOOLS_ENV}" "${tool}" "$@"
+}
+
 ensure_setup_git() {
     [[ -n "${GIT_MODE:-}" ]] && return
     if command -v git >/dev/null 2>&1; then
@@ -119,9 +155,7 @@ ensure_setup_git() {
         return
     fi
     GIT_MODE=conda
-    if ! conda_env_exists "${SETUP_TOOLS_ENV}"; then
-        conda create -y -n "${SETUP_TOOLS_ENV}" -c conda-forge git
-    fi
+    ensure_setup_tools_env
     conda run -n "${SETUP_TOOLS_ENV}" git --version
 }
 
@@ -185,6 +219,100 @@ extract_archive() {
     else
         tar -xf "${archive}" -C "${destination}"
     fi
+}
+
+# Info-ZIP spanned archives keep the central directory in the final ".zip"
+# member and the payload in sibling ".z01 ... .zNN" parts, with per-entry
+# offsets relative to their own disk. unzip, dtrx, and `zip -s 0` all mangle
+# that layout; 7-Zip reads the volume set directly and verifies every CRC,
+# which is why p7zip is a hard setup dependency here.
+extract_split_zip() {
+    local archive="$1"
+    local destination="$2"
+    local directory base staging top entry part
+    directory="$(cd "$(dirname "${archive}")" && pwd)"
+    base="$(basename "${archive}" .zip)"
+    require_file "${archive}" || return 1
+    local parts=()
+    shopt -s nullglob
+    parts=("${directory}/${base}".z[0-9][0-9])
+    shopt -u nullglob
+    if ((${#parts[@]} == 0)); then
+        echo "[SETUP ERROR] ${archive} is a split archive but no ${base}.zNN parts exist" >&2
+        return 1
+    fi
+    # A partial Git checkout would leave gaps in the volume sequence, which 7z
+    # reports only as a truncated extraction. Check for contiguity up front.
+    for part in "${parts[@]}"; do
+        require_file "${part}" || return 1
+    done
+    local index expected
+    for ((index = 1; index <= ${#parts[@]}; index++)); do
+        expected="$(printf '%s/%s.z%02d' "${directory}" "${base}" "${index}")"
+        require_file "${expected}" || {
+            echo "[SETUP ERROR] Split archive volume sequence is not contiguous: ${expected} is missing" >&2
+            return 1
+        }
+    done
+    echo "[SETUP] Extracting ${base}.zip with ${#parts[@]} sibling volumes via 7-Zip."
+    staging="${directory}/.${base}_staging"
+    rm -rf "${staging}"
+    mkdir -p "${staging}" "${destination}"
+    if ! tool_run 7z x -y -bso0 -o"${staging}" "${archive}"; then
+        echo "[SETUP ERROR] 7-Zip could not extract the split archive: ${archive}" >&2
+        rm -rf "${staging}"
+        return 1
+    fi
+    # The release may or may not nest its payload under one top-level folder.
+    # Normalize both layouts so callers always find files directly under
+    # ${destination}.
+    local entries=()
+    shopt -s nullglob dotglob
+    entries=("${staging}"/*)
+    shopt -u nullglob dotglob
+    if ((${#entries[@]} == 0)); then
+        echo "[SETUP ERROR] Split archive extracted no files: ${archive}" >&2
+        rm -rf "${staging}"
+        return 1
+    fi
+    if ((${#entries[@]} == 1)) && [[ -d "${entries[0]}" ]]; then
+        top="${entries[0]}"
+    else
+        top="${staging}"
+    fi
+    shopt -s nullglob dotglob
+    for entry in "${top}"/*; do
+        mv -f "${entry}" "${destination}/"
+    done
+    shopt -u nullglob dotglob
+    rm -rf "${staging}"
+}
+
+# Unpack any archive a folder download left behind, in place, once. Releases
+# that ship loose files are unaffected because the search simply finds nothing.
+extract_downloaded_archives() {
+    local root="$1"
+    local archive extracted=0
+    while IFS= read -r -d '' archive; do
+        [[ -e "${archive}.dgg_extracted" ]] && continue
+        echo "[SETUP] Unpacking ${archive}"
+        case "${archive}" in
+            *.tar.gz|*.tgz|*.tar.bz2|*.tar.xz|*.tar)
+                tar -xf "${archive}" -C "$(dirname "${archive}")"
+                ;;
+            *.zip)
+                if [[ -e "${archive%.zip}.z01" ]]; then
+                    extract_split_zip "${archive}" "$(dirname "${archive}")"
+                else
+                    tool_run 7z x -y -bso0 -o"$(dirname "${archive}")" "${archive}"
+                fi
+                ;;
+        esac
+        touch "${archive}.dgg_extracted"
+        extracted=$((extracted + 1))
+    done < <(find "${root}" \( -name '*.tar.gz' -o -name '*.tgz' -o -name '*.tar.bz2' \
+        -o -name '*.tar.xz' -o -name '*.tar' -o -name '*.zip' \) -print0)
+    echo "[SETUP] Unpacked ${extracted} archive(s) under ${root}"
 }
 
 ensure_named_env() {
@@ -330,6 +458,11 @@ setup_heal() {
         "pytorch=2.1.2" "pytorch-cuda=11.8" "mkl<2024.1"
     conda run -n "${HEAL_ENV}" python -m pip install "torch-geometric==2.5.3" "fair-esm==2.0.0" "biopython>=1.81,<2" "numpy<2" "scikit-learn<2" joblib tqdm
     download_file "${HEAL_ESM1B_MODEL_URL}" "${TORCH_HOME}/hub/checkpoints/esm1b_t33_650M_UR50S.pt"
+    # load_model_and_alphabet_local() always reads the contact-regression sidecar
+    # next to the checkpoint, even when return_contacts=False. Without it HEAL
+    # fails at model load time, after the GPU job has already started.
+    download_file "${HEAL_ESM1B_REGRESSION_URL}" \
+        "${TORCH_HOME}/hub/checkpoints/esm1b_t33_650M_UR50S-contact-regression.pt"
 }
 
 setup_gat_go() {
@@ -344,8 +477,15 @@ setup_gat_go() {
             || ! -s "${GATGO_ROOT}/data/data_splits/go2index.pt" \
             || ! -d "${GATGO_ROOT}/data/seq_features" ]]; then
         echo "[SETUP] Downloading the official GAT-GO pretrained model and precomputed features."
-        conda run -n "${GATGO_ENV}" gdown --folder "${GATGO_DATA_URL}" \
-            -O "${GATGO_ROOT}" --remaining-ok
+        # --remaining-ok was previously passed here. It suppresses gdown's
+        # 50-file folder listing limit, so an over-limit folder produced a
+        # silently truncated feature set that only surfaced as "missing
+        # feature file" errors much later, on the GPU node. Fail here instead.
+        conda run --no-capture-output -n "${GATGO_ENV}" gdown --folder \
+            "${GATGO_DATA_URL}" -O "${GATGO_ROOT}"
+        # The release distributes the per-chain features as archives rather
+        # than loose .pt files; nothing downstream unpacks them.
+        extract_downloaded_archives "${GATGO_ROOT}"
     fi
 }
 
@@ -358,16 +498,16 @@ setup_deepgraphgo() {
     conda install -y -n "${DEEPGRAPHGO_ENV}" -c conda-forge -c bioconda \
         "blast>=2.10,<3"
     conda run -n "${DEEPGRAPHGO_ENV}" python -m pip install "pip<24.1"
+    # `future` is an undeclared runtime requirement of the PyTorch 1.6.0 wheel;
+    # without it `import torch` fails. dtrx is deliberately absent: it cannot
+    # read the spanned archive DeepGraphGO publishes (see extract_split_zip).
     conda run -n "${DEEPGRAPHGO_ENV}" python -m pip install \
         "numpy==1.19.2" "scipy==1.5.0" "scikit-learn==0.22.1" \
         "networkx==2.4" "dgl==0.4.3post2" "click==7.1.2" \
         "ruamel.yaml==0.16.6" "biopython==1.78" "tqdm==4.47.0" \
-        "logzero==1.5.0" "joblib==0.16.0" "dtrx==8.5.3"
+        "logzero==1.5.0" "joblib==0.16.0" "future==0.18.3"
     if [[ ! -s "${DEEPGRAPHGO_ROOT}/data/ppi_interpro.npz" ]]; then
-        (
-            cd "${DEEPGRAPHGO_ROOT}/data"
-            conda run --no-capture-output -n "${DEEPGRAPHGO_ENV}" dtrx -f data.zip
-        )
+        extract_split_zip "${DEEPGRAPHGO_ROOT}/data/data.zip" "${DEEPGRAPHGO_ROOT}/data"
     fi
     # The published code hard-codes CUDA. Its exact PyTorch 1.6/DGL 0.4 stack
     # cannot execute on ARC's L40 GPUs, so use the same operations on CPU.
@@ -476,7 +616,12 @@ verify_setup() {
             check require_file "${HEAL_ROOT}/model/model_${ontology}CLaf.pt"
         done
         check require_file "${TORCH_HOME}/hub/checkpoints/esm1b_t33_650M_UR50S.pt"
+        check require_file "${TORCH_HOME}/hub/checkpoints/esm1b_t33_650M_UR50S-contact-regression.pt"
         check conda run -n "${HEAL_ENV}" python -c "import Bio, esm, numpy, torch, torch_geometric; print('HEAL runtime imports ok')"
+        # Load the checkpoint pair exactly as run_heal_arc.py does, so a missing
+        # or truncated sidecar is caught here rather than on the GPU node.
+        check conda run -n "${HEAL_ENV}" python -c \
+            "import esm; esm.pretrained.load_model_and_alphabet_local('${TORCH_HOME}/hub/checkpoints/esm1b_t33_650M_UR50S.pt'); print('HEAL ESM-1b checkpoint pair loads')"
         check conda run -n "${HEAL_ENV}" python "${PROJECT_DIR}/scripts/run_heal_arc.py" --help
     fi
     if method_enabled gat_go; then
@@ -493,6 +638,23 @@ verify_setup() {
             --gat-root "${GATGO_ROOT}" --feature-root "${GATGO_ROOT}/data/seq_features" \
             --model "${GATGO_ROOT}/trained_models/GAT-GO_modelweights.pt" \
             --go-map "${GATGO_ROOT}/data/data_splits/go2index.pt" --runtime-smoke-test
+        # Whether the released feature bundle covers the locked ARC query set is
+        # a property of the release, not of this environment, so it is reported
+        # rather than counted as a setup failure. Measuring it here means an
+        # uncoverable query set is known before any GPU job is queued.
+        if [[ -s "${BENCHMARK_ROOT}/inputs/valid_test.fasta" ]]; then
+            conda run --no-capture-output -n "${GATGO_ENV}" python \
+                "${PROJECT_DIR}/scripts/run_gat_go_arc.py" \
+                --gat-root "${GATGO_ROOT}" --feature-root "${GATGO_ROOT}/data/seq_features" \
+                --model "${GATGO_ROOT}/trained_models/GAT-GO_modelweights.pt" \
+                --go-map "${GATGO_ROOT}/data/data_splits/go2index.pt" \
+                --fasta "${BENCHMARK_ROOT}/inputs/valid_test.fasta" \
+                --workspace "${BENCHMARK_ROOT}" \
+                --output-dir "${BENCHMARK_ROOT}/raw/gat_go" \
+                --report-coverage-only || true
+        else
+            echo "[SETUP] Benchmark inputs are not prepared yet; skipping the GAT-GO coverage report."
+        fi
     fi
     if method_enabled deepgraphgo; then
         [[ "$(git_run -C "${DEEPGRAPHGO_ROOT}" rev-parse HEAD | tail -n 1)" == "${DEEPGRAPHGO_REVISION}" ]] || failures=$((failures + 1))
@@ -501,6 +663,9 @@ verify_setup() {
         check require_file "${DEEPGRAPHGO_ROOT}/data/ppi_interpro.npz"
         check require_file "${DEEPGRAPHGO_ROOT}/data/ppi_dgl_top_100"
         check require_file "${DEEPGRAPHGO_ROOT}/data/ppi_blastdb.pin"
+        # run_deepgraphgo_arc.py writes ppi_mat.npz into every generated data
+        # config, so a missing weight matrix must fail setup, not inference.
+        check require_file "${DEEPGRAPHGO_ROOT}/data/ppi_mat.npz"
         for ontology in mf bp cc; do
             check require_file "${DEEPGRAPHGO_ROOT}/data/${ontology}_go.mlb"
             for model_index in 0 1 2; do
