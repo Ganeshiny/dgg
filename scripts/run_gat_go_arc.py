@@ -89,6 +89,65 @@ def load_object(path: Path):
         return torch.load(path, map_location="cpu")
 
 
+def remap_legacy_gat_go_state_dict(state: dict, model: torch.nn.Module) -> dict:
+    """Translate GAT-GO's released checkpoint, saved under torch_geometric
+    < 2.0's GATConv/GraphConv parameter names, to the names the pinned
+    torch_geometric==2.5.3 expects.
+
+    GnnPF's GATConv layers use a single int in_channels (non-bipartite) and
+    SAGPooling's default GNN is GraphConv. Verified against the PyG source at
+    both v1.7.2 (what GAT-GO's stated `pytorch_geometric>=1.7.0` requirement
+    predates) and v2.5.3: the rename is exact, with identical forward math on
+    both sides -
+      GATConv:   lin_l  -> lin       (old code sets lin_r = lin_l, i.e. the
+                                       same tensor twice; either key sources it)
+                 att_l  -> att_src
+                 att_r  -> att_dst
+      GraphConv: lin_l  -> lin_rel   (bias lives on this transform in both)
+                 lin_r  -> lin_root  (no bias in either)
+    (SAGPooling's internal scorer is a GraphConv, registered as `<pool>.gnn.*`.)
+
+    PyG's newer SAGPooling also adds a SelectTopK submodule holding one
+    learnable parameter, `select.weight`, with no counterpart in the old
+    checkpoint: old code pooled on tanh(GNN(x)) directly; new code pools on
+    tanh((GNN(x) * weight) / ||weight||). GNN(x) here is 1-dimensional, so
+    ||weight|| exactly cancels weight's magnitude, leaving only its sign -
+    any positive weight reproduces the old, weight-free computation bit for
+    bit (verified numerically, not assumed). Filled in as 1.0 below.
+
+    Every other key must already be accounted for by the renaming above; if
+    it isn't, this raises rather than silently loading a partial model.
+    """
+    remapped: dict = {}
+    for key, value in state.items():
+        if ".gnn.lin_l.weight" in key:
+            key = key.replace(".gnn.lin_l.weight", ".gnn.lin_rel.weight")
+        elif ".gnn.lin_l.bias" in key:
+            key = key.replace(".gnn.lin_l.bias", ".gnn.lin_rel.bias")
+        elif ".gnn.lin_r.weight" in key:
+            key = key.replace(".gnn.lin_r.weight", ".gnn.lin_root.weight")
+        elif key.endswith(".lin_l.weight"):
+            key = key[: -len("lin_l.weight")] + "lin.weight"
+        elif key.endswith(".lin_r.weight"):
+            continue  # identical to the sibling .lin_l.weight; already captured above
+        elif key.endswith(".att_l"):
+            key = key[: -len("att_l")] + "att_src"
+        elif key.endswith(".att_r"):
+            key = key[: -len("att_r")] + "att_dst"
+        remapped[key] = value
+
+    missing = set(model.state_dict()) - remapped.keys()
+    unexplained = {key for key in missing if not key.endswith(".select.weight")}
+    if unexplained:
+        raise RuntimeError(
+            "GAT-GO checkpoint remap left unmapped parameters (architecture "
+            f"or key naming has changed since this was verified): {sorted(unexplained)}"
+        )
+    for key in missing:
+        remapped[key] = torch.ones(1, 1)
+    return remapped
+
+
 def validate_feature(path: Path, protein_id: str, sequence: str) -> dict:
     obj = load_object(path)
     required = {"x", "pssm", "seq", "edge_index", "seq_embed"}
@@ -132,7 +191,7 @@ def main() -> None:
         checkpoint = load_object(args.model.resolve())
         state = checkpoint.get("state_dict", checkpoint)
         model = GnnPF().cpu()
-        model.load_state_dict(state, strict=True)
+        model.load_state_dict(remap_legacy_gat_go_state_dict(state, model), strict=True)
         model.eval()
         go2index = load_object(args.go_map.resolve())
         if set(go2index.values()) != set(range(2752)):
@@ -218,7 +277,7 @@ def main() -> None:
     checkpoint = load_object(args.model.resolve())
     state = checkpoint.get("state_dict", checkpoint)
     model = GnnPF().to(device)
-    model.load_state_dict(state, strict=True)
+    model.load_state_dict(remap_legacy_gat_go_state_dict(state, model), strict=True)
     model.eval()
     go2index = load_object(args.go_map.resolve())
     if set(go2index.values()) != set(range(2752)):
