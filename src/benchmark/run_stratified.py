@@ -49,6 +49,13 @@ DEFAULT_HOMOLOGY = (
     / "preprocessing/data_arc_rebuild_2026_07_14/pdb_splits/threshold_30/blast_te_vs_tr.tsv"
 )
 
+# Allowlist of methods the stratification will load if their predictions
+# exist. A method absent from this list is silently never stratified, which
+# is why HEAL was missing from plots/stratified and from the stratified
+# supplementary tables even though it had completed successfully. Presentation
+# filtering (for example withholding DeepGOPlus/DeepGO-SE from figures) is
+# applied downstream, so this stays inclusive and the results/ tables remain
+# the complete evidence record.
 METHODS = [
     "deepgreengo", "naive",
     "blast", "blast_max",
@@ -56,6 +63,7 @@ METHODS = [
     "foldseek", "foldseek_max",
     "interproscan", "deepfri_sequence", "deepfri_structure",
     "dpfunc", "deepgoplus", "deepgose", "transfun",
+    "heal", "gat_go", "deepgraphgo",
     "eggnog_mapper", "hayai", "gomap",
 ]
 

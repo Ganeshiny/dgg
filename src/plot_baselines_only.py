@@ -802,9 +802,7 @@ def build_captions(
             "to add paired-bootstrap confidence intervals."
         )
 
-    return f"""Unless noted, higher values indicate better performance for all metrics except CAFA Smin, where lower is better.
-
-comparison_cafa_performance
+    return f"""comparison_cafa_performance
 DeepGreenGO versus completed baselines on the nominal 30%-identity/80%-coverage test split (n = 754 PDB chains). The focal method is the five-seed {model_variant} GCN-GAT ensemble ({seeds}). Bars show chain-level test-set point estimates and error bars show percentile 95% confidence intervals from {bootstrap_description}.{bootstrap_warning} Colors denote method family; solid bars denote top-10 weighted transfer and hatched bars denote one highest-identity hit selected from the same eligible top-10 pool. Paired Fmax comparisons against the strongest baseline in each ontology: {paired_text}.{external_sentence}
 
 comparison_aupr

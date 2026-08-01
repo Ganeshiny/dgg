@@ -239,6 +239,69 @@ class AddedMethodContractTests(unittest.TestCase):
         # Exactly one ESM invocation in the whole inference path.
         self.assertEqual(body.count("esm_model("), 1)
 
+    def test_exclusion_set_is_consistent_across_every_output_path(self):
+        """DeepGOPlus/DeepGO-SE kept reappearing in the top-level CAFA and
+        coverage figures because those are a separate, older code path that
+        never consulted the exclusion. Every module that emits a figure or a
+        published table must agree."""
+        canonical = {"deepgoplus", "deepgose"}
+        plot = PLOT.read_text()
+        self.assertIn('frozenset({"deepgoplus", "deepgose"})', plot)
+        evaluate = (PROJECT_ROOT / "src" / "benchmark" / "evaluate.py").read_text()
+        self.assertIn('excluded = {"deepgoplus", "deepgose"}', evaluate)
+        supp = (PROJECT_ROOT / "src" / "export_supplementary_tables.py").read_text()
+        self.assertIn('EXCLUDED_FROM_TABLES = {"deepgoplus", "deepgose"}', supp)
+        # And the figures must actually apply it, not merely define it.
+        self.assertIn("available = set(results.method) - excluded", evaluate)
+        self.assertIn("drop_excluded(metrics)", supp)
+
+    def test_top_level_figures_label_every_method_and_emit_svg(self):
+        """A method missing from the label map silently fell back to its raw
+        key, which is how HEAL was rendered lowercase as 'heal'."""
+        evaluate = (PROJECT_ROOT / "src" / "benchmark" / "evaluate.py").read_text()
+        for method, label in (
+            ("heal", "HEAL"), ("gat_go", "GAT-GO"), ("deepgraphgo", "DeepGraphGO"),
+            ("dpfunc", "DPFunc"), ("blast", "BLAST"), ("diamond", "DIAMOND"),
+        ):
+            self.assertIn(f'"{method}": "{label}"', evaluate)
+        # Vector output for the manuscript.
+        self.assertIn('for suffix in ("svg", "pdf", "png"):', evaluate)
+        self.assertNotIn('for suffix in ("png", "pdf"):', evaluate)
+
+    def test_micro_aupr_gets_a_confidence_interval(self):
+        """Only Fmax and Smin had CI columns written, so the Micro AUPR panel
+        was drawn as bare bars with no uncertainty."""
+        evaluate = (PROJECT_ROOT / "src" / "benchmark" / "evaluate.py").read_text()
+        self.assertIn('for metric in ("micro_aupr", "macro_aupr"):', evaluate)
+        self.assertIn('row[f"{metric}_ci_low"]', evaluate)
+        self.assertIn('row[f"{metric}_ci_high"]', evaluate)
+        # The errorbar branch must no longer be restricted to fmax/smin.
+        self.assertNotIn('if metric in ("cafa_fmax", "cafa_smin"):', evaluate)
+
+    def test_no_directional_guidance_text_in_benchmark_figures(self):
+        for relative in (
+            "src/benchmark/evaluate.py",
+            "src/plot_baselines_only.py",
+            "src/plot_stratified.py",
+        ):
+            source = (PROJECT_ROOT / relative).read_text()
+            self.assertNotIn("higher is better", source, relative)
+            self.assertNotIn("lower is better", source, relative)
+            self.assertNotIn("higher values indicate", source, relative)
+
+    def test_stratification_covers_the_graph_based_methods(self):
+        """run_stratified's METHODS is an allowlist; a method absent from it is
+        silently never stratified, which is why HEAL was missing from
+        plots/stratified despite completing successfully."""
+        source = (PROJECT_ROOT / "src" / "benchmark" / "run_stratified.py").read_text()
+        methods_block = source.split("METHODS = [")[1].split("]")[0]
+        for method in ("heal", "gat_go", "deepgraphgo"):
+            self.assertIn(f'"{method}"', methods_block)
+        # And the stratified figure must be willing to draw it.
+        focus = (PROJECT_ROOT / "src" / "plot_stratified.py").read_text()
+        focus_block = focus.split("FOCUS_METHODS = [")[1].split("]")[0]
+        self.assertIn('"heal"', focus_block)
+
     def test_struct2go_is_removed_and_plot_registers_new_methods(self):
         benchmark = BENCHMARK.read_text()
         setup = SETUP.read_text()

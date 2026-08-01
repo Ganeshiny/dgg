@@ -448,6 +448,10 @@ def evaluate(args) -> None:
             rng,
         )
         method_bootstrap = {}
+        # Summary rows are finalized before the paired AUPR bootstrap runs, so
+        # keep a handle on each one to back-fill its AUPR confidence interval
+        # below (the dicts are mutable and not yet serialized).
+        summary_row_by_method = {}
         continuous_scores: dict[str, np.ndarray] = {}
         for method in methods:
             path = workspace / "predictions" / method / f"{short}.npz"
@@ -526,6 +530,7 @@ def evaluate(args) -> None:
                     np.quantile(values, 0.975)
                 )
             summary_rows.append(row)
+            summary_row_by_method[method] = row
             audit_rows.append({
                 key: row[key]
                 for key in (
@@ -555,6 +560,28 @@ def evaluate(args) -> None:
         for method, (micro_aupr, macro_aupr) in aupr_by_method.items():
             method_bootstrap[method]["micro_aupr"] = micro_aupr
             method_bootstrap[method]["macro_aupr"] = macro_aupr
+
+        # AUPR replicates only exist after the paired bootstrap above, which is
+        # why Fmax and Smin previously got confidence intervals and AUPR did
+        # not - leaving the Micro AUPR panel as bare bars with no uncertainty.
+        # Back-fill them onto the same summary rows, from the same replicates
+        # already used for the paired comparisons, so the interval shown is the
+        # percentile CI of the identical resampling.
+        for method, boot in method_bootstrap.items():
+            row = summary_row_by_method.get(method)
+            if row is None:
+                continue
+            for metric in ("micro_aupr", "macro_aupr"):
+                values = np.asarray(boot.get(metric), dtype=float)
+                finite = values[np.isfinite(values)] if values.size else values
+                # Binary-score methods carry NaN AUPR replicates by design;
+                # NaN bounds mean "no error bar", not a zero-width interval.
+                if finite.size:
+                    row[f"{metric}_ci_low"] = float(np.quantile(finite, 0.025))
+                    row[f"{metric}_ci_high"] = float(np.quantile(finite, 0.975))
+                else:
+                    row[f"{metric}_ci_low"] = float("nan")
+                    row[f"{metric}_ci_high"] = float("nan")
 
         for method, boot in method_bootstrap.items():
             for index in range(args.bootstraps):
@@ -612,7 +639,14 @@ def write_csv(path: Path, rows: list[dict]) -> None:
     if not rows:
         path.write_text("")
         return
+    # Union of keys, in first-appearance order. Taking only rows[0]'s keys
+    # made adding a column to every row still fail whenever the first row was
+    # populated before the new column existed.
     fields = list(rows[0])
+    for row in rows[1:]:
+        for key in row:
+            if key not in fields:
+                fields.append(key)
     with path.open("w", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=fields)
         writer.writeheader()
@@ -629,19 +663,32 @@ def plot(args) -> None:
     results = pd.read_csv(workspace / "results" / "benchmark_metrics.csv")
     out_dir = workspace / "plots"
     out_dir.mkdir(parents=True, exist_ok=True)
+    # Kept in sync with plot_baselines_only.EXCLUDED_FROM_PLOTS, which is the
+    # canonical definition; tests/test_added_method_contracts.py asserts the
+    # two agree. These figures are a separate, older code path and previously
+    # ignored the exclusion entirely, so DeepGOPlus and DeepGO-SE kept
+    # reappearing here after being removed from every other figure.
+    excluded = {"deepgoplus", "deepgose"}
     preferred = [
-        "deepgreengo", "dpfunc", "transfun", "deepgose", "deepgoplus",
+        "deepgreengo", "dpfunc", "heal", "gat_go", "deepgraphgo", "transfun",
         "deepfri_structure", "deepfri_sequence", "gomap", "hayai",
         "eggnog_mapper", "interproscan", "foldseek", "foldseek_max",
         "blast", "blast_max", "diamond", "diamond_max", "naive",
     ]
-    methods = [method for method in preferred if method in set(results.method)]
-    methods += sorted(set(results.method) - set(methods))
+    available = set(results.method) - excluded
+    methods = [method for method in preferred if method in available]
+    methods += sorted(available - set(methods))
+    # Display names for every method that can appear. A missing entry silently
+    # fell back to the raw key, which is how HEAL was labelled "heal".
     labels = {"deepgreengo": "DeepGreenGO", "deepfri_structure": "DeepFRI (structure)",
               "deepfri_sequence": "DeepFRI (sequence)", "deepgose": "DeepGO-SE",
               "deepgoplus": "DeepGOPlus", "eggnog_mapper": "eggNOG-mapper",
               "interproscan": "InterProScan", "foldseek_max": "Foldseek (max)",
-              "blast_max": "BLAST (max)", "diamond_max": "DIAMOND (max)"}
+              "blast_max": "BLAST (max)", "diamond_max": "DIAMOND (max)",
+              "heal": "HEAL", "gat_go": "GAT-GO", "deepgraphgo": "DeepGraphGO",
+              "dpfunc": "DPFunc", "naive": "Naive frequency",
+              "blast": "BLAST", "diamond": "DIAMOND", "foldseek": "Foldseek",
+              "transfun": "TransFun", "hayai": "Hayai", "gomap": "GOMAP"}
     colors = {method: plt.cm.tab20(index % 20) for index, method in enumerate(methods)}
     colors["deepgreengo"] = "#9C1C3A"
 
@@ -649,25 +696,40 @@ def plot(args) -> None:
     for row_index, (short, ontology) in enumerate(ONTOLOGIES.items()):
         subset = results[results.ontology == ontology].set_index("method").reindex(methods)
         x = np.arange(len(methods))
-        for column, (metric, title, lower) in enumerate((
-            ("cafa_fmax", "CAFA Fmax", "higher is better"),
-            ("micro_aupr", "Micro AUPR", "higher is better"),
-            ("cafa_smin", "CAFA Smin", "lower is better"),
+        for column, (metric, title) in enumerate((
+            ("cafa_fmax", "CAFA Fmax"),
+            ("micro_aupr", "Micro AUPR"),
+            ("cafa_smin", "CAFA Smin"),
         )):
             ax = axes[row_index, column]
             values = subset[metric].to_numpy(float)
             ax.bar(x, values, color=[colors[m] for m in methods], edgecolor="white")
-            if metric in ("cafa_fmax", "cafa_smin"):
-                low = subset[metric + "_ci_low"].to_numpy(float)
-                high = subset[metric + "_ci_high"].to_numpy(float)
-                ax.errorbar(x, values, yerr=np.vstack([values - low, high - values]),
-                            fmt="none", ecolor="#333333", capsize=2, linewidth=0.8)
+            # Micro AUPR now carries the percentile CI from the same paired
+            # bootstrap as Fmax/Smin; it previously had no interval at all
+            # because those columns were never written.
+            low_key, high_key = metric + "_ci_low", metric + "_ci_high"
+            if low_key in subset.columns and high_key in subset.columns:
+                low = subset[low_key].to_numpy(float)
+                high = subset[high_key].to_numpy(float)
+                lower_err = np.where(np.isfinite(low), values - low, np.nan)
+                upper_err = np.where(np.isfinite(high), high - values, np.nan)
+                # Guard against tiny negative widths from float noise, which
+                # matplotlib rejects outright.
+                yerr = np.vstack([
+                    np.clip(lower_err, 0.0, None),
+                    np.clip(upper_err, 0.0, None),
+                ])
+                if np.isfinite(yerr).any():
+                    ax.errorbar(x, values, yerr=np.nan_to_num(yerr, nan=0.0),
+                                fmt="none", ecolor="#333333", capsize=2, linewidth=0.8)
             ax.set_title(f"{ontology.replace('_', ' ').title()} — {title}")
-            ax.set_ylabel(lower)
+            ax.set_ylabel(title)
             ax.set_xticks(x, [labels.get(m, m) for m in methods], rotation=55, ha="right")
             ax.spines[["top", "right"]].set_visible(False)
             ax.grid(axis="y", alpha=0.25)
-    for suffix in ("png", "pdf"):
+    # SVG included so the manuscript has a true vector source for these
+    # figures, matching the other plot modules.
+    for suffix in ("svg", "pdf", "png"):
         fig.savefig(out_dir / f"01_cafa_metrics.{suffix}", dpi=300)
     plt.close(fig)
 
@@ -682,7 +744,9 @@ def plot(args) -> None:
         ax.set_xticks(x, [labels.get(m, m) for m in methods], rotation=55, ha="right")
         ax.spines[["top", "right"]].set_visible(False)
         ax.grid(axis="y", alpha=0.25)
-    for suffix in ("png", "pdf"):
+    # SVG included so the manuscript has a true vector source for these
+    # figures, matching the other plot modules.
+    for suffix in ("svg", "pdf", "png"):
         fig.savefig(out_dir / f"02_prediction_coverage.{suffix}", dpi=300)
     plt.close(fig)
 

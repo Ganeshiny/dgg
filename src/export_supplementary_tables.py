@@ -24,6 +24,10 @@ ONTOLOGY_LABEL = {
     "biological_process": "BP",
     "cellular_component": "CC",
 }
+# Mirrors plot_baselines_only.EXCLUDED_FROM_PLOTS, which is the canonical
+# definition; tests assert the two stay in sync.
+EXCLUDED_FROM_TABLES = {"deepgoplus", "deepgose"}
+
 EXTERNAL_PRETRAINED = {
     "deepfri_sequence", "deepfri_structure", "dpfunc", "deepgoplus",
     "deepgose", "transfun", "eggnog_mapper", "hayai", "gomap",
@@ -119,6 +123,22 @@ def main() -> None:
     ic = require_csv(results / "stratified_ic.csv")
     depth = require_csv(results / "stratified_depth.csv")
     curves = require_csv(results / "ic_weighted_pr.csv")
+
+    # Keep the published tables consistent with the published figures. The
+    # complete, unfiltered record stays in results/; only these presentation
+    # tables drop the withheld comparators, which previously reappeared here
+    # after being removed from every figure.
+    def drop_excluded(frame: pd.DataFrame) -> pd.DataFrame:
+        if "method" not in frame.columns:
+            return frame
+        return frame[~frame["method"].astype(str).isin(EXCLUDED_FROM_TABLES)].copy()
+
+    metrics = drop_excluded(metrics)
+    homology = drop_excluded(homology)
+    homology_aupr = drop_excluded(homology_aupr)
+    ic = drop_excluded(ic)
+    depth = drop_excluded(depth)
+    curves = drop_excluded(curves)
     metrics = metrics.copy()
     metrics["ontology_short"] = metrics["ontology"].map(ONTOLOGY_LABEL)
 
