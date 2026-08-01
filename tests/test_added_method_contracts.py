@@ -255,6 +255,18 @@ class AddedMethodContractTests(unittest.TestCase):
         self.assertIn("available = set(results.method) - excluded", evaluate)
         self.assertIn("drop_excluded(metrics)", supp)
 
+    def test_supplementary_table_s7_is_not_bypassed_by_a_different_column_name(self):
+        """S7 reads paired_differences_vs_deepgreengo.csv, whose method column
+        is named 'competitor', not 'method' - unlike every other supplementary
+        table. drop_excluded() silently no-ops on a column it doesn't find, so
+        calling it without column='competitor' here would let DeepGOPlus/
+        DeepGO-SE straight through even with every other table clean."""
+        supp = (PROJECT_ROOT / "src" / "export_supplementary_tables.py").read_text()
+        s7_block = supp.split('paired_path = results / "paired_differences_vs_deepgreengo.csv"')[1]
+        s7_block = s7_block.split("write_table(paired,")[0]
+        self.assertIn('column="competitor"', s7_block)
+        self.assertIn("drop_excluded(pd.read_csv(paired_path)", s7_block)
+
     def test_top_level_figures_label_every_method_and_emit_svg(self):
         """A method missing from the label map silently fell back to its raw
         key, which is how HEAL was rendered lowercase as 'heal'."""

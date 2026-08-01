@@ -128,10 +128,10 @@ def main() -> None:
     # complete, unfiltered record stays in results/; only these presentation
     # tables drop the withheld comparators, which previously reappeared here
     # after being removed from every figure.
-    def drop_excluded(frame: pd.DataFrame) -> pd.DataFrame:
-        if "method" not in frame.columns:
+    def drop_excluded(frame: pd.DataFrame, column: str = "method") -> pd.DataFrame:
+        if column not in frame.columns:
             return frame
-        return frame[~frame["method"].astype(str).isin(EXCLUDED_FROM_TABLES)].copy()
+        return frame[~frame[column].astype(str).isin(EXCLUDED_FROM_TABLES)].copy()
 
     metrics = drop_excluded(metrics)
     homology = drop_excluded(homology)
@@ -178,7 +178,13 @@ def main() -> None:
 
     paired_path = results / "paired_differences_vs_deepgreengo.csv"
     if paired_path.is_file():
-        write_table(pd.read_csv(paired_path), output / "supp_table_s7_paired_differences.csv")
+        # evaluate.py computes this for every non-deepgreengo method with
+        # predictions, unfiltered; it bypassed drop_excluded() entirely and
+        # would have reintroduced DeepGOPlus/DeepGO-SE into S7 the moment
+        # either had predictions present, even with every other table clean.
+        # This table's method column is named "competitor", not "method".
+        paired = drop_excluded(pd.read_csv(paired_path), column="competitor")
+        write_table(paired, output / "supp_table_s7_paired_differences.csv")
 
     methods = sorted(set(metrics["method"].astype(str)))
     write_table(comparison_audit(methods), output / "supp_table_s8_comparison_audit.csv")
