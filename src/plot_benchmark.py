@@ -2,8 +2,10 @@
 """Publication figures for the ARC baseline benchmark.
 
 Reads results/benchmark_metrics.csv (+ bootstrap CIs and the coverage audit)
-from an arc_benchmark workspace and renders BMC/Nature-ready comparisons of
-DeepGreenGO against the sequence-, structure- and frequency-based baselines.
+from an arc_benchmark workspace and renders BMC/Nature-ready baseline-only
+comparisons.  The plotted method set is deliberately locked to CAFA naive,
+BLAST, DIAMOND, Foldseek, DeepFRI, DPFunc, and HEAL; other evaluated methods
+remain in the source results but cannot leak into these figures.
 
 Integrity gate: a method whose stored predictions are empty is NOT plotted as
 a legitimate zero. BLAST currently trips this — its raw hit file contains
@@ -44,32 +46,41 @@ from plot_style import (
     savefig,
 )
 
-# Method display order: our model first, then frequency, sequence, structure.
-METHOD_ORDER = ["deepgreengo", "naive", "blast", "blast_max",
-                "diamond", "diamond_max", "foldseek", "foldseek_max"]
+# This is both the display order and the baseline-only allowlist. Keep the two
+# transfer summaries for each search method and both DeepFRI modes.
+METHOD_ORDER = ["naive", "blast", "blast_max", "diamond", "diamond_max",
+                "foldseek", "foldseek_max", "deepfri_sequence",
+                "deepfri_structure", "dpfunc", "heal"]
+REQUESTED_METHODS = frozenset(METHOD_ORDER)
 METHOD_LABEL = {
-    "deepgreengo": "DeepGreenGO", "naive": "Naive frequency",
+    "naive": "CAFA naive",
     "blast": "BLAST (top-10)", "blast_max": "BLAST (max ident.)",
     "diamond": "DIAMOND (top-10)", "diamond_max": "DIAMOND (max ident.)",
     "foldseek": "Foldseek (top-10)", "foldseek_max": "Foldseek (max ident.)",
+    "deepfri_sequence": "DeepFRI (sequence)",
+    "deepfri_structure": "DeepFRI (structure)",
+    "dpfunc": "DPFunc", "heal": "HEAL",
 }
 # Family colour: one hue per evidence type, so the comparison reads as
-# "our model vs frequency vs sequence homology vs structure homology"
-# rather than eight unrelated categories.
+# frequency vs homology transfer vs external deep-learning baselines.
 METHOD_FAMILY = {
-    "deepgreengo": "model", "naive": "frequency",
+    "naive": "frequency",
     "blast": "sequence", "blast_max": "sequence",
     "diamond": "sequence", "diamond_max": "sequence",
     "foldseek": "structure", "foldseek_max": "structure",
+    "deepfri_sequence": "deep_learning", "deepfri_structure": "deep_learning",
+    "dpfunc": "deep_learning", "heal": "deep_learning",
 }
 FAMILY_COLOR = {
-    "model": CATEGORICAL_PALETTE[3],      # green
     "frequency": CATEGORICAL_PALETTE[2],  # yellow
     "sequence": CATEGORICAL_PALETTE[0],   # blue
     "structure": CATEGORICAL_PALETTE[4],  # violet
+    "deep_learning": CATEGORICAL_PALETTE[3],  # green
 }
-FAMILY_LABEL = {"model": "This work", "frequency": "Frequency prior",
-                "sequence": "Sequence homology", "structure": "Structure homology"}
+FAMILY_LABEL = {"frequency": "CAFA frequency prior",
+                "sequence": "Sequence homology", "structure": "Structure homology",
+                "deep_learning": "External deep learning"}
+FAMILY_ORDER = ("frequency", "sequence", "structure", "deep_learning")
 
 METRICS = {
     "cafa_fmax": ("CAFA F$_{max}$", True),
@@ -86,6 +97,15 @@ def load(workspace: Path):
     boot_path = workspace / "results/bootstrap_metrics.csv"
     bootstrap = pd.read_csv(boot_path) if boot_path.exists() else None
     return metrics, audit, bootstrap
+
+
+def select_requested_methods(frame: pd.DataFrame | None) -> pd.DataFrame | None:
+    """Return only the locked baseline set, preserving the input row order."""
+    if frame is None:
+        return None
+    if "method" not in frame.columns:
+        raise ValueError("Benchmark table has no 'method' column")
+    return frame.loc[frame["method"].isin(REQUESTED_METHODS)].copy()
 
 
 def detect_invalid(metrics: pd.DataFrame, workspace: Path) -> dict[str, str]:
@@ -113,8 +133,7 @@ def detect_invalid(metrics: pd.DataFrame, workspace: Path) -> dict[str, str]:
 
 def _methods_present(metrics: pd.DataFrame) -> list[str]:
     present = set(metrics["method"].unique())
-    ordered = [m for m in METHOD_ORDER if m in present]
-    return ordered + sorted(present - set(ordered))
+    return [m for m in METHOD_ORDER if m in present]
 
 
 def plot_metric_panels(metrics: pd.DataFrame, invalid: dict[str, str], out: Path,
@@ -157,7 +176,7 @@ def plot_metric_panels(metrics: pd.DataFrame, invalid: dict[str, str], out: Path
         ax.set_xlim(0, max(.05, float(np.nanmax(values)) * 1.30))
         label_panel(ax, chr(97 + panel))
     handles = [Patch(facecolor=FAMILY_COLOR[f], edgecolor="#111111", label=FAMILY_LABEL[f])
-               for f in ("model", "frequency", "sequence", "structure")]
+               for f in FAMILY_ORDER]
     handles.append(Patch(facecolor="#dddddd", edgecolor="#111111", hatch="///",
                          label="Not evaluated"))
     fig.legend(handles=handles, loc="upper left", bbox_to_anchor=(1.0, .95),
@@ -224,7 +243,7 @@ def plot_bootstrap_boxplots(bootstrap: pd.DataFrame, invalid: dict[str, str], ou
             label_panel(ax, chr(97 + panel))
             panel += 1
     handles = [Patch(facecolor=FAMILY_COLOR[f], edgecolor="#111111", label=FAMILY_LABEL[f])
-               for f in ("model", "frequency", "sequence", "structure")]
+               for f in FAMILY_ORDER]
     fig.legend(handles=handles, loc="upper left", bbox_to_anchor=(1.0, .95),
                frameon=False, fontsize=6.2, title="Evidence type", title_fontsize=6.5)
     fig.text(.5, -.05,
@@ -297,7 +316,7 @@ def plot_metric_grid(metrics: pd.DataFrame, invalid: dict[str, str], out: Path,
             label_panel(ax, chr(97 + panel))
             panel += 1
     handles = [Patch(facecolor=FAMILY_COLOR[f], edgecolor="#111111", label=FAMILY_LABEL[f])
-               for f in ("model", "frequency", "sequence", "structure")]
+               for f in FAMILY_ORDER]
     fig.legend(handles=handles, loc="upper left", bbox_to_anchor=(1.0, .95),
                frameon=False, fontsize=6.2, title="Evidence type", title_fontsize=6.5)
     excluded = ", ".join(METHOD_LABEL.get(m, m) for m in invalid) or "none"
@@ -347,11 +366,16 @@ def plot_coverage_vs_fmax(metrics: pd.DataFrame, invalid: dict[str, str], out: P
 
 
 def main() -> None:
+    repo = Path(__file__).resolve().parents[1]
     ap = argparse.ArgumentParser()
     ap.add_argument("--workspace", type=Path,
-                    default=Path("arc_benchmark/nominal_30_identity_80_coverage"))
-    ap.add_argument("--output-dir", type=Path, default=Path("plots/figures/benchmark"))
+                    default=repo / "arc_benchmark/nominal_30_identity_80_coverage")
+    ap.add_argument("--output-dir", type=Path, default=repo / "plots/figures/benchmark")
     ap.add_argument("--tier", choices=["main", "supplementary"], default="main")
+    ap.add_argument(
+        "--allow-missing", action="store_true",
+        help="Render requested baselines that are present instead of failing if any are missing.",
+    )
     args = ap.parse_args()
 
     apply_style()
@@ -362,6 +386,26 @@ def main() -> None:
     out.mkdir(parents=True, exist_ok=True)
 
     metrics, audit, bootstrap = load(workspace)
+    available = set(metrics["method"].astype(str))
+    missing = [method for method in METHOD_ORDER if method not in available]
+    if missing and not args.allow_missing:
+        raise SystemExit(
+            "Requested baseline results are missing from results/benchmark_metrics.csv: "
+            + ", ".join(missing)
+            + ". Complete/evaluate those baselines on ARC, or use --allow-missing "
+              "for a partial diagnostic render."
+        )
+    if missing:
+        print("WARNING: partial baseline render; missing: " + ", ".join(missing))
+    removed = sorted(available - REQUESTED_METHODS)
+    if removed:
+        print("Baseline-only filter removed: " + ", ".join(removed))
+    metrics = select_requested_methods(metrics)
+    if audit is not None and "method" in audit.columns:
+        audit = select_requested_methods(audit)
+    bootstrap = select_requested_methods(bootstrap)
+    if metrics.empty:
+        raise SystemExit("None of the requested baseline methods are present in benchmark_metrics.csv")
     invalid = detect_invalid(metrics, workspace)
     if invalid:
         print("\nINTEGRITY: methods excluded from scoring")

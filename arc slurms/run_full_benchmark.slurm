@@ -14,12 +14,20 @@
 # ARC GPU partitions currently have a 24-hour MaxWall limit. Leave a small
 # margin below that limit; the stage markers make the same script resumable.
 #SBATCH --time=23:55:00
-#SBATCH --output=/home/ganeshiny.sridharan/dgg/deep-green-GO/logs/full_benchmark_%j.out
-#SBATCH --error=/home/ganeshiny.sridharan/dgg/deep-green-GO/logs/full_benchmark_%j.err
+#SBATCH --output=full_benchmark_%j.out
+#SBATCH --error=full_benchmark_%j.err
 
 set -euo pipefail
 
-PROJECT_DIR="${DGG_PROJECT_ROOT:-/home/ganeshiny.sridharan/dgg/deep-green-GO}"
+SUBMIT_DIR="${SLURM_SUBMIT_DIR:-$PWD}"
+if [[ -n "${DGG_PROJECT_ROOT:-${DGG_PROJECT_DIR:-}}" ]]; then
+    PROJECT_DIR="${DGG_PROJECT_ROOT:-${DGG_PROJECT_DIR}}"
+elif PROJECT_DIR="$(git -C "${SUBMIT_DIR}" rev-parse --show-toplevel 2>/dev/null)"; then
+    :
+else
+    echo "ERROR: submit from inside the DeepGreenGO checkout or set DGG_PROJECT_ROOT." >&2
+    exit 2
+fi
 DATA_ROOT="${DGG_DATA_ROOT:-${PROJECT_DIR}/preprocessing/data_arc_rebuild_2026_07_14}"
 TUNING_ROOT="${DGG_TUNING_ROOT:-${PROJECT_DIR}/arc_tuning_cafa}"
 # The CAFA tuning root contains the five-seed checkpoints. Graphs were built
@@ -27,11 +35,11 @@ TUNING_ROOT="${DGG_TUNING_ROOT:-${PROJECT_DIR}/arc_tuning_cafa}"
 GRAPH_ROOT="${DGG_GRAPH_ROOT:-${PROJECT_DIR}/arc_tuning/graphs_protbert}"
 CHECKPOINT_ROOT="${DGG_CHECKPOINT_ROOT:-${TUNING_ROOT}/five_seed_hybrid}"
 BENCHMARK_ROOT="${DGG_BENCHMARK_ROOT:-${PROJECT_DIR}/arc_benchmark/nominal_30_identity_80_coverage}"
-# Deadline-safe profile: only methods whose repositories, model files, and
-# environments passed the ARC setup checks. TransFun, eggNOG, Hayai, and GOMAP
-# remain explicit opt-ins. HEAL, GAT-GO, and DeepGraphGO are also opt-ins
-# under the constraints documented in ARC_BENCHMARK_README.md.
-METHODS="${DGG_BENCHMARK_METHODS:-hybrid,naive,blast,diamond,foldseek,interproscan,deepfri_sequence,deepfri_structure,dpfunc,deepgoplus,deepgose}"
+# Baseline-only benchmark requested for the manuscript comparison. The search
+# methods emit both top-10 and maximum-identity variants. InterProScan still
+# runs internally when DPFunc needs its features, but is not itself evaluated.
+# Override DGG_BENCHMARK_METHODS only for a deliberate diagnostic run.
+METHODS="${DGG_BENCHMARK_METHODS:-naive,blast,diamond,foldseek,deepfri_sequence,deepfri_structure,dpfunc,heal}"
 # Strict by default: a requested comparator must pass preflight before any
 # expensive stage starts. Set to 1 only for an intentionally incomplete run.
 SKIP_UNAVAILABLE="${DGG_BENCHMARK_SKIP_UNAVAILABLE:-0}"
@@ -922,14 +930,19 @@ run_gomap() {
 }
 
 run_evaluation() {
-    # Defaults to the selected methods. Set DGG_BENCHMARK_REQUIRE_METHODS to an
-    # explicit list, or to the empty string, when a final scoring pass should
-    # grade every method already present in predictions/ without insisting that
-    # a particular comparator succeeded. Uses ${x-default}, not ${x:-default},
-    # so an intentionally empty value is honoured.
-    local required="${DGG_BENCHMARK_REQUIRE_METHODS-${METHODS//hybrid/deepgreengo}}"
+    # Evaluate only this run's selected methods, so stale prediction folders
+    # from older, broader benchmarks cannot leak into results/*.csv. Search
+    # baselines also emit a separately reported maximum-identity variant.
+    local selected="${METHODS//hybrid/deepgreengo}"
+    method_enabled blast && selected="${selected},blast_max"
+    method_enabled diamond && selected="${selected},diamond_max"
+    method_enabled foldseek && selected="${selected},foldseek_max"
+    # Uses ${x-default}, not ${x:-default}, so an intentionally empty required
+    # list is honoured while --methods still locks the evaluated result set.
+    local required="${DGG_BENCHMARK_REQUIRE_METHODS-${selected}}"
     benchmark_cli evaluate \
-        --workspace "${BENCHMARK_ROOT}" --bootstraps 1000 --aupr-workers "${THREADS}" --require-methods "${required}"
+        --workspace "${BENCHMARK_ROOT}" --bootstraps 1000 --aupr-workers "${THREADS}" \
+        --methods "${selected}" --require-methods "${required}"
     benchmark_cli plot --workspace "${BENCHMARK_ROOT}"
 }
 
@@ -952,8 +965,13 @@ run_stratified_analysis() {
 }
 
 run_comparison_figures() {
+    # Keep the workspace comparison bundle used by the supplementary pipeline,
+    # then write the locked baseline-only manuscript bundle to plots/figures.
     conda_run "${BASE_ENV}" python "${PROJECT_DIR}/src/plot_baselines_only.py" \
         --workspace "${BENCHMARK_ROOT}"
+    conda_run "${BASE_ENV}" python "${PROJECT_DIR}/src/plot_benchmark.py" \
+        --workspace "${BENCHMARK_ROOT}" \
+        --output-dir "${PROJECT_DIR}/plots/figures/benchmark"
 }
 
 echo "Project: ${PROJECT_DIR}"

@@ -413,13 +413,25 @@ def evaluate(args) -> None:
     obo_path = data_root / "go-basic.obo"
     if not obo_path.is_file():
         raise SystemExit(f"go-basic.obo not found under {data_root}")
-    methods = discover_methods(workspace)
+    discovered = discover_methods(workspace)
+    requested = [
+        value.strip() for value in getattr(args, "methods", "").split(",") if value.strip()
+    ]
+    if len(requested) != len(set(requested)):
+        raise SystemExit("--methods contains duplicate method names")
+    missing_requested = sorted(set(requested) - set(discovered))
+    if missing_requested:
+        raise SystemExit(
+            "Selected standardized predictions are missing: " + ", ".join(missing_requested)
+        )
+    methods = requested or discovered
     required = [value.strip() for value in args.require_methods.split(",") if value.strip()]
-    missing = sorted(set(required) - set(methods))
+    missing = sorted(set(required) - set(discovered))
     if missing:
         raise SystemExit("Required standardized predictions are missing: " + ", ".join(missing))
     if not methods:
         raise SystemExit("No complete standardized prediction sets were found")
+    print("[evaluate] selected methods: " + ", ".join(methods), flush=True)
 
     result_dir = workspace / "results"
     result_dir.mkdir(parents=True, exist_ok=True)

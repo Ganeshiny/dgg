@@ -173,6 +173,10 @@ def main() -> None:
         default=8,
         help="Threads used for paired AUPR bootstrap calculations.",
     )
+    command.add_argument(
+        "--methods", default="",
+        help="Comma-separated methods to evaluate; default discovers every complete prediction set.",
+    )
     command.add_argument("--require-methods", default="")
     command.set_defaults(func=evaluate)
 
