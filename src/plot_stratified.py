@@ -15,6 +15,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import shutil
 from pathlib import Path
 
 import matplotlib.pyplot as plt
@@ -59,23 +60,25 @@ HOMOLOGY_BINS = ["no hit", "<30%", "30-40%", "40-60%", ">=60%"]
 IC_BINS = ["<2 bits", "2-4 bits", "4-6 bits", ">=6 bits"]
 DEPTH_BINS = ["1-3", "4-6", "7-9", ">=10"]
 
-# Keep the panel legible: these are the representative methods, one per
-# evidence family plus the structure-aware deep comparators of interest.
-# DeepGOPlus and DeepGO-SE are withheld from the figures here for the same
-# reason as in plot_baselines_only.EXCLUDED_FROM_PLOTS; the graph-based
-# baselines HEAL, GAT-GO, and DeepGraphGO take their place.
+# Locked manuscript comparison: DeepGreenGO plus all 11 requested baseline
+# configurations, including both aggregation variants for similarity methods.
 FOCUS_METHODS = [
-    "deepgreengo", "naive", "blast", "diamond", "foldseek",
-    "deepfri_sequence", "deepfri_structure", "dpfunc",
-    "heal", "gat_go", "deepgraphgo", "transfun", "interproscan",
+    "deepgreengo", "naive", "blast", "blast_max", "diamond", "diamond_max",
+    "foldseek", "foldseek_max", "deepfri_sequence", "deepfri_structure",
+    "dpfunc", "heal",
 ]
 
 MARKERS = {
-    "deepgreengo": "o", "naive": "s", "blast": "^", "diamond": "v",
-    "foldseek": "D", "deepfri_sequence": "P", "deepfri_structure": "X",
-    "dpfunc": "<", "heal": "H", "gat_go": "d", "deepgraphgo": "8",
-    "transfun": "h", "interproscan": "p",
+    "deepgreengo": "o", "naive": "s", "blast": "^", "blast_max": "v",
+    "diamond": "<", "diamond_max": ">", "foldseek": "D",
+    "foldseek_max": "d", "deepfri_sequence": "P",
+    "deepfri_structure": "X", "dpfunc": "h", "heal": "H",
 }
+
+RESULT_FILES = [
+    "stratified_homology.csv", "stratified_homology_aupr.csv",
+    "stratified_ic.csv", "stratified_depth.csv", "ic_weighted_pr.csv",
+]
 
 # Bins with fewer items than this cannot support a claim; drawn but flagged.
 MIN_BIN_N = 10
@@ -92,6 +95,19 @@ def parse_args() -> argparse.Namespace:
 def present_methods(frame: pd.DataFrame) -> list[str]:
     available = set(frame["method"].astype(str))
     return [method for method in FOCUS_METHODS if method in available]
+
+
+def require_locked_methods(frames: dict[str, pd.DataFrame]) -> None:
+    expected = set(FOCUS_METHODS)
+    for name, frame in frames.items():
+        actual = set(frame["method"].dropna().astype(str))
+        if actual != expected:
+            missing = sorted(expected - actual)
+            extra = sorted(actual - expected)
+            raise SystemExit(
+                f"{name} does not contain the locked benchmark comparison; "
+                f"missing={missing}, extra={extra}"
+            )
 
 
 def _series(frame: pd.DataFrame, method: str, ontology: str,
@@ -322,15 +338,15 @@ def plot_combined(
 
     _draw_binned_row(
         row0, homology, HOMOLOGY_BINS,
-        "Protein-centric F$_{max}$", "Max identity to training set", panel_offset=0, letter="a",
+        "F$_{max}$", "Max identity to training set", panel_offset=0, letter="a",
     )
     _draw_binned_row(
         row1, ic, IC_BINS,
-        "Term-centric AUPRC", "Term information content", panel_offset=0, letter="b",
+        "AUPRC", "Term information content", panel_offset=0, letter="b",
     )
     _draw_binned_row(
         row2, depth, DEPTH_BINS,
-        "Term-centric AUPRC", "GO term depth from root", panel_offset=0, letter="c",
+        "AUPRC", "GO term depth from root", panel_offset=0, letter="c",
     )
     _draw_pr_row(row3, curves, panel_offset=0, letter="d")
 
@@ -354,7 +370,7 @@ def plot_combined(
         handletextpad=0.5, columnspacing=1.1,
     )
     fig.subplots_adjust(left=0.08, right=0.98, top=0.97, bottom=0.11)
-    savefig(fig, out / "stratified_combined", MAIN, formats=("pdf", "svg", "tiff"))
+    savefig(fig, out / "stratified_combined", MAIN)
 
 
 def build_captions(low_n: dict[str, list[str]], manifest: dict) -> str:
@@ -408,11 +424,19 @@ def main() -> None:
     ic = pd.read_csv(results / "stratified_ic.csv")
     depth = pd.read_csv(results / "stratified_depth.csv")
     curves = pd.read_csv(results / "ic_weighted_pr.csv")
+    frames = {
+        "stratified_homology.csv": homology,
+        "stratified_homology_aupr.csv": homology_aupr,
+        "stratified_ic.csv": ic,
+        "stratified_depth.csv": depth,
+        "ic_weighted_pr.csv": curves,
+    }
+    require_locked_methods(frames)
 
     low_n = {}
     low_n["homology"] = plot_binned(
         homology, HOMOLOGY_BINS,
-        "Protein-centric F$_{max}$", "Max identity to training set",
+        "F$_{max}$", "Max identity to training set",
         "stratified_homology_fmax", output, "",
     )
     plot_binned(
@@ -422,12 +446,12 @@ def main() -> None:
     )
     low_n["ic"] = plot_binned(
         ic, IC_BINS,
-        "Term-centric AUPRC", "Term information content",
+        "AUPRC", "Term information content",
         "stratified_ic_auprc", output, "",
     )
     low_n["depth"] = plot_binned(
         depth, DEPTH_BINS,
-        "Term-centric AUPRC", "GO term depth from root",
+        "AUPRC", "GO term depth from root",
         "stratified_depth_auprc", output, "",
     )
     plot_ic_weighted_pr(curves, output)
@@ -435,6 +459,12 @@ def main() -> None:
 
     (output / "captions.txt").write_text(
         build_captions(low_n, manifest), encoding="utf-8"
+    )
+    for filename in RESULT_FILES:
+        shutil.copy2(results / filename, output / filename)
+    shutil.copy2(
+        results / "stratified_manifest.json",
+        output / "stratified_manifest.json",
     )
     print(f"Methods plotted: {', '.join(present_methods(homology))}")
     print(f"Output: {output}")

@@ -711,9 +711,9 @@ def plot(args) -> None:
         subset = results[results.ontology == ontology].set_index("method").reindex(methods)
         x = np.arange(len(methods))
         for column, (metric, title) in enumerate((
-            ("cafa_fmax", "Protein-centric Fmax"),
-            ("micro_aupr", "Term-centric micro-AUPR"),
-            ("cafa_smin", "Protein-centric Smin"),
+            ("cafa_fmax", "Fmax"),
+            ("micro_aupr", "Micro-AUPR"),
+            ("cafa_smin", "Smin"),
         )):
             ax = axes[row_index, column]
             values = subset[metric].to_numpy(float)

@@ -49,22 +49,15 @@ DEFAULT_HOMOLOGY = (
     / "preprocessing/data_arc_rebuild_2026_07_14/pdb_splits/threshold_30/blast_te_vs_tr.tsv"
 )
 
-# Allowlist of methods the stratification will load if their predictions
-# exist. A method absent from this list is silently never stratified, which
-# is why HEAL was missing from plots/stratified and from the stratified
-# supplementary tables even though it had completed successfully. Presentation
-# filtering (for example withholding DeepGOPlus/DeepGO-SE from figures) is
-# applied downstream, so this stays inclusive and the results/ tables remain
-# the complete evidence record.
+# Locked manuscript comparison: DeepGreenGO plus the 11 requested baseline
+# configurations. Keeping this list identical to the main benchmark prevents
+# stale prediction directories from silently adding unrelated methods.
 METHODS = [
     "deepgreengo", "naive",
     "blast", "blast_max",
     "diamond", "diamond_max",
     "foldseek", "foldseek_max",
-    "interproscan", "deepfri_sequence", "deepfri_structure",
-    "dpfunc", "deepgoplus", "deepgose", "transfun",
-    "heal", "gat_go", "deepgraphgo",
-    "eggnog_mapper", "hayai", "gomap",
+    "deepfri_sequence", "deepfri_structure", "dpfunc", "heal",
 ]
 
 # Below this many items a bin's metric is too unstable to interpret; it is
@@ -113,6 +106,7 @@ def main() -> None:
         "obo": str(obo_path),
         "min_bin_size": MIN_BIN_SIZE,
         "prediction_ancestor_propagation": True,
+        "methods": METHODS,
         "bins": {"homology": HOMOLOGY_BINS, "ic": IC_BINS, "depth": DEPTH_BINS},
         "ontologies": {},
     }

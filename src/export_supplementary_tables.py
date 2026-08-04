@@ -27,6 +27,11 @@ ONTOLOGY_LABEL = {
 # Mirrors plot_baselines_only.EXCLUDED_FROM_PLOTS, which is the canonical
 # definition; tests assert the two stay in sync.
 EXCLUDED_FROM_TABLES = {"deepgoplus", "deepgose"}
+INCLUDED_METHODS = {
+    "deepgreengo", "naive", "blast", "blast_max", "diamond",
+    "diamond_max", "foldseek", "foldseek_max", "deepfri_sequence",
+    "deepfri_structure", "dpfunc", "heal",
+}
 
 EXTERNAL_PRETRAINED = {
     "deepfri_sequence", "deepfri_structure", "dpfunc", "deepgoplus",
@@ -128,17 +133,17 @@ def main() -> None:
     # complete, unfiltered record stays in results/; only these presentation
     # tables drop the withheld comparators, which previously reappeared here
     # after being removed from every figure.
-    def drop_excluded(frame: pd.DataFrame, column: str = "method") -> pd.DataFrame:
+    def select_requested(frame: pd.DataFrame, column: str = "method") -> pd.DataFrame:
         if column not in frame.columns:
             return frame
-        return frame[~frame[column].astype(str).isin(EXCLUDED_FROM_TABLES)].copy()
+        return frame[frame[column].astype(str).isin(INCLUDED_METHODS)].copy()
 
-    metrics = drop_excluded(metrics)
-    homology = drop_excluded(homology)
-    homology_aupr = drop_excluded(homology_aupr)
-    ic = drop_excluded(ic)
-    depth = drop_excluded(depth)
-    curves = drop_excluded(curves)
+    metrics = select_requested(metrics)
+    homology = select_requested(homology)
+    homology_aupr = select_requested(homology_aupr)
+    ic = select_requested(ic)
+    depth = select_requested(depth)
+    curves = select_requested(curves)
     metrics = metrics.copy()
     metrics["ontology_short"] = metrics["ontology"].map(ONTOLOGY_LABEL)
 
@@ -183,7 +188,7 @@ def main() -> None:
         # would have reintroduced DeepGOPlus/DeepGO-SE into S7 the moment
         # either had predictions present, even with every other table clean.
         # This table's method column is named "competitor", not "method".
-        paired = drop_excluded(pd.read_csv(paired_path), column="competitor")
+        paired = select_requested(pd.read_csv(paired_path), column="competitor")
         write_table(paired, output / "supp_table_s7_paired_differences.csv")
 
     methods = sorted(set(metrics["method"].astype(str)))

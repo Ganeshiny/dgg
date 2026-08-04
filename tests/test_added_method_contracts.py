@@ -124,8 +124,9 @@ class AddedMethodContractTests(unittest.TestCase):
         focus = stratified.split("FOCUS_METHODS = [")[1].split("]")[0]
         self.assertNotIn("deepgoplus", focus)
         self.assertNotIn("deepgose", focus)
-        for method in ("heal", "gat_go", "deepgraphgo"):
-            self.assertIn(method, focus)
+        self.assertIn("heal", focus)
+        self.assertNotIn("gat_go", focus)
+        self.assertNotIn("deepgraphgo", focus)
 
     def test_pin_repo_always_forces_checkout(self):
         """A SLURM job killed mid-checkout leaves HEAD correct but the
@@ -256,19 +257,19 @@ class AddedMethodContractTests(unittest.TestCase):
         self.assertIn('EXCLUDED_FROM_TABLES = {"deepgoplus", "deepgose"}', supp)
         # And the figures must actually apply it, not merely define it.
         self.assertIn("available = set(results.method) - excluded", evaluate)
-        self.assertIn("drop_excluded(metrics)", supp)
+        self.assertIn("select_requested(metrics)", supp)
 
     def test_supplementary_table_s7_is_not_bypassed_by_a_different_column_name(self):
         """S7 reads paired_differences_vs_deepgreengo.csv, whose method column
         is named 'competitor', not 'method' - unlike every other supplementary
-        table. drop_excluded() silently no-ops on a column it doesn't find, so
+        table. select_requested() silently no-ops on a column it doesn't find, so
         calling it without column='competitor' here would let DeepGOPlus/
         DeepGO-SE straight through even with every other table clean."""
         supp = (PROJECT_ROOT / "src" / "export_supplementary_tables.py").read_text()
         s7_block = supp.split('paired_path = results / "paired_differences_vs_deepgreengo.csv"')[1]
         s7_block = s7_block.split("write_table(paired,")[0]
         self.assertIn('column="competitor"', s7_block)
-        self.assertIn("drop_excluded(pd.read_csv(paired_path)", s7_block)
+        self.assertIn("select_requested(pd.read_csv(paired_path)", s7_block)
 
     def test_top_level_figures_label_every_method_and_emit_svg(self):
         """A method missing from the label map silently fell back to its raw
@@ -304,19 +305,22 @@ class AddedMethodContractTests(unittest.TestCase):
             self.assertNotIn("lower is better", source, relative)
             self.assertNotIn("higher values indicate", source, relative)
 
-    def test_stratification_covers_the_graph_based_methods(self):
-        """run_stratified's METHODS is an allowlist; a method absent from it is
-        silently never stratified, which is why HEAL was missing from
-        plots/stratified despite completing successfully."""
+    def test_stratification_uses_the_locked_manuscript_comparison(self):
         source = (PROJECT_ROOT / "src" / "benchmark" / "run_stratified.py").read_text()
         methods_block = source.split("METHODS = [")[1].split("]")[0]
-        for method in ("heal", "gat_go", "deepgraphgo"):
-            self.assertIn(f'"{method}"', methods_block)
-        # And the stratified figure must be willing to draw it.
         focus = (PROJECT_ROOT / "src" / "plot_stratified.py").read_text()
         focus_block = focus.split("FOCUS_METHODS = [")[1].split("]")[0]
-        self.assertIn('"heal"', focus_block)
-
+        required = (
+            "deepgreengo", "naive", "blast", "blast_max", "diamond",
+            "diamond_max", "foldseek", "foldseek_max", "deepfri_sequence",
+            "deepfri_structure", "dpfunc", "heal",
+        )
+        for method in required:
+            self.assertIn(f'"{method}"', methods_block)
+            self.assertIn(f'"{method}"', focus_block)
+        for method in ("gat_go", "deepgraphgo", "deepgoplus", "interproscan"):
+            self.assertNotIn(f'"{method}"', methods_block)
+            self.assertNotIn(f'"{method}"', focus_block)
     def test_struct2go_is_removed_and_plot_registers_new_methods(self):
         benchmark = BENCHMARK.read_text()
         setup = SETUP.read_text()

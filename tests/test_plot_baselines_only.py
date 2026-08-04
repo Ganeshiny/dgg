@@ -17,7 +17,7 @@ class MainComparisonPlotTests(unittest.TestCase):
     def test_deepgreengo_is_focal_and_visually_unique(self):
         self.assertEqual(plot.METHOD_ORDER[0], "deepgreengo")
         self.assertEqual(
-            plot.METHOD_LABEL["deepgreengo"], "DeepGreenGO Hybrid (this work)"
+            plot.METHOD_LABEL["deepgreengo"], "DeepGreenGO"
         )
 
         proposed = plot.FAMILY_COLOR["proposed"]
@@ -55,7 +55,7 @@ class MainComparisonPlotTests(unittest.TestCase):
         ]
         self.assertEqual(
             plot.METHOD_LABEL["deepgreengo"],
-            "DeepGreenGO Hybrid (this work)",
+            "DeepGreenGO",
         )
         self.assertEqual(plot.FAMILY_LABEL["sequence"], "Sequence alignment")
         self.assertIn("Top-10 weighted transfer", labels)

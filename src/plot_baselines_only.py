@@ -51,27 +51,23 @@ from plot_style import (  # noqa: E402
 
 
 METHOD_ORDER = [
-    "deepgreengo",
-    "naive",
+    "deepgreengo", "naive",
     "blast", "blast_max",
     "diamond", "diamond_max",
     "foldseek", "foldseek_max",
-    "interproscan",
-    "deepfri_sequence", "deepfri_structure",
-    "dpfunc", "heal", "gat_go", "deepgraphgo", "deepgoplus", "deepgose", "transfun",
-    "eggnog_mapper", "hayai", "gomap",
+    "deepfri_sequence", "deepfri_structure", "dpfunc", "heal",
 ]
+REQUESTED_METHODS = frozenset(METHOD_ORDER)
 
 COVERAGE_METHOD_ORDER = [
     "blast", "blast_max",
     "diamond", "diamond_max",
     "foldseek", "foldseek_max",
-    "interproscan", "eggnog_mapper", "hayai", "gomap",
 ]
 
 
 METHOD_LABEL = {
-    "deepgreengo": "DeepGreenGO Hybrid (this work)",
+    "deepgreengo": "DeepGreenGO",
     "naive": "Naive frequency",
     "blast": "BLAST (top-10)",
     "blast_max": "BLAST (max identity)",
@@ -174,7 +170,7 @@ def method_color(method: str) -> str:
     return FAMILY_COLOR[family(method)]
 
 FAMILY_LABEL = {
-    "proposed": "DeepGreenGO Hybrid (this work)",
+    "proposed": "DeepGreenGO",
     "frequency": "Frequency prior",
     "sequence": "Sequence alignment",
     "structure": "Structure alignment",
@@ -195,6 +191,10 @@ def parse_args() -> argparse.Namespace:
         help="Default: <workspace>/plots/main_comparison",
     )
     parser.add_argument("--journal", choices=("bmc", "nature"), default=None)
+    parser.add_argument(
+        "--allow-missing", action="store_true",
+        help="Render available requested methods for local diagnostics.",
+    )
     return parser.parse_args()
 
 
@@ -247,9 +247,8 @@ def ordered_methods(metrics: pd.DataFrame) -> list[str]:
     # Filtering here, rather than by trimming METHOD_ORDER, also drops excluded
     # methods from the unknown-method tail below, so nothing reappears in a
     # figure just because it is absent from the explicit ordering.
-    present = set(metrics["method"].astype(str)) - EXCLUDED_FROM_PLOTS
-    known = [method for method in METHOD_ORDER if method in present]
-    return known + sorted(present - set(known))
+    present = set(metrics["method"].astype(str)) & REQUESTED_METHODS
+    return [method for method in METHOD_ORDER if method in present]
 
 
 def family(method: str) -> str:
@@ -332,8 +331,8 @@ def plot_cafa(
     y = np.arange(len(methods))
     panel_index = 0
     specifications = [
-        ("cafa_fmax", "Protein-centric F$_{max}$"),
-        ("cafa_smin", "Protein-centric S$_{min}$"),
+        ("cafa_fmax", "F$_{max}$"),
+        ("cafa_smin", "S$_{min}$"),
     ]
     for row_index, (value_col, xlabel) in enumerate(specifications):
         for column_index, ontology in enumerate(ONTOLOGY_ORDER):
@@ -376,6 +375,11 @@ def plot_cafa(
                     capthick=0.8,
                     zorder=4,
                 )
+                ax.annotate(
+                    f"{value:.3f}", (float(high), yi), xytext=(3, 0),
+                    textcoords="offset points", ha="left", va="center",
+                    fontsize=7.0, clip_on=False,
+                )
             add_proposed_separator(ax, methods)
             maximum = max(upper_values)
             ax.set_xlim(0, maximum * 1.10 if maximum > 0 else 1)
@@ -386,7 +390,7 @@ def plot_cafa(
     add_shared_legend(fig, methods)
     fig.subplots_adjust(left=0.17, bottom=0.22, hspace=0.42, wspace=0.24)
     assert_print_fonts(fig)
-    savefig(fig, out / "comparison_cafa_performance", MAIN)
+    savefig(fig, out / "comparison_fmax_smin", MAIN)
 
 def plot_aupr(
     metrics: pd.DataFrame,
@@ -404,8 +408,8 @@ def plot_aupr(
     y = np.arange(len(methods))
     panel_index = 0
     for row_index, (column, xlabel) in enumerate((
-        ("micro_aupr", "Term-centric micro-AUPR"),
-        ("macro_aupr", "Term-centric macro-AUPR"),
+        ("micro_aupr", "Micro-AUPR"),
+        ("macro_aupr", "Macro-AUPR"),
     )):
         for column_index, ontology in enumerate(ONTOLOGY_ORDER):
             ax = axes[row_index, column_index]
@@ -441,6 +445,11 @@ def plot_aupr(
                         )
                     if len(values) == 0:
                         upper_values.append(upper)
+                        ax.annotate(
+                            f"{value:.3f}", (upper, yi), xytext=(3, 0),
+                            textcoords="offset points", ha="left", va="center",
+                            fontsize=7.0, clip_on=False,
+                        )
                         continue
                     low, high = np.quantile(values, [0.025, 0.975])
                     upper = float(high)
@@ -458,6 +467,11 @@ def plot_aupr(
                         zorder=4,
                     )
                 upper_values.append(upper)
+                ax.annotate(
+                    f"{value:.3f}", (upper, yi), xytext=(3, 0),
+                    textcoords="offset points", ha="left", va="center",
+                    fontsize=7.0, clip_on=False,
+                )
             add_proposed_separator(ax, methods)
             maximum = max(upper_values)
             ax.set_xlim(0, maximum * 1.12 if maximum > 0 else 1)
@@ -664,9 +678,9 @@ def load_deepgreengo_provenance(workspace: Path) -> tuple[list[int], str]:
 
 
 def set_focal_variant_label(model_variant: str) -> None:
-    label = f"DeepGreenGO {model_variant} (this work)"
-    METHOD_LABEL["deepgreengo"] = label
-    FAMILY_LABEL["proposed"] = label
+    """Keep the plotted method label concise; provenance records the variant."""
+    METHOD_LABEL["deepgreengo"] = "DeepGreenGO"
+    FAMILY_LABEL["proposed"] = "DeepGreenGO"
 
 
 def validate_best_hit_provenance(workspace: Path, methods: list[str]) -> None:
@@ -800,7 +814,7 @@ def build_captions(
             "to add paired-bootstrap confidence intervals."
         )
 
-    return f"""comparison_cafa_performance
+    return f"""comparison_fmax_smin
 DeepGreenGO versus completed baselines on the nominal 30%-identity/80%-coverage test split (n = 754 PDB chains). The focal method is the five-seed {model_variant} GCN-GAT ensemble ({seeds}). Bars show chain-level test-set point estimates and error bars show percentile 95% confidence intervals from {bootstrap_description}.{bootstrap_warning} Colors denote method family; solid bars denote top-10 weighted transfer and hatched bars denote one highest-identity hit selected from the same eligible top-10 pool. Paired Fmax comparisons against the strongest baseline in each ontology: {paired_text}.{external_sentence}
 
 comparison_aupr
@@ -951,12 +965,12 @@ def write_supporting_files(
         "outputs": [
             f"{stem}.{suffix}"
             for stem in (
-                "comparison_cafa_performance",
+                "comparison_fmax_smin",
                 "comparison_aupr",
                 "comparison_prediction_coverage",
                 "comparison_threshold_coverage",
             )
-            for suffix in ("pdf", SPEC["raster"])
+            for suffix in ("svg", "pdf", "png", "tiff")
         ],
     }
     (out / "plot_manifest.json").write_text(
@@ -972,6 +986,19 @@ def main() -> None:
     ).expanduser().resolve()
     apply_style()
     metrics, bootstrap = load_comparison(workspace)
+    available = set(metrics["method"].astype(str))
+    missing = [method for method in METHOD_ORDER if method not in available]
+    if missing and not args.allow_missing:
+        raise SystemExit(
+            "Requested comparison results are missing: " + ", ".join(missing)
+        )
+    if missing:
+        print("WARNING: partial comparison render; missing: " + ", ".join(missing))
+    removed = sorted(available - REQUESTED_METHODS)
+    if removed:
+        print("Locked comparison filter removed: " + ", ".join(removed))
+    metrics = metrics[metrics["method"].isin(REQUESTED_METHODS)].copy()
+    bootstrap = bootstrap[bootstrap["method"].isin(REQUESTED_METHODS)].copy()
     methods = ordered_methods(metrics)
     _, model_variant = load_deepgreengo_provenance(workspace)
     set_focal_variant_label(model_variant)

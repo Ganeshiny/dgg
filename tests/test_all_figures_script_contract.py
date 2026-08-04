@@ -18,11 +18,24 @@ class CompleteFigureScriptContractTests(unittest.TestCase):
             "supplementary_tables": 10,
             "supplementary_tuning": 6,
             "reviewer": 2,
-            "benchmark": 4,
+            "benchmark": 27,
         }
         for folder, count in required.items():
             self.assertIn(f'require_count "$OUT/{folder}"', script)
             self.assertIn(f" {count} {folder}", script)
+        self.assertIn(
+            """require_count "$BENCHMARK_BINS" '*.pdf' 6 benchmark_bin_evaluation""",
+            script,
+        )
+        self.assertIn(
+            """require_count "$BENCHMARK_BINS" '*.csv' 5 benchmark_bin_tables""",
+            script,
+        )
+        self.assertIn('--output "$BENCHMARK_BINS"', script)
+        self.assertIn('--output "$OUT/benchmark"', script)
+        self.assertIn('--output-dir "$BENCHMARK_TABLES"', script)
+        for suffix in ("svg", "png", "tiff"):
+            self.assertIn(f'''require_count "$OUT/benchmark" '*.{suffix}' 27''', script)
 
     def test_comparison_keeps_deepgreengo_and_only_requested_baselines(self):
         script = ALL_FIGURES.read_text()

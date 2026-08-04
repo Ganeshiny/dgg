@@ -37,6 +37,8 @@ SUPPORT="${DGG_SUPPORT_ROOT:-$DATA/datasets/threshold_30}"
 SPLIT="${DGG_SPLIT_ROOT:-$DATA/pdb_splits/threshold_30}"
 METRICS="$WORKSPACE/results/benchmark_metrics.csv"
 BOOTSTRAP="$WORKSPACE/results/bootstrap_metrics.csv"
+BENCHMARK_BINS="$OUT/benchmark/bin_evaluation"
+BENCHMARK_TABLES="$OUT/benchmark/supplementary_tables"
 
 cd "$PROJECT"
 mkdir -p logs "$OUT/benchmark"
@@ -56,7 +58,7 @@ export MPLBACKEND=Agg
 export OMP_NUM_THREADS="${SLURM_CPUS_PER_TASK:-4}"
 export DGG_JOURNAL="${DGG_JOURNAL:-bmc}"
 
-mkdir -p "$OUT/main_text" "$OUT/supplementary" "$OUT/supplementary_tables" "$OUT/supplementary_tuning" "$OUT/reviewer" "$OUT/benchmark"
+mkdir -p "$OUT/main_text" "$OUT/supplementary" "$OUT/supplementary_tables" "$OUT/supplementary_tuning" "$OUT/reviewer" "$OUT/benchmark" "$BENCHMARK_BINS" "$BENCHMARK_TABLES"
 
 require_paths() {
   local f; for f in "$@"; do
@@ -102,10 +104,10 @@ print('Benchmark preflight passed: DeepGreenGO and every requested baseline are 
 PY
 echo 'Computing and plotting benchmark stratification on CPU.'
 python -m src.benchmark.run_stratified --workspace "$WORKSPACE" --data-root "$DATA"
-python -m src.benchmark.cli plot --workspace "$WORKSPACE"
-python src/plot_stratified.py --workspace "$WORKSPACE"
-python src/export_supplementary_tables.py --workspace "$WORKSPACE"
-echo 'Rendering DeepGreenGO versus requested baselines.'
+python src/plot_stratified.py --workspace "$WORKSPACE" --output "$BENCHMARK_BINS"
+python src/export_supplementary_tables.py --workspace "$WORKSPACE" --output-dir "$BENCHMARK_TABLES"
+echo 'Rendering every benchmark comparison and metric on CPU.'
+python src/plot_baselines_only.py --workspace "$WORKSPACE" --output "$OUT/benchmark"
 python src/plot_benchmark.py --workspace "$WORKSPACE" --output-dir "$OUT/benchmark"
 
 python - "$OUT/benchmark/benchmark_metrics_plotted.csv" <<'PY'
@@ -127,6 +129,13 @@ require_count "$OUT/supplementary" '*.pdf' 19 supplementary
 require_count "$OUT/supplementary_tables" '*.csv' 10 supplementary_tables
 require_count "$OUT/supplementary_tuning" '*.pdf' 6 supplementary_tuning
 require_count "$OUT/reviewer" '*.pdf' 2 reviewer
-require_count "$OUT/benchmark" '*.pdf' 4 benchmark
+require_count "$OUT/benchmark" '*.pdf' 27 benchmark
+require_count "$OUT/benchmark" '*.svg' 27 benchmark_svg
+require_count "$OUT/benchmark" '*.png' 27 benchmark_png
+require_count "$OUT/benchmark" '*.tiff' 27 benchmark_tiff
+require_count "$BENCHMARK_TABLES" '*.csv' 8 benchmark_supplementary_tables
+require_count "$BENCHMARK_BINS" '*.pdf' 6 benchmark_bin_evaluation
+require_count "$BENCHMARK_BINS" '*.csv' 5 benchmark_bin_tables
+require_paths "$BENCHMARK_BINS/captions.txt" "$BENCHMARK_BINS/stratified_manifest.json"
 require_paths "$OUT/main_text/figure1_ablation_dynamite_micro_fmax.pdf" "$OUT/benchmark/benchmark_metrics_plotted.csv"
 echo "Entire figures folder complete: $OUT"
