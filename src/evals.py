@@ -85,15 +85,18 @@ def get_auprc(y_true, y_pred_probs, average="macro"):
     return float("nan")
 
 def compute_ic(y_train):
-    """
-    Compute Information Content for each term based on frequency in the training set.
-    """
-    N = y_train.shape[0]
-    counts = np.sum(y_train, axis=0)
-    ic = np.zeros_like(counts, dtype=float)
-    valid_mask = counts > 0
-    ic[valid_mask] = -np.log2(counts[valid_mask] / N)
-    return ic
+    """Training-frequency IC: -log2(n_j / N_train), one value per GO term."""
+    n_train = int(y_train.shape[0])
+    if n_train <= 0:
+        raise ValueError("Cannot compute information content from an empty training set")
+    counts = np.sum(y_train, axis=0).astype(float)
+    if np.any(counts <= 0):
+        missing = np.flatnonzero(counts <= 0)
+        raise ValueError(
+            "Training-frequency IC is undefined for GO terms absent from training: "
+            f"{missing[:10].tolist()}"
+        )
+    return -np.log2(counts / n_train)
 
 def get_smin(y_true, y_pred_probs, ic):
     """

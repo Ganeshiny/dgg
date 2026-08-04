@@ -70,7 +70,7 @@ METRIC_LABEL = {
     "Macro_AUPRC": "Macro-AUPRC",
     "Micro_AUROC": "Micro-AUROC",
     "Macro_AUROC": "Macro-AUROC",
-    "Smin": "S$_{min}$",
+    "Smin": "S$_{min}^{freq}$",
 }
 METRIC_HIGHER_IS_BETTER = {m: (m != "Smin") for m in METRIC_ORDER}
 

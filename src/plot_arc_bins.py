@@ -307,8 +307,9 @@ def export_bin_tables(frame: pd.DataFrame, out: Path) -> None:
     summary = long.groupby(group_columns, dropna=False, observed=True)["value"].agg(
         seed_replicates="count", mean="mean", sd="std", median="median", minimum="min", maximum="max"
     ).reset_index()
+    summary["metric"] = summary["metric"].replace({"Smin": "Smin_freq"})
     summary.to_csv(table_dir / "supp_table_bin_metric_summary.csv", index=False)
-    summary[summary.metric == "Smin"].to_csv(
+    summary[summary.metric == "Smin_freq"].to_csv(
         table_dir / "supp_table_bin_smin.csv", index=False
     )
 
@@ -320,11 +321,9 @@ def plot_bin_grid(frame: pd.DataFrame, out: Path, bin_type: str, order: list[str
 
     Models are grouped, not stacked: stacking would incorrectly imply that
     performance scores are additive. Empty bins and empty panels are omitted.
-    Smin is deliberately table-only because the binwise values are dominated
-    by scale/support and do not form an interpretable visual comparison.
+    All metrics, including frequency-weighted Smin, are rendered. Low-support
+    bins remain visible and are marked with an asterisk rather than hidden.
     """
-    if metric == "Smin":
-        return False
     frame = frame.copy()
     if "evaluation_split" not in frame:
         frame["evaluation_split"] = "test"
@@ -460,7 +459,7 @@ def main() -> None:
         for bin_type in [value for value in BIN_ORDER if value in set(split_frame.bin_type)]:
             subset = split_frame[split_frame.bin_type == bin_type].copy()
             for metric in args.metrics:
-                if metric in subset and metric != "Smin":
+                if metric in subset:
                     plot_bin_grid(subset, out, bin_type, BIN_ORDER[bin_type], metric,
                                   args.min_n, args.err)
     print(f"Wrote audited bin tables and non-empty grouped-bar plots to {out}")

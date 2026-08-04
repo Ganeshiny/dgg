@@ -21,7 +21,6 @@ from plot_style import (
     DOUBLE_COLUMN_IN,
     ERROR_CAPTION,
     ERROR_KIND_LABEL,
-    MACRO_AUPRC_CAVEAT,
     SUPPLEMENTARY,
     assert_palette_locked,
     provenance,
@@ -228,7 +227,7 @@ def _metric_note(metric: str) -> str:
         parts.append("AUROC/AUPRC rank the models differently from F$_{max}$/S$_{min}$; "
                      "see the paired metric-family figure.")
     if metric in {"Macro_AUPRC", "Micro_AUPRC"}:
-        parts.append(MACRO_AUPRC_CAVEAT)
+        parts.append("AUPRC is calculated with the average-precision estimator.")
     if metric in {"Macro_AUPRC", "Macro_AUROC", "Micro_AUROC"}:
         parts.append(CONSTANT_PREDICTOR_CAVEAT + " Its Macro-AUROC is 0.500 (chance); the "
                      "~0.70 Micro-AUROC reflects the term-frequency prior, not structure.")
@@ -645,7 +644,8 @@ def export_ablation_tables(df: pd.DataFrame, coverage: pd.DataFrame, out: Path) 
     table_dir.mkdir(parents=True, exist_ok=True)
     metrics = [metric for metric in METRIC_ORDER if metric in df]
     raw_columns = ["ontology", "model", "input", "seed", *metrics]
-    df[raw_columns].to_csv(table_dir / "supp_table_ablation_seed_metrics.csv", index=False)
+    raw = df[raw_columns].rename(columns={"Smin": "Smin_freq"})
+    raw.to_csv(table_dir / "supp_table_ablation_seed_metrics.csv", index=False)
     long = df[raw_columns].melt(
         id_vars=["ontology", "model", "input", "seed"],
         value_vars=metrics, var_name="metric", value_name="value",
@@ -658,6 +658,7 @@ def export_ablation_tables(df: pd.DataFrame, coverage: pd.DataFrame, out: Path) 
         q3=lambda values: values.quantile(.75),
         minimum="min", maximum="max",
     ).reset_index()
+    summary["metric"] = summary["metric"].replace({"Smin": "Smin_freq"})
     summary.to_csv(table_dir / "supp_table_ablation_metric_summary.csv", index=False)
     coverage.to_csv(table_dir / "supp_table_ablation_coverage.csv", index=False)
     summary[summary.metric == "Micro_Fmax"].to_csv(

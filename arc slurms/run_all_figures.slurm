@@ -32,6 +32,7 @@ TUNING="${DGG_TUNING_ROOT:-$PROJECT/arc_tuning_cafa}"
 WORKSPACE="${DGG_BENCHMARK_ROOT:-$PROJECT/arc_benchmark/nominal_30_identity_80_coverage}"
 OUT="${DGG_FIGURE_DIR:-$PROJECT/plots/figures}"
 ARCHIVE="${DGG_ABLATION_ARCHIVE:-$PROJECT/plots/arc_tuning_cafa/ablations/ablation_test_metrics.csv}"
+ABLATION_MANIFEST="${ARCHIVE%.csv}.manifest.json"
 BINCSV="${DGG_BIN_CSV:-$PROJECT/plots/arc_tuning_cafa/bin_evaluation/bin_metrics.csv}"
 SUPPORT="${DGG_SUPPORT_ROOT:-$DATA/datasets/threshold_30}"
 SPLIT="${DGG_SPLIT_ROOT:-$DATA/pdb_splits/threshold_30}"
@@ -66,8 +67,20 @@ require_paths() {
   done
 }
 
-main_required=("$ARCHIVE" "$BINCSV" "$SUPPORT")
+main_required=("$ARCHIVE" "$ABLATION_MANIFEST" "$BINCSV" "$SUPPORT")
 require_paths "${main_required[@]}"
+
+python - "$ABLATION_MANIFEST" <<'PY'
+import json, sys
+manifest = json.load(open(sys.argv[1]))
+if manifest.get("rows") != 225:
+    raise SystemExit(f"ERROR: expected 225 regenerated ablation rows, found {manifest.get('rows')}")
+if manifest.get("auprc_estimator") != "sklearn.metrics.average_precision_score":
+    raise SystemExit("ERROR: ablation archive does not use average-precision AUPRC")
+if manifest.get("smin_weighting") != "training-frequency information content":
+    raise SystemExit("ERROR: ablation archive does not document frequency-weighted Smin")
+print("Verified regenerated ablation metric provenance.")
+PY
 
 if [[ "${DGG_PREFLIGHT_ONLY:-0}" == 1 ]]; then
   require_paths "$TUNING/hybrid_search" "$PROJECT/plots/arc_tuning_cafa/trial_metrics.csv" "$SPLIT/blast_te_vs_tr.tsv" "$METRICS" "$BOOTSTRAP"
@@ -125,7 +138,10 @@ require_count() {
   echo "verified $label: $count files"
 }
 require_count "$OUT/main_text" '*.pdf' 3 main_text
-require_count "$OUT/supplementary" '*.pdf' 19 supplementary
+require_count "$OUT/supplementary" '*.pdf' 35 supplementary
+require_count "$OUT/supplementary" '*.svg' 35 supplementary_svg
+require_count "$OUT/supplementary" '*.png' 35 supplementary_png
+require_count "$OUT/supplementary" '*.tiff' 35 supplementary_tiff
 require_count "$OUT/supplementary_tables" '*.csv' 10 supplementary_tables
 require_count "$OUT/supplementary_tuning" '*.pdf' 6 supplementary_tuning
 require_count "$OUT/reviewer" '*.pdf' 2 reviewer

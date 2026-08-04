@@ -2,7 +2,7 @@
 # Evaluate every completed model/input ablation in homology and IC bins.
 # Submit after run_arc_ablations.slurm with --dependency=afterok:<jobid>.
 #SBATCH --job-name=dgg_arc_bins
-#SBATCH --partition=cpu2019
+#SBATCH --partition=cpu2023,cpu2022,cpu2021,cpu2019
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=8
@@ -18,7 +18,8 @@ TUNING_ROOT="${DGG_TUNING_ROOT:-${PROJECT_DIR}/arc_tuning_cafa}"
 GRAPH_ROOT="${DGG_GRAPH_ROOT:-${PROJECT_DIR}/arc_tuning_cafa/graphs_protbert}"
 SPLIT_LABEL="${DGG_SPLIT_LABEL:-nominal_30_identity_80_coverage}"
 ABLATIONS_ROOT="${DGG_ABLATIONS_ROOT:-${TUNING_ROOT}/ablations/${SPLIT_LABEL}}"
-OUTPUT_DIR="${DGG_BIN_OUTPUT:-${ABLATIONS_ROOT}/bin_evaluation}"
+OUTPUT_DIR="${DGG_BIN_OUTPUT:-${PROJECT_DIR}/plots/arc_tuning_cafa/bin_evaluation}"
+OVERALL_OUTPUT="${DGG_ABLATION_ARCHIVE:-${PROJECT_DIR}/plots/arc_tuning_cafa/ablations/ablation_test_metrics.csv}"
 
 cd "${PROJECT_DIR}"
 mkdir -p "${PROJECT_DIR}/logs" "${OUTPUT_DIR}"
@@ -31,5 +32,5 @@ export PYTHONUNBUFFERED=1 OMP_NUM_THREADS="${SLURM_CPUS_PER_TASK}" DGG_GRAPH_ROO
 python3 src/evaluate_arc_bins.py \
   --data-root "${DATA_ROOT}" --tuning-root "${TUNING_ROOT}" \
   --ablations-root "${ABLATIONS_ROOT}" --graph-root "${GRAPH_ROOT}" \
-  --output-dir "${OUTPUT_DIR}" --splits valid test \
+  --output-dir "${OUTPUT_DIR}" --overall-output "${OVERALL_OUTPUT}" --splits valid test \
   --threads "${SLURM_CPUS_PER_TASK}" --workers "${SLURM_CPUS_PER_TASK}"

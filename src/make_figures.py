@@ -112,7 +112,7 @@ def build(tier_wanted: str, out_root: Path, ablations_root: Path, bin_csv: Path,
         "- `supp_table_bin_metrics_audited_raw.csv`: every audited split/model/bin row.\n"
         "- `supp_table_bin_metric_summary.csv`: per-bin seed summaries for every metric.\n"
         "- `supp_table_bin_support.csv`: exact examples and positive-label support.\n"
-        "- `supp_table_bin_smin.csv`: Smin bin values (table-only).\n\n"
+        "- `supp_table_bin_smin.csv`: frequency-weighted Smin bin values.\n\n"
         "The current archive contains test-bin predictions only. Validation rows are added by "
         "`run_arc_bin_eval.slurm`, which now evaluates both `valid` and `test`.\n"
     )
@@ -167,7 +167,7 @@ def build(tier_wanted: str, out_root: Path, ablations_root: Path, bin_csv: Path,
                              "Mean Micro-F$_{max}$ per architecture and input modality as a "
                              "quick-reference grid; colour scale clipped to the observed range."))
 
-        # All non-Smin bin metrics. Smin is table-only; empty bins/panels are
+        # All seven bin metrics. Empty bins/panels are
         # omitted by plot_bin_grid, and validation appears automatically once
         # the split-aware ARC evaluator has generated those rows.
         bin_frame = bins.load_audited_bins(bin_csv, support_root.parent, logs_hint=None)
@@ -180,7 +180,7 @@ def build(tier_wanted: str, out_root: Path, ablations_root: Path, bin_csv: Path,
                     if subset.empty:
                         continue
                     for metric in METRIC_ORDER:
-                        if metric == "Smin" or metric not in subset:
+                        if metric not in subset:
                             continue
                         stem = f"{evaluation_split}_{bin_type}_{metric.lower()}"
                         if tier_wanted == "both" and stem == "test_homology_micro_fmax":

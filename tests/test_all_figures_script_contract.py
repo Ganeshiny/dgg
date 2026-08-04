@@ -6,6 +6,7 @@ from pathlib import Path
 
 PROJECT = Path(__file__).resolve().parents[1]
 ALL_FIGURES = PROJECT / "arc slurms" / "run_all_figures.slurm"
+BIN_EVAL = PROJECT / "arc slurms" / "run_arc_bin_eval.slurm"
 FULL_BENCHMARK = PROJECT / "arc slurms" / "run_full_benchmark.slurm"
 
 
@@ -14,7 +15,7 @@ class CompleteFigureScriptContractTests(unittest.TestCase):
         script = ALL_FIGURES.read_text()
         required = {
             "main_text": 3,
-            "supplementary": 19,
+            "supplementary": 35,
             "supplementary_tables": 10,
             "supplementary_tuning": 6,
             "reviewer": 2,
@@ -37,6 +38,28 @@ class CompleteFigureScriptContractTests(unittest.TestCase):
         for suffix in ("svg", "png", "tiff"):
             self.assertIn(f'''require_count "$OUT/benchmark" '*.{suffix}' 27''', script)
 
+    def test_ablation_metrics_are_regenerated_and_all_are_plotted(self):
+        figure_script = ALL_FIGURES.read_text()
+        bin_job = BIN_EVAL.read_text()
+        evaluator = (PROJECT / "src" / "evaluate_arc_bins.py").read_text()
+        builder = (PROJECT / "src" / "make_figures.py").read_text()
+        bin_plotter = (PROJECT / "src" / "plot_arc_bins.py").read_text()
+        self.assertIn("--overall-output", bin_job)
+        self.assertIn("--splits valid test", bin_job)
+        self.assertIn("#SBATCH --partition=cpu", bin_job)
+        self.assertIn('"auprc_estimator": "sklearn.metrics.average_precision_score"', evaluator)
+        self.assertIn('"smin_weighting": "training-frequency information content"', evaluator)
+        self.assertIn('manifest.get("rows") != 225', figure_script)
+        self.assertIn('for metric in METRIC_ORDER:', builder)
+        self.assertNotIn('metric == "Smin" or metric not in subset', builder)
+        self.assertNotIn('metric != "Smin"', bin_plotter)
+        self.assertIn('"Smin": "S$_{min}^{freq}$"', (PROJECT / "src" / "plot_style.py").read_text())
+        self.assertIn('"Smin_freq"', bin_plotter)
+        for suffix in ("svg", "png", "tiff"):
+            self.assertIn(
+                f'''require_count "$OUT/supplementary" '*.{suffix}' 35''',
+                figure_script,
+            )
     def test_comparison_keeps_deepgreengo_and_only_requested_baselines(self):
         script = ALL_FIGURES.read_text()
         self.assertIn("'deepgreengo'", script)

@@ -45,6 +45,7 @@ def parse_args():
                    default=("valid", "test"),
                    help="Evaluation splits to write (default: validation and test).")
     p.add_argument("--output-dir", type=Path, default=None)
+    p.add_argument("--overall-output", type=Path, default=None)
     p.add_argument("--batch-size", type=int, default=32)
     p.add_argument("--workers", type=int, default=0)
     p.add_argument("--blastp", default="blastp")
@@ -196,6 +197,7 @@ def main():
     output_dir.mkdir(parents=True, exist_ok=True)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     rows = []
+    overall_rows = []
     all_checkpoint_paths = sorted(set(ablations_root.rglob("best_checkpoint.pt")))
     if not all_checkpoint_paths:
         raise FileNotFoundError(
@@ -240,6 +242,18 @@ def main():
                         )
                 y_true = np.vstack(labels)
                 y_probability = np.vstack(probabilities)
+                if evaluation_split == "test":
+                    overall = evaluate_all(y_true, y_probability, ic)
+                    seed = config.get(
+                        "seed", checkpoint_path.parent.name.removeprefix("seed_")
+                    )
+                    overall_rows.append({
+                        "ontology": ontology,
+                        "model": model_name,
+                        "input": modality,
+                        "seed": f"seed_{seed}",
+                        **{key: float(value) for key, value in overall.items()},
+                    })
                 base = {
                     "ontology": ontology,
                     "model": model_name,
@@ -266,6 +280,29 @@ def main():
         writer.writeheader()
         writer.writerows(rows)
     (output_dir / "bin_metrics.json").write_text(json.dumps(rows, indent=2) + "\n")
+    if "test" in args.splits:
+        if len(overall_rows) != len(all_checkpoint_paths):
+            raise RuntimeError(
+                f"Expected {len(all_checkpoint_paths)} overall test rows; "
+                f"produced {len(overall_rows)}"
+            )
+        overall_output = Path(
+            args.overall_output or output_dir / "ablation_test_metrics.csv"
+        ).expanduser().resolve()
+        overall_output.parent.mkdir(parents=True, exist_ok=True)
+        with overall_output.open("w", newline="") as handle:
+            writer = csv.DictWriter(handle, fieldnames=list(overall_rows[0]))
+            writer.writeheader()
+            writer.writerows(overall_rows)
+        overall_output.with_suffix(".manifest.json").write_text(json.dumps({
+            "rows": len(overall_rows),
+            "seeds_per_configuration": 5,
+            "auprc_estimator": "sklearn.metrics.average_precision_score",
+            "smin_weighting": "training-frequency information content",
+            "smin_ic_formula": "-log2(n_j / N_train)",
+            "smin_thresholds": "0.01 through 0.99 in increments of 0.01",
+        }, indent=2) + "\n")
+        print(f"Wrote {len(overall_rows)} overall test rows to {overall_output}")
     print(f"Wrote {len(rows)} grouped model/bin rows for {', '.join(args.splits)} to {output_dir}")
 
 
