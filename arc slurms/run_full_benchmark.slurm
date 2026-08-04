@@ -24,6 +24,10 @@ if [[ -n "${DGG_PROJECT_ROOT:-${DGG_PROJECT_DIR:-}}" ]]; then
     PROJECT_DIR="${DGG_PROJECT_ROOT:-${DGG_PROJECT_DIR}}"
 elif PROJECT_DIR="$(git -C "${SUBMIT_DIR}" rev-parse --show-toplevel 2>/dev/null)"; then
     :
+elif [[ -d "/home/${USER:-ganeshiny.sridharan}/dgg/deep-green-GO" ]]; then
+    PROJECT_DIR="/home/${USER:-ganeshiny.sridharan}/dgg/deep-green-GO"
+elif [[ -d "/home/ganeshiny.sridharan/dgg/deep-green-GO" ]]; then
+    PROJECT_DIR="/home/ganeshiny.sridharan/dgg/deep-green-GO"
 else
     echo "ERROR: submit from inside the DeepGreenGO checkout or set DGG_PROJECT_ROOT." >&2
     exit 2
@@ -965,10 +969,8 @@ run_stratified_analysis() {
 }
 
 run_comparison_figures() {
-    # Keep the workspace comparison bundle used by the supplementary pipeline,
-    # then write the locked baseline-only manuscript bundle to plots/figures.
-    conda_run "${BASE_ENV}" python "${PROJECT_DIR}/src/plot_baselines_only.py" \
-        --workspace "${BENCHMARK_ROOT}"
+    # Write only the locked baseline manuscript bundle. The older comparison
+    # renderer requires DeepGreenGO and accepts methods excluded from this run.
     conda_run "${BASE_ENV}" python "${PROJECT_DIR}/src/plot_benchmark.py" \
         --workspace "${BENCHMARK_ROOT}" \
         --output-dir "${PROJECT_DIR}/plots/figures/benchmark"

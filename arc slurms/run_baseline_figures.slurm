@@ -16,10 +16,14 @@
 set -euo pipefail
 
 SUBMIT_DIR="${SLURM_SUBMIT_DIR:-$PWD}"
-if [[ -n "${DGG_PROJECT_DIR:-}" ]]; then
-    PROJECT_DIR="${DGG_PROJECT_DIR}"
+if [[ -n "${DGG_PROJECT_ROOT:-${DGG_PROJECT_DIR:-}}" ]]; then
+    PROJECT_DIR="${DGG_PROJECT_ROOT:-${DGG_PROJECT_DIR}}"
 elif PROJECT_DIR="$(git -C "${SUBMIT_DIR}" rev-parse --show-toplevel 2>/dev/null)"; then
     :
+elif [[ -d "/home/${USER:-ganeshiny.sridharan}/dgg/deep-green-GO" ]]; then
+    PROJECT_DIR="/home/${USER:-ganeshiny.sridharan}/dgg/deep-green-GO"
+elif [[ -d "/home/ganeshiny.sridharan/dgg/deep-green-GO" ]]; then
+    PROJECT_DIR="/home/ganeshiny.sridharan/dgg/deep-green-GO"
 else
     echo "ERROR: submit from inside the DeepGreenGO checkout or set DGG_PROJECT_DIR." >&2
     exit 2
