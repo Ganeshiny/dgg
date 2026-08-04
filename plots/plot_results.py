@@ -57,7 +57,7 @@ def plot_ablation_summary(agg_csv: str, out_dir: str):
         fig, axes = plt.subplots(1, 2, figsize=(13, 5), sharey=False)
         fig.suptitle(f'Ablation Study — {ont.replace("_", " ").title()}', fontsize=14)
 
-        for ax, (metric, label) in zip(axes, [('Micro_Fmax', 'Micro Fmax ↑'), ('Smin', 'Smin ↓')]):
+        for ax, (metric, label) in zip(axes, [('Micro_Fmax', 'Micro Fmax'), ('Smin', 'Smin')]):
             mean_col = f"{metric}_mean"
             std_col  = f"{metric}_std"
             if mean_col not in sub.columns: continue
@@ -141,7 +141,7 @@ def plot_cluster_performance(cluster_csv: str, out_dir: str):
     fig, axes = plt.subplots(1, 2, figsize=(13, 5))
     fig.suptitle('Model Generalisation by Homology Cluster Size', fontsize=14)
 
-    for ax, (col, label) in zip(axes, [('Micro_Fmax', 'Micro Fmax ↑'), ('Smin', 'Smin ↓')]):
+    for ax, (col, label) in zip(axes, [('Micro_Fmax', 'Micro Fmax'), ('Smin', 'Smin')]):
         if col not in df.columns: continue
         sns.violinplot(data=df, x='Cluster_Size', y=col, order=CAT_ORDER, palette='Blues', ax=ax, inner="quartile")
         ax.set_xlabel("Cluster Size Category")
@@ -309,7 +309,7 @@ def plot_baseline_comparison(dgg_csv: str, baseline_csv: str, out_dir: str):
         fig, axes = plt.subplots(1, 2, figsize=(14, 5))
         fig.suptitle(f'DeepGreenGO vs Baselines — {ont}', fontsize=15)
         
-        metrics = [('Micro_Fmax', 'Fmax ↑'), ('Smin', 'Smin ↓')]
+        metrics = [('Micro_Fmax', 'Fmax'), ('Smin', 'Smin')]
         
         for ax, (metric, label) in zip(axes, metrics):
             models = []

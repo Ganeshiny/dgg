@@ -35,9 +35,14 @@ class BaselineOnlyFilterTests(unittest.TestCase):
         selected = plot.select_requested_methods(frame)
         self.assertEqual(selected["method"].tolist(), ["naive", "deepgreengo", "dpfunc"])
 
-    def test_every_allowed_method_has_a_label_and_family(self):
+    def test_every_allowed_method_has_a_distinct_color_and_label(self):
         self.assertTrue(plot.REQUESTED_METHODS <= plot.METHOD_LABEL.keys())
-        self.assertTrue(plot.REQUESTED_METHODS <= plot.METHOD_FAMILY.keys())
+        self.assertTrue(plot.REQUESTED_METHODS <= plot.METHOD_COLOR.keys())
+        colors = [plot.METHOD_COLOR[method] for method in plot.METHOD_ORDER]
+        self.assertEqual(len(colors), len(set(colors)))
+        distance, _, _ = plot.validate_method_palette()
+        self.assertGreaterEqual(distance, 35.0)
+        self.assertFalse(hasattr(plot, "METHOD_FAMILY"))
 
 
 if __name__ == "__main__":

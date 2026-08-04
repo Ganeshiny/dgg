@@ -40,7 +40,7 @@ METRICS = {
     "test_macro_aupr": "Macro AUPR",
     "test_micro_auroc": "Micro AUROC",
     "test_macro_auroc": "Macro AUROC",
-    "test_smin": "Smin (lower is better)",
+    "test_smin": "Smin",
 }
 REQUIRED_COLUMNS = {"ontology", "seed", *METRICS}
 T_CRITICAL_975 = {2: 12.706, 3: 4.303, 4: 3.182, 5: 2.776}
@@ -331,7 +331,7 @@ Missing held-out test splits: {', '.join(f'{x}%' for x in missing) if missing el
 
 The primary leakage-safe classification metric is micro F1 evaluated at the
 validation-selected threshold. Fmax values sweep thresholds on the test set and
-are therefore labelled descriptive. Smin is lower-is-better. Points represent
+are therefore labelled descriptive. Points represent
 the five fixed seeds; intervals are 95% t intervals over those seeds.
 
 The nominal split threshold is a clustering setting, not the measured identity

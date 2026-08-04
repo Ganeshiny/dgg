@@ -100,6 +100,11 @@ for name in sys.argv[1:]:
     if missing: raise SystemExit(f'ERROR: {name} missing requested comparisons: {sorted(missing)}')
 print('Benchmark preflight passed: DeepGreenGO and every requested baseline are present.')
 PY
+echo 'Computing and plotting benchmark stratification on CPU.'
+python -m src.benchmark.run_stratified --workspace "$WORKSPACE" --data-root "$DATA"
+python -m src.benchmark.cli plot --workspace "$WORKSPACE"
+python src/plot_stratified.py --workspace "$WORKSPACE"
+python src/export_supplementary_tables.py --workspace "$WORKSPACE"
 echo 'Rendering DeepGreenGO versus requested baselines.'
 python src/plot_benchmark.py --workspace "$WORKSPACE" --output-dir "$OUT/benchmark"
 

@@ -634,7 +634,7 @@ def evaluate(args) -> None:
         "bootstrap_unit": "identical_sequence_cluster",
         "test_unique_sequences": int(len(set(test_sequences_by_id.values()))),
         "notes": [
-            "CAFA Fmax is protein-centric; precision averages over covered targets and recall over all targets.",
+            "Protein-centric Fmax averages precision over covered targets and recall over all targets.",
             "Smin uses training-derived conditional information accretion and is minimized over the same threshold grid.",
             "All prediction matrices are propagated to represented GO ancestors at evaluation time so every method follows the same true-path rule.",
             "Bootstrap resampling is paired by identical-sequence cluster across methods; all PDB chains with the same sequence remain together in each resample.",
@@ -709,9 +709,9 @@ def plot(args) -> None:
         subset = results[results.ontology == ontology].set_index("method").reindex(methods)
         x = np.arange(len(methods))
         for column, (metric, title) in enumerate((
-            ("cafa_fmax", "CAFA Fmax"),
-            ("micro_aupr", "Micro AUPR"),
-            ("cafa_smin", "CAFA Smin"),
+            ("cafa_fmax", "Protein-centric Fmax"),
+            ("micro_aupr", "Term-centric micro-AUPR"),
+            ("cafa_smin", "Protein-centric Smin"),
         )):
             ax = axes[row_index, column]
             values = subset[metric].to_numpy(float)

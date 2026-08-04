@@ -297,9 +297,6 @@ def plot_seed_metrics(root: Path, out: Path, err_kind: str = "sd",
             ax.set_ylim(0, ymax)
             ax.set_title(ONTOLOGY_SHORT[ont])
             label_panel(ax, chr(97 + panel))
-        # Annotation lives above the axes, where no bar can reach it.
-        axes[0].text(0., 1.02, "lower is better", transform=axes[0].transAxes,
-                     fontsize=5.8, color="#555555", va="bottom", ha="left")
         axes[0].set_ylabel("S$_{min}$")
         if len(sources) > 1:
             axes[-1].legend(loc="upper left", bbox_to_anchor=(1.02, 1), fontsize=6.2)

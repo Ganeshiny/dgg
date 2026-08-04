@@ -322,7 +322,7 @@ def plot_combined(
 
     _draw_binned_row(
         row0, homology, HOMOLOGY_BINS,
-        "CAFA F$_{max}$", "Max identity to training set", panel_offset=0, letter="a",
+        "Protein-centric F$_{max}$", "Max identity to training set", panel_offset=0, letter="a",
     )
     _draw_binned_row(
         row1, ic, IC_BINS,
@@ -372,10 +372,10 @@ def build_captions(low_n: dict[str, list[str]], manifest: dict) -> str:
             "too small to support a claim; the 40-60% bin contains only 5 proteins."
         )
 
-    return f"""Unless noted, higher values are better. DeepGreenGO error bars are mean +/- s.d. over five independent training seeds. The similarity and annotation baselines are deterministic given the split, so they produce a single value with no error bar; the asymmetry reflects the methods, not selective reporting.
+    return f"""DeepGreenGO error bars are mean +/- s.d. over five independent training seeds. The similarity and annotation baselines are deterministic given the split, so they produce a single value with no error bar; the asymmetry reflects the methods, not selective reporting.
 
 stratified_homology_fmax
-Protein-centric CAFA Fmax as a function of the maximum sequence identity between each test protein and the locked DeepGreenGO training set, computed by BLAST. Bins are defined on the proteins alone, never on any model's predictions, so no method is favoured by the binning. The "no hit" bin (612 of 754 test proteins) contains proteins with no detectable homolog in that locked training set, where project-trained homology-transfer baselines have nothing to transfer from. For externally pretrained methods, these bins are descriptive and do not measure overlap with each method's original training corpus; they therefore cannot by themselves establish external-training leakage.{flagged} Bin sizes: {counts_for('homology_bin_counts')}.
+Protein-centric Fmax as a function of the maximum sequence identity between each test protein and the locked DeepGreenGO training set, computed by BLAST. Bins are defined on the proteins alone, never on any model's predictions, so no method is favoured by the binning. The "no hit" bin (612 of 754 test proteins) contains proteins with no detectable homolog in that locked training set, where project-trained homology-transfer baselines have nothing to transfer from. For externally pretrained methods, these bins are descriptive and do not measure overlap with each method's original training corpus; they therefore cannot by themselves establish external-training leakage.{flagged} Bin sizes: {counts_for('homology_bin_counts')}.
 
 stratified_homology_micro_aupr
 Pooled micro-AUPR as a function of the maximum sequence identity between each test protein and the locked DeepGreenGO training set. Unlike Fmax, micro-AUPR evaluates the ranking of protein-term scores without selecting a decision threshold. The identity bins, sample sizes, and external-pretraining caveat are the same as in stratified_homology_fmax; these bins do not measure similarity to each externally pretrained method's own training corpus. Bin sizes: {counts_for('homology_bin_counts')}.
@@ -390,7 +390,7 @@ stratified_ic_weighted_pr
 Information-content-weighted precision-recall curves across a 0.01-0.99 threshold sweep. Each protein-term decision is weighted by the term's information content, so recovering a rare, specific annotation counts for more than recovering a near-universal one. This down-weights the shallow, high-frequency terms that dominate unweighted precision-recall.
 
 stratified_combined (main text)
-Composite of the four analyses above as one figure: (a-c) CAFA Fmax by max training-set sequence identity; (d-f) term-centric AUPRC by GO term information content; (g-i) term-centric AUPRC by GO term depth from root; (j-l) IC-weighted precision-recall curves. Columns are MF, BP, CC. See the four entries above for the full methodological description of each row; this panel arrangement is provided for the main text, the individual panels above for supplementary reference at larger size.
+Composite of the four analyses above as one figure: (a-c) protein-centric Fmax by max training-set sequence identity; (d-f) term-centric AUPRC by GO term information content; (g-i) term-centric AUPRC by GO term depth from root; (j-l) IC-weighted precision-recall curves. Columns are MF, BP, CC. See the four entries above for the full methodological description of each row; this panel arrangement is provided for the main text, the individual panels above for supplementary reference at larger size.
 """
 
 
@@ -412,7 +412,7 @@ def main() -> None:
     low_n = {}
     low_n["homology"] = plot_binned(
         homology, HOMOLOGY_BINS,
-        "CAFA F$_{max}$", "Max identity to training set",
+        "Protein-centric F$_{max}$", "Max identity to training set",
         "stratified_homology_fmax", output, "",
     )
     plot_binned(

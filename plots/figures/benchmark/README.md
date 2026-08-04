@@ -12,6 +12,10 @@
 - DPFunc
 - HEAL
 
+Each retained method and transfer variant has its own fixed color. Colors do
+not encode evidence families. Plot labels use protein-centric Fmax/Smin and
+term-centric AUPR terminology, without directional guidance annotations.
+
 DeepGO-SE, DeepGOPlus, InterProScan, GAT-GO, SPROF-GO, and every other method
 are excluded even if stale results exist in the benchmark workspace.
 InterProScan may run internally to create DPFunc features, but it is not

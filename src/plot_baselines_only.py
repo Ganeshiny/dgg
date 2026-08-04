@@ -140,21 +140,19 @@ FAMILY_COLOR = {
 # External deep-learning methods deliberately do not share a family colour:
 # overlapping curves must remain identifiable without tiny marker differences.
 METHOD_COLOR = {
-    "deepgreengo": "#1B5E20",
-    "naive": "#E69F00",
-    "blast": "#0072B2",
-    "diamond": "#56B4E9",
-    "foldseek": "#6A3D9A",
+    "deepgreengo": "#006D2C",
+    "naive": "#DAA520",
+    "blast": "#0000CD",
+    "blast_max": "#DC143C",
+    "diamond": "#4682B4",
+    "diamond_max": "#DA70D6",
+    "foldseek": "#191970",
+    "foldseek_max": "#32CD32",
+    "deepfri_sequence": "#40E0D0",
+    "deepfri_structure": "#8B4513",
+    "dpfunc": "#DB7093",
+    "heal": "#4169E1",
     "interproscan": "#D55E00",
-    "deepfri_sequence": "#CC79A7",
-    "deepfri_structure": "#332288",
-    "dpfunc": "#009E73",
-    # #117733 and #88CCEE were unusable once DeepGOPlus/DeepGO-SE left the
-    # figures and these two became prominent: they sat at CIE76 dE 12 from the
-    # proposed method's green and dE 14 from DIAMOND respectively. These
-    # replacements are Paul Tol colourblind-safe values at dE >= 36 from every
-    # other plotted method.
-    "heal": "#661100",
     "gat_go": "#EE3377",
     "deepgraphgo": "#882255",
     "deepgoplus": "#E31A1C",
@@ -167,7 +165,7 @@ METHOD_COLOR = {
 
 
 def method_color(method: str) -> str:
-    """Return a stable method colour; transfer variants share their parent."""
+    """Return the fixed color assigned to an individual method."""
     base = method.removesuffix("_max")
     if method in METHOD_COLOR:
         return METHOD_COLOR[method]
@@ -325,7 +323,7 @@ def plot_cafa(
     methods: list[str],
     out: Path,
 ) -> None:
-    """CAFA point estimates as horizontal bars with paired-bootstrap CIs."""
+    """Protein-centric point estimates as horizontal bars with paired-bootstrap CIs."""
     fig, axes = plt.subplots(
         2, 3,
         figsize=(DOUBLE_COLUMN_IN, max(4.8, 0.38 * len(methods) + 2.4)),
@@ -334,8 +332,8 @@ def plot_cafa(
     y = np.arange(len(methods))
     panel_index = 0
     specifications = [
-        ("cafa_fmax", "CAFA F$_{max}$"),
-        ("cafa_smin", "CAFA S$_{min}$"),
+        ("cafa_fmax", "Protein-centric F$_{max}$"),
+        ("cafa_smin", "Protein-centric S$_{min}$"),
     ]
     for row_index, (value_col, xlabel) in enumerate(specifications):
         for column_index, ontology in enumerate(ONTOLOGY_ORDER):
@@ -406,8 +404,8 @@ def plot_aupr(
     y = np.arange(len(methods))
     panel_index = 0
     for row_index, (column, xlabel) in enumerate((
-        ("micro_aupr", "Micro-AUPR"),
-        ("macro_aupr", "Macro-AUPR"),
+        ("micro_aupr", "Term-centric micro-AUPR"),
+        ("macro_aupr", "Term-centric macro-AUPR"),
     )):
         for column_index, ontology in enumerate(ONTOLOGY_ORDER):
             ax = axes[row_index, column_index]
@@ -875,7 +873,7 @@ def build_manuscript_notes(
         f"Its Smin is {dgg_smin:.3f}, versus the best baseline value of "
         f"{baseline_smin:.3f} for {METHOD_LABEL.get(best_smin_method, best_smin_method)}. "
         f"The corresponding differences are {fmax_delta:+.3f} Fmax and "
-        f"{smin_delta:+.3f} Smin (lower Smin is better). {interpretation}\n\n"
+        f"{smin_delta:+.3f} Smin. {interpretation}\n\n"
         + external_caveat
     )
 

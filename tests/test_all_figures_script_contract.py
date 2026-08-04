@@ -34,6 +34,10 @@ class CompleteFigureScriptContractTests(unittest.TestCase):
         script = FULL_BENCHMARK.read_text()
         self.assertIn("hybrid,naive,blast,diamond,foldseek", script)
         self.assertIn('bash "${PROJECT_DIR}/arc slurms/run_all_figures.slurm"', script)
+        self.assertIn("sbatch --parsable", script)
+        self.assertIn('--dependency="afterok:${SLURM_JOB_ID}"', script)
+        figure_script = ALL_FIGURES.read_text()
+        self.assertIn("#SBATCH --partition=cpu", figure_script)
 
 
 if __name__ == "__main__":

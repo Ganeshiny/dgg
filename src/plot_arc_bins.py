@@ -28,7 +28,6 @@ from plot_style import (
     BIN_ORDER,
     DOUBLE_COLUMN_IN,
     ERROR_KIND_LABEL,
-    METRIC_HIGHER_IS_BETTER,
     METRIC_LABEL,
     METRIC_ORDER,
     MODEL_COLOR,
@@ -407,12 +406,11 @@ def plot_bin_grid(frame: pd.DataFrame, out: Path, bin_type: str, order: list[str
     ]
     fig.legend(handles=handles, title="Model", loc="upper center", ncol=len(MODEL_ORDER),
                bbox_to_anchor=(.5, 1.01), frameon=False, fontsize=6.2, title_fontsize=6.5)
-    direction = "higher is better" if METRIC_HIGHER_IS_BETTER[metric] else "lower is better"
     fig.text(
         .5, -.015,
         f"Grouped bars show the mean with {ERROR_KIND_LABEL[err_kind]} across five seeds. "
         f"Exact {evaluation_split} examples are printed in brackets; '*' marks n<{min_n}. "
-        f"Bins/panels without finite data are omitted; {direction}. Models are not stacked because "
+        f"Bins/panels without finite data are omitted. Models are not stacked because "
         "performance scores are not additive.",
         ha="center", fontsize=5.6, wrap=True,
     )

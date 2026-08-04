@@ -60,8 +60,7 @@ VARIANT_LABEL = {"full": "Full (seq + struct)", "seq_only": "Sequence only", "st
 VARIANT_HATCH = {"full": "", "seq_only": "//", "struct_only": "xx"}
 
 # ---------------------------------------------------------------------------
-# Metrics — never mix a bounded higher-is-better metric with Smin (unbounded,
-# lower-is-better) on one axis. Each metric gets its own figure/axis.
+# Metrics use separate axes when their scales or optimization directions differ.
 # ---------------------------------------------------------------------------
 METRIC_ORDER = ["Micro_Fmax", "Macro_Fmax", "Micro_AUPRC", "Macro_AUPRC", "Micro_AUROC", "Macro_AUROC", "Smin"]
 METRIC_LABEL = {

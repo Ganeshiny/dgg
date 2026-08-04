@@ -79,7 +79,7 @@ def annotate_bars(ax, metric_name, decimals=3):
         
         x_pos = patch.get_x() + patch.get_width() / 2
         
-        # Special handling for Smin (lower is better, fewer decimals)
+        # Smin uses fewer decimals.
         if is_smin:
             label_text = f"{height:.1f}"
             rot = 0
@@ -256,7 +256,7 @@ def plot_macro_metrics(df, hue_col, order, colors, prefix='input'):
 
 
 def plot_smin(df, hue_col, order, colors, prefix='input'):
-    """Plot Smin (semantic distance) — lower is better."""
+    """Plot Smin (semantic distance)."""
     
     fig, axes = plt.subplots(1, 3, figsize=(15, 5), sharey=False)
     fig.suptitle(f'Semantic Distance (Smin) ({prefix.title()} Ablation)',

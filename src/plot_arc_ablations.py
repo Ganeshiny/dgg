@@ -26,7 +26,6 @@ from plot_style import (
     assert_palette_locked,
     provenance,
     report_colorblind_audit,
-    METRIC_HIGHER_IS_BETTER,
     METRIC_LABEL,
     METRIC_ORDER,
     MODEL_COLOR,
@@ -295,11 +294,10 @@ def plot_dynamite(df: pd.DataFrame, out: Path, metric: str, err_kind: str = "sd"
             ax.set_ylim(ymin, ymax)
             label_panel(ax, chr(97 + panel))
             panel += 1
-    direction = "higher is better" if METRIC_HIGHER_IS_BETTER[metric] else "lower is better"
     fig.text(
         .5, -.025,
         f"Rows are input modalities and columns are ontologies. Bars show the mean with "
-        f"{ERROR_KIND_LABEL[err_kind]} across five seeds; {direction}. Bars are grouped/faceted, "
+        f"{ERROR_KIND_LABEL[err_kind]} across five seeds. Bars are grouped/faceted, "
         f"not stacked, because model scores are not additive. {_metric_note(metric)}",
         ha="center", fontsize=5.4, wrap=True,
     )
@@ -308,7 +306,6 @@ def plot_dynamite(df: pd.DataFrame, out: Path, metric: str, err_kind: str = "sd"
 
 def plot_strip(df: pd.DataFrame, out: Path, metric: str, err_kind: str = "sd",
                tier: str = SUPPLEMENTARY) -> None:
-    higher_better = METRIC_HIGHER_IS_BETTER[metric]
     ymin, ymax = _metric_limits(df, metric)
     fig, axes = plt.subplots(1, 3, figsize=(DOUBLE_COLUMN_IN, 3.35), sharey=True)
     x, offsets = _bar_positions(len(MODEL_ORDER), len(VARIANT_ORDER))
@@ -345,9 +342,6 @@ def plot_strip(df: pd.DataFrame, out: Path, metric: str, err_kind: str = "sd",
         ax.set_xticks(x, MODEL_ORDER, rotation=30, ha="right")
         ax.set_title(ONTOLOGY_SHORT[ontology])
         label_panel(ax, chr(97 + panel))
-        if not higher_better:
-            ax.text(.01, 1.03, "lower is better", transform=ax.transAxes,
-                    fontsize=5.8, color="#555555", va="bottom", clip_on=False)
     if not any_data:
         plt.close(fig)
         raise SystemExit(f"No ablation data found for {metric!r}")

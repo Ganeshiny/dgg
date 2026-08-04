@@ -29,9 +29,9 @@ import numpy as np
 import pandas as pd
 from matplotlib.lines import Line2D
 from matplotlib.patches import Patch
+from matplotlib.colors import to_rgb
 
 from plot_style import (
-    CATEGORICAL_PALETTE,
     DOUBLE_COLUMN_IN,
     MAIN,
     ONTOLOGY_ORDER,
@@ -39,10 +39,8 @@ from plot_style import (
     SUPPLEMENTARY,
     annotate_insufficient_data,
     apply_style,
-    assert_palette_locked,
     label_panel,
     provenance,
-    report_colorblind_audit,
     savefig,
 )
 
@@ -62,34 +60,53 @@ METHOD_LABEL = {
     "deepfri_structure": "DeepFRI (structure)",
     "dpfunc": "DPFunc", "heal": "HEAL",
 }
-# Family colour: one hue per evidence type, so the comparison reads as
-# frequency vs homology transfer vs external deep-learning baselines.
-METHOD_FAMILY = {
-    "deepgreengo": "proposed",
-    "naive": "frequency",
-    "blast": "sequence", "blast_max": "sequence",
-    "diamond": "sequence", "diamond_max": "sequence",
-    "foldseek": "structure", "foldseek_max": "structure",
-    "deepfri_sequence": "deep_learning", "deepfri_structure": "deep_learning",
-    "dpfunc": "deep_learning", "heal": "deep_learning",
+# Per-method palette selected by farthest-point sampling in CIELAB space.
+METHOD_COLOR = {
+    "deepgreengo": "#006D2C", "naive": "#DAA520",
+    "blast": "#0000CD", "blast_max": "#DC143C",
+    "diamond": "#4682B4", "diamond_max": "#DA70D6",
+    "foldseek": "#191970", "foldseek_max": "#32CD32",
+    "deepfri_sequence": "#40E0D0", "deepfri_structure": "#8B4513",
+    "dpfunc": "#DB7093", "heal": "#4169E1",
 }
-FAMILY_COLOR = {
-    "proposed": CATEGORICAL_PALETTE[1],   # orange
-    "frequency": CATEGORICAL_PALETTE[2],  # yellow
-    "sequence": CATEGORICAL_PALETTE[0],   # blue
-    "structure": CATEGORICAL_PALETTE[4],  # violet
-    "deep_learning": CATEGORICAL_PALETTE[3],  # green
-}
-FAMILY_LABEL = {"proposed": "DeepGreenGO (this work)",
-                "frequency": "CAFA frequency prior",
-                "sequence": "Sequence homology", "structure": "Structure homology",
-                "deep_learning": "External deep learning"}
-FAMILY_ORDER = ("proposed", "frequency", "sequence", "structure", "deep_learning")
+
+def _rgb_to_lab(rgb: np.ndarray) -> np.ndarray:
+    """Convert sRGB values to CIELAB for a method-palette separation audit."""
+    rgb = np.asarray(rgb, dtype=float)
+    linear = np.where(rgb <= .04045, rgb / 12.92, ((rgb + .055) / 1.055) ** 2.4)
+    xyz = linear @ np.asarray([
+        [.4124564, .2126729, .0193339],
+        [.3575761, .7151522, .1191920],
+        [.1804375, .0721750, .9503041],
+    ])
+    xyz = xyz / np.asarray([.95047, 1.0, 1.08883])
+    epsilon, kappa = 216 / 24389, 24389 / 27
+    transformed = np.where(xyz > epsilon, xyz ** (1 / 3), (kappa * xyz + 16) / 116)
+    return np.stack([
+        116 * transformed[..., 1] - 16,
+        500 * (transformed[..., 0] - transformed[..., 1]),
+        200 * (transformed[..., 1] - transformed[..., 2]),
+    ], axis=-1)
+
+
+def validate_method_palette(minimum_distance: float = 35.0) -> tuple[float, str, str]:
+    points = _rgb_to_lab(np.asarray([to_rgb(METHOD_COLOR[m]) for m in METHOD_ORDER]))
+    distances = [
+        (float(np.linalg.norm(points[i] - points[j])), METHOD_ORDER[i], METHOD_ORDER[j])
+        for i in range(len(points)) for j in range(i)
+    ]
+    minimum = min(distances)
+    if minimum[0] < minimum_distance:
+        raise ValueError(
+            f"Method colors are too similar: {minimum[1]} vs {minimum[2]} "
+            f"has CIELAB distance {minimum[0]:.1f} < {minimum_distance:.1f}"
+        )
+    return minimum
 
 METRICS = {
-    "cafa_fmax": ("CAFA F$_{max}$", True),
-    "cafa_smin": ("CAFA S$_{min}$", False),
-    "micro_aupr": ("Micro-AUPR", True),
+    "cafa_fmax": ("Protein-centric F$_{max}$", True),
+    "cafa_smin": ("Protein-centric S$_{min}$", False),
+    "micro_aupr": ("Term-centric micro-AUPR", True),
     "protein_coverage_any_score": ("Protein coverage", True),
 }
 
@@ -142,7 +159,7 @@ def _methods_present(metrics: pd.DataFrame) -> list[str]:
 
 def plot_metric_panels(metrics: pd.DataFrame, invalid: dict[str, str], out: Path,
                        tier: str = MAIN) -> None:
-    """CAFA Fmax with bootstrap CIs, one panel per ontology."""
+    """Protein-centric Fmax with bootstrap CIs, one panel per ontology."""
     methods = _methods_present(metrics)
     fig, axes = plt.subplots(1, 3, figsize=(DOUBLE_COLUMN_IN, 3.0), sharey=True)
     y = np.arange(len(methods))
@@ -159,7 +176,7 @@ def plot_metric_panels(metrics: pd.DataFrame, invalid: dict[str, str], out: Path
             values.append(value)
             lows.append(value - float(row.get("cafa_fmax_ci_low", value)))
             highs.append(float(row.get("cafa_fmax_ci_high", value)) - value)
-            colors.append(FAMILY_COLOR[METHOD_FAMILY.get(method, "sequence")])
+            colors.append(METHOD_COLOR[method])
             hatches.append("")
         ax.barh(y, [0 if not np.isfinite(v) else v for v in values],
                 xerr=[np.nan_to_num(lows), np.nan_to_num(highs)],
@@ -176,17 +193,16 @@ def plot_metric_panels(metrics: pd.DataFrame, invalid: dict[str, str], out: Path
         ax.set_yticks(y, [METHOD_LABEL.get(m, m) for m in methods], fontsize=6)
         ax.invert_yaxis()
         ax.set_title(ONTOLOGY_SHORT[ontology])
-        ax.set_xlabel("CAFA F$_{max}$", fontsize=7)
+        ax.set_xlabel("Protein-centric F$_{max}$", fontsize=7)
         ax.set_xlim(0, max(.05, float(np.nanmax(values)) * 1.30))
         label_panel(ax, chr(97 + panel))
-    handles = [Patch(facecolor=FAMILY_COLOR[f], edgecolor="#111111", label=FAMILY_LABEL[f])
-               for f in FAMILY_ORDER]
+    handles = [Patch(facecolor=METHOD_COLOR[m], edgecolor="#111111", label=METHOD_LABEL[m])
+               for m in methods]
     handles.append(Patch(facecolor="#dddddd", edgecolor="#111111", hatch="///",
                          label="Not evaluated"))
     fig.legend(handles=handles, loc="upper left", bbox_to_anchor=(1.0, .95),
-               frameon=False, fontsize=6.2, title="Evidence type", title_fontsize=6.5)
-    note = ("Error bars are 1,000-replicate paired protein bootstrap 95% CIs. "
-            "Bars are coloured by evidence type, not by individual method. ")
+               frameon=False, fontsize=5.5, title="Method", title_fontsize=6)
+    note = "Error bars are 1,000-replicate paired protein bootstrap 95% CIs. "
     if invalid:
         note += ("Hatched slots are methods excluded from scoring: "
                  + "; ".join(f"{METHOD_LABEL.get(m, m)} ({r})" for m, r in invalid.items()) + ". ")
@@ -212,7 +228,7 @@ def plot_bootstrap_boxplots(bootstrap: pd.DataFrame, invalid: dict[str, str], ou
     positions = np.arange(len(methods))
     panel = 0
     for row, key in enumerate(keys):
-        label, higher = METRICS.get(key, (key, True))
+        label, _ = METRICS.get(key, (key, True))
         for col, ontology in enumerate(ONTOLOGY_ORDER):
             ax = axes[row][col]
             sub = bootstrap[bootstrap.ontology == ontology]
@@ -221,7 +237,7 @@ def plot_bootstrap_boxplots(bootstrap: pd.DataFrame, invalid: dict[str, str], ou
                 values = pd.to_numeric(sub[sub.method == method][key], errors="coerce")
                 values = values[np.isfinite(values)].to_numpy()
                 data.append(values if values.size else np.array([np.nan]))
-                colors.append(FAMILY_COLOR[METHOD_FAMILY.get(method, "sequence")])
+                colors.append(METHOD_COLOR[method])
             box = ax.boxplot(data, positions=positions, widths=.62, patch_artist=True,
                              showfliers=False, whis=(2.5, 97.5),
                              medianprops=dict(color="#111111", linewidth=1.0),
@@ -240,16 +256,12 @@ def plot_bootstrap_boxplots(bootstrap: pd.DataFrame, invalid: dict[str, str], ou
                               rotation=35, ha="right", fontsize=5.2)
             else:
                 ax.set_xticks(positions, [""] * len(methods))
-            if not higher:
-                # Above the axes: inside the panel this sat on the top whisker.
-                ax.text(.0, 1.015, "lower is better", transform=ax.transAxes,
-                        fontsize=5.2, color="#777777", va="bottom", ha="left")
             label_panel(ax, chr(97 + panel))
             panel += 1
-    handles = [Patch(facecolor=FAMILY_COLOR[f], edgecolor="#111111", label=FAMILY_LABEL[f])
-               for f in FAMILY_ORDER]
+    handles = [Patch(facecolor=METHOD_COLOR[m], edgecolor="#111111", label=METHOD_LABEL[m])
+               for m in methods]
     fig.legend(handles=handles, loc="upper left", bbox_to_anchor=(1.0, .95),
-               frameon=False, fontsize=6.2, title="Evidence type", title_fontsize=6.5)
+               frameon=False, fontsize=5.5, title="Method", title_fontsize=6)
     fig.text(.5, -.05,
              "Boxes span the interquartile range of 1,000 paired protein bootstrap replicates, "
              "the line is the median, and whiskers reach the 2.5th and 97.5th percentiles (a 95% "
@@ -281,7 +293,7 @@ def plot_metric_grid(metrics: pd.DataFrame, invalid: dict[str, str], out: Path,
     x = np.arange(len(methods))
     panel = 0
     for row, key in enumerate(keys):
-        label, higher = METRICS[key]
+        label, _ = METRICS[key]
         values_all = pd.to_numeric(metrics[key], errors="coerce")
         top = float(values_all.max()) * 1.18 if np.isfinite(values_all.max()) else 1.0
         for col, ontology in enumerate(ONTOLOGY_ORDER):
@@ -301,7 +313,7 @@ def plot_metric_grid(metrics: pd.DataFrame, invalid: dict[str, str], out: Path,
                     else:
                         lows.append(0.0); highs.append(0.0)
                 yerr = [lows, highs]
-            ax.bar(x, values, color=[FAMILY_COLOR[METHOD_FAMILY.get(m, "sequence")] for m in methods],
+            ax.bar(x, values, color=[METHOD_COLOR[m] for m in methods],
                    edgecolor="#111111", linewidth=.4, width=.72, yerr=yerr,
                    error_kw=dict(elinewidth=.7, capsize=1.8, ecolor="#111111"))
             ax.set_ylim(0, top)
@@ -314,17 +326,14 @@ def plot_metric_grid(metrics: pd.DataFrame, invalid: dict[str, str], out: Path,
                               rotation=35, ha="right", fontsize=5.2)
             else:
                 ax.set_xticks(x, [""] * len(methods))
-            if not higher:
-                ax.text(.02, .93, "lower is better", transform=ax.transAxes,
-                        fontsize=5, color="#777777")
             label_panel(ax, chr(97 + panel))
             panel += 1
-    handles = [Patch(facecolor=FAMILY_COLOR[f], edgecolor="#111111", label=FAMILY_LABEL[f])
-               for f in FAMILY_ORDER]
+    handles = [Patch(facecolor=METHOD_COLOR[m], edgecolor="#111111", label=METHOD_LABEL[m])
+               for m in methods]
     fig.legend(handles=handles, loc="upper left", bbox_to_anchor=(1.0, .95),
-               frameon=False, fontsize=6.2, title="Evidence type", title_fontsize=6.5)
+               frameon=False, fontsize=5.5, title="Method", title_fontsize=6)
     excluded = ", ".join(METHOD_LABEL.get(m, m) for m in invalid) or "none"
-    ci_note = ("CAFA F$_{max}$ and S$_{min}$ carry 95% bootstrap intervals (1,000 paired protein "
+    ci_note = ("Protein-centric F$_{max}$ and S$_{min}$ carry 95% bootstrap intervals (1,000 paired protein "
                "resamples). Micro-AUPR and coverage are single point estimates in the results "
                "table with no replicates, so they are shown without error bars rather than with "
                "invented ones. ")
@@ -350,7 +359,7 @@ def plot_coverage_vs_fmax(metrics: pd.DataFrame, invalid: dict[str, str], out: P
                 continue
             row = sub.loc[method]
             ax.scatter(float(row["protein_coverage_any_score"]), float(row["cafa_fmax"]),
-                       s=26, color=FAMILY_COLOR[METHOD_FAMILY.get(method, "sequence")],
+                       s=26, color=METHOD_COLOR[method],
                        edgecolor="#111111", linewidth=.4, zorder=3)
             ax.annotate(METHOD_LABEL.get(method, method).split(" (")[0],
                         (float(row["protein_coverage_any_score"]), float(row["cafa_fmax"])),
@@ -359,10 +368,9 @@ def plot_coverage_vs_fmax(metrics: pd.DataFrame, invalid: dict[str, str], out: P
         ax.set_xlabel("Protein coverage", fontsize=7)
         ax.set_xlim(-.05, 1.08)
         label_panel(ax, chr(97 + panel))
-    axes[0].set_ylabel("CAFA F$_{max}$", fontsize=7)
+    axes[0].set_ylabel("Protein-centric F$_{max}$", fontsize=7)
     fig.text(.5, -.10,
-             "Upper-right is better: high F$_{max}$ at high coverage. Homology-transfer baselines "
-             "sit at low coverage because they only score proteins with a qualifying hit, so their "
+             "Homology-transfer baselines only score proteins with a qualifying hit, so their "
              "F$_{max}$ describes a favourable subset rather than the full test set. "
              + provenance("src/plot_benchmark.py", "results/benchmark_metrics.csv"),
              ha="center", fontsize=5.2, wrap=True)
@@ -383,8 +391,8 @@ def main() -> None:
     args = ap.parse_args()
 
     apply_style()
-    print("Palette fingerprint:", assert_palette_locked())
-    report_colorblind_audit()
+    distance, first, second = validate_method_palette()
+    print(f"Method palette minimum CIELAB separation: {distance:.1f} ({first} vs {second})")
     workspace = args.workspace.resolve()
     out = args.output_dir.resolve()
     out.mkdir(parents=True, exist_ok=True)
@@ -420,7 +428,7 @@ def main() -> None:
         print("All methods have non-empty predictions.")
 
     valid = metrics[~metrics.method.isin(invalid)]
-    print("\nCAFA Fmax by method (valid methods only):")
+    print("\nProtein-centric Fmax by method (valid methods only):")
     print(valid.pivot_table(index="method", columns="ontology_short",
                             values="cafa_fmax").round(4).to_string())
 
