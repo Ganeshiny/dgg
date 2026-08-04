@@ -85,18 +85,24 @@ def get_auprc(y_true, y_pred_probs, average="macro"):
     return float("nan")
 
 def compute_ic(y_train):
-    """Training-frequency IC: -log2(n_j / N_train), one value per GO term."""
-    n_train = int(y_train.shape[0])
+    """Training-frequency IC with a one-count floor for unseen GO terms.
+
+    For terms observed in training this is exactly -log2(n_j / N_train).
+    A vocabulary term with n_j = 0 would otherwise have infinite IC and make
+    Smin undefined. Such terms receive the maximum finite training-derived IC,
+    -log2(1 / N_train), without changing the weight of any observed term.
+    """
+    labels = np.asarray(y_train)
+    if labels.ndim != 2:
+        raise ValueError(
+            f"Expected a two-dimensional training-label matrix, got {labels.shape}"
+        )
+    n_train = int(labels.shape[0])
     if n_train <= 0:
         raise ValueError("Cannot compute information content from an empty training set")
-    counts = np.sum(y_train, axis=0).astype(float)
-    if np.any(counts <= 0):
-        missing = np.flatnonzero(counts <= 0)
-        raise ValueError(
-            "Training-frequency IC is undefined for GO terms absent from training: "
-            f"{missing[:10].tolist()}"
-        )
-    return -np.log2(counts / n_train)
+    counts = np.sum(labels > 0, axis=0, dtype=np.int64)
+    effective_counts = np.maximum(counts, 1)
+    return -np.log2(effective_counts / n_train)
 
 def get_smin(y_true, y_pred_probs, ic):
     """

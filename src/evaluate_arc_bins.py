@@ -299,7 +299,8 @@ def main():
             "seeds_per_configuration": 5,
             "auprc_estimator": "sklearn.metrics.average_precision_score",
             "smin_weighting": "training-frequency information content",
-            "smin_ic_formula": "-log2(n_j / N_train)",
+            "smin_ic_formula": "-log2(max(n_j, 1) / N_train)",
+            "smin_zero_frequency_policy": "one-count floor",
             "smin_thresholds": "0.01 through 0.99 in increments of 0.01",
         }, indent=2) + "\n")
         print(f"Wrote {len(overall_rows)} overall test rows to {overall_output}")

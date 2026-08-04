@@ -79,6 +79,8 @@ if manifest.get("auprc_estimator") != "sklearn.metrics.average_precision_score":
     raise SystemExit("ERROR: ablation archive does not use average-precision AUPRC")
 if manifest.get("smin_weighting") != "training-frequency information content":
     raise SystemExit("ERROR: ablation archive does not document frequency-weighted Smin")
+if manifest.get("smin_zero_frequency_policy") != "one-count floor":
+    raise SystemExit("ERROR: ablation archive does not document the zero-frequency IC policy")
 print("Verified regenerated ablation metric provenance.")
 PY
 

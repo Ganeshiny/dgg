@@ -50,6 +50,8 @@ class CompleteFigureScriptContractTests(unittest.TestCase):
         self.assertIn("#SBATCH --partition=cpu", bin_job)
         self.assertIn('"auprc_estimator": "sklearn.metrics.average_precision_score"', evaluator)
         self.assertIn('"smin_weighting": "training-frequency information content"', evaluator)
+        self.assertIn('"smin_zero_frequency_policy": "one-count floor"', evaluator)
+        self.assertIn('manifest.get("smin_zero_frequency_policy")', figure_script)
         self.assertIn("load_pickle_compat(handle)", evaluator)
         self.assertIn("load_pickle_compat(handle)", bin_plotter)
         self.assertIn("load_pickle_compat(handle)", ablation_plotter)
