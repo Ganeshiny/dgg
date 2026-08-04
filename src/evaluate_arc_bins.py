@@ -12,7 +12,6 @@ import argparse
 import csv
 import json
 import os
-import pickle
 import subprocess
 import warnings
 from pathlib import Path
@@ -27,6 +26,7 @@ sys.path.insert(0, str(PROJECT_DIR))
 from src.arc_dataset import ArcGraphDataset, make_dataloader
 from src.evals import compute_ic, evaluate_all
 from src.train_arc_ablation import build, transform
+from scripts.pickle_compat import load_pickle_compat
 
 ONTOLOGIES = ("molecular_function", "biological_process", "cellular_component")
 
@@ -55,7 +55,7 @@ def parse_args():
 
 def load_dataset(path: Path, graph_root: Path, split: str):
     with path.open("rb") as handle:
-        dataset = pickle.load(handle)
+        dataset = load_pickle_compat(handle)
     if not isinstance(dataset, ArcGraphDataset) or dataset.split != split:
         raise RuntimeError(f"Unexpected ARC dataset: {path}")
     dataset.graph_dir = str(graph_root.resolve())

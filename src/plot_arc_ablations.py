@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
-import pickle
+import sys
 from pathlib import Path
 
 import matplotlib.pyplot as plt
@@ -15,6 +15,10 @@ from matplotlib import patheffects as path_effects
 from matplotlib.colors import Normalize
 from matplotlib.lines import Line2D
 from matplotlib.patches import Patch
+
+PROJECT_DIR = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(PROJECT_DIR))
+from scripts.pickle_compat import load_pickle_compat
 
 from plot_style import (
     CONSTANT_PREDICTOR_CAVEAT,
@@ -92,7 +96,7 @@ def read_results(root: Path, logs: Path) -> pd.DataFrame:
 
 def _records(path: Path) -> list[dict]:
     with path.open("rb") as handle:
-        obj = pickle.load(handle)
+        obj = load_pickle_compat(handle)
     if isinstance(obj, list):
         return obj
     if hasattr(obj, "protein_ids") and hasattr(obj, "labels") and hasattr(obj, "terms"):

@@ -9,7 +9,7 @@ across the five checkpoint seeds without connecting unsupported points.
 from __future__ import annotations
 
 import argparse
-import pickle
+import sys
 import re
 from pathlib import Path
 
@@ -17,6 +17,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from matplotlib.lines import Line2D
+
+PROJECT_DIR = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(PROJECT_DIR))
+from scripts.pickle_compat import load_pickle_compat
 
 from plot_style import (
     ERROR_CAPTION,
@@ -53,7 +57,7 @@ DEFAULT_VALIDATION_HOMOLOGY = Path("preprocessing/data_arc_rebuild_2026_07_14/pd
 
 def _records(path: Path) -> list[dict]:
     with path.open("rb") as handle:
-        obj = pickle.load(handle)
+        obj = load_pickle_compat(handle)
     if isinstance(obj, list):
         return obj
     if hasattr(obj, "protein_ids") and hasattr(obj, "labels") and hasattr(obj, "terms"):
