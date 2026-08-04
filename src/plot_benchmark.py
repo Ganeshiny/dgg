@@ -40,6 +40,7 @@ from plot_style import (
     annotate_insufficient_data,
     apply_style,
     label_panel,
+    label_vertical_bars,
     provenance,
     savefig,
 )
@@ -313,10 +314,13 @@ def plot_metric_grid(metrics: pd.DataFrame, invalid: dict[str, str], out: Path,
                     else:
                         lows.append(0.0); highs.append(0.0)
                 yerr = [lows, highs]
-            ax.bar(x, values, color=[METHOD_COLOR[m] for m in methods],
-                   edgecolor="#111111", linewidth=.4, width=.72, yerr=yerr,
-                   error_kw=dict(elinewidth=.7, capsize=1.8, ecolor="#111111"))
             ax.set_ylim(0, top)
+            bars = ax.bar(x, values, color=[METHOD_COLOR[m] for m in methods],
+                          edgecolor="#111111", linewidth=.4, width=.72, yerr=yerr,
+                          error_kw=dict(elinewidth=.7, capsize=1.8, ecolor="#111111"))
+            label_vertical_bars(
+                ax, bars, values, yerr, fontsize=4.3, rotation=90,
+            )
             if row == 0:
                 ax.set_title(ONTOLOGY_SHORT[ontology])
             if col == 0:

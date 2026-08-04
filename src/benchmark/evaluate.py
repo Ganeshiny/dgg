@@ -13,6 +13,8 @@ import warnings
 
 import numpy as np
 
+from src.plot_style import label_vertical_bars
+
 from .core import (
     ONTOLOGIES,
     ancestors,
@@ -715,7 +717,8 @@ def plot(args) -> None:
         )):
             ax = axes[row_index, column]
             values = subset[metric].to_numpy(float)
-            ax.bar(x, values, color=[colors[m] for m in methods], edgecolor="white")
+            bars = ax.bar(x, values, color=[colors[m] for m in methods], edgecolor="white")
+            yerr = None
             # Micro AUPR now carries the percentile CI from the same paired
             # bootstrap as Fmax/Smin; it previously had no interval at all
             # because those columns were never written.
@@ -734,6 +737,7 @@ def plot(args) -> None:
                 if np.isfinite(yerr).any():
                     ax.errorbar(x, values, yerr=np.nan_to_num(yerr, nan=0.0),
                                 fmt="none", ecolor="#333333", capsize=2, linewidth=0.8)
+            label_vertical_bars(ax, bars, values, yerr, fontsize=6.0, rotation=90)
             ax.set_title(f"{ontology.replace('_', ' ').title()} — {title}")
             ax.set_ylabel(title)
             ax.set_xticks(x, [labels.get(m, m) for m in methods], rotation=55, ha="right")
@@ -749,9 +753,11 @@ def plot(args) -> None:
     for ax, (short, ontology) in zip(axes, ONTOLOGIES.items()):
         subset = results[results.ontology == ontology].set_index("method").reindex(methods)
         x = np.arange(len(methods))
-        ax.bar(x, subset.protein_coverage_any_score, color=[colors[m] for m in methods])
-        ax.set_title(ontology.replace("_", " ").title())
+        coverage = subset.protein_coverage_any_score.to_numpy(float)
         ax.set_ylim(0, 1.05)
+        bars = ax.bar(x, coverage, color=[colors[m] for m in methods])
+        label_vertical_bars(ax, bars, coverage, fontsize=6.0, rotation=90)
+        ax.set_title(ontology.replace("_", " ").title())
         ax.set_ylabel("fraction of 754 test proteins")
         ax.set_xticks(x, [labels.get(m, m) for m in methods], rotation=55, ha="right")
         ax.spines[["top", "right"]].set_visible(False)

@@ -36,6 +36,8 @@ from plot_style import (
     apply_style,
     assert_palette_locked,
     label_panel,
+    label_horizontal_bars,
+    label_vertical_bars,
     mean_and_error,
     provenance,
     report_colorblind_audit,
@@ -229,10 +231,11 @@ def _grouped_bars(ax, sub: pd.DataFrame, metrics: list[str], sources: list[str],
                 mean, err = np.nan, np.nan
             means.append(mean)
             errs.append(err)
-        ax.bar(xs, means, width=width * .9, yerr=errs, color=colors[source],
-               edgecolor="#111111", linewidth=.4,
-               error_kw=dict(elinewidth=.7, capsize=2, ecolor="#111111"),
-               label=source if len(sources) > 1 else None)
+        bars = ax.bar(xs, means, width=width * .9, yerr=errs, color=colors[source],
+                      edgecolor="#111111", linewidth=.4,
+                      error_kw=dict(elinewidth=.7, capsize=2, ecolor="#111111"),
+                      label=source if len(sources) > 1 else None)
+        label_vertical_bars(ax, bars, means, errs, fontsize=4.8, rotation=90)
     ax.set_xticks(np.arange(len(metrics)),
                   [m.replace("test_", "").replace("_", " ") for m in metrics],
                   rotation=32, ha="right")
@@ -268,8 +271,8 @@ def plot_seed_metrics(root: Path, out: Path, err_kind: str = "sd",
                 if sub.empty:
                     annotate_insufficient_data(ax)
                 else:
-                    _grouped_bars(ax, sub, metrics, sources, colors, err_kind)
                     ax.set_ylim(max(0., lo - pad), min(1., hi + pad))
+                    _grouped_bars(ax, sub, metrics, sources, colors, err_kind)
                 if r == 0:
                     ax.set_title(ONTOLOGY_SHORT[ont])
                 label_panel(ax, chr(97 + panel))
@@ -293,8 +296,8 @@ def plot_seed_metrics(root: Path, out: Path, err_kind: str = "sd",
             if sub.empty:
                 annotate_insufficient_data(ax)
             else:
+                ax.set_ylim(0, ymax)
                 _grouped_bars(ax, sub, ["test_smin"], sources, colors, err_kind)
-            ax.set_ylim(0, ymax)
             ax.set_title(ONTOLOGY_SHORT[ont])
             label_panel(ax, chr(97 + panel))
         axes[0].set_ylabel("S$_{min}$")
@@ -330,14 +333,15 @@ def plot_top_trials(df: pd.DataFrame, out: Path, metric: str,
             continue
         sub = sub.sort_values(metric)
         labels = [trial_label(r) for _, r in sub.iterrows()]
-        ax.barh(np.arange(len(sub)), sub[metric], color=PRIMARY,
-                edgecolor="#111111", linewidth=.4)
+        bars = ax.barh(np.arange(len(sub)), sub[metric], color=PRIMARY,
+                       edgecolor="#111111", linewidth=.4)
         ax.set_yticks(np.arange(len(sub)), labels, fontsize=5.2)
         ax.set_title(f"{ONTOLOGY_SHORT[ont]}: top {top} trials", loc="left")
         if panel == len(ONTOLOGY_ORDER) - 1:
             ax.set_xlabel(VALIDATION_METRIC_LABEL.get(metric, metric))
         lo = float(sub[metric].min()) * .97
         ax.set_xlim(lo, float(sub[metric].max()) * 1.01)
+        label_horizontal_bars(ax, bars, sub[metric].to_numpy(float), fontsize=5.0)
         # A narrow window puts default ticks close enough to overprint; cap
         # the count and let matplotlib choose round values inside it.
         ax.xaxis.set_major_locator(MaxNLocator(nbins=3, prune="both"))

@@ -7,8 +7,8 @@
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=24G
 #SBATCH --time=03:00:00
-#SBATCH --output=all_figures_%j.out
-#SBATCH --error=all_figures_%j.err
+#SBATCH --output=logs/all_figures_%j.out
+#SBATCH --error=logs/all_figures_%j.err
 
 set -euo pipefail
 

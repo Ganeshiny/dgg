@@ -41,6 +41,7 @@ from plot_style import (
     apply_style,
     colorblind_audit,
     label_panel,
+    label_vertical_bars,
     mean_and_error,
     savefig,
 )
@@ -365,6 +366,7 @@ def plot_bin_grid(frame: pd.DataFrame, out: Path, bin_type: str, order: list[str
             cell = sub[sub["bin"].astype(str) == label]
             values = pd.to_numeric(cell[support_column], errors="coerce").dropna()
             counts.append(int(values.iloc[0]) if len(values) else 0)
+        ax.set_ylim(ymin, ymax)
         for model_index, model in enumerate(MODEL_ORDER):
             group = sub[sub.model == model]
             stats = group.groupby("bin", observed=True)[metric].agg(["mean", "std", "count"])
@@ -378,19 +380,23 @@ def plot_bin_grid(frame: pd.DataFrame, out: Path, bin_type: str, order: list[str
             ])
             valid = np.isfinite(means)
             positions = x + (model_index - (len(MODEL_ORDER) - 1) / 2) * width
-            ax.bar(
+            bars = ax.bar(
                 positions[valid], means[valid], width=width * .92,
                 yerr=errors[valid], color=MODEL_COLOR[model], edgecolor="#111111",
                 linewidth=.35, error_kw=dict(elinewidth=.65, capsize=1.5, ecolor="#111111"),
                 label=model,
             )
-            for pos, mean, count in zip(positions[valid], means[valid], np.asarray(counts)[valid]):
-                if count < min_n:
-                    ax.annotate("*", (pos, mean), xytext=(0, 3), textcoords="offset points",
-                                ha="center", fontsize=6, fontweight="bold")
+            valid_counts = np.asarray(counts)[valid]
+            value_labels = [
+                f"{value:.3f}{'*' if count < min_n else ''}"
+                for value, count in zip(means[valid], valid_counts)
+            ]
+            label_vertical_bars(
+                ax, bars, means[valid], errors[valid], labels=value_labels,
+                fontsize=4.5, rotation=90,
+            )
         labels = [f"{label.replace('_', ' ')}\n[n={count}]" for label, count in zip(usable_bins, counts)]
         ax.set_xticks(x, labels, rotation=30, ha="right")
-        ax.set_ylim(ymin, ymax)
         ax.set_xlim(-.55, len(usable_bins) - .45)
         ax.set_title(
             f"{ONTOLOGY_SHORT[ontology]} — {VARIANT_LABEL[variant]} ({evaluation_split})",

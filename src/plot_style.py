@@ -340,6 +340,111 @@ def label_panel(ax: plt.Axes, letter: str) -> None:
     ax.text(-0.14, 1.08, letter, transform=ax.transAxes, fontsize=10, fontweight="bold", va="bottom", ha="left")
 
 
+def format_bar_value(value: float) -> str:
+    """Compact, deterministic numeric text for values printed on bars."""
+    value = float(value)
+    magnitude = abs(value)
+    if magnitude >= 1000:
+        return f"{value:.0f}"
+    if magnitude >= 100:
+        return f"{value:.1f}"
+    if magnitude >= 10:
+        return f"{value:.2f}"
+    return f"{value:.3f}"
+
+
+def label_vertical_bars(
+    ax: plt.Axes,
+    bars,
+    values,
+    errors=None,
+    *,
+    labels=None,
+    fontsize: float = 5.0,
+    rotation: float = 90,
+    padding: float = 2.0,
+) -> None:
+    """Print exact values above vertical bars, beyond any upper error cap."""
+    patches = list(getattr(bars, "patches", bars))
+    values = np.asarray(values, dtype=float)
+    if errors is None:
+        upper_errors = np.zeros(len(values), dtype=float)
+    else:
+        error_array = np.asarray(errors, dtype=float)
+        upper_errors = error_array if error_array.ndim == 1 else error_array[-1]
+        upper_errors = np.nan_to_num(upper_errors, nan=0.0, posinf=0.0, neginf=0.0)
+    rendered_tops = []
+    for index, (patch, value) in enumerate(zip(patches, values)):
+        if not np.isfinite(value):
+            continue
+        error = float(upper_errors[index]) if index < len(upper_errors) else 0.0
+        top = float(patch.get_y() + patch.get_height()) + max(error, 0.0)
+        text = labels[index] if labels is not None else format_bar_value(value)
+        ax.annotate(
+            str(text),
+            (patch.get_x() + patch.get_width() / 2.0, top),
+            xytext=(0, padding),
+            textcoords="offset points",
+            ha="center",
+            va="bottom",
+            fontsize=fontsize,
+            rotation=rotation,
+            clip_on=False,
+        )
+        rendered_tops.append(top)
+    if rendered_tops:
+        ymin, ymax = ax.get_ylim()
+        span = max(ymax - ymin, 1e-9)
+        required = max(rendered_tops) + span * (0.13 if rotation else 0.08)
+        if required > ymax:
+            ax.set_ylim(ymin, required)
+
+
+def label_horizontal_bars(
+    ax: plt.Axes,
+    bars,
+    values,
+    errors=None,
+    *,
+    labels=None,
+    fontsize: float = 5.2,
+    padding: float = 2.5,
+) -> None:
+    """Print exact values to the right of horizontal bars/error caps."""
+    patches = list(getattr(bars, "patches", bars))
+    values = np.asarray(values, dtype=float)
+    if errors is None:
+        right_errors = np.zeros(len(values), dtype=float)
+    else:
+        error_array = np.asarray(errors, dtype=float)
+        right_errors = error_array if error_array.ndim == 1 else error_array[-1]
+        right_errors = np.nan_to_num(right_errors, nan=0.0, posinf=0.0, neginf=0.0)
+    rendered_tips = []
+    for index, (patch, value) in enumerate(zip(patches, values)):
+        if not np.isfinite(value):
+            continue
+        error = float(right_errors[index]) if index < len(right_errors) else 0.0
+        tip = float(patch.get_x() + patch.get_width()) + max(error, 0.0)
+        text = labels[index] if labels is not None else format_bar_value(value)
+        ax.annotate(
+            str(text),
+            (tip, patch.get_y() + patch.get_height() / 2.0),
+            xytext=(padding, 0),
+            textcoords="offset points",
+            ha="left",
+            va="center",
+            fontsize=fontsize,
+            clip_on=False,
+        )
+        rendered_tips.append(tip)
+    if rendered_tips:
+        xmin, xmax = ax.get_xlim()
+        span = max(xmax - xmin, 1e-9)
+        required = max(rendered_tips) + span * 0.08
+        if required > xmax:
+            ax.set_xlim(xmin, required)
+
+
 def mean_and_error(values: np.ndarray, kind: str = "sd") -> tuple[float, float, int]:
     """Return (mean, error, n) over finite values only. kind: sd | sem | ci95.
 

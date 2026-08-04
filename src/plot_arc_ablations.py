@@ -41,6 +41,7 @@ from plot_style import (
     colorblind_audit,
     jitter,
     label_panel,
+    label_vertical_bars,
     mean_and_error,
     savefig,
 )
@@ -276,12 +277,17 @@ def plot_dynamite(df: pd.DataFrame, out: Path, metric: str, err_kind: str = "sd"
             if not valid.any():
                 ax.remove()
                 continue
-            ax.bar(
+            ax.set_ylim(ymin, ymax)
+            bars = ax.bar(
                 x[valid], means_array[valid], width=.72,
                 yerr=errors_array[valid],
                 color=[MODEL_COLOR[model] for model, keep in zip(MODEL_ORDER, valid) if keep],
                 edgecolor="#111111", linewidth=.45,
                 error_kw=dict(elinewidth=.75, capsize=2, ecolor="#111111"),
+            )
+            label_vertical_bars(
+                ax, bars, means_array[valid], errors_array[valid],
+                fontsize=5.0, rotation=90,
             )
             for position, count in zip(x, counts):
                 _n_label(ax, position, count)
@@ -291,7 +297,6 @@ def plot_dynamite(df: pd.DataFrame, out: Path, metric: str, err_kind: str = "sd"
                 ax.set_ylabel(f"{VARIANT_LABEL[variant]}\n{METRIC_LABEL[metric]}", fontsize=6.7)
             if row == len(VARIANT_ORDER) - 1:
                 ax.set_xticks(x, MODEL_ORDER, rotation=30, ha="right", fontsize=6)
-            ax.set_ylim(ymin, ymax)
             label_panel(ax, chr(97 + panel))
             panel += 1
     fig.text(
