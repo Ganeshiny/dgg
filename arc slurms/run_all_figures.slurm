@@ -56,35 +56,72 @@ export MPLBACKEND=Agg
 export OMP_NUM_THREADS="${SLURM_CPUS_PER_TASK:-4}"
 export DGG_JOURNAL="${DGG_JOURNAL:-bmc}"
 
-required=("$ARCHIVE" "$BINCSV" "$TUNING/hybrid_search" "$PROJECT/plots/arc_tuning_cafa/trial_metrics.csv" "$SUPPORT" "$SPLIT/blast_te_vs_tr.tsv" "$METRICS" "$BOOTSTRAP")
-for f in "${required[@]}"; do [[ -e "$f" && ( -d "$f" || -s "$f" ) ]] || { echo "ERROR: missing figure input: $f" >&2; exit 2; }; done
+mkdir -p "$OUT/main_text" "$OUT/supplementary" "$OUT/supplementary_tables" "$OUT/supplementary_tuning" "$OUT/reviewer" "$OUT/benchmark"
 
+require_paths() {
+  local f; for f in "$@"; do
+    [[ -e "$f" && ( -d "$f" || -s "$f" ) ]] || { echo "ERROR: missing figure input: $f" >&2; return 2; }
+  done
+}
+
+main_required=("$ARCHIVE" "$BINCSV" "$SUPPORT")
+require_paths "${main_required[@]}"
+
+if [[ "${DGG_PREFLIGHT_ONLY:-0}" == 1 ]]; then
+  require_paths "$TUNING/hybrid_search" "$PROJECT/plots/arc_tuning_cafa/trial_metrics.csv" "$SPLIT/blast_te_vs_tr.tsv" "$METRICS" "$BOOTSTRAP"
+  python - "$METRICS" "$BOOTSTRAP" <<'PY'
+import sys, pandas as pd
+allowed={'deepgreengo','naive','blast','blast_max','diamond','diamond_max','foldseek','foldseek_max','deepfri_sequence','deepfri_structure','dpfunc','heal'}
+for name in sys.argv[1:]:
+    missing=allowed-set(pd.read_csv(name)['method'].dropna().astype(str))
+    if missing: raise SystemExit(f'ERROR: {name} missing requested comparisons: {sorted(missing)}')
+print('Complete figure preflight passed.')
+PY
+  exit 0
+fi
+
+echo 'Rendering main_text, supplementary, and supplementary_tables.'
+python src/make_figures.py --output-dir "$OUT" --ablations-root "$TUNING/ablations" --archive "$ARCHIVE" --bin-csv "$BINCSV" --logs-dir "$PROJECT/logs" --support-root "$SUPPORT"
+if require_paths "$TUNING/hybrid_search"; then
+  echo 'Rendering supplementary_tuning.'
+  python src/plot_arc_tuning.py --tuning-root "$TUNING" --output-dir "$OUT/supplementary_tuning"
+fi
+if require_paths "$PROJECT/plots/arc_tuning_cafa/trial_metrics.csv" "$SPLIT/blast_te_vs_tr.tsv"; then
+  echo 'Rendering reviewer figures.'
+  python src/plot_reviewer_figures.py --split-dir "$SPLIT" --trials-csv "$PROJECT/plots/arc_tuning_cafa/trial_metrics.csv" --ablation-csv "$ARCHIVE" --output-dir "$OUT/reviewer"
+fi
+
+require_paths "$METRICS" "$BOOTSTRAP"
 python - "$METRICS" "$BOOTSTRAP" <<'PY'
 import sys, pandas as pd
-allowed={'naive','blast','blast_max','diamond','diamond_max','foldseek','foldseek_max','deepfri_sequence','deepfri_structure','dpfunc','heal'}
+allowed={'deepgreengo','naive','blast','blast_max','diamond','diamond_max','foldseek','foldseek_max','deepfri_sequence','deepfri_structure','dpfunc','heal'}
 for name in sys.argv[1:]:
-    frame=pd.read_csv(name)
-    missing=allowed-set(frame['method'].dropna().astype(str))
-    if missing: raise SystemExit(f'ERROR: {name} missing requested baselines: {sorted(missing)}')
-print('Benchmark preflight passed: all requested baselines are present.')
+    missing=allowed-set(pd.read_csv(name)['method'].dropna().astype(str))
+    if missing: raise SystemExit(f'ERROR: {name} missing requested comparisons: {sorted(missing)}')
+print('Benchmark preflight passed: DeepGreenGO and every requested baseline are present.')
 PY
-[[ "${DGG_PREFLIGHT_ONLY:-0}" == 1 ]] && { echo 'Preflight only: passed.'; exit 0; }
-
-python src/make_figures.py --output-dir "$OUT" --ablations-root "$TUNING/ablations" --archive "$ARCHIVE" --bin-csv "$BINCSV" --logs-dir "$PROJECT/logs" --support-root "$SUPPORT"
-python src/plot_arc_tuning.py --tuning-root "$TUNING" --output-dir "$OUT/supplementary_tuning"
+echo 'Rendering DeepGreenGO versus requested baselines.'
 python src/plot_benchmark.py --workspace "$WORKSPACE" --output-dir "$OUT/benchmark"
-python src/plot_reviewer_figures.py --split-dir "$SPLIT" --trials-csv "$PROJECT/plots/arc_tuning_cafa/trial_metrics.csv" --ablation-csv "$ARCHIVE" --output-dir "$OUT/reviewer"
-
-expected=("$OUT/main_text/figure1_ablation_dynamite_micro_fmax.pdf" "$OUT/main_text/figure2_metric_family_micro_fmax_vs_micro_auroc.pdf" "$OUT/main_text/figure3_homology_micro_fmax.pdf" "$OUT/supplementary/figureS19_test_ic_macro_auroc.pdf" "$OUT/supplementary_tables/supp_table_ablation_seed_metrics.csv" "$OUT/supplementary_tuning/five_seed_validation_curves.pdf" "$OUT/benchmark/benchmark_metrics_plotted.csv" "$OUT/benchmark/benchmark_cafa_fmax.pdf" "$OUT/benchmark/benchmark_metric_grid.pdf" "$OUT/benchmark/benchmark_coverage_vs_fmax.pdf" "$OUT/benchmark/benchmark_bootstrap_boxplots.pdf" "$OUT/reviewer/figure_leakage_residual_identity.pdf")
-for f in "${expected[@]}"; do [[ -s "$f" ]] || { echo "ERROR: expected output missing: $f" >&2; exit 3; }; done
 
 python - "$OUT/benchmark/benchmark_metrics_plotted.csv" <<'PY'
 import sys, pandas as pd
-allowed={'naive','blast','blast_max','diamond','diamond_max','foldseek','foldseek_max','deepfri_sequence','deepfri_structure','dpfunc','heal'}
+allowed={'deepgreengo','naive','blast','blast_max','diamond','diamond_max','foldseek','foldseek_max','deepfri_sequence','deepfri_structure','dpfunc','heal'}
 actual=set(pd.read_csv(sys.argv[1])['method'].dropna().astype(str))
 if actual != allowed: raise SystemExit(f'ERROR: plotted benchmark methods differ: {sorted(actual)}')
-print('Verified baseline-only plotted metrics:', ', '.join(sorted(actual)))
+print('Verified locked comparison:', ', '.join(sorted(actual)))
 PY
-echo "All figure sets complete: $OUT"
-echo "PDF files: $(find "$OUT" -type f -name '*.pdf' | wc -l)"
-echo "CSV files: $(find "$OUT" -type f -name '*.csv' | wc -l)"
+
+require_count() {
+  local dir="$1" pattern="$2" minimum="$3" label="$4" count
+  count="$(find "$dir" -maxdepth 1 -type f -name "$pattern" | wc -l)"
+  (( count >= minimum )) || { echo "ERROR: $label incomplete: $count files, expected at least $minimum" >&2; exit 3; }
+  echo "verified $label: $count files"
+}
+require_count "$OUT/main_text" '*.pdf' 3 main_text
+require_count "$OUT/supplementary" '*.pdf' 19 supplementary
+require_count "$OUT/supplementary_tables" '*.csv' 10 supplementary_tables
+require_count "$OUT/supplementary_tuning" '*.pdf' 6 supplementary_tuning
+require_count "$OUT/reviewer" '*.pdf' 2 reviewer
+require_count "$OUT/benchmark" '*.pdf' 4 benchmark
+require_paths "$OUT/main_text/figure1_ablation_dynamite_micro_fmax.pdf" "$OUT/benchmark/benchmark_metrics_plotted.csv"
+echo "Entire figures folder complete: $OUT"

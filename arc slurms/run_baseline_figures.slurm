@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Render only the locked baseline comparison into plots/figures/benchmark.
+# Render DeepGreenGO versus the locked baseline set into plots/figures/benchmark.
 # Submit from anywhere inside the repository:
 #   sbatch "arc slurms/run_baseline_figures.slurm"
 
@@ -64,4 +64,4 @@ python src/plot_benchmark.py \
     --workspace "${WORKSPACE}" \
     --output-dir "${OUTPUT_DIR}"
 
-echo "Baseline-only figures complete: ${OUTPUT_DIR}"
+echo "Locked DeepGreenGO comparison figures complete: ${OUTPUT_DIR}"

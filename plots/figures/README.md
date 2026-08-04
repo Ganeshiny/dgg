@@ -4,26 +4,24 @@ This directory is present in every clone so local and ARC runs use the same
 output location. Rendered figures are intentionally ignored by Git because
 PDF/PNG/TIFF files are generated artifacts and cause binary merge conflicts.
 
-On ARC, generate the restricted benchmark first and then rebuild the complete
-figure tree. Exporting the checkout path makes submission independent of the
-directory from which `sbatch` is invoked:
+The full ARC benchmark job now rebuilds the entire `plots/figures` tree after
+evaluation: `main_text`, `supplementary`, `supplementary_tables`,
+`supplementary_tuning`, `reviewer`, and `benchmark`. Submit it from any
+directory by exporting the checkout path:
 
 ```bash
 export DGG_PROJECT_ROOT="$PWD"
-BENCH_JOB=$(sbatch --parsable \
-  --export=ALL,DGG_PROJECT_ROOT="$DGG_PROJECT_ROOT" \
-  "arc slurms/run_full_benchmark.slurm")
-sbatch --dependency="afterok:${BENCH_JOB}" \
-  --export=ALL,DGG_PROJECT_ROOT="$DGG_PROJECT_ROOT" \
-  "arc slurms/run_all_figures.slurm"
+sbatch --export=ALL,DGG_PROJECT_ROOT="$DGG_PROJECT_ROOT" \
+  "arc slurms/run_full_benchmark.slurm"
 ```
 
-If complete benchmark CSV files already exist, submit only:
+If all benchmark results already exist and only figures need regeneration:
 
 ```bash
 sbatch --export=ALL,DGG_PROJECT_ROOT="$PWD" \
   "arc slurms/run_all_figures.slurm"
 ```
 
-`run_baseline_figures.slurm` remains available when only the four benchmark
-plots need to be refreshed.
+The figure job verifies at least 3 main-text PDFs, 19 supplementary PDFs,
+10 supplementary-table CSVs, 6 tuning PDFs, 2 reviewer PDFs, and 4 benchmark
+PDFs before reporting success.

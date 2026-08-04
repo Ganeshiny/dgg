@@ -39,11 +39,11 @@ TUNING_ROOT="${DGG_TUNING_ROOT:-${PROJECT_DIR}/arc_tuning_cafa}"
 GRAPH_ROOT="${DGG_GRAPH_ROOT:-${PROJECT_DIR}/arc_tuning/graphs_protbert}"
 CHECKPOINT_ROOT="${DGG_CHECKPOINT_ROOT:-${TUNING_ROOT}/five_seed_hybrid}"
 BENCHMARK_ROOT="${DGG_BENCHMARK_ROOT:-${PROJECT_DIR}/arc_benchmark/nominal_30_identity_80_coverage}"
-# Baseline-only benchmark requested for the manuscript comparison. The search
+# Locked comparison: DeepGreenGO plus only the requested baselines. The search
 # methods emit both top-10 and maximum-identity variants. InterProScan still
 # runs internally when DPFunc needs its features, but is not itself evaluated.
 # Override DGG_BENCHMARK_METHODS only for a deliberate diagnostic run.
-METHODS="${DGG_BENCHMARK_METHODS:-naive,blast,diamond,foldseek,deepfri_sequence,deepfri_structure,dpfunc,heal}"
+METHODS="${DGG_BENCHMARK_METHODS:-hybrid,naive,blast,diamond,foldseek,deepfri_sequence,deepfri_structure,dpfunc,heal}"
 # Strict by default: a requested comparator must pass preflight before any
 # expensive stage starts. Set to 1 only for an intentionally incomplete run.
 SKIP_UNAVAILABLE="${DGG_BENCHMARK_SKIP_UNAVAILABLE:-0}"
@@ -969,11 +969,10 @@ run_stratified_analysis() {
 }
 
 run_comparison_figures() {
-    # Write only the locked baseline manuscript bundle. The older comparison
-    # renderer requires DeepGreenGO and accepts methods excluded from this run.
-    conda_run "${BASE_ENV}" python "${PROJECT_DIR}/src/plot_benchmark.py" \
-        --workspace "${BENCHMARK_ROOT}" \
-        --output-dir "${PROJECT_DIR}/plots/figures/benchmark"
+    # Rebuild the entire plots/figures tree after benchmark evaluation.
+    DGG_PROJECT_ROOT="${PROJECT_DIR}" \
+    DGG_BENCHMARK_ROOT="${BENCHMARK_ROOT}" \
+        bash "${PROJECT_DIR}/arc slurms/run_all_figures.slurm"
 }
 
 echo "Project: ${PROJECT_DIR}"
@@ -1006,7 +1005,7 @@ if [[ "${SKIP_EVALUATION}" == "1" ]]; then
     echo "run this script once more without that flag to score every method together."
 else
     run_evaluation
-    run_comparison_figures
     run_stratified_analysis
+    run_comparison_figures
 fi
 echo "Benchmark completed: ${BENCHMARK_ROOT}"

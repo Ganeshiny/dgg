@@ -1,8 +1,9 @@
-# Baseline benchmark figures
+# DeepGreenGO benchmark-comparison figures
 
-`src/plot_benchmark.py` writes the baseline-only benchmark figures and its
-filtered `benchmark_metrics_plotted.csv` here. The allowed methods are:
+`src/plot_benchmark.py` writes the locked comparison figures and filtered
+`benchmark_metrics_plotted.csv` here. The retained methods are:
 
+- DeepGreenGO (this work)
 - CAFA naive
 - BLAST (top-10 and maximum-identity transfer)
 - DIAMOND (top-10 and maximum-identity transfer)
@@ -11,6 +12,7 @@ filtered `benchmark_metrics_plotted.csv` here. The allowed methods are:
 - DPFunc
 - HEAL
 
-DeepGreenGO, DeepGO-SE, DeepGOPlus, InterProScan, GAT-GO, SPROF-GO, and every
-other method are excluded from these outputs even if their results exist in
-the benchmark workspace.
+DeepGO-SE, DeepGOPlus, InterProScan, GAT-GO, SPROF-GO, and every other method
+are excluded even if stale results exist in the benchmark workspace.
+InterProScan may run internally to create DPFunc features, but it is not
+evaluated or plotted as a method.

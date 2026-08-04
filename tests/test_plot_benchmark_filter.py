@@ -13,16 +13,16 @@ import plot_benchmark as plot  # noqa: E402
 
 
 class BaselineOnlyFilterTests(unittest.TestCase):
-    def test_allowlist_is_exact_and_excludes_proposed_and_removed_methods(self):
+    def test_allowlist_is_exact_and_excludes_unrequested_methods(self):
         self.assertEqual(
             plot.METHOD_ORDER,
             [
-                "naive", "blast", "blast_max", "diamond", "diamond_max",
+                "deepgreengo", "naive", "blast", "blast_max", "diamond", "diamond_max",
                 "foldseek", "foldseek_max", "deepfri_sequence",
                 "deepfri_structure", "dpfunc", "heal",
             ],
         )
-        self.assertNotIn("deepgreengo", plot.REQUESTED_METHODS)
+        self.assertIn("deepgreengo", plot.REQUESTED_METHODS)
         self.assertTrue(
             {"deepgose", "deepgoplus", "interproscan", "gat_go", "sprof_go"}
             .isdisjoint(plot.REQUESTED_METHODS)
@@ -33,7 +33,7 @@ class BaselineOnlyFilterTests(unittest.TestCase):
             {"method": ["naive", "deepgreengo", "dpfunc", "interproscan"], "value": range(4)}
         )
         selected = plot.select_requested_methods(frame)
-        self.assertEqual(selected["method"].tolist(), ["naive", "dpfunc"])
+        self.assertEqual(selected["method"].tolist(), ["naive", "deepgreengo", "dpfunc"])
 
     def test_every_allowed_method_has_a_label_and_family(self):
         self.assertTrue(plot.REQUESTED_METHODS <= plot.METHOD_LABEL.keys())

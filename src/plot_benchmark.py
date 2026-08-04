@@ -46,13 +46,14 @@ from plot_style import (
     savefig,
 )
 
-# This is both the display order and the baseline-only allowlist. Keep the two
-# transfer summaries for each search method and both DeepFRI modes.
-METHOD_ORDER = ["naive", "blast", "blast_max", "diamond", "diamond_max",
+# This is both the display order and the locked comparison allowlist. Retain
+# DeepGreenGO as the focal model, plus only the requested baseline methods.
+METHOD_ORDER = ["deepgreengo", "naive", "blast", "blast_max", "diamond", "diamond_max",
                 "foldseek", "foldseek_max", "deepfri_sequence",
                 "deepfri_structure", "dpfunc", "heal"]
 REQUESTED_METHODS = frozenset(METHOD_ORDER)
 METHOD_LABEL = {
+    "deepgreengo": "DeepGreenGO (this work)",
     "naive": "CAFA naive",
     "blast": "BLAST (top-10)", "blast_max": "BLAST (max ident.)",
     "diamond": "DIAMOND (top-10)", "diamond_max": "DIAMOND (max ident.)",
@@ -64,6 +65,7 @@ METHOD_LABEL = {
 # Family colour: one hue per evidence type, so the comparison reads as
 # frequency vs homology transfer vs external deep-learning baselines.
 METHOD_FAMILY = {
+    "deepgreengo": "proposed",
     "naive": "frequency",
     "blast": "sequence", "blast_max": "sequence",
     "diamond": "sequence", "diamond_max": "sequence",
@@ -72,15 +74,17 @@ METHOD_FAMILY = {
     "dpfunc": "deep_learning", "heal": "deep_learning",
 }
 FAMILY_COLOR = {
+    "proposed": CATEGORICAL_PALETTE[1],   # orange
     "frequency": CATEGORICAL_PALETTE[2],  # yellow
     "sequence": CATEGORICAL_PALETTE[0],   # blue
     "structure": CATEGORICAL_PALETTE[4],  # violet
     "deep_learning": CATEGORICAL_PALETTE[3],  # green
 }
-FAMILY_LABEL = {"frequency": "CAFA frequency prior",
+FAMILY_LABEL = {"proposed": "DeepGreenGO (this work)",
+                "frequency": "CAFA frequency prior",
                 "sequence": "Sequence homology", "structure": "Structure homology",
                 "deep_learning": "External deep learning"}
-FAMILY_ORDER = ("frequency", "sequence", "structure", "deep_learning")
+FAMILY_ORDER = ("proposed", "frequency", "sequence", "structure", "deep_learning")
 
 METRICS = {
     "cafa_fmax": ("CAFA F$_{max}$", True),
@@ -100,7 +104,7 @@ def load(workspace: Path):
 
 
 def select_requested_methods(frame: pd.DataFrame | None) -> pd.DataFrame | None:
-    """Return only the locked baseline set, preserving the input row order."""
+    """Return only DeepGreenGO and the locked baselines, preserving row order."""
     if frame is None:
         return None
     if "method" not in frame.columns:
@@ -374,7 +378,7 @@ def main() -> None:
     ap.add_argument("--tier", choices=["main", "supplementary"], default="main")
     ap.add_argument(
         "--allow-missing", action="store_true",
-        help="Render requested baselines that are present instead of failing if any are missing.",
+        help="Render requested comparison methods that are present instead of failing if any are missing.",
     )
     args = ap.parse_args()
 
@@ -390,22 +394,22 @@ def main() -> None:
     missing = [method for method in METHOD_ORDER if method not in available]
     if missing and not args.allow_missing:
         raise SystemExit(
-            "Requested baseline results are missing from results/benchmark_metrics.csv: "
+            "Requested comparison results are missing from results/benchmark_metrics.csv: "
             + ", ".join(missing)
             + ". Complete/evaluate those baselines on ARC, or use --allow-missing "
               "for a partial diagnostic render."
         )
     if missing:
-        print("WARNING: partial baseline render; missing: " + ", ".join(missing))
+        print("WARNING: partial comparison render; missing: " + ", ".join(missing))
     removed = sorted(available - REQUESTED_METHODS)
     if removed:
-        print("Baseline-only filter removed: " + ", ".join(removed))
+        print("Locked comparison filter removed: " + ", ".join(removed))
     metrics = select_requested_methods(metrics)
     if audit is not None and "method" in audit.columns:
         audit = select_requested_methods(audit)
     bootstrap = select_requested_methods(bootstrap)
     if metrics.empty:
-        raise SystemExit("None of the requested baseline methods are present in benchmark_metrics.csv")
+        raise SystemExit("None of the requested comparison methods are present in benchmark_metrics.csv")
     invalid = detect_invalid(metrics, workspace)
     if invalid:
         print("\nINTEGRITY: methods excluded from scoring")
