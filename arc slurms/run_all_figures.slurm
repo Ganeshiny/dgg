@@ -99,6 +99,8 @@ fi
 
 echo 'Rendering main_text, supplementary, and supplementary_tables.'
 python src/make_figures.py --output-dir "$OUT" --ablations-root "$TUNING/ablations" --archive "$ARCHIVE" --bin-csv "$BINCSV" --logs-dir "$PROJECT/logs" --support-root "$SUPPORT"
+echo 'Rendering compact BMC ablation result grids.'
+python src/plot_ablation_summary_grids.py --ablation-csv "$ARCHIVE" --bin-csv "$BINCSV" --manifest "$ABLATION_MANIFEST" --output-dir "$OUT/ablation_grids"
 if require_paths "$TUNING/hybrid_search"; then
   echo 'Rendering supplementary_tuning.'
   python src/plot_arc_tuning.py --tuning-root "$TUNING" --output-dir "$OUT/supplementary_tuning"
@@ -145,6 +147,10 @@ require_count "$OUT/supplementary" '*.svg' 35 supplementary_svg
 require_count "$OUT/supplementary" '*.png' 35 supplementary_png
 require_count "$OUT/supplementary" '*.tiff' 35 supplementary_tiff
 require_count "$OUT/supplementary_tables" '*.csv' 10 supplementary_tables
+require_count "$OUT/ablation_grids" '*.png' 2 ablation_grids_png
+require_count "$OUT/ablation_grids" '*.svg' 2 ablation_grids_svg
+require_count "$OUT/ablation_grids" '*.tiff' 2 ablation_grids_tiff
+require_count "$OUT/ablation_grids" '*.csv' 2 ablation_grid_tables
 require_count "$OUT/supplementary_tuning" '*.pdf' 6 supplementary_tuning
 require_count "$OUT/reviewer" '*.pdf' 2 reviewer
 require_count "$OUT/benchmark" '*.pdf' 27 benchmark

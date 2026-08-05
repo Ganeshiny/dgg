@@ -61,6 +61,16 @@ class CompleteFigureScriptContractTests(unittest.TestCase):
         self.assertNotIn('metric != "Smin"', bin_plotter)
         self.assertIn('"Smin": "S$_{min}^{freq}$"', (PROJECT / "src" / "plot_style.py").read_text())
         self.assertIn('"Smin_freq"', bin_plotter)
+        grid_plotter = (PROJECT / "src" / "plot_ablation_summary_grids.py").read_text()
+        self.assertIn("plot_ablation_summary_grids.py", figure_script)
+        self.assertIn('KEY_METRICS = ("Micro_Fmax", "Micro_AUPRC", "Macro_AUPRC")', grid_plotter)
+        self.assertIn('BIN_MODELS = ("Hybrid", "Hybrid_JK")', grid_plotter)
+        self.assertIn('"--allow-unverified-auprc"', grid_plotter)
+        for suffix in ("png", "svg", "tiff"):
+            self.assertIn(
+                f'''require_count "$OUT/ablation_grids" '*.{suffix}' 2''',
+                figure_script,
+            )
         for suffix in ("svg", "png", "tiff"):
             self.assertIn(
                 f'''require_count "$OUT/supplementary" '*.{suffix}' 35''',
