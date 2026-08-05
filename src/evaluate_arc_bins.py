@@ -27,6 +27,7 @@ from src.arc_dataset import ArcGraphDataset, make_dataloader
 from src.evals import compute_ic, evaluate_all
 from src.train_arc_ablation import build, transform
 from scripts.pickle_compat import load_pickle_compat
+from scripts.graph_cache_compat import resolve_complete_graph_cache
 
 ONTOLOGIES = ("molecular_function", "biological_process", "cellular_component")
 
@@ -58,9 +59,37 @@ def load_dataset(path: Path, graph_root: Path, split: str):
         dataset = load_pickle_compat(handle)
     if not isinstance(dataset, ArcGraphDataset) or dataset.split != split:
         raise RuntimeError(f"Unexpected ARC dataset: {path}")
-    dataset.graph_dir = str(graph_root.resolve())
-    return dataset
 
+    embedded_root = getattr(dataset, "graph_dir", None)
+    data_root = Path(os.environ.get(
+        "DGG_DATA_ROOT",
+        PROJECT_DIR / "preprocessing" / "data_arc_rebuild_2026_07_14",
+    ))
+    resolved_root = resolve_complete_graph_cache(
+        dataset.protein_ids,
+        [
+            ("requested DGG_GRAPH_ROOT", graph_root),
+            ("dataset pickle", embedded_root),
+            ("ablation-training cache", PROJECT_DIR / "arc_tuning" / "graphs_protbert"),
+            ("dataset-rebuild cache", data_root / "arc_tuning" / "graphs_protbert"),
+            ("legacy tuning cache", path.parent.parent / "graphs_protbert"),
+        ],
+    )
+    requested_root = graph_root.expanduser().resolve()
+    if resolved_root != requested_root:
+        print(
+            f"Graph-cache fallback for {dataset.ontology}/{split}: "
+            f"{requested_root} -> {resolved_root}",
+            flush=True,
+        )
+    else:
+        print(
+            f"Verified graph cache for {dataset.ontology}/{split}: "
+            f"{resolved_root} ({len(dataset.protein_ids)} proteins)",
+            flush=True,
+        )
+    dataset.graph_dir = str(resolved_root)
+    return dataset
 
 
 def ensure_validation_homology(path: Path, data_root: Path, blastp: str, threads: int) -> Path:
@@ -179,7 +208,7 @@ def main():
         "DGG_TUNING_ROOT", PROJECT_DIR / "arc_tuning_cafa"
     )).expanduser().resolve()
     graph_root = Path(args.graph_root or os.environ.get(
-        "DGG_GRAPH_ROOT", PROJECT_DIR / "arc_tuning_cafa" / "graphs_protbert"
+        "DGG_GRAPH_ROOT", PROJECT_DIR / "arc_tuning" / "graphs_protbert"
     )).expanduser().resolve()
     ablations_root = Path(args.ablations_root or tuning_root / "ablations" /
                           "nominal_30_identity_80_coverage").expanduser().resolve()

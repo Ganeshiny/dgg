@@ -15,7 +15,7 @@ set -euo pipefail
 PROJECT_DIR="${DGG_PROJECT_ROOT:-/home/ganeshiny.sridharan/dgg/deep-green-GO}"
 DATA_ROOT="${DGG_DATA_ROOT:-${PROJECT_DIR}/preprocessing/data_arc_rebuild_2026_07_14}"
 TUNING_ROOT="${DGG_TUNING_ROOT:-${PROJECT_DIR}/arc_tuning_cafa}"
-GRAPH_ROOT="${DGG_GRAPH_ROOT:-${PROJECT_DIR}/arc_tuning_cafa/graphs_protbert}"
+GRAPH_ROOT="${DGG_GRAPH_ROOT:-${PROJECT_DIR}/arc_tuning/graphs_protbert}"
 SPLIT_LABEL="${DGG_SPLIT_LABEL:-nominal_30_identity_80_coverage}"
 ABLATIONS_ROOT="${DGG_ABLATIONS_ROOT:-${TUNING_ROOT}/ablations/${SPLIT_LABEL}}"
 OUTPUT_DIR="${DGG_BIN_OUTPUT:-${PROJECT_DIR}/plots/arc_tuning_cafa/bin_evaluation}"
@@ -23,11 +23,15 @@ OVERALL_OUTPUT="${DGG_ABLATION_ARCHIVE:-${PROJECT_DIR}/plots/arc_tuning_cafa/abl
 
 cd "${PROJECT_DIR}"
 mkdir -p "${PROJECT_DIR}/logs" "${OUTPUT_DIR}"
+echo "ARC bin evaluation job: ${SLURM_JOB_ID:-interactive}"
+echo "Requested graph cache: ${GRAPH_ROOT}"
+echo "Slurm stdout: ${PROJECT_DIR}/logs/arc_bin_eval_${SLURM_JOB_ID:-interactive}.out"
+echo "Slurm stderr: ${PROJECT_DIR}/logs/arc_bin_eval_${SLURM_JOB_ID:-interactive}.err"
 set +u
 source "$(conda info --base)/etc/profile.d/conda.sh"
 conda activate "${DGG_CONDA_ENV:-deepgreengo}"
 set -u
-export PYTHONUNBUFFERED=1 OMP_NUM_THREADS="${SLURM_CPUS_PER_TASK}" DGG_GRAPH_ROOT="${GRAPH_ROOT}"
+export PYTHONUNBUFFERED=1 OMP_NUM_THREADS="${SLURM_CPUS_PER_TASK}" DGG_GRAPH_ROOT="${GRAPH_ROOT}" DGG_DATA_ROOT="${DATA_ROOT}" DGG_TUNING_ROOT="${TUNING_ROOT}"
 
 python3 src/evaluate_arc_bins.py \
   --data-root "${DATA_ROOT}" --tuning-root "${TUNING_ROOT}" \
