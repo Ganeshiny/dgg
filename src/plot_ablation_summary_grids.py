@@ -80,6 +80,12 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Render an explicitly watermarked draft when the corrected manifest is absent.",
     )
+    parser.add_argument(
+        "--grid",
+        choices=("both", "metrics", "bins"),
+        default="both",
+        help="Render both grids, only the AUPRC/Fmax metrics grid, or only the Fmax bin grid.",
+    )
     return parser.parse_args()
 
 
@@ -500,17 +506,25 @@ def plot_bin_grid(
 def main() -> None:
     args = parse_args()
     manifest = args.manifest or args.ablation_csv.with_suffix(".manifest.json")
-    verified, reason = validate_provenance(manifest, args.allow_unverified_auprc)
+    needs_metrics = args.grid in {"both", "metrics"}
+    if needs_metrics:
+        verified, reason = validate_provenance(manifest, args.allow_unverified_auprc)
+    else:
+        # This grid uses only Micro-Fmax, whose definition was not affected by
+        # the archived AUPRC estimator, so an existing bin CSV is sufficient.
+        verified, reason = True, ""
     output_dir = args.output_dir
-    if not verified:
+    if needs_metrics and not verified:
         output_dir = output_dir / "draft_unverified"
     output_dir.mkdir(parents=True, exist_ok=True)
 
     assert_palette_locked()
-    archive = pd.read_csv(args.ablation_csv)
-    bins = pd.read_csv(args.bin_csv)
-    plot_key_metrics(archive, output_dir, verified, reason)
-    plot_bin_grid(bins, output_dir, verified, reason)
+    if needs_metrics:
+        archive = pd.read_csv(args.ablation_csv)
+        plot_key_metrics(archive, output_dir, verified, reason)
+    if args.grid in {"both", "bins"}:
+        bins = pd.read_csv(args.bin_csv)
+        plot_bin_grid(bins, output_dir, True, "")
     print(f"Wrote BMC ablation grids to {output_dir}")
 
 

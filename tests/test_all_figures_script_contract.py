@@ -70,6 +70,9 @@ class CompleteFigureScriptContractTests(unittest.TestCase):
         self.assertIn('KEY_METRICS = ("Micro_Fmax", "Micro_AUPRC", "Macro_AUPRC")', grid_plotter)
         self.assertIn('BIN_MODELS = ("Hybrid", "Hybrid_JK")', grid_plotter)
         self.assertIn('"--allow-unverified-auprc"', grid_plotter)
+        self.assertIn('"--grid"', grid_plotter)
+        self.assertIn('choices=("both", "metrics", "bins")', grid_plotter)
+        self.assertIn('verified, reason = True, ""', grid_plotter)
         for suffix in ("png", "svg", "tiff"):
             self.assertIn(
                 f'''require_count "$OUT/ablation_grids" '*.{suffix}' 2''',
