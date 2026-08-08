@@ -1,0 +1,28 @@
+name: mf
+mlb: ./mlb/mf_go.mlb
+results: ./results
+
+base:
+  interpro_whole: ./data/interpro/{}.pkl
+
+train:
+  name: train
+  pid_list_file: ./data/mf_test_used_pid_list.pkl
+  pid_go_file: ./data/mf_test_go.txt
+  pid_pdb_file: ./data/graph_features/mf_test_whole_pdb_part{}.pkl
+  train_file_count: 1
+  interpro_file: ./data/mf_test_interpro.pkl
+
+valid:
+  name: valid
+  pid_list_file: ./data/mf_test_used_pid_list.pkl
+  pid_go_file: ./data/mf_test_go.txt
+  pid_pdb_file: ./data/graph_features/mf_test_whole_pdb_part0.pkl
+  interpro_file: ./data/mf_test_interpro.pkl
+
+test:
+  name: test
+  pid_list_file: ./data/mf_test_used_pid_list.pkl
+  pid_go_file: ./data/mf_test_go.txt
+  pid_pdb_file: ./data/graph_features/mf_test_whole_pdb_part0.pkl
+  interpro_file: ./data/mf_test_interpro.pkl

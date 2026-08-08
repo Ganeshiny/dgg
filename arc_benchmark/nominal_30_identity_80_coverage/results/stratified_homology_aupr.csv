@@ -1,0 +1,181 @@
+ontology,method,bin,bin_unit,bin_n,below_min_bin_size,value,seed_mean,seed_sd,seed_n
+molecular_function,deepgreengo,no hit,proteins,612,False,0.199399,0.194358,0.051663,5
+molecular_function,deepgreengo,<30%,proteins,26,False,0.216999,0.178439,0.065106,5
+molecular_function,deepgreengo,30-40%,proteins,80,False,0.715152,0.746578,0.039378,5
+molecular_function,deepgreengo,40-60%,proteins,5,False,0.339859,0.345361,0.047296,5
+molecular_function,deepgreengo,>=60%,proteins,31,False,0.290006,0.488792,0.324662,5
+molecular_function,naive,no hit,proteins,612,False,0.148858,,,0
+molecular_function,naive,<30%,proteins,26,False,0.356616,,,0
+molecular_function,naive,30-40%,proteins,80,False,0.164332,,,0
+molecular_function,naive,40-60%,proteins,5,False,0.715046,,,0
+molecular_function,naive,>=60%,proteins,31,False,0.397015,,,0
+molecular_function,blast,no hit,proteins,612,False,0.037438,,,0
+molecular_function,blast,<30%,proteins,26,False,0.041993,,,0
+molecular_function,blast,30-40%,proteins,80,False,0.705254,,,0
+molecular_function,blast,40-60%,proteins,5,False,0.164406,,,0
+molecular_function,blast,>=60%,proteins,31,False,0.389671,,,0
+molecular_function,blast_max,no hit,proteins,612,False,0.032164,,,0
+molecular_function,blast_max,<30%,proteins,26,False,0.111491,,,0
+molecular_function,blast_max,30-40%,proteins,80,False,0.666982,,,0
+molecular_function,blast_max,40-60%,proteins,5,False,0.164406,,,0
+molecular_function,blast_max,>=60%,proteins,31,False,0.374583,,,0
+molecular_function,diamond,no hit,proteins,612,False,0.016269,,,0
+molecular_function,diamond,<30%,proteins,26,False,0.012421,,,0
+molecular_function,diamond,30-40%,proteins,80,False,0.693586,,,0
+molecular_function,diamond,40-60%,proteins,5,False,0.002662,,,0
+molecular_function,diamond,>=60%,proteins,31,False,0.352716,,,0
+molecular_function,diamond_max,no hit,proteins,612,False,0.01803,,,0
+molecular_function,diamond_max,<30%,proteins,26,False,0.029796,,,0
+molecular_function,diamond_max,30-40%,proteins,80,False,0.716472,,,0
+molecular_function,diamond_max,40-60%,proteins,5,False,0.002662,,,0
+molecular_function,diamond_max,>=60%,proteins,31,False,0.352716,,,0
+molecular_function,foldseek,no hit,proteins,612,False,0.074982,,,0
+molecular_function,foldseek,<30%,proteins,26,False,0.066764,,,0
+molecular_function,foldseek,30-40%,proteins,80,False,0.696103,,,0
+molecular_function,foldseek,40-60%,proteins,5,False,0.572569,,,0
+molecular_function,foldseek,>=60%,proteins,31,False,0.374759,,,0
+molecular_function,foldseek_max,no hit,proteins,612,False,0.079028,,,0
+molecular_function,foldseek_max,<30%,proteins,26,False,0.088137,,,0
+molecular_function,foldseek_max,30-40%,proteins,80,False,0.716976,,,0
+molecular_function,foldseek_max,40-60%,proteins,5,False,0.460664,,,0
+molecular_function,foldseek_max,>=60%,proteins,31,False,0.366301,,,0
+molecular_function,deepfri_sequence,no hit,proteins,612,False,0.120756,,,0
+molecular_function,deepfri_sequence,<30%,proteins,26,False,0.148877,,,0
+molecular_function,deepfri_sequence,30-40%,proteins,80,False,0.077295,,,0
+molecular_function,deepfri_sequence,40-60%,proteins,5,False,0.129242,,,0
+molecular_function,deepfri_sequence,>=60%,proteins,31,False,0.036199,,,0
+molecular_function,deepfri_structure,no hit,proteins,612,False,0.262132,,,0
+molecular_function,deepfri_structure,<30%,proteins,26,False,0.184607,,,0
+molecular_function,deepfri_structure,30-40%,proteins,80,False,0.704878,,,0
+molecular_function,deepfri_structure,40-60%,proteins,5,False,0.132434,,,0
+molecular_function,deepfri_structure,>=60%,proteins,31,False,0.080703,,,0
+molecular_function,dpfunc,no hit,proteins,612,False,0.080304,,,0
+molecular_function,dpfunc,<30%,proteins,26,False,0.239572,,,0
+molecular_function,dpfunc,30-40%,proteins,80,False,0.059801,,,0
+molecular_function,dpfunc,40-60%,proteins,5,False,0.51863,,,0
+molecular_function,dpfunc,>=60%,proteins,31,False,0.288409,,,0
+molecular_function,heal,no hit,proteins,612,False,0.287936,,,0
+molecular_function,heal,<30%,proteins,26,False,0.285933,,,0
+molecular_function,heal,30-40%,proteins,80,False,0.778492,,,0
+molecular_function,heal,40-60%,proteins,5,False,0.131314,,,0
+molecular_function,heal,>=60%,proteins,31,False,0.053847,,,0
+biological_process,deepgreengo,no hit,proteins,612,False,0.114061,0.108458,0.012133,5
+biological_process,deepgreengo,<30%,proteins,26,False,0.10727,0.123372,0.045062,5
+biological_process,deepgreengo,30-40%,proteins,80,False,0.207021,0.199343,0.046096,5
+biological_process,deepgreengo,40-60%,proteins,5,False,0.026444,0.068669,0.062311,5
+biological_process,deepgreengo,>=60%,proteins,31,False,0.877081,0.673309,0.095423,5
+biological_process,naive,no hit,proteins,612,False,0.086653,,,0
+biological_process,naive,<30%,proteins,26,False,0.120286,,,0
+biological_process,naive,30-40%,proteins,80,False,0.264543,,,0
+biological_process,naive,40-60%,proteins,5,False,0.017112,,,0
+biological_process,naive,>=60%,proteins,31,False,0.18806,,,0
+biological_process,blast,no hit,proteins,612,False,0.025064,,,0
+biological_process,blast,<30%,proteins,26,False,0.014896,,,0
+biological_process,blast,30-40%,proteins,80,False,0.115698,,,0
+biological_process,blast,40-60%,proteins,5,False,0.000821,,,0
+biological_process,blast,>=60%,proteins,31,False,0.315447,,,0
+biological_process,blast_max,no hit,proteins,612,False,0.020955,,,0
+biological_process,blast_max,<30%,proteins,26,False,0.014896,,,0
+biological_process,blast_max,30-40%,proteins,80,False,0.092251,,,0
+biological_process,blast_max,40-60%,proteins,5,False,0.000821,,,0
+biological_process,blast_max,>=60%,proteins,31,False,0.311581,,,0
+biological_process,diamond,no hit,proteins,612,False,0.017837,,,0
+biological_process,diamond,<30%,proteins,26,False,0.014115,,,0
+biological_process,diamond,30-40%,proteins,80,False,0.105803,,,0
+biological_process,diamond,40-60%,proteins,5,False,0.000821,,,0
+biological_process,diamond,>=60%,proteins,31,False,0.309726,,,0
+biological_process,diamond_max,no hit,proteins,612,False,0.017361,,,0
+biological_process,diamond_max,<30%,proteins,26,False,0.014115,,,0
+biological_process,diamond_max,30-40%,proteins,80,False,0.134804,,,0
+biological_process,diamond_max,40-60%,proteins,5,False,0.000821,,,0
+biological_process,diamond_max,>=60%,proteins,31,False,0.309726,,,0
+biological_process,foldseek,no hit,proteins,612,False,0.019638,,,0
+biological_process,foldseek,<30%,proteins,26,False,0.01462,,,0
+biological_process,foldseek,30-40%,proteins,80,False,0.105803,,,0
+biological_process,foldseek,40-60%,proteins,5,False,0.000821,,,0
+biological_process,foldseek,>=60%,proteins,31,False,0.306571,,,0
+biological_process,foldseek_max,no hit,proteins,612,False,0.023779,,,0
+biological_process,foldseek_max,<30%,proteins,26,False,0.014896,,,0
+biological_process,foldseek_max,30-40%,proteins,80,False,0.114539,,,0
+biological_process,foldseek_max,40-60%,proteins,5,False,0.000821,,,0
+biological_process,foldseek_max,>=60%,proteins,31,False,0.312508,,,0
+biological_process,deepfri_sequence,no hit,proteins,612,False,0.124769,,,0
+biological_process,deepfri_sequence,<30%,proteins,26,False,0.051191,,,0
+biological_process,deepfri_sequence,30-40%,proteins,80,False,0.112172,,,0
+biological_process,deepfri_sequence,40-60%,proteins,5,False,0.020308,,,0
+biological_process,deepfri_sequence,>=60%,proteins,31,False,0.075544,,,0
+biological_process,deepfri_structure,no hit,proteins,612,False,0.152172,,,0
+biological_process,deepfri_structure,<30%,proteins,26,False,0.055307,,,0
+biological_process,deepfri_structure,30-40%,proteins,80,False,0.275874,,,0
+biological_process,deepfri_structure,40-60%,proteins,5,False,0.072843,,,0
+biological_process,deepfri_structure,>=60%,proteins,31,False,0.226019,,,0
+biological_process,dpfunc,no hit,proteins,612,False,0.087802,,,0
+biological_process,dpfunc,<30%,proteins,26,False,0.0719,,,0
+biological_process,dpfunc,30-40%,proteins,80,False,0.154329,,,0
+biological_process,dpfunc,40-60%,proteins,5,False,0.027206,,,0
+biological_process,dpfunc,>=60%,proteins,31,False,0.084777,,,0
+biological_process,heal,no hit,proteins,612,False,0.118327,,,0
+biological_process,heal,<30%,proteins,26,False,0.020262,,,0
+biological_process,heal,30-40%,proteins,80,False,0.264386,,,0
+biological_process,heal,40-60%,proteins,5,False,0.06508,,,0
+biological_process,heal,>=60%,proteins,31,False,0.175594,,,0
+cellular_component,deepgreengo,no hit,proteins,612,False,0.286236,0.265804,0.040906,5
+cellular_component,deepgreengo,<30%,proteins,26,False,0.065395,0.060451,0.031606,5
+cellular_component,deepgreengo,30-40%,proteins,80,False,0.534503,0.513827,0.062327,5
+cellular_component,deepgreengo,40-60%,proteins,5,False,0.299657,0.302744,0.06036,5
+cellular_component,deepgreengo,>=60%,proteins,31,False,0.438201,0.483909,0.283608,5
+cellular_component,naive,no hit,proteins,612,False,0.336516,,,0
+cellular_component,naive,<30%,proteins,26,False,0.149794,,,0
+cellular_component,naive,30-40%,proteins,80,False,0.431538,,,0
+cellular_component,naive,40-60%,proteins,5,False,0.467543,,,0
+cellular_component,naive,>=60%,proteins,31,False,0.261032,,,0
+cellular_component,blast,no hit,proteins,612,False,0.046625,,,0
+cellular_component,blast,<30%,proteins,26,False,0.004354,,,0
+cellular_component,blast,30-40%,proteins,80,False,0.044526,,,0
+cellular_component,blast,40-60%,proteins,5,False,0.058491,,,0
+cellular_component,blast,>=60%,proteins,31,False,0.533325,,,0
+cellular_component,blast_max,no hit,proteins,612,False,0.041769,,,0
+cellular_component,blast_max,<30%,proteins,26,False,0.004354,,,0
+cellular_component,blast_max,30-40%,proteins,80,False,0.032233,,,0
+cellular_component,blast_max,40-60%,proteins,5,False,0.058491,,,0
+cellular_component,blast_max,>=60%,proteins,31,False,0.488929,,,0
+cellular_component,diamond,no hit,proteins,612,False,0.038402,,,0
+cellular_component,diamond,<30%,proteins,26,False,0.004354,,,0
+cellular_component,diamond,30-40%,proteins,80,False,0.032233,,,0
+cellular_component,diamond,40-60%,proteins,5,False,0.058491,,,0
+cellular_component,diamond,>=60%,proteins,31,False,0.488929,,,0
+cellular_component,diamond_max,no hit,proteins,612,False,0.038288,,,0
+cellular_component,diamond_max,<30%,proteins,26,False,0.004354,,,0
+cellular_component,diamond_max,30-40%,proteins,80,False,0.032233,,,0
+cellular_component,diamond_max,40-60%,proteins,5,False,0.058491,,,0
+cellular_component,diamond_max,>=60%,proteins,31,False,0.488929,,,0
+cellular_component,foldseek,no hit,proteins,612,False,0.055564,,,0
+cellular_component,foldseek,<30%,proteins,26,False,0.004354,,,0
+cellular_component,foldseek,30-40%,proteins,80,False,0.032233,,,0
+cellular_component,foldseek,40-60%,proteins,5,False,0.208348,,,0
+cellular_component,foldseek,>=60%,proteins,31,False,0.508285,,,0
+cellular_component,foldseek_max,no hit,proteins,612,False,0.050606,,,0
+cellular_component,foldseek_max,<30%,proteins,26,False,0.004354,,,0
+cellular_component,foldseek_max,30-40%,proteins,80,False,0.032233,,,0
+cellular_component,foldseek_max,40-60%,proteins,5,False,0.157477,,,0
+cellular_component,foldseek_max,>=60%,proteins,31,False,0.497908,,,0
+cellular_component,deepfri_sequence,no hit,proteins,612,False,0.324443,,,0
+cellular_component,deepfri_sequence,<30%,proteins,26,False,0.137623,,,0
+cellular_component,deepfri_sequence,30-40%,proteins,80,False,0.498067,,,0
+cellular_component,deepfri_sequence,40-60%,proteins,5,False,0.515659,,,0
+cellular_component,deepfri_sequence,>=60%,proteins,31,False,0.211712,,,0
+cellular_component,deepfri_structure,no hit,proteins,612,False,0.397482,,,0
+cellular_component,deepfri_structure,<30%,proteins,26,False,0.324207,,,0
+cellular_component,deepfri_structure,30-40%,proteins,80,False,0.408547,,,0
+cellular_component,deepfri_structure,40-60%,proteins,5,False,0.581473,,,0
+cellular_component,deepfri_structure,>=60%,proteins,31,False,0.857466,,,0
+cellular_component,dpfunc,no hit,proteins,612,False,0.22822,,,0
+cellular_component,dpfunc,<30%,proteins,26,False,0.117922,,,0
+cellular_component,dpfunc,30-40%,proteins,80,False,0.311673,,,0
+cellular_component,dpfunc,40-60%,proteins,5,False,0.36443,,,0
+cellular_component,dpfunc,>=60%,proteins,31,False,0.141742,,,0
+cellular_component,heal,no hit,proteins,612,False,0.399906,,,0
+cellular_component,heal,<30%,proteins,26,False,0.235785,,,0
+cellular_component,heal,30-40%,proteins,80,False,0.372726,,,0
+cellular_component,heal,40-60%,proteins,5,False,0.640117,,,0
+cellular_component,heal,>=60%,proteins,31,False,0.634827,,,0

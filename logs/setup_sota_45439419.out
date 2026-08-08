@@ -1,625 +1,0 @@
-========================================================
-  Job ID      : 45439419
-  Node        : mc57
-  Start time  : Wed Jul 29 19:41:02 MDT 2026
-  Project     : /home/ganeshiny.sridharan/dgg/deep-green-GO
-  Methods     : deepgraphgo
-========================================================
-2 channel Terms of Service accepted
-Channels:
- - conda-forge
- - defaults
-Platform: linux-64
-Collecting package metadata (repodata.json): - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | done
-Solving environment: - done
-
-## Package Plan ##
-
-  environment location: /home/ganeshiny.sridharan/miniconda3/envs/dgg_setup_tools
-
-  added / updated specs:
-    - git
-
-
-The following packages will be downloaded:
-
-    package                    |            build
-    ---------------------------|-----------------
-    git-2.55.0                 | pl5321h5685339_1        11.1 MB  conda-forge
-    libgcc-16.1.0              |       ha9f2e26_0         1.0 MB  conda-forge
-    libgcc-ng-16.1.0           |       h69a702a_0          28 KB  conda-forge
-    libgomp-16.1.0             |       he0feb66_0         626 KB  conda-forge
-    libpsl-0.22.0              |       hf670292_2          71 KB  conda-forge
-    libstdcxx-16.1.0           |       h934c35e_0         6.3 MB  conda-forge
-    libzlib-1.3.2              |       h25fd6f3_3          62 KB  conda-forge
-    ------------------------------------------------------------
-                                           Total:        19.2 MB
-
-The following NEW packages will be INSTALLED:
-
-  _openmp_mutex      conda-forge/linux-64::_openmp_mutex-4.5-20_gnu 
-  bzip2              conda-forge/linux-64::bzip2-1.0.8-hda65f42_9 
-  c-ares             conda-forge/linux-64::c-ares-1.34.8-hb03c661_0 
-  ca-certificates    conda-forge/noarch::ca-certificates-2026.7.22-hbd8a1cb_0 
-  git                conda-forge/linux-64::git-2.55.0-pl5321h5685339_1 
-  icu                conda-forge/linux-64::icu-78.3-h54a6638_2 
-  keyutils           conda-forge/linux-64::keyutils-1.6.3-hb9d3cd8_0 
-  krb5               conda-forge/linux-64::krb5-1.22.2-hbde042b_1 
-  libcurl            conda-forge/linux-64::libcurl-8.21.0-hae6b9f4_2 
-  libedit            conda-forge/linux-64::libedit-3.1.20250104-pl5321h7949ede_0 
-  libev              conda-forge/linux-64::libev-4.33-hd590300_2 
-  libexpat           conda-forge/linux-64::libexpat-2.8.1-hecca717_1 
-  libgcc             conda-forge/linux-64::libgcc-16.1.0-ha9f2e26_0 
-  libgcc-ng          conda-forge/linux-64::libgcc-ng-16.1.0-h69a702a_0 
-  libgomp            conda-forge/linux-64::libgomp-16.1.0-he0feb66_0 
-  libiconv           conda-forge/linux-64::libiconv-1.18-h3b78370_2 
-  libnghttp2         conda-forge/linux-64::libnghttp2-1.68.1-h877daf1_0 
-  libpsl             conda-forge/linux-64::libpsl-0.22.0-hf670292_2 
-  libssh2            conda-forge/linux-64::libssh2-1.11.1-hcf80075_0 
-  libstdcxx          conda-forge/linux-64::libstdcxx-16.1.0-h934c35e_0 
-  libxcrypt          conda-forge/linux-64::libxcrypt-4.4.36-hd590300_1 
-  libzlib            conda-forge/linux-64::libzlib-1.3.2-h25fd6f3_3 
-  ncurses            conda-forge/linux-64::ncurses-6.6-hdb14827_0 
-  openssl            conda-forge/linux-64::openssl-3.6.3-h35e630c_0 
-  pcre2              conda-forge/linux-64::pcre2-10.47-haa7fec5_0 
-  perl               conda-forge/linux-64::perl-5.32.1-7_hd590300_perl5 
-  zstd               conda-forge/linux-64::zstd-1.5.7-hb78ec9c_6 
-
-
-
-Downloading and Extracting Packages: ...working...git-2.55.0           | 11.1 MB   |            |   0% 
-libstdcxx-16.1.0     | 6.3 MB    |            |   0% [A
-
-libgcc-16.1.0        | 1.0 MB    |            |   0% [A[A
-
-
-libgomp-16.1.0       | 626 KB    |            |   0% [A[A[A
-
-
-
-libpsl-0.22.0        | 71 KB     |            |   0% [A[A[A[A
-
-
-
-
-libzlib-1.3.2        | 62 KB     |            |   0% [A[A[A[A[A
-
-
-
-
-
-libgcc-ng-16.1.0     | 28 KB     |            |   0% [A[A[A[A[A[A
-
-
-
-libpsl-0.22.0        | 71 KB     | ########## | 100% [A[A[A[Agit-2.55.0           | 11.1 MB   | 2          |   2% 
-libstdcxx-16.1.0     | 6.3 MB    | 3          |   3% [A
-
-libgcc-16.1.0        | 1.0 MB    | ##         |  20% [A[A
-
-
-libgomp-16.1.0       | 626 KB    | ###5       |  36% [A[A[A
-
-
-
-
-libzlib-1.3.2        | 62 KB     | ##5        |  26% [A[A[A[A[A
-
-
-libgomp-16.1.0       | 626 KB    | ########## | 100% [A[A[A
-
-
-
-
-libzlib-1.3.2        | 62 KB     | ########## | 100% [A[A[A[A[A
-
-libgcc-16.1.0        | 1.0 MB    | ########## | 100% [A[A
-
-
-
-
-
-libgcc-ng-16.1.0     | 28 KB     | #####8     |  58% [A[A[A[A[A[A
-
-
-
-
-
-libgcc-ng-16.1.0     | 28 KB     | ########## | 100% [A[A[A[A[A[A
-libstdcxx-16.1.0     | 6.3 MB    | ###4       |  34% [Agit-2.55.0           | 11.1 MB   | #6         |  16% 
-libstdcxx-16.1.0     | 6.3 MB    | #######2   |  73% [Agit-2.55.0           | 11.1 MB   | ##7        |  27% 
-
-
-
-
-libzlib-1.3.2        | 62 KB     | ########## | 100% [A[A[A[A[A
-
-
-
-
-libzlib-1.3.2        | 62 KB     | ########## | 100% [A[A[A[A[A
-
-
-
-libpsl-0.22.0        | 71 KB     | ########## | 100% [A[A[A[A
-
-
-
-libpsl-0.22.0        | 71 KB     | ########## | 100% [A[A[A[Agit-2.55.0           | 11.1 MB   | ####6      |  46% 
-libstdcxx-16.1.0     | 6.3 MB    | ########## | 100% [Agit-2.55.0           | 11.1 MB   | ######8    |  69% 
-
-
-libgomp-16.1.0       | 626 KB    | ########## | 100% [A[A[A
-
-
-libgomp-16.1.0       | 626 KB    | ########## | 100% [A[A[Agit-2.55.0           | 11.1 MB   | #########  |  90% 
-
-
-
-
-
-libgcc-ng-16.1.0     | 28 KB     | ########## | 100% [A[A[A[A[A[A
-
-
-
-
-
-libgcc-ng-16.1.0     | 28 KB     | ########## | 100% [A[A[A[A[A[Agit-2.55.0           | 11.1 MB   | ########## | 100% 
-
-libgcc-16.1.0        | 1.0 MB    | ########## | 100% [A[A
-
-libgcc-16.1.0        | 1.0 MB    | ########## | 100% [A[A
-libstdcxx-16.1.0     | 6.3 MB    | ########## | 100% [Agit-2.55.0           | 11.1 MB   | ########## | 100%                                                      
-                                                     [A
-
-                                                     [A[A
-
-
-                                                     [A[A[A
-
-
-
-                                                     [A[A[A[A
-
-
-
-
-                                                     [A[A[A[A[A
-
-
-
-
-
-                                                     [A[A[A[A[A[A done
-Preparing transaction: | / - \ | / - \ | / - \ | done
-Verifying transaction: - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - done
-Executing transaction: | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / done
-#
-# To activate this environment, use
-#
-#     $ conda activate dgg_setup_tools
-#
-# To deactivate an active environment, use
-#
-#     $ conda deactivate
-
-git version 2.55.0
-[OK] Pinned repository: /home/ganeshiny.sridharan/dgg/deep-green-GO/SOTA/DeepGraphGO @ efdb1cb9425f4f48e4613c0a89e603f5542bcb19
-2 channel Terms of Service accepted
-Channels:
- - defaults
-Platform: linux-64
-Collecting package metadata (repodata.json): - \ | / - \ | / - done
-Solving environment: | done
-
-## Package Plan ##
-
-  environment location: /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgraphgo
-
-  added / updated specs:
-    - pip
-    - python=3.8
-
-
-The following NEW packages will be INSTALLED:
-
-  _libgcc_mutex      pkgs/main/linux-64::_libgcc_mutex-0.1-main 
-  _openmp_mutex      pkgs/main/linux-64::_openmp_mutex-5.1-52_gnu 
-  ca-certificates    pkgs/main/linux-64::ca-certificates-2026.7.16-h06a4308_0 
-  ld_impl_linux-64   pkgs/main/linux-64::ld_impl_linux-64-2.44-h9e0c5a2_3 
-  libffi             pkgs/main/linux-64::libffi-3.4.8-h06d3fd0_3 
-  libgcc             pkgs/main/linux-64::libgcc-15.2.0-h69a1729_8 
-  libgcc-ng          pkgs/main/linux-64::libgcc-ng-15.2.0-h166f726_8 
-  libstdcxx          pkgs/main/linux-64::libstdcxx-15.2.0-h39759b7_8 
-  libstdcxx-ng       pkgs/main/linux-64::libstdcxx-ng-15.2.0-hc03a8fd_8 
-  libxcb             pkgs/main/linux-64::libxcb-1.17.0-h9b100fa_0 
-  libzlib            pkgs/main/linux-64::libzlib-1.3.2-h47b2149_0 
-  ncurses            pkgs/main/linux-64::ncurses-6.5-h7934f7d_0 
-  openssl            pkgs/main/linux-64::openssl-3.5.7-h1b28b03_0 
-  pip                pkgs/main/linux-64::pip-24.2-py38h06a4308_0 
-  pthread-stubs      pkgs/main/linux-64::pthread-stubs-0.3-h47b2149_2 
-  python             pkgs/main/linux-64::python-3.8.20-he870216_0 
-  readline           pkgs/main/linux-64::readline-8.3-hc2a1206_0 
-  setuptools         pkgs/main/linux-64::setuptools-75.1.0-py38h06a4308_0 
-  sqlite             pkgs/main/linux-64::sqlite-3.53.2-h795bf6d_0 
-  tk                 pkgs/main/linux-64::tk-8.6.15-h54e0aa7_0 
-  wheel              pkgs/main/linux-64::wheel-0.44.0-py38h06a4308_0 
-  xorg-libx11        pkgs/main/linux-64::xorg-libx11-1.8.12-h9b100fa_1 
-  xorg-libxau        pkgs/main/linux-64::xorg-libxau-1.0.12-h9b100fa_0 
-  xorg-libxdmcp      pkgs/main/linux-64::xorg-libxdmcp-1.1.5-h9b100fa_0 
-  xorg-xorgproto     pkgs/main/linux-64::xorg-xorgproto-2024.1-h47b2149_2 
-  xz                 pkgs/main/linux-64::xz-5.8.2-h448239c_0 
-  zlib               pkgs/main/linux-64::zlib-1.3.2-h47b2149_0 
-
-
-
-Downloading and Extracting Packages: ...working... done
-Preparing transaction: - \ | / - \ | / - \ | / - done
-Verifying transaction: | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - done
-Executing transaction: | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - done
-#
-# To activate this environment, use
-#
-#     $ conda activate dgg_deepgraphgo
-#
-# To deactivate an active environment, use
-#
-#     $ conda deactivate
-
-2 channel Terms of Service accepted
-Channels:
- - pytorch
- - defaults
-Platform: linux-64
-Collecting package metadata (repodata.json): - \ | / - \ | / - \ | / - \ | done
-Solving environment: - \ done
-
-## Package Plan ##
-
-  environment location: /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgraphgo
-
-  added / updated specs:
-    - cpuonly
-    - pytorch=1.6.0
-
-
-The following packages will be downloaded:
-
-    package                    |            build
-    ---------------------------|-----------------
-    cpuonly-2.0                |                0           2 KB  pytorch
-    cudatoolkit-10.2.89        |       hfd86e86_1       365.1 MB
-    ninja-1.13.1               |       h06a4308_0           8 KB
-    ninja-base-1.13.1          |       h0f57076_0         163 KB
-    pytorch-1.6.0              |py3.8_cuda10.2.89_cudnn7.6.5_0       538.6 MB  pytorch
-    pytorch-mutex-1.0          |              cpu           3 KB  pytorch
-    ------------------------------------------------------------
-                                           Total:       903.8 MB
-
-The following NEW packages will be INSTALLED:
-
-  blas               pkgs/main/linux-64::blas-1.0-mkl 
-  cpuonly            pytorch/noarch::cpuonly-2.0-0 
-  cudatoolkit        pkgs/main/linux-64::cudatoolkit-10.2.89-hfd86e86_1 
-  intel-openmp       pkgs/main/linux-64::intel-openmp-2023.0.0-h9e868ea_25371 
-  mkl                pkgs/main/linux-64::mkl-2023.1.0-h213fc3f_46344 
-  mkl-service        pkgs/main/linux-64::mkl-service-2.4.0-py38h5eee18b_1 
-  mkl_fft            pkgs/main/linux-64::mkl_fft-1.3.8-py38h5eee18b_0 
-  mkl_random         pkgs/main/linux-64::mkl_random-1.2.4-py38hdb19cb5_0 
-  ninja              pkgs/main/linux-64::ninja-1.13.1-h06a4308_0 
-  ninja-base         pkgs/main/linux-64::ninja-base-1.13.1-h0f57076_0 
-  numpy              pkgs/main/linux-64::numpy-1.24.3-py38hf6e8229_1 
-  numpy-base         pkgs/main/linux-64::numpy-base-1.24.3-py38h060ed82_1 
-  pytorch            pytorch/linux-64::pytorch-1.6.0-py3.8_cuda10.2.89_cudnn7.6.5_0 
-  pytorch-mutex      pytorch/noarch::pytorch-mutex-1.0-cpu 
-  tbb                pkgs/main/linux-64::tbb-2021.8.0-hdb19cb5_0 
-
-
-
-Downloading and Extracting Packages: ...working...pytorch-1.6.0        | 538.6 MB  |            |   0% 
-cudatoolkit-10.2.89  | 365.1 MB  |            |   0% [A
-
-ninja-base-1.13.1    | 163 KB    |            |   0% [A[A
-
-
-ninja-1.13.1         | 8 KB      |            |   0% [A[A[A
-
-
-
-pytorch-mutex-1.0    | 3 KB      |            |   0% [A[A[A[A
-
-
-
-
-cpuonly-2.0          | 2 KB      |            |   0% [A[A[A[A[A
-
-
-
-pytorch-mutex-1.0    | 3 KB      | ########## | 100% [A[A[A[Apytorch-1.6.0        | 538.6 MB  |            |   0% 
-
-
-
-
-cpuonly-2.0          | 2 KB      | ########## | 100% [A[A[A[A[A
-
-
-
-
-cpuonly-2.0          | 2 KB      | ########## | 100% [A[A[A[A[A
-cudatoolkit-10.2.89  | 365.1 MB  |            |   0% [A
-
-ninja-base-1.13.1    | 163 KB    | 9          |  10% [A[A
-
-
-
-
-cpuonly-2.0          | 2 KB      | ########## | 100% [A[A[A[A[A
-
-
-ninja-1.13.1         | 8 KB      | ########## | 100% [A[A[A
-
-
-ninja-1.13.1         | 8 KB      | ########## | 100% [A[A[A
-
-ninja-base-1.13.1    | 163 KB    | ########## | 100% [A[Apytorch-1.6.0        | 538.6 MB  |            |   1% 
-
-
-
-pytorch-mutex-1.0    | 3 KB      | ########## | 100% [A[A[A[A
-
-
-
-pytorch-mutex-1.0    | 3 KB      | ########## | 100% [A[A[A[A
-cudatoolkit-10.2.89  | 365.1 MB  |            |   1% [A
-
-ninja-base-1.13.1    | 163 KB    | ########## | 100% [A[A
-
-ninja-base-1.13.1    | 163 KB    | ########## | 100% [A[A
-
-
-ninja-1.13.1         | 8 KB      | ########## | 100% [A[A[Apytorch-1.6.0        | 538.6 MB  | 2          |   2% 
-cudatoolkit-10.2.89  | 365.1 MB  | 1          |   2% [Apytorch-1.6.0        | 538.6 MB  | 3          |   3% 
-cudatoolkit-10.2.89  | 365.1 MB  | 3          |   3% [Apytorch-1.6.0        | 538.6 MB  | 4          |   5% 
-cudatoolkit-10.2.89  | 365.1 MB  | 4          |   5% [A
-cudatoolkit-10.2.89  | 365.1 MB  | 6          |   7% [Apytorch-1.6.0        | 538.6 MB  | 5          |   6% 
-cudatoolkit-10.2.89  | 365.1 MB  | 8          |   8% [Apytorch-1.6.0        | 538.6 MB  | 6          |   7% pytorch-1.6.0        | 538.6 MB  | 7          |   7% 
-cudatoolkit-10.2.89  | 365.1 MB  | 9          |   9% [Apytorch-1.6.0        | 538.6 MB  | 8          |   8% pytorch-1.6.0        | 538.6 MB  | 9          |  10% 
-cudatoolkit-10.2.89  | 365.1 MB  | #          |  10% [Apytorch-1.6.0        | 538.6 MB  | #          |  11% 
-cudatoolkit-10.2.89  | 365.1 MB  | #1         |  11% [A
-cudatoolkit-10.2.89  | 365.1 MB  | #1         |  12% [A
-cudatoolkit-10.2.89  | 365.1 MB  | #2         |  13% [Apytorch-1.6.0        | 538.6 MB  | #1         |  12% 
-cudatoolkit-10.2.89  | 365.1 MB  | #4         |  14% [A
-cudatoolkit-10.2.89  | 365.1 MB  | #6         |  17% [Apytorch-1.6.0        | 538.6 MB  | #2         |  12% 
-cudatoolkit-10.2.89  | 365.1 MB  | #8         |  19% [A
-cudatoolkit-10.2.89  | 365.1 MB  | ##1        |  21% [Apytorch-1.6.0        | 538.6 MB  | #2         |  13% 
-cudatoolkit-10.2.89  | 365.1 MB  | ##3        |  24% [Apytorch-1.6.0        | 538.6 MB  | #3         |  13% 
-cudatoolkit-10.2.89  | 365.1 MB  | ##5        |  26% [A
-cudatoolkit-10.2.89  | 365.1 MB  | ##8        |  28% [Apytorch-1.6.0        | 538.6 MB  | #3         |  14% 
-cudatoolkit-10.2.89  | 365.1 MB  | ###        |  30% [Apytorch-1.6.0        | 538.6 MB  | #4         |  14% pytorch-1.6.0        | 538.6 MB  | #5         |  15% 
-cudatoolkit-10.2.89  | 365.1 MB  | ###2       |  32% [Apytorch-1.6.0        | 538.6 MB  | #6         |  17% 
-cudatoolkit-10.2.89  | 365.1 MB  | ###4       |  34% [Apytorch-1.6.0        | 538.6 MB  | #7         |  18% 
-cudatoolkit-10.2.89  | 365.1 MB  | ###6       |  36% [Apytorch-1.6.0        | 538.6 MB  | #8         |  19% 
-cudatoolkit-10.2.89  | 365.1 MB  | ###8       |  38% [Apytorch-1.6.0        | 538.6 MB  | #9         |  20% 
-cudatoolkit-10.2.89  | 365.1 MB  | ####       |  40% [Apytorch-1.6.0        | 538.6 MB  | ##         |  20% 
-cudatoolkit-10.2.89  | 365.1 MB  | ####2      |  42% [Apytorch-1.6.0        | 538.6 MB  | ##1        |  21% 
-cudatoolkit-10.2.89  | 365.1 MB  | ####4      |  44% [Apytorch-1.6.0        | 538.6 MB  | ##2        |  22% 
-cudatoolkit-10.2.89  | 365.1 MB  | ####5      |  46% [Apytorch-1.6.0        | 538.6 MB  | ##3        |  24% 
-cudatoolkit-10.2.89  | 365.1 MB  | ####7      |  48% [Apytorch-1.6.0        | 538.6 MB  | ##4        |  25% pytorch-1.6.0        | 538.6 MB  | ##5        |  26% 
-cudatoolkit-10.2.89  | 365.1 MB  | ####9      |  49% [Apytorch-1.6.0        | 538.6 MB  | ##6        |  27% 
-cudatoolkit-10.2.89  | 365.1 MB  | #####1     |  51% [Apytorch-1.6.0        | 538.6 MB  | ##7        |  28% 
-cudatoolkit-10.2.89  | 365.1 MB  | #####2     |  53% [Apytorch-1.6.0        | 538.6 MB  | ##8        |  29% 
-cudatoolkit-10.2.89  | 365.1 MB  | #####4     |  55% [Apytorch-1.6.0        | 538.6 MB  | ##9        |  30% 
-cudatoolkit-10.2.89  | 365.1 MB  | #####6     |  56% [Apytorch-1.6.0        | 538.6 MB  | ###1       |  31% 
-cudatoolkit-10.2.89  | 365.1 MB  | #####7     |  58% [Apytorch-1.6.0        | 538.6 MB  | ###2       |  32% pytorch-1.6.0        | 538.6 MB  | ###3       |  34% 
-cudatoolkit-10.2.89  | 365.1 MB  | #####9     |  59% [Apytorch-1.6.0        | 538.6 MB  | ###4       |  35% 
-cudatoolkit-10.2.89  | 365.1 MB  | ######     |  61% [Apytorch-1.6.0        | 538.6 MB  | ###6       |  36% 
-cudatoolkit-10.2.89  | 365.1 MB  | ######1    |  62% [Apytorch-1.6.0        | 538.6 MB  | ###7       |  38% 
-cudatoolkit-10.2.89  | 365.1 MB  | ######3    |  63% [Apytorch-1.6.0        | 538.6 MB  | ###8       |  39% 
-cudatoolkit-10.2.89  | 365.1 MB  | ######5    |  65% [Apytorch-1.6.0        | 538.6 MB  | ###9       |  40% 
-cudatoolkit-10.2.89  | 365.1 MB  | ######6    |  67% [Apytorch-1.6.0        | 538.6 MB  | ####1      |  41% 
-cudatoolkit-10.2.89  | 365.1 MB  | ######7    |  68% [Apytorch-1.6.0        | 538.6 MB  | ####2      |  42% 
-cudatoolkit-10.2.89  | 365.1 MB  | ######9    |  70% [Apytorch-1.6.0        | 538.6 MB  | ####3      |  44% 
-cudatoolkit-10.2.89  | 365.1 MB  | #######1   |  71% [Apytorch-1.6.0        | 538.6 MB  | ####4      |  45% 
-cudatoolkit-10.2.89  | 365.1 MB  | #######2   |  73% [Apytorch-1.6.0        | 538.6 MB  | ####5      |  46% 
-cudatoolkit-10.2.89  | 365.1 MB  | #######4   |  74% [Apytorch-1.6.0        | 538.6 MB  | ####7      |  47% 
-cudatoolkit-10.2.89  | 365.1 MB  | #######5   |  76% [Apytorch-1.6.0        | 538.6 MB  | ####8      |  48% 
-cudatoolkit-10.2.89  | 365.1 MB  | #######7   |  78% [A
-cudatoolkit-10.2.89  | 365.1 MB  | #######9   |  79% [Apytorch-1.6.0        | 538.6 MB  | ####9      |  49% 
-cudatoolkit-10.2.89  | 365.1 MB  | ########1  |  81% [Apytorch-1.6.0        | 538.6 MB  | #####      |  51% 
-cudatoolkit-10.2.89  | 365.1 MB  | ########2  |  83% [Apytorch-1.6.0        | 538.6 MB  | #####1     |  52% 
-cudatoolkit-10.2.89  | 365.1 MB  | ########4  |  85% [Apytorch-1.6.0        | 538.6 MB  | #####2     |  53% 
-cudatoolkit-10.2.89  | 365.1 MB  | ########6  |  87% [Apytorch-1.6.0        | 538.6 MB  | #####4     |  54% 
-cudatoolkit-10.2.89  | 365.1 MB  | ########8  |  89% [A
-cudatoolkit-10.2.89  | 365.1 MB  | #########  |  91% [Apytorch-1.6.0        | 538.6 MB  | #####5     |  55% pytorch-1.6.0        | 538.6 MB  | #####6     |  57% 
-cudatoolkit-10.2.89  | 365.1 MB  | #########2 |  93% [A
-cudatoolkit-10.2.89  | 365.1 MB  | #########4 |  95% [Apytorch-1.6.0        | 538.6 MB  | #####7     |  58% pytorch-1.6.0        | 538.6 MB  | #####9     |  59% 
-cudatoolkit-10.2.89  | 365.1 MB  | #########6 |  97% [A
-cudatoolkit-10.2.89  | 365.1 MB  | #########8 |  98% [Apytorch-1.6.0        | 538.6 MB  | ######     |  60% pytorch-1.6.0        | 538.6 MB  | ######1    |  61% pytorch-1.6.0        | 538.6 MB  | ######2    |  63% pytorch-1.6.0        | 538.6 MB  | ######4    |  64% pytorch-1.6.0        | 538.6 MB  | ######6    |  66% pytorch-1.6.0        | 538.6 MB  | ######8    |  68% pytorch-1.6.0        | 538.6 MB  | ######9    |  70% pytorch-1.6.0        | 538.6 MB  | #######1   |  72% pytorch-1.6.0        | 538.6 MB  | #######3   |  74% pytorch-1.6.0        | 538.6 MB  | #######5   |  76% pytorch-1.6.0        | 538.6 MB  | #######7   |  78% pytorch-1.6.0        | 538.6 MB  | #######9   |  79% pytorch-1.6.0        | 538.6 MB  | ########1  |  81% pytorch-1.6.0        | 538.6 MB  | ########3  |  83% 
-cudatoolkit-10.2.89  | 365.1 MB  | ########## | 100% [Apytorch-1.6.0        | 538.6 MB  | ########5  |  85% pytorch-1.6.0        | 538.6 MB  | ########7  |  87% pytorch-1.6.0        | 538.6 MB  | ########9  |  89% pytorch-1.6.0        | 538.6 MB  | #########  |  91% pytorch-1.6.0        | 538.6 MB  | #########2 |  93% pytorch-1.6.0        | 538.6 MB  | #########4 |  95% pytorch-1.6.0        | 538.6 MB  | #########6 |  97% pytorch-1.6.0        | 538.6 MB  | #########8 |  99% pytorch-1.6.0        | 538.6 MB  | ########## | 100% 
-cudatoolkit-10.2.89  | 365.1 MB  | ########## | 100% [Apytorch-1.6.0        | 538.6 MB  | ########## | 100%                                                      
-                                                     [A
-
-                                                     [A[A
-
-
-                                                     [A[A[A
-
-
-
-                                                     [A[A[A[A
-
-
-
-
-                                                     [A[A[A[A[A done
-Preparing transaction: / - \ | / - \ | / - done
-Verifying transaction: | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - done
-Executing transaction: | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / done
-2 channel Terms of Service accepted
-Channels:
- - conda-forge
- - bioconda
- - defaults
-Platform: linux-64
-Collecting package metadata (repodata.json): - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | done
-Solving environment: - \ done
-
-## Package Plan ##
-
-  environment location: /home/ganeshiny.sridharan/miniconda3/envs/dgg_deepgraphgo
-
-  added / updated specs:
-    - blast[version='>=2.10,<3']
-
-
-The following packages will be downloaded:
-
-    package                    |            build
-    ---------------------------|-----------------
-    libsqlite-3.53.4           |       hf4e2dac_0         942 KB  conda-forge
-    ------------------------------------------------------------
-                                           Total:         942 KB
-
-The following NEW packages will be INSTALLED:
-
-  blast              bioconda/linux-64::blast-2.17.0-h66d330f_0 
-  bzip2              conda-forge/linux-64::bzip2-1.0.8-hda65f42_9 
-  c-ares             conda-forge/linux-64::c-ares-1.34.8-hb03c661_0 
-  curl               conda-forge/linux-64::curl-8.21.0-hae6b9f4_2 
-  entrez-direct      bioconda/linux-64::entrez-direct-24.0-he881be0_0 
-  icu                conda-forge/linux-64::icu-78.3-h54a6638_2 
-  keyutils           conda-forge/linux-64::keyutils-1.6.3-hb9d3cd8_0 
-  krb5               conda-forge/linux-64::krb5-1.22.2-hbde042b_1 
-  libcurl            conda-forge/linux-64::libcurl-8.21.0-hae6b9f4_2 
-  libedit            conda-forge/linux-64::libedit-3.1.20250104-pl5321h7949ede_0 
-  libev              conda-forge/linux-64::libev-4.33-hd590300_2 
-  libidn2            conda-forge/linux-64::libidn2-2.3.8-hfac485b_1 
-  libnghttp2         conda-forge/linux-64::libnghttp2-1.68.1-h877daf1_0 
-  libpsl             conda-forge/linux-64::libpsl-0.22.0-hf670292_2 
-  libsqlite          conda-forge/linux-64::libsqlite-3.53.4-hf4e2dac_0 
-  libssh2            conda-forge/linux-64::libssh2-1.11.1-hcf80075_0 
-  libunistring       conda-forge/linux-64::libunistring-0.9.10-h7f98852_0 
-  libxcrypt          conda-forge/linux-64::libxcrypt-4.4.36-hd590300_1 
-  ncbi-vdb           bioconda/linux-64::ncbi-vdb-3.4.1-hd63eeec_0 
-  pcre2              conda-forge/linux-64::pcre2-10.47-haa7fec5_0 
-  perl               conda-forge/linux-64::perl-5.32.1-7_hd590300_perl5 
-  perl-archive-tar   bioconda/noarch::perl-archive-tar-3.12-pl5321hdfd78af_0 
-  perl-carp          conda-forge/noarch::perl-carp-1.50-pl5321hd8ed1ab_0 
-  perl-common-sense  conda-forge/noarch::perl-common-sense-3.75-pl5321hd8ed1ab_0 
-  perl-compress-raw~ conda-forge/linux-64::perl-compress-raw-bzip2-2.214-pl5321hda65f42_0 
-  perl-compress-raw~ conda-forge/linux-64::perl-compress-raw-zlib-2.214-pl5321h4dac143_0 
-  perl-encode        conda-forge/linux-64::perl-encode-3.24-pl5321hb03c661_0 
-  perl-exporter      conda-forge/noarch::perl-exporter-5.74-pl5321hd8ed1ab_0 
-  perl-exporter-tiny conda-forge/noarch::perl-exporter-tiny-1.002002-pl5321hd8ed1ab_0 
-  perl-extutils-mak~ conda-forge/noarch::perl-extutils-makemaker-7.70-pl5321hd8ed1ab_0 
-  perl-io-compress   bioconda/linux-64::perl-io-compress-2.216-pl5321h503566f_0 
-  perl-io-zlib       bioconda/noarch::perl-io-zlib-1.15-pl5321hdfd78af_1 
-  perl-json          bioconda/noarch::perl-json-4.11-pl5321hdfd78af_0 
-  perl-json-xs       bioconda/linux-64::perl-json-xs-4.04-pl5321h9948957_0 
-  perl-list-moreuti~ bioconda/noarch::perl-list-moreutils-0.430-pl5321hdfd78af_0 
-  perl-list-moreuti~ bioconda/linux-64::perl-list-moreutils-xs-0.430-pl5321h7b50bb2_5 
-  perl-parent        conda-forge/noarch::perl-parent-0.243-pl5321hd8ed1ab_0 
-  perl-pathtools     conda-forge/linux-64::perl-pathtools-3.75-pl5321hb9d3cd8_2 
-  perl-scalar-list-~ conda-forge/linux-64::perl-scalar-list-utils-1.70-pl5321hb03c661_0 
-  perl-storable      conda-forge/linux-64::perl-storable-3.15-pl5321hb9d3cd8_2 
-  perl-types-serial~ bioconda/noarch::perl-types-serialiser-1.01-pl5321hdfd78af_0 
-  wget               conda-forge/linux-64::wget-1.25.0-h653f8fd_1 
-  zstd               conda-forge/linux-64::zstd-1.5.7-hb78ec9c_6 
-
-The following packages will be UPDATED:
-
-  ca-certificates    pkgs/main/linux-64::ca-certificates-2~ --> conda-forge/noarch::ca-certificates-2026.7.22-hbd8a1cb_0 
-  openssl               pkgs/main::openssl-3.5.7-h1b28b03_0 --> conda-forge::openssl-3.6.3-h35e630c_0 
-
-
-
-Downloading and Extracting Packages: ...working...libsqlite-3.53.4     | 942 KB    |            |   0% libsqlite-3.53.4     | 942 KB    | ####       |  41% libsqlite-3.53.4     | 942 KB    | ########## | 100% libsqlite-3.53.4     | 942 KB    | ########## | 100% libsqlite-3.53.4     | 942 KB    | ########## | 100%                                                       done
-Preparing transaction: / - \ | / - \ | / - \ | / - \ | / done
-Verifying transaction: \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ done
-Executing transaction: / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / done
-Collecting pip<24.1
-  Downloading pip-24.0-py3-none-any.whl.metadata (3.6 kB)
-Downloading pip-24.0-py3-none-any.whl (2.1 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 15.5 MB/s eta 0:00:00
-Installing collected packages: pip
-  Attempting uninstall: pip
-    Found existing installation: pip 24.2
-    Uninstalling pip-24.2:
-      Successfully uninstalled pip-24.2
-Successfully installed pip-24.0
-Collecting numpy==1.19.2
-  Downloading numpy-1.19.2-cp38-cp38-manylinux2010_x86_64.whl.metadata (2.0 kB)
-Collecting scipy==1.5.0
-  Downloading scipy-1.5.0-cp38-cp38-manylinux1_x86_64.whl.metadata (2.0 kB)
-Collecting scikit-learn==0.22.1
-  Downloading scikit_learn-0.22.1-cp38-cp38-manylinux1_x86_64.whl.metadata (7.2 kB)
-Collecting networkx==2.4
-  Downloading networkx-2.4-py3-none-any.whl.metadata (4.9 kB)
-Collecting dgl==0.4.3post2
-  Downloading dgl-0.4.3.post2-cp38-cp38-manylinux1_x86_64.whl.metadata (512 bytes)
-Collecting click==7.1.2
-  Downloading click-7.1.2-py2.py3-none-any.whl.metadata (2.9 kB)
-Collecting ruamel.yaml==0.16.6
-  Downloading ruamel.yaml-0.16.6-py2.py3-none-any.whl.metadata (34 kB)
-Collecting biopython==1.78
-  Downloading biopython-1.78-cp38-cp38-manylinux1_x86_64.whl.metadata (12 kB)
-Collecting tqdm==4.47.0
-  Downloading tqdm-4.47.0-py2.py3-none-any.whl.metadata (52 kB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 52.7/52.7 kB 306.3 kB/s eta 0:00:00
-Collecting logzero==1.5.0
-  Downloading logzero-1.5.0-py2.py3-none-any.whl.metadata (8.7 kB)
-Collecting joblib==0.16.0
-  Downloading joblib-0.16.0-py3-none-any.whl.metadata (4.5 kB)
-Collecting dtrx==8.5.3
-  Downloading dtrx-8.5.3-py2.py3-none-any.whl.metadata (6.9 kB)
-Collecting decorator>=4.3.0 (from networkx==2.4)
-  Downloading decorator-5.3.1-py3-none-any.whl.metadata (3.9 kB)
-Collecting requests>=2.19.0 (from dgl==0.4.3post2)
-  Downloading requests-2.32.4-py3-none-any.whl.metadata (4.9 kB)
-Collecting charset_normalizer<4,>=2 (from requests>=2.19.0->dgl==0.4.3post2)
-  Downloading charset_normalizer-3.4.9-py3-none-any.whl.metadata (41 kB)
-     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 41.7/41.7 kB 534.5 kB/s eta 0:00:00
-Collecting idna<4,>=2.5 (from requests>=2.19.0->dgl==0.4.3post2)
-  Downloading idna-3.15-py3-none-any.whl.metadata (7.7 kB)
-Collecting urllib3<3,>=1.21.1 (from requests>=2.19.0->dgl==0.4.3post2)
-  Downloading urllib3-2.2.3-py3-none-any.whl.metadata (6.5 kB)
-Collecting certifi>=2017.4.17 (from requests>=2.19.0->dgl==0.4.3post2)
-  Using cached certifi-2026.7.22-py3-none-any.whl.metadata (2.5 kB)
-Downloading numpy-1.19.2-cp38-cp38-manylinux2010_x86_64.whl (14.5 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.5/14.5 MB 54.7 MB/s eta 0:00:00
-Downloading scipy-1.5.0-cp38-cp38-manylinux1_x86_64.whl (25.7 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 25.7/25.7 MB 52.2 MB/s eta 0:00:00
-Downloading scikit_learn-0.22.1-cp38-cp38-manylinux1_x86_64.whl (7.0 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.0/7.0 MB 52.6 MB/s eta 0:00:00
-Downloading networkx-2.4-py3-none-any.whl (1.6 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.6/1.6 MB 27.3 MB/s eta 0:00:00
-Downloading dgl-0.4.3.post2-cp38-cp38-manylinux1_x86_64.whl (3.0 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.0/3.0 MB 11.8 MB/s eta 0:00:00
-Downloading click-7.1.2-py2.py3-none-any.whl (82 kB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 82.8/82.8 kB 1.8 MB/s eta 0:00:00
-Downloading ruamel.yaml-0.16.6-py2.py3-none-any.whl (123 kB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 123.7/123.7 kB 1.8 MB/s eta 0:00:00
-Downloading biopython-1.78-cp38-cp38-manylinux1_x86_64.whl (2.3 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.3/2.3 MB 18.9 MB/s eta 0:00:00
-Downloading tqdm-4.47.0-py2.py3-none-any.whl (66 kB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 66.8/66.8 kB 1.7 MB/s eta 0:00:00
-Downloading logzero-1.5.0-py2.py3-none-any.whl (14 kB)
-Downloading joblib-0.16.0-py3-none-any.whl (300 kB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 300.8/300.8 kB 4.4 MB/s eta 0:00:00
-Downloading dtrx-8.5.3-py2.py3-none-any.whl (31 kB)
-Downloading decorator-5.3.1-py3-none-any.whl (10 kB)
-Downloading requests-2.32.4-py3-none-any.whl (64 kB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 64.8/64.8 kB 1.3 MB/s eta 0:00:00
-Using cached certifi-2026.7.22-py3-none-any.whl (136 kB)
-Downloading charset_normalizer-3.4.9-py3-none-any.whl (64 kB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 64.5/64.5 kB 1.6 MB/s eta 0:00:00
-Downloading idna-3.15-py3-none-any.whl (72 kB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 72.3/72.3 kB 1.1 MB/s eta 0:00:00
-Downloading urllib3-2.2.3-py3-none-any.whl (126 kB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 126.3/126.3 kB 2.2 MB/s eta 0:00:00
-Installing collected packages: ruamel.yaml, logzero, urllib3, tqdm, numpy, joblib, idna, dtrx, decorator, click, charset_normalizer, certifi, scipy, requests, networkx, biopython, scikit-learn, dgl
-  Attempting uninstall: numpy
-    Found existing installation: numpy 1.24.3
-    Uninstalling numpy-1.24.3:
-      Successfully uninstalled numpy-1.24.3
-Successfully installed biopython-1.78 certifi-2026.7.22 charset_normalizer-3.4.9 click-7.1.2 decorator-5.3.1 dgl-0.4.3.post2 dtrx-8.5.3 idna-3.15 joblib-0.16.0 logzero-1.5.0 networkx-2.4 numpy-1.19.2 requests-2.32.4 ruamel.yaml-0.16.6 scikit-learn-0.22.1 scipy-1.5.0 tqdm-4.47.0 urllib3-2.2.3

@@ -1,0 +1,5 @@
+Model identity and ablation framing: The headline benchmark uses the five-seed DeepGreenGO Hybrid GCN-GAT ensemble. Input ablations show that the ProtBERT sequence representation drives most of the performance; the comparison should not imply that graph fusion alone explains the result.
+
+MF comparison: DeepGreenGO Fmax is 0.388, versus 0.543 for DeepGOPlus. Its Smin is 5.024, versus the best baseline value of 2.066 for DeepGOPlus. The corresponding differences are -0.155 Fmax and +2.958 Smin (lower Smin is better). DeepGreenGO underperforms the strongest baseline on both MF metrics; the benchmark does not support an MF accuracy-gain claim.
+
+External-pretraining caveat: DeepFRI (sequence), DeepFRI (structure), DPFunc, HEAL (PDB-only) were evaluated with released pretrained parameters or reference data. Their original training corpora were not restricted to the locked ARC training split, so these comparisons are descriptive and cannot establish leakage-controlled generalization.

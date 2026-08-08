@@ -1,8 +1,0 @@
-Traceback (most recent call last):
-  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/scripts/evaluate_arc_bins.py", line 172, in <module>
-    if __name__ == "__main__": main()
-  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/scripts/evaluate_arc_bins.py", line 160, in main
-    for metric_row in grouped_metrics(y_true, y_probability, groups, ic):
-  File "/home/ganeshiny.sridharan/dgg/deep-green-GO/scripts/evaluate_arc_bins.py", line 117, in grouped_metrics
-    with warnings.catch_warnings():
-NameError: name 'warnings' is not defined. Did you mean: 'Warning'?

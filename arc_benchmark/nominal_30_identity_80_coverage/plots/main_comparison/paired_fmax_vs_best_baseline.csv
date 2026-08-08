@@ -1,0 +1,4 @@
+ontology,competitor,competitor_label,deepgreengo_fmax,competitor_fmax,fmax_difference,paired_difference_ci_low,paired_difference_ci_high,fraction_bootstraps_deepgreengo_better,bootstrap_replicates
+molecular_function,deepgoplus,DeepGOPlus,0.3876869197083076,0.5427242261573106,-0.15503730644900304,-0.24234537333621087,-0.0989450496954031,0.0,1000
+biological_process,deepgoplus,DeepGOPlus,0.2266264400497469,0.4327213448593329,-0.20609490480958598,-0.26368062561290334,-0.1399791930794057,0.0,1000
+cellular_component,deepgoplus,DeepGOPlus,0.3554788212248817,0.5136835792487927,-0.15820475802391099,-0.2075374806948296,-0.09262510445196138,0.0,1000

@@ -1,1080 +1,0 @@
-========================================================
-  Job ID      : 44491779
-  Node        : fc107
-  Start time  : Mon Jul  6 20:05:55 MDT 2026
-========================================================
-1. Setting up DeepFRI Environment (TensorFlow) -> dgg_sota_tf
-2 channel Terms of Service accepted
-Channels:
- - defaults
-Platform: linux-64
-Collecting package metadata (repodata.json): - \ | / - \ | / - \ | / - \ | / - \ | / done
-Solving environment: \ done
-
-## Package Plan ##
-
-  environment location: /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf
-
-  added / updated specs:
-    - python=3.9
-
-
-The following NEW packages will be INSTALLED:
-
-  _libgcc_mutex      pkgs/main/linux-64::_libgcc_mutex-0.1-main 
-  _openmp_mutex      pkgs/main/linux-64::_openmp_mutex-5.1-52_gnu 
-  bzip2              pkgs/main/linux-64::bzip2-1.0.8-h5eee18b_6 
-  ca-certificates    pkgs/main/linux-64::ca-certificates-2026.5.14-h06a4308_0 
-  expat              pkgs/main/linux-64::expat-2.8.2-h7354ed3_1 
-  ld_impl_linux-64   pkgs/main/linux-64::ld_impl_linux-64-2.44-h9e0c5a2_3 
-  libexpat           pkgs/main/linux-64::libexpat-2.8.2-h7354ed3_1 
-  libffi             pkgs/main/linux-64::libffi-3.4.8-h06d3fd0_3 
-  libgcc             pkgs/main/linux-64::libgcc-15.2.0-h69a1729_8 
-  libgcc-ng          pkgs/main/linux-64::libgcc-ng-15.2.0-h166f726_8 
-  libnsl             pkgs/main/linux-64::libnsl-2.0.0-h5eee18b_0 
-  libstdcxx          pkgs/main/linux-64::libstdcxx-15.2.0-h39759b7_8 
-  libuuid            pkgs/main/linux-64::libuuid-1.41.5-h5eee18b_0 
-  libxcb             pkgs/main/linux-64::libxcb-1.17.0-h9b100fa_0 
-  libzlib            pkgs/main/linux-64::libzlib-1.3.2-h47b2149_0 
-  ncurses            pkgs/main/linux-64::ncurses-6.5-h7934f7d_0 
-  openssl            pkgs/main/linux-64::openssl-3.5.7-h1b28b03_0 
-  pip                pkgs/main/noarch::pip-26.0.1-pyhc872135_1 
-  pthread-stubs      pkgs/main/linux-64::pthread-stubs-0.3-h0ce48e5_1 
-  python             pkgs/main/linux-64::python-3.9.25-h0dcde21_1 
-  readline           pkgs/main/linux-64::readline-8.3-hc2a1206_0 
-  setuptools         pkgs/main/linux-64::setuptools-80.9.0-py39h06a4308_0 
-  sqlite             pkgs/main/linux-64::sqlite-3.53.2-h795bf6d_0 
-  tk                 pkgs/main/linux-64::tk-8.6.15-h54e0aa7_0 
-  tzdata             pkgs/main/noarch::tzdata-2026b-he532380_0 
-  wheel              pkgs/main/linux-64::wheel-0.45.1-py39h06a4308_0 
-  xorg-libx11        pkgs/main/linux-64::xorg-libx11-1.8.12-h9b100fa_1 
-  xorg-libxau        pkgs/main/linux-64::xorg-libxau-1.0.12-h9b100fa_0 
-  xorg-libxdmcp      pkgs/main/linux-64::xorg-libxdmcp-1.1.5-h9b100fa_0 
-  xorg-xorgproto     pkgs/main/linux-64::xorg-xorgproto-2024.1-h47b2149_2 
-  xz                 pkgs/main/linux-64::xz-5.8.2-h448239c_0 
-  zlib               pkgs/main/linux-64::zlib-1.3.2-h47b2149_0 
-
-
-
-Downloading and Extracting Packages: ...working... done
-Preparing transaction: / - \ | done
-Verifying transaction: - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ done
-Executing transaction: / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | done
-#
-# To activate this environment, use
-#
-#     $ conda activate dgg_sota_tf
-#
-# To deactivate an active environment, use
-#
-#     $ conda deactivate
-
-Requirement already satisfied: pip in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (26.0.1)
-Collecting tensorflow==2.13.0
-  Using cached tensorflow-2.13.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (3.4 kB)
-Collecting networkx
-  Downloading networkx-3.2.1-py3-none-any.whl.metadata (5.2 kB)
-Collecting biopython
-  Using cached biopython-1.85-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (13 kB)
-Collecting pandas
-  Using cached pandas-2.3.3-cp39-cp39-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata (91 kB)
-Collecting scikit-learn
-  Using cached scikit_learn-1.6.1-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (18 kB)
-Collecting tqdm
-  Using cached tqdm-4.68.3-py3-none-any.whl.metadata (57 kB)
-Collecting h5py
-  Using cached h5py-3.14.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (2.7 kB)
-Collecting absl-py>=1.0.0 (from tensorflow==2.13.0)
-  Using cached absl_py-2.3.1-py3-none-any.whl.metadata (3.3 kB)
-Collecting astunparse>=1.6.0 (from tensorflow==2.13.0)
-  Using cached astunparse-1.6.3-py2.py3-none-any.whl.metadata (4.4 kB)
-Collecting flatbuffers>=23.1.21 (from tensorflow==2.13.0)
-  Using cached flatbuffers-25.12.19-py2.py3-none-any.whl.metadata (1.0 kB)
-Collecting gast<=0.4.0,>=0.2.1 (from tensorflow==2.13.0)
-  Using cached gast-0.4.0-py3-none-any.whl.metadata (1.1 kB)
-Collecting google-pasta>=0.1.1 (from tensorflow==2.13.0)
-  Using cached google_pasta-0.2.0-py3-none-any.whl.metadata (814 bytes)
-Collecting grpcio<2.0,>=1.24.3 (from tensorflow==2.13.0)
-  Using cached grpcio-1.80.0-cp39-cp39-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (3.8 kB)
-Collecting keras<2.14,>=2.13.1 (from tensorflow==2.13.0)
-  Using cached keras-2.13.1-py3-none-any.whl.metadata (2.4 kB)
-Collecting libclang>=13.0.0 (from tensorflow==2.13.0)
-  Using cached libclang-18.1.1-py2.py3-none-manylinux2010_x86_64.whl.metadata (5.2 kB)
-Collecting numpy<=1.24.3,>=1.22 (from tensorflow==2.13.0)
-  Using cached numpy-1.24.3-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (5.6 kB)
-Collecting opt-einsum>=2.3.2 (from tensorflow==2.13.0)
-  Using cached opt_einsum-3.4.0-py3-none-any.whl.metadata (6.3 kB)
-Collecting packaging (from tensorflow==2.13.0)
-  Using cached packaging-26.2-py3-none-any.whl.metadata (3.5 kB)
-Collecting protobuf!=4.21.0,!=4.21.1,!=4.21.2,!=4.21.3,!=4.21.4,!=4.21.5,<5.0.0dev,>=3.20.3 (from tensorflow==2.13.0)
-  Using cached protobuf-4.25.9-cp37-abi3-manylinux2014_x86_64.whl.metadata (541 bytes)
-Requirement already satisfied: setuptools in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from tensorflow==2.13.0) (80.9.0)
-Collecting six>=1.12.0 (from tensorflow==2.13.0)
-  Using cached six-1.17.0-py2.py3-none-any.whl.metadata (1.7 kB)
-Collecting tensorboard<2.14,>=2.13 (from tensorflow==2.13.0)
-  Using cached tensorboard-2.13.0-py3-none-any.whl.metadata (1.8 kB)
-Collecting tensorflow-estimator<2.14,>=2.13.0 (from tensorflow==2.13.0)
-  Using cached tensorflow_estimator-2.13.0-py2.py3-none-any.whl.metadata (1.3 kB)
-Collecting termcolor>=1.1.0 (from tensorflow==2.13.0)
-  Using cached termcolor-3.1.0-py3-none-any.whl.metadata (6.4 kB)
-Collecting typing-extensions<4.6.0,>=3.6.6 (from tensorflow==2.13.0)
-  Using cached typing_extensions-4.5.0-py3-none-any.whl.metadata (8.5 kB)
-Collecting wrapt>=1.11.0 (from tensorflow==2.13.0)
-  Using cached wrapt-2.2.2-cp39-cp39-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (7.4 kB)
-Collecting tensorflow-io-gcs-filesystem>=0.23.1 (from tensorflow==2.13.0)
-  Using cached tensorflow_io_gcs_filesystem-0.37.1-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (14 kB)
-INFO: pip is looking at multiple versions of grpcio to determine which version is compatible with other requirements. This could take a while.
-Collecting grpcio<2.0,>=1.24.3 (from tensorflow==2.13.0)
-  Using cached grpcio-1.78.0-cp39-cp39-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (3.8 kB)
-  Using cached grpcio-1.76.0-cp39-cp39-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (3.7 kB)
-  Using cached grpcio-1.75.1-cp39-cp39-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (3.7 kB)
-  Using cached grpcio-1.75.0-cp39-cp39-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (3.7 kB)
-  Using cached grpcio-1.74.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (3.8 kB)
-Collecting google-auth<3,>=1.6.3 (from tensorboard<2.14,>=2.13->tensorflow==2.13.0)
-  Using cached google_auth-2.50.0-py3-none-any.whl.metadata (6.2 kB)
-Collecting google-auth-oauthlib<1.1,>=0.5 (from tensorboard<2.14,>=2.13->tensorflow==2.13.0)
-  Using cached google_auth_oauthlib-1.0.0-py2.py3-none-any.whl.metadata (2.7 kB)
-Collecting markdown>=2.6.8 (from tensorboard<2.14,>=2.13->tensorflow==2.13.0)
-  Using cached markdown-3.9-py3-none-any.whl.metadata (5.1 kB)
-Collecting requests<3,>=2.21.0 (from tensorboard<2.14,>=2.13->tensorflow==2.13.0)
-  Downloading requests-2.32.5-py3-none-any.whl.metadata (4.9 kB)
-Collecting tensorboard-data-server<0.8.0,>=0.7.0 (from tensorboard<2.14,>=2.13->tensorflow==2.13.0)
-  Using cached tensorboard_data_server-0.7.2-py3-none-any.whl.metadata (1.1 kB)
-Collecting werkzeug>=1.0.1 (from tensorboard<2.14,>=2.13->tensorflow==2.13.0)
-  Using cached werkzeug-3.1.8-py3-none-any.whl.metadata (4.0 kB)
-Requirement already satisfied: wheel>=0.26 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_tf/lib/python3.9/site-packages (from tensorboard<2.14,>=2.13->tensorflow==2.13.0) (0.45.1)
-Collecting pyasn1-modules>=0.2.1 (from google-auth<3,>=1.6.3->tensorboard<2.14,>=2.13->tensorflow==2.13.0)
-  Using cached pyasn1_modules-0.4.2-py3-none-any.whl.metadata (3.5 kB)
-Collecting cryptography>=38.0.3 (from google-auth<3,>=1.6.3->tensorboard<2.14,>=2.13->tensorflow==2.13.0)
-  Using cached cryptography-49.0.0-cp39-abi3-manylinux_2_28_x86_64.whl.metadata (4.3 kB)
-Collecting requests-oauthlib>=0.7.0 (from google-auth-oauthlib<1.1,>=0.5->tensorboard<2.14,>=2.13->tensorflow==2.13.0)
-  Using cached requests_oauthlib-2.0.0-py2.py3-none-any.whl.metadata (11 kB)
-Collecting charset_normalizer<4,>=2 (from requests<3,>=2.21.0->tensorboard<2.14,>=2.13->tensorflow==2.13.0)
-  Downloading charset_normalizer-3.4.8-cp39-cp39-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (41 kB)
-Collecting idna<4,>=2.5 (from requests<3,>=2.21.0->tensorboard<2.14,>=2.13->tensorflow==2.13.0)
-  Downloading idna-3.18-py3-none-any.whl.metadata (6.1 kB)
-Collecting urllib3<3,>=1.21.1 (from requests<3,>=2.21.0->tensorboard<2.14,>=2.13->tensorflow==2.13.0)
-  Downloading urllib3-2.6.3-py3-none-any.whl.metadata (6.9 kB)
-Collecting certifi>=2017.4.17 (from requests<3,>=2.21.0->tensorboard<2.14,>=2.13->tensorflow==2.13.0)
-  Downloading certifi-2026.6.17-py3-none-any.whl.metadata (2.5 kB)
-Collecting python-dateutil>=2.8.2 (from pandas)
-  Using cached python_dateutil-2.9.0.post0-py2.py3-none-any.whl.metadata (8.4 kB)
-Collecting pytz>=2020.1 (from pandas)
-  Using cached pytz-2026.2-py2.py3-none-any.whl.metadata (22 kB)
-Collecting tzdata>=2022.7 (from pandas)
-  Using cached tzdata-2026.2-py2.py3-none-any.whl.metadata (1.4 kB)
-Collecting scipy>=1.6.0 (from scikit-learn)
-  Using cached scipy-1.13.1-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (60 kB)
-Collecting joblib>=1.2.0 (from scikit-learn)
-  Using cached joblib-1.5.3-py3-none-any.whl.metadata (5.5 kB)
-Collecting threadpoolctl>=3.1.0 (from scikit-learn)
-  Using cached threadpoolctl-3.6.0-py3-none-any.whl.metadata (13 kB)
-Collecting cffi>=2.0.0 (from cryptography>=38.0.3->google-auth<3,>=1.6.3->tensorboard<2.14,>=2.13->tensorflow==2.13.0)
-  Downloading cffi-2.0.0-cp39-cp39-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (2.6 kB)
-INFO: pip is looking at multiple versions of cryptography to determine which version is compatible with other requirements. This could take a while.
-Collecting cryptography>=38.0.3 (from google-auth<3,>=1.6.3->tensorboard<2.14,>=2.13->tensorflow==2.13.0)
-  Using cached cryptography-48.0.1-cp39-abi3-manylinux_2_28_x86_64.whl.metadata (4.3 kB)
-  Using cached cryptography-48.0.0-cp39-abi3-manylinux_2_28_x86_64.whl.metadata (4.3 kB)
-  Using cached cryptography-47.0.0-cp38-abi3-manylinux_2_28_x86_64.whl.metadata (4.5 kB)
-  Using cached cryptography-46.0.7-cp38-abi3-manylinux_2_28_x86_64.whl.metadata (5.7 kB)
-  Using cached cryptography-46.0.6-cp38-abi3-manylinux_2_28_x86_64.whl.metadata (5.7 kB)
-  Using cached cryptography-46.0.5-cp38-abi3-manylinux_2_28_x86_64.whl.metadata (5.7 kB)
-  Using cached cryptography-46.0.4-cp38-abi3-manylinux_2_28_x86_64.whl.metadata (5.7 kB)
-INFO: pip is still looking at multiple versions of cryptography to determine which version is compatible with other requirements. This could take a while.
-  Using cached cryptography-46.0.3-cp38-abi3-manylinux_2_28_x86_64.whl.metadata (5.7 kB)
-  Using cached cryptography-46.0.2-cp38-abi3-manylinux_2_28_x86_64.whl.metadata (5.7 kB)
-  Using cached cryptography-46.0.1-cp38-abi3-manylinux_2_28_x86_64.whl.metadata (5.7 kB)
-  Using cached cryptography-46.0.0-cp38-abi3-manylinux_2_28_x86_64.whl.metadata (5.7 kB)
-  Using cached cryptography-45.0.7-cp37-abi3-manylinux_2_28_x86_64.whl.metadata (5.7 kB)
-Collecting pycparser (from cffi>=2.0.0->cryptography>=38.0.3->google-auth<3,>=1.6.3->tensorboard<2.14,>=2.13->tensorflow==2.13.0)
-  Downloading pycparser-2.23-py3-none-any.whl.metadata (993 bytes)
-Collecting importlib-metadata>=4.4 (from markdown>=2.6.8->tensorboard<2.14,>=2.13->tensorflow==2.13.0)
-  Using cached importlib_metadata-8.7.1-py3-none-any.whl.metadata (4.7 kB)
-Collecting zipp>=3.20 (from importlib-metadata>=4.4->markdown>=2.6.8->tensorboard<2.14,>=2.13->tensorflow==2.13.0)
-  Using cached zipp-3.23.1-py3-none-any.whl.metadata (3.6 kB)
-Collecting pyasn1<0.7.0,>=0.6.1 (from pyasn1-modules>=0.2.1->google-auth<3,>=1.6.3->tensorboard<2.14,>=2.13->tensorflow==2.13.0)
-  Using cached pyasn1-0.6.3-py3-none-any.whl.metadata (8.4 kB)
-Collecting oauthlib>=3.0.0 (from requests-oauthlib>=0.7.0->google-auth-oauthlib<1.1,>=0.5->tensorboard<2.14,>=2.13->tensorflow==2.13.0)
-  Using cached oauthlib-3.3.1-py3-none-any.whl.metadata (7.9 kB)
-Collecting markupsafe>=2.1.1 (from werkzeug>=1.0.1->tensorboard<2.14,>=2.13->tensorflow==2.13.0)
-  Downloading markupsafe-3.0.3-cp39-cp39-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.7 kB)
-Using cached tensorflow-2.13.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (524.1 MB)
-Using cached gast-0.4.0-py3-none-any.whl (9.8 kB)
-Using cached grpcio-1.74.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (6.2 MB)
-Using cached keras-2.13.1-py3-none-any.whl (1.7 MB)
-Using cached numpy-1.24.3-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (17.3 MB)
-Using cached protobuf-4.25.9-cp37-abi3-manylinux2014_x86_64.whl (295 kB)
-Using cached tensorboard-2.13.0-py3-none-any.whl (5.6 MB)
-Using cached google_auth-2.50.0-py3-none-any.whl (246 kB)
-Using cached google_auth_oauthlib-1.0.0-py2.py3-none-any.whl (18 kB)
-Downloading requests-2.32.5-py3-none-any.whl (64 kB)
-Downloading charset_normalizer-3.4.8-cp39-cp39-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (214 kB)
-Downloading idna-3.18-py3-none-any.whl (65 kB)
-Using cached tensorboard_data_server-0.7.2-py3-none-any.whl (2.4 kB)
-Using cached tensorflow_estimator-2.13.0-py2.py3-none-any.whl (440 kB)
-Using cached typing_extensions-4.5.0-py3-none-any.whl (27 kB)
-Downloading urllib3-2.6.3-py3-none-any.whl (131 kB)
-Downloading networkx-3.2.1-py3-none-any.whl (1.6 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.6/1.6 MB 17.9 MB/s  0:00:00
-Using cached biopython-1.85-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (3.2 MB)
-Using cached pandas-2.3.3-cp39-cp39-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (12.8 MB)
-Using cached scikit_learn-1.6.1-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (13.5 MB)
-Using cached tqdm-4.68.3-py3-none-any.whl (78 kB)
-Using cached h5py-3.14.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (4.6 MB)
-Using cached absl_py-2.3.1-py3-none-any.whl (135 kB)
-Using cached astunparse-1.6.3-py2.py3-none-any.whl (12 kB)
-Using cached six-1.17.0-py2.py3-none-any.whl (11 kB)
-Downloading certifi-2026.6.17-py3-none-any.whl (133 kB)
-Using cached cryptography-45.0.7-cp37-abi3-manylinux_2_28_x86_64.whl (4.5 MB)
-Downloading cffi-2.0.0-cp39-cp39-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (216 kB)
-Using cached flatbuffers-25.12.19-py2.py3-none-any.whl (26 kB)
-Using cached google_pasta-0.2.0-py3-none-any.whl (57 kB)
-Using cached joblib-1.5.3-py3-none-any.whl (309 kB)
-Using cached libclang-18.1.1-py2.py3-none-manylinux2010_x86_64.whl (24.5 MB)
-Using cached markdown-3.9-py3-none-any.whl (107 kB)
-Using cached importlib_metadata-8.7.1-py3-none-any.whl (27 kB)
-Using cached opt_einsum-3.4.0-py3-none-any.whl (71 kB)
-Using cached pyasn1_modules-0.4.2-py3-none-any.whl (181 kB)
-Using cached pyasn1-0.6.3-py3-none-any.whl (83 kB)
-Using cached python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
-Using cached pytz-2026.2-py2.py3-none-any.whl (510 kB)
-Using cached requests_oauthlib-2.0.0-py2.py3-none-any.whl (24 kB)
-Using cached oauthlib-3.3.1-py3-none-any.whl (160 kB)
-Using cached scipy-1.13.1-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (38.6 MB)
-Using cached tensorflow_io_gcs_filesystem-0.37.1-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (5.1 MB)
-Using cached termcolor-3.1.0-py3-none-any.whl (7.7 kB)
-Using cached threadpoolctl-3.6.0-py3-none-any.whl (18 kB)
-Using cached tzdata-2026.2-py2.py3-none-any.whl (349 kB)
-Using cached werkzeug-3.1.8-py3-none-any.whl (226 kB)
-Downloading markupsafe-3.0.3-cp39-cp39-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (20 kB)
-Using cached wrapt-2.2.2-cp39-cp39-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (152 kB)
-Using cached zipp-3.23.1-py3-none-any.whl (10 kB)
-Using cached packaging-26.2-py3-none-any.whl (100 kB)
-Downloading pycparser-2.23-py3-none-any.whl (118 kB)
-Installing collected packages: pytz, libclang, flatbuffers, zipp, wrapt, urllib3, tzdata, typing-extensions, tqdm, threadpoolctl, termcolor, tensorflow-io-gcs-filesystem, tensorflow-estimator, tensorboard-data-server, six, pycparser, pyasn1, protobuf, packaging, opt-einsum, oauthlib, numpy, networkx, markupsafe, keras, joblib, idna, grpcio, gast, charset_normalizer, certifi, absl-py, werkzeug, scipy, requests, python-dateutil, pyasn1-modules, importlib-metadata, h5py, google-pasta, cffi, biopython, astunparse, scikit-learn, requests-oauthlib, pandas, markdown, cryptography, google-auth, google-auth-oauthlib, tensorboard, tensorflow
-
-Successfully installed absl-py-2.3.1 astunparse-1.6.3 biopython-1.85 certifi-2026.6.17 cffi-2.0.0 charset_normalizer-3.4.8 cryptography-45.0.7 flatbuffers-25.12.19 gast-0.4.0 google-auth-2.50.0 google-auth-oauthlib-1.0.0 google-pasta-0.2.0 grpcio-1.74.0 h5py-3.14.0 idna-3.18 importlib-metadata-8.7.1 joblib-1.5.3 keras-2.13.1 libclang-18.1.1 markdown-3.9 markupsafe-3.0.3 networkx-3.2.1 numpy-1.24.3 oauthlib-3.3.1 opt-einsum-3.4.0 packaging-26.2 pandas-2.3.3 protobuf-4.25.9 pyasn1-0.6.3 pyasn1-modules-0.4.2 pycparser-2.23 python-dateutil-2.9.0.post0 pytz-2026.2 requests-2.32.5 requests-oauthlib-2.0.0 scikit-learn-1.6.1 scipy-1.13.1 six-1.17.0 tensorboard-2.13.0 tensorboard-data-server-0.7.2 tensorflow-2.13.0 tensorflow-estimator-2.13.0 tensorflow-io-gcs-filesystem-0.37.1 termcolor-3.1.0 threadpoolctl-3.6.0 tqdm-4.68.3 typing-extensions-4.5.0 tzdata-2026.2 urllib3-2.6.3 werkzeug-3.1.8 wrapt-2.2.2 zipp-3.23.1
-2. Setting up DPFunc & TransFun Environment (PyTorch) -> dgg_sota_torch
-2 channel Terms of Service accepted
-Channels:
- - defaults
-Platform: linux-64
-Collecting package metadata (repodata.json): - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | done
-Solving environment: - done
-
-## Package Plan ##
-
-  environment location: /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch
-
-  added / updated specs:
-    - python=3.9
-
-
-The following NEW packages will be INSTALLED:
-
-  _libgcc_mutex      pkgs/main/linux-64::_libgcc_mutex-0.1-main 
-  _openmp_mutex      pkgs/main/linux-64::_openmp_mutex-5.1-52_gnu 
-  bzip2              pkgs/main/linux-64::bzip2-1.0.8-h5eee18b_6 
-  ca-certificates    pkgs/main/linux-64::ca-certificates-2026.5.14-h06a4308_0 
-  expat              pkgs/main/linux-64::expat-2.8.2-h7354ed3_1 
-  ld_impl_linux-64   pkgs/main/linux-64::ld_impl_linux-64-2.44-h9e0c5a2_3 
-  libexpat           pkgs/main/linux-64::libexpat-2.8.2-h7354ed3_1 
-  libffi             pkgs/main/linux-64::libffi-3.4.8-h06d3fd0_3 
-  libgcc             pkgs/main/linux-64::libgcc-15.2.0-h69a1729_8 
-  libgcc-ng          pkgs/main/linux-64::libgcc-ng-15.2.0-h166f726_8 
-  libnsl             pkgs/main/linux-64::libnsl-2.0.0-h5eee18b_0 
-  libstdcxx          pkgs/main/linux-64::libstdcxx-15.2.0-h39759b7_8 
-  libuuid            pkgs/main/linux-64::libuuid-1.41.5-h5eee18b_0 
-  libxcb             pkgs/main/linux-64::libxcb-1.17.0-h9b100fa_0 
-  libzlib            pkgs/main/linux-64::libzlib-1.3.2-h47b2149_0 
-  ncurses            pkgs/main/linux-64::ncurses-6.5-h7934f7d_0 
-  openssl            pkgs/main/linux-64::openssl-3.5.7-h1b28b03_0 
-  pip                pkgs/main/noarch::pip-26.0.1-pyhc872135_1 
-  pthread-stubs      pkgs/main/linux-64::pthread-stubs-0.3-h0ce48e5_1 
-  python             pkgs/main/linux-64::python-3.9.25-h0dcde21_1 
-  readline           pkgs/main/linux-64::readline-8.3-hc2a1206_0 
-  setuptools         pkgs/main/linux-64::setuptools-80.9.0-py39h06a4308_0 
-  sqlite             pkgs/main/linux-64::sqlite-3.53.2-h795bf6d_0 
-  tk                 pkgs/main/linux-64::tk-8.6.15-h54e0aa7_0 
-  tzdata             pkgs/main/noarch::tzdata-2026b-he532380_0 
-  wheel              pkgs/main/linux-64::wheel-0.45.1-py39h06a4308_0 
-  xorg-libx11        pkgs/main/linux-64::xorg-libx11-1.8.12-h9b100fa_1 
-  xorg-libxau        pkgs/main/linux-64::xorg-libxau-1.0.12-h9b100fa_0 
-  xorg-libxdmcp      pkgs/main/linux-64::xorg-libxdmcp-1.1.5-h9b100fa_0 
-  xorg-xorgproto     pkgs/main/linux-64::xorg-xorgproto-2024.1-h47b2149_2 
-  xz                 pkgs/main/linux-64::xz-5.8.2-h448239c_0 
-  zlib               pkgs/main/linux-64::zlib-1.3.2-h47b2149_0 
-
-
-
-Downloading and Extracting Packages: ...working... done
-Preparing transaction: | / - \ | / - \ | / - \ | / - done
-Verifying transaction: | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ done
-Executing transaction: / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | done
-#
-# To activate this environment, use
-#
-#     $ conda activate dgg_sota_torch
-#
-# To deactivate an active environment, use
-#
-#     $ conda deactivate
-
-2 channel Terms of Service accepted
-Channels:
- - pytorch
- - nvidia
- - defaults
-Platform: linux-64
-Collecting package metadata (repodata.json): - \ | / - \ | / - \ | / - \ | / - \ | / - done
-Solving environment: | / done
-
-## Package Plan ##
-
-  environment location: /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch
-
-  added / updated specs:
-    - pytorch
-    - pytorch-cuda=11.8
-    - torchaudio
-    - torchvision
-
-
-The following packages will be downloaded:
-
-    package                    |            build
-    ---------------------------|-----------------
-    cairo-1.18.4               |       ha82d1dd_1         660 KB
-    fontconfig-2.17.1          |       h062c814_0         269 KB
-    intel-openmp-2023.0.0      |   h9e868ea_25371        15.1 MB
-    libxml2-2.14.4             |       h3457413_0         646 KB
-    mkl-2023.1.0               |   h213fc3f_46344       171.5 MB
-    mkl-service-2.4.0          |   py39h5eee18b_2          68 KB
-    mkl_fft-1.3.11             |   py39h5eee18b_0         199 KB
-    mkl_random-1.2.8           |   py39h1128e8f_0         319 KB
-    numpy-2.0.1                |   py39h5f9d8c6_1          11 KB
-    numpy-base-2.0.1           |   py39hb5e798b_1         7.9 MB
-    tbb-2021.8.0               |       hdb19cb5_0         1.6 MB
-    ------------------------------------------------------------
-                                           Total:       198.3 MB
-
-The following NEW packages will be INSTALLED:
-
-  aom                pkgs/main/linux-64::aom-3.13.2-h664349e_0 
-  blas               pkgs/main/linux-64::blas-1.0-mkl 
-  brotlicffi         pkgs/main/linux-64::brotlicffi-1.0.9.2-py39hbdd6827_2 
-  cairo              pkgs/main/linux-64::cairo-1.18.4-ha82d1dd_1 
-  certifi            pkgs/main/linux-64::certifi-2025.10.5-py39h06a4308_0 
-  cffi               pkgs/main/linux-64::cffi-2.0.0-py39h4eded50_0 
-  charset-normalizer pkgs/main/linux-64::charset-normalizer-3.4.4-py39h06a4308_0 
-  cuda-cudart        nvidia/linux-64::cuda-cudart-11.8.89-0 
-  cuda-cupti         nvidia/linux-64::cuda-cupti-11.8.87-0 
-  cuda-libraries     nvidia/linux-64::cuda-libraries-11.8.0-0 
-  cuda-nvrtc         nvidia/linux-64::cuda-nvrtc-11.8.89-0 
-  cuda-nvtx          nvidia/linux-64::cuda-nvtx-11.8.86-0 
-  cuda-runtime       nvidia/linux-64::cuda-runtime-11.8.0-0 
-  cuda-version       nvidia/noarch::cuda-version-13.3-h87dbc72_3 
-  dav1d              pkgs/main/linux-64::dav1d-1.5.3-h12c9f22_1 
-  ffmpeg             pkgs/main/linux-64::ffmpeg-4.2.2-h20bf706_0 
-  filelock           pkgs/main/linux-64::filelock-3.17.0-py39h06a4308_0 
-  fontconfig         pkgs/main/linux-64::fontconfig-2.17.1-h062c814_0 
-  freetype           pkgs/main/linux-64::freetype-2.14.1-hf5b9546_0 
-  fribidi            pkgs/main/linux-64::fribidi-1.0.16-h10f3c28_1 
-  giflib             pkgs/main/linux-64::giflib-6.1.3-h621bd71_1 
-  gmp                pkgs/main/linux-64::gmp-6.3.0-h6a678d5_0 
-  gmpy2              pkgs/main/linux-64::gmpy2-2.2.1-py39h5eee18b_0 
-  gnutls             pkgs/main/linux-64::gnutls-3.6.15-he1e5248_0 
-  graphite2          pkgs/main/linux-64::graphite2-1.3.15-h9ba177b_0 
-  harfbuzz           pkgs/main/linux-64::harfbuzz-10.2.0-hdfddeaa_1 
-  icu                pkgs/main/linux-64::icu-73.1-h6a678d5_0 
-  idna               pkgs/main/linux-64::idna-3.11-py39h06a4308_0 
-  intel-openmp       pkgs/main/linux-64::intel-openmp-2023.0.0-h9e868ea_25371 
-  jinja2             pkgs/main/linux-64::jinja2-3.1.6-py39h06a4308_0 
-  jpeg               pkgs/main/linux-64::jpeg-9f-h5ce9db8_0 
-  lame               pkgs/main/linux-64::lame-3.100-hbd0596d_1 
-  lcms2              pkgs/main/linux-64::lcms2-2.19-he283960_0 
-  lerc               pkgs/main/linux-64::lerc-4.1.0-h7354ed3_2 
-  libavif            pkgs/main/linux-64::libavif-1.3.0-h2b90b00_1 
-  libcublas          nvidia/linux-64::libcublas-11.11.3.6-0 
-  libcufft           nvidia/linux-64::libcufft-10.9.0.58-0 
-  libcufile          nvidia/linux-64::libcufile-1.18.1.6-hfa86176_0 
-  libcurand          nvidia/linux-64::libcurand-10.4.3.29-h7a5d6f9_0 
-  libcusolver        nvidia/linux-64::libcusolver-11.4.1.48-0 
-  libcusparse        nvidia/linux-64::libcusparse-11.7.5.86-0 
-  libdeflate         pkgs/main/linux-64::libdeflate-1.22-h5eee18b_0 
-  libglib            pkgs/main/linux-64::libglib-2.86.3-ha16e27a_1 
-  libiconv           pkgs/main/linux-64::libiconv-1.18-h75a1612_0 
-  libidn2            pkgs/main/linux-64::libidn2-2.3.4-h5eee18b_0 
-  libjpeg-turbo      pytorch/linux-64::libjpeg-turbo-2.0.0-h9bf148f_0 
-  libnl              pkgs/main/linux-64::libnl-3.11.0-hb25bd0a_0 
-  libnpp             nvidia/linux-64::libnpp-11.8.0.86-0 
-  libnvjpeg          nvidia/linux-64::libnvjpeg-11.9.0.86-0 
-  libopenjpeg        pkgs/main/linux-64::libopenjpeg-2.5.4-hee96239_1 
-  libopus            pkgs/main/linux-64::libopus-1.6.1-h9f10d21_0 
-  libpng             pkgs/main/linux-64::libpng-1.6.56-h22898a0_0 
-  libstdcxx-ng       pkgs/main/linux-64::libstdcxx-ng-15.2.0-hc03a8fd_8 
-  libtasn1           pkgs/main/linux-64::libtasn1-4.21.0-h27ab2c4_0 
-  libtiff            pkgs/main/linux-64::libtiff-4.7.1-h029b1ac_0 
-  libunistring       pkgs/main/linux-64::libunistring-0.9.10-h27cfd23_0 
-  libvpx             pkgs/main/linux-64::libvpx-1.7.0-h439df22_0 
-  libwebp            pkgs/main/linux-64::libwebp-1.6.0-hfca4578_1 
-  libwebp-base       pkgs/main/linux-64::libwebp-base-1.6.0-hb7bb969_0 
-  libxml2            pkgs/main/linux-64::libxml2-2.14.4-h3457413_0 
-  llvm-openmp        pkgs/main/linux-64::llvm-openmp-14.0.6-h9e868ea_0 
-  lz4-c              pkgs/main/linux-64::lz4-c-1.9.4-h7354ed3_5 
-  markupsafe         pkgs/main/linux-64::markupsafe-3.0.2-py39h5eee18b_0 
-  mkl                pkgs/main/linux-64::mkl-2023.1.0-h213fc3f_46344 
-  mkl-service        pkgs/main/linux-64::mkl-service-2.4.0-py39h5eee18b_2 
-  mkl_fft            pkgs/main/linux-64::mkl_fft-1.3.11-py39h5eee18b_0 
-  mkl_random         pkgs/main/linux-64::mkl_random-1.2.8-py39h1128e8f_0 
-  mpc                pkgs/main/linux-64::mpc-1.3.1-h5eee18b_0 
-  mpfr               pkgs/main/linux-64::mpfr-4.2.1-h5eee18b_0 
-  mpmath             pkgs/main/linux-64::mpmath-1.3.0-py39h06a4308_0 
-  nettle             pkgs/main/linux-64::nettle-3.7.3-hbbd107a_1 
-  networkx           pkgs/main/linux-64::networkx-3.2.1-py39h06a4308_0 
-  numpy              pkgs/main/linux-64::numpy-2.0.1-py39h5f9d8c6_1 
-  numpy-base         pkgs/main/linux-64::numpy-base-2.0.1-py39hb5e798b_1 
-  openh264           pkgs/main/linux-64::openh264-2.1.1-h4ff587b_0 
-  openjpeg           pkgs/main/linux-64::openjpeg-2.5.4-h4e0627c_1 
-  pcre2              pkgs/main/linux-64::pcre2-10.46-hf426167_0 
-  pillow             pkgs/main/linux-64::pillow-11.3.0-py39hb1c3d2d_0 
-  pixman             pkgs/main/linux-64::pixman-0.46.4-h86ba9f7_1 
-  pycparser          pkgs/main/linux-64::pycparser-2.23-py39h06a4308_0 
-  pysocks            pkgs/main/linux-64::pysocks-1.7.1-py39h06a4308_1 
-  pytorch            pytorch/linux-64::pytorch-2.5.1-py3.9_cuda11.8_cudnn9.1.0_0 
-  pytorch-cuda       pytorch/linux-64::pytorch-cuda-11.8-h7e8668a_6 
-  pytorch-mutex      pytorch/noarch::pytorch-mutex-1.0-cuda 
-  pyyaml             pkgs/main/linux-64::pyyaml-6.0.2-py39h5eee18b_0 
-  rdma-core          pkgs/main/linux-64::rdma-core-61.0-h7354ed3_0 
-  requests           pkgs/main/linux-64::requests-2.32.5-py39h06a4308_0 
-  sympy              pkgs/main/linux-64::sympy-1.14.0-py39h06a4308_0 
-  tbb                pkgs/main/linux-64::tbb-2021.8.0-hdb19cb5_0 
-  torchaudio         pytorch/linux-64::torchaudio-2.5.1-py39_cu118 
-  torchtriton        pytorch/linux-64::torchtriton-3.1.0-py39 
-  torchvision        pytorch/linux-64::torchvision-0.20.1-py39_cu118 
-  typing_extensions  pkgs/main/linux-64::typing_extensions-4.15.0-py39h06a4308_0 
-  urllib3            pkgs/main/linux-64::urllib3-2.5.0-py39h06a4308_0 
-  x264               pkgs/main/linux-64::x264-1!157.20191217-h7b6447c_0 
-  xorg-libxext       pkgs/main/linux-64::xorg-libxext-1.3.6-h9b100fa_0 
-  xorg-libxrender    pkgs/main/linux-64::xorg-libxrender-0.9.12-h9b100fa_0 
-  yaml               pkgs/main/linux-64::yaml-0.2.5-h7b6447c_0 
-  zstd               pkgs/main/linux-64::zstd-1.5.7-h11fc155_0 
-
-
-
-Downloading and Extracting Packages: ...working...mkl-2023.1.0         | 171.5 MB  |            |   0% 
-intel-openmp-2023.0. | 15.1 MB   |            |   0% [A
-
-numpy-base-2.0.1     | 7.9 MB    |            |   0% [A[A
-
-
-tbb-2021.8.0         | 1.6 MB    |            |   0% [A[A[A
-
-
-
-cairo-1.18.4         | 660 KB    |            |   0% [A[A[A[A
-
-
-
-
-libxml2-2.14.4       | 646 KB    |            |   0% [A[A[A[A[A
-
-
-
-
-
-mkl_random-1.2.8     | 319 KB    |            |   0% [A[A[A[A[A[A
-
-
-
-
-
-
-fontconfig-2.17.1    | 269 KB    |            |   0% [A[A[A[A[A[A[A
-
-
-
-
-
-
-
-mkl_fft-1.3.11       | 199 KB    |            |   0% [A[A[A[A[A[A[A[A
-
-
-
-
-
-
-
-
-mkl-service-2.4.0    | 68 KB     |            |   0% [A[A[A[A[A[A[A[A[A
-
-
-
-
-
-
-
-
-
-numpy-2.0.1          | 11 KB     |            |   0% [A[A[A[A[A[A[A[A[A[A
-intel-openmp-2023.0. | 15.1 MB   |            |   0% [Amkl-2023.1.0         | 171.5 MB  |            |   0% 
-
-
-
-cairo-1.18.4         | 660 KB    | 9          |  10% [A[A[A[A
-
-
-tbb-2021.8.0         | 1.6 MB    | 2          |   3% [A[A[A
-
-
-
-cairo-1.18.4         | 660 KB    | ########## | 100% [A[A[A[A
-intel-openmp-2023.0. | 15.1 MB   | ##2        |  22% [Amkl-2023.1.0         | 171.5 MB  | 1          |   1% 
-
-
-
-
-libxml2-2.14.4       | 646 KB    | 2          |   2% [A[A[A[A[A
-
-
-tbb-2021.8.0         | 1.6 MB    | ########## | 100% [A[A[A
-
-
-tbb-2021.8.0         | 1.6 MB    | ########## | 100% [A[A[A
-
-
-
-
-
-mkl_random-1.2.8     | 319 KB    | 5          |   5% [A[A[A[A[A[A
-
-numpy-base-2.0.1     | 7.9 MB    |            |   0% [A[A
-
-
-
-
-
-mkl_random-1.2.8     | 319 KB    | ########## | 100% [A[A[A[A[A[A
-
-
-
-
-libxml2-2.14.4       | 646 KB    | ########## | 100% [A[A[A[A[A
-intel-openmp-2023.0. | 15.1 MB   | ####6      |  46% [Amkl-2023.1.0         | 171.5 MB  | 3          |   4% 
-
-
-
-
-
-
-
-mkl_fft-1.3.11       | 199 KB    | 8          |   8% [A[A[A[A[A[A[A[A
-
-
-
-
-
-
-fontconfig-2.17.1    | 269 KB    | 5          |   6% [A[A[A[A[A[A[A
-
-
-
-
-
-
-
-mkl_fft-1.3.11       | 199 KB    | ########## | 100% [A[A[A[A[A[A[A[A
-
-
-
-
-
-
-fontconfig-2.17.1    | 269 KB    | ########## | 100% [A[A[A[A[A[A[A
-
-numpy-base-2.0.1     | 7.9 MB    | ##7        |  28% [A[A
-
-
-
-
-
-
-
-
-mkl-service-2.4.0    | 68 KB     | ##3        |  23% [A[A[A[A[A[A[A[A[A
-
-
-
-
-
-
-
-
-mkl-service-2.4.0    | 68 KB     | ########## | 100% [A[A[A[A[A[A[A[A[A
-intel-openmp-2023.0. | 15.1 MB   | ######5    |  66% [Amkl-2023.1.0         | 171.5 MB  | 6          |   6% 
-
-numpy-base-2.0.1     | 7.9 MB    | ######1    |  61% [A[A
-
-
-
-
-
-
-
-
-
-numpy-2.0.1          | 11 KB     | ########## | 100% [A[A[A[A[A[A[A[A[A[A
-
-
-
-
-
-
-
-
-
-numpy-2.0.1          | 11 KB     | ########## | 100% [A[A[A[A[A[A[A[A[A[A
-
-
-tbb-2021.8.0         | 1.6 MB    | ########## | 100% [A[A[Amkl-2023.1.0         | 171.5 MB  | 8          |   9% 
-intel-openmp-2023.0. | 15.1 MB   | #########  |  90% [Amkl-2023.1.0         | 171.5 MB  | #2         |  12% mkl-2023.1.0         | 171.5 MB  | #5         |  16% 
-
-numpy-base-2.0.1     | 7.9 MB    | ########## | 100% [A[A
-
-numpy-base-2.0.1     | 7.9 MB    | ########## | 100% [A[A
-intel-openmp-2023.0. | 15.1 MB   | ########## | 100% [A
-
-
-
-cairo-1.18.4         | 660 KB    | ########## | 100% [A[A[A[A
-
-
-
-cairo-1.18.4         | 660 KB    | ########## | 100% [A[A[A[A
-
-
-
-
-
-mkl_random-1.2.8     | 319 KB    | ########## | 100% [A[A[A[A[A[A
-
-
-
-
-
-mkl_random-1.2.8     | 319 KB    | ########## | 100% [A[A[A[A[A[Amkl-2023.1.0         | 171.5 MB  | ##         |  20% mkl-2023.1.0         | 171.5 MB  | ##4        |  24% 
-
-
-
-
-libxml2-2.14.4       | 646 KB    | ########## | 100% [A[A[A[A[A
-
-
-
-
-libxml2-2.14.4       | 646 KB    | ########## | 100% [A[A[A[A[Amkl-2023.1.0         | 171.5 MB  | ##8        |  28% 
-
-
-
-
-
-
-
-mkl_fft-1.3.11       | 199 KB    | ########## | 100% [A[A[A[A[A[A[A[A
-
-
-
-
-
-
-
-mkl_fft-1.3.11       | 199 KB    | ########## | 100% [A[A[A[A[A[A[A[Amkl-2023.1.0         | 171.5 MB  | ###2       |  33% 
-
-
-
-
-
-
-
-
-mkl-service-2.4.0    | 68 KB     | ########## | 100% [A[A[A[A[A[A[A[A[A
-
-
-
-
-
-
-
-
-mkl-service-2.4.0    | 68 KB     | ########## | 100% [A[A[A[A[A[A[A[A[A
-
-
-
-
-
-
-
-
-
-numpy-2.0.1          | 11 KB     | ########## | 100% [A[A[A[A[A[A[A[A[A[Amkl-2023.1.0         | 171.5 MB  | ###6       |  37% 
-
-
-
-
-
-
-fontconfig-2.17.1    | 269 KB    | ########## | 100% [A[A[A[A[A[A[A
-
-
-
-
-
-
-fontconfig-2.17.1    | 269 KB    | ########## | 100% [A[A[A[A[A[A[Amkl-2023.1.0         | 171.5 MB  | ####       |  40% mkl-2023.1.0         | 171.5 MB  | ####4      |  44% mkl-2023.1.0         | 171.5 MB  | ####7      |  48% mkl-2023.1.0         | 171.5 MB  | #####1     |  51% mkl-2023.1.0         | 171.5 MB  | #####5     |  55% mkl-2023.1.0         | 171.5 MB  | #####8     |  59% mkl-2023.1.0         | 171.5 MB  | ######2    |  62% 
-intel-openmp-2023.0. | 15.1 MB   | ########## | 100% [Amkl-2023.1.0         | 171.5 MB  | ######5    |  65% mkl-2023.1.0         | 171.5 MB  | ######8    |  69% mkl-2023.1.0         | 171.5 MB  | #######2   |  73% mkl-2023.1.0         | 171.5 MB  | #######5   |  76% mkl-2023.1.0         | 171.5 MB  | #######9   |  79% mkl-2023.1.0         | 171.5 MB  | ########2  |  83% mkl-2023.1.0         | 171.5 MB  | ########6  |  86% mkl-2023.1.0         | 171.5 MB  | ########9  |  90% mkl-2023.1.0         | 171.5 MB  | #########3 |  93% mkl-2023.1.0         | 171.5 MB  | #########6 |  97% mkl-2023.1.0         | 171.5 MB  | ########## | 100% mkl-2023.1.0         | 171.5 MB  | ########## | 100% 
-
-numpy-base-2.0.1     | 7.9 MB    | ########## | 100% [A[A                                                     
-                                                     [A
-
-                                                     [A[A
-
-
-                                                     [A[A[A
-
-
-
-                                                     [A[A[A[A
-
-
-
-
-                                                     [A[A[A[A[A
-
-
-
-
-
-                                                     [A[A[A[A[A[A
-
-
-
-
-
-
-                                                     [A[A[A[A[A[A[A
-
-
-
-
-
-
-
-                                                     [A[A[A[A[A[A[A[A
-
-
-
-
-
-
-
-
-                                                     [A[A[A[A[A[A[A[A[A
-
-
-
-
-
-
-
-
-
-                                                     [A[A[A[A[A[A[A[A[A[A done
-Preparing transaction: \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | done
-Verifying transaction: - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ done
-Executing transaction: / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - done
-2 channel Terms of Service accepted
-Channels:
- - bioconda
- - defaults
-Platform: linux-64
-Collecting package metadata (repodata.json): - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ done
-Solving environment: / - done
-
-## Package Plan ##
-
-  environment location: /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch
-
-  added / updated specs:
-    - diamond
-
-
-The following NEW packages will be INSTALLED:
-
-  diamond            bioconda/linux-64::diamond-2.1.11-h5ca1c30_2 
-
-
-
-Downloading and Extracting Packages: ...working... done
-Preparing transaction: | done
-Verifying transaction: - done
-Executing transaction: | done
-2 channel Terms of Service accepted
-Channels:
- - conda-forge
- - defaults
-Platform: linux-64
-Collecting package metadata (repodata.json): - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ done
-Solving environment: / - \ | / - \ | / - \ | / - \ | / - \ | / - done
-
-## Package Plan ##
-
-  environment location: /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch
-
-  added / updated specs:
-    - openbabel
-
-
-The following packages will be downloaded:
-
-    package                    |            build
-    ---------------------------|-----------------
-    fontconfig-2.17.1          |       h27c8c51_0         264 KB  conda-forge
-    libfreetype-2.14.1         |       ha770c72_0           7 KB  conda-forge
-    libfreetype6-2.14.1        |       h73754d4_0         378 KB  conda-forge
-    libsqlite-3.53.3           |       h0c1763c_0         940 KB  conda-forge
-    python-3.9.18              |h0755675_0_cpython        22.7 MB  conda-forge
-    python_abi-3.9             |           8_cp39           7 KB  conda-forge
-    ------------------------------------------------------------
-                                           Total:        24.2 MB
-
-The following NEW packages will be INSTALLED:
-
-  libfreetype        conda-forge/linux-64::libfreetype-2.14.1-ha770c72_0 
-  libfreetype6       conda-forge/linux-64::libfreetype6-2.14.1-h73754d4_0 
-  libsqlite          conda-forge/linux-64::libsqlite-3.53.3-h0c1763c_0 
-  openbabel          conda-forge/linux-64::openbabel-3.1.1-py39h2d01fe1_9 
-  python_abi         conda-forge/noarch::python_abi-3.9-8_cp39 
-
-The following packages will be UPDATED:
-
-  ca-certificates    pkgs/main/linux-64::ca-certificates-2~ --> conda-forge/noarch::ca-certificates-2026.6.17-hbd8a1cb_0 
-  libuuid              pkgs/main::libuuid-1.41.5-h5eee18b_0 --> conda-forge::libuuid-2.42.2-h5347b49_0 
-  openssl               pkgs/main::openssl-3.5.7-h1b28b03_0 --> conda-forge::openssl-3.6.3-h35e630c_0 
-
-The following packages will be SUPERSEDED by a higher-priority channel:
-
-  fontconfig         pkgs/main::fontconfig-2.17.1-h062c814~ --> conda-forge::fontconfig-2.17.1-h27c8c51_0 
-  python                pkgs/main::python-3.9.25-h0dcde21_1 --> conda-forge::python-3.9.18-h0755675_0_cpython 
-
-The following packages will be DOWNGRADED:
-
-  libxml2                                 2.14.4-h3457413_0 --> 2.13.9-h2c43086_0 
-
-
-
-Downloading and Extracting Packages: ...working...python-3.9.18        | 22.7 MB   |            |   0% 
-libsqlite-3.53.3     | 940 KB    |            |   0% [A
-
-libfreetype6-2.14.1  | 378 KB    |            |   0% [A[A
-
-
-fontconfig-2.17.1    | 264 KB    |            |   0% [A[A[A
-
-
-
-libfreetype-2.14.1   | 7 KB      |            |   0% [A[A[A[A
-
-
-
-
-python_abi-3.9       | 7 KB      |            |   0% [A[A[A[A[A
-
-
-fontconfig-2.17.1    | 264 KB    | 6          |   6% [A[A[A
-
-libfreetype6-2.14.1  | 378 KB    | 4          |   4% [A[A
-
-
-
-libfreetype-2.14.1   | 7 KB      | ########## | 100% [A[A[A[A
-libsqlite-3.53.3     | 940 KB    | 1          |   2% [Apython-3.9.18        | 22.7 MB   |            |   0% python-3.9.18        | 22.7 MB   | ##         |  20% python-3.9.18        | 22.7 MB   | #####1     |  51% python-3.9.18        | 22.7 MB   | #######7   |  78% 
-
-
-
-libfreetype-2.14.1   | 7 KB      | ########## | 100% [A[A[A[A
-
-
-fontconfig-2.17.1    | 264 KB    | ########## | 100% [A[A[A
-
-
-fontconfig-2.17.1    | 264 KB    | ########## | 100% [A[A[A
-
-libfreetype6-2.14.1  | 378 KB    | ########## | 100% [A[A
-
-libfreetype6-2.14.1  | 378 KB    | ########## | 100% [A[A
-libsqlite-3.53.3     | 940 KB    | ########## | 100% [A
-libsqlite-3.53.3     | 940 KB    | ########## | 100% [A
-
-
-
-
-python_abi-3.9       | 7 KB      | ########## | 100% [A[A[A[A[A
-
-
-
-
-python_abi-3.9       | 7 KB      | ########## | 100% [A[A[A[A[Apython-3.9.18        | 22.7 MB   | ########## | 100% 
-
-
-
-libfreetype-2.14.1   | 7 KB      | ########## | 100% [A[A[A[A
-libsqlite-3.53.3     | 940 KB    | ########## | 100% [A
-
-libfreetype6-2.14.1  | 378 KB    | ########## | 100% [A[A
-
-
-
-
-python_abi-3.9       | 7 KB      | ########## | 100% [A[A[A[A[A
-
-
-fontconfig-2.17.1    | 264 KB    | ########## | 100% [A[A[Apython-3.9.18        | 22.7 MB   | ########## | 100%                                                      
-                                                     [A
-
-                                                     [A[A
-
-
-                                                     [A[A[A
-
-
-
-                                                     [A[A[A[A
-
-
-
-
-                                                     [A[A[A[A[A done
-Preparing transaction: | / - \ | done
-Verifying transaction: - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / done
-Executing transaction: \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / done
-Requirement already satisfied: pip in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (26.0.1)
-Looking in links: https://data.dgl.ai/wheels/cu118/repo.html
-Collecting dgl
-  Using cached https://data.dgl.ai/wheels/cu118/dgl-2.1.0%2Bcu118-cp39-cp39-manylinux1_x86_64.whl (748.2 MB)
-Requirement already satisfied: numpy>=1.14.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from dgl) (2.0.1)
-Collecting scipy>=1.1.0 (from dgl)
-  Using cached scipy-1.13.1-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (60 kB)
-Requirement already satisfied: networkx>=2.1 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from dgl) (3.2.1)
-Requirement already satisfied: requests>=2.19.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from dgl) (2.32.5)
-Collecting tqdm (from dgl)
-  Using cached tqdm-4.68.3-py3-none-any.whl.metadata (57 kB)
-Collecting psutil>=5.8.0 (from dgl)
-  Using cached psutil-7.2.2-cp36-abi3-manylinux2010_x86_64.manylinux_2_12_x86_64.manylinux_2_28_x86_64.whl.metadata (22 kB)
-Collecting torchdata>=0.5.0 (from dgl)
-  Using cached torchdata-0.11.0-py3-none-any.whl.metadata (6.3 kB)
-Requirement already satisfied: charset_normalizer<4,>=2 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from requests>=2.19.0->dgl) (3.4.4)
-Requirement already satisfied: idna<4,>=2.5 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from requests>=2.19.0->dgl) (3.11)
-Requirement already satisfied: urllib3<3,>=1.21.1 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from requests>=2.19.0->dgl) (2.5.0)
-Requirement already satisfied: certifi>=2017.4.17 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from requests>=2.19.0->dgl) (2025.10.5)
-Requirement already satisfied: torch>=2 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from torchdata>=0.5.0->dgl) (2.5.1)
-Requirement already satisfied: filelock in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from torch>=2->torchdata>=0.5.0->dgl) (3.17.0)
-Requirement already satisfied: typing-extensions>=4.8.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from torch>=2->torchdata>=0.5.0->dgl) (4.15.0)
-Requirement already satisfied: jinja2 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from torch>=2->torchdata>=0.5.0->dgl) (3.1.6)
-Collecting fsspec (from torch>=2->torchdata>=0.5.0->dgl)
-  Using cached fsspec-2025.10.0-py3-none-any.whl.metadata (10 kB)
-Collecting sympy==1.13.1 (from torch>=2->torchdata>=0.5.0->dgl)
-  Using cached sympy-1.13.1-py3-none-any.whl.metadata (12 kB)
-Requirement already satisfied: mpmath<1.4,>=1.1.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from sympy==1.13.1->torch>=2->torchdata>=0.5.0->dgl) (1.3.0)
-Requirement already satisfied: MarkupSafe>=2.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from jinja2->torch>=2->torchdata>=0.5.0->dgl) (3.0.2)
-Using cached psutil-7.2.2-cp36-abi3-manylinux2010_x86_64.manylinux_2_12_x86_64.manylinux_2_28_x86_64.whl (155 kB)
-Using cached scipy-1.13.1-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (38.6 MB)
-Using cached torchdata-0.11.0-py3-none-any.whl (61 kB)
-Using cached sympy-1.13.1-py3-none-any.whl (6.2 MB)
-Using cached fsspec-2025.10.0-py3-none-any.whl (200 kB)
-Using cached tqdm-4.68.3-py3-none-any.whl (78 kB)
-Installing collected packages: tqdm, sympy, scipy, psutil, fsspec, torchdata, dgl
-  Attempting uninstall: sympy
-    Found existing installation: sympy 1.14.0
-    Uninstalling sympy-1.14.0:
-      Successfully uninstalled sympy-1.14.0
-
-Successfully installed dgl-2.1.0+cu118 fsspec-2025.10.0 psutil-7.2.2 scipy-1.13.1 sympy-1.13.1 torchdata-0.11.0 tqdm-4.68.3
-Collecting fair-esm
-  Using cached fair_esm-2.0.0-py3-none-any.whl.metadata (37 kB)
-Requirement already satisfied: networkx in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (3.2.1)
-Collecting biopython
-  Using cached biopython-1.85-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (13 kB)
-Collecting pandas
-  Using cached pandas-2.3.3-cp39-cp39-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata (91 kB)
-Collecting scikit-learn
-  Using cached scikit_learn-1.6.1-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (18 kB)
-Requirement already satisfied: tqdm in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (4.68.3)
-Collecting h5py
-  Using cached h5py-3.14.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (2.7 kB)
-Collecting matplotlib
-  Downloading matplotlib-3.9.4-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (11 kB)
-Collecting seaborn
-  Downloading seaborn-0.13.2-py3-none-any.whl.metadata (5.4 kB)
-Requirement already satisfied: numpy in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from biopython) (2.0.1)
-Collecting python-dateutil>=2.8.2 (from pandas)
-  Using cached python_dateutil-2.9.0.post0-py2.py3-none-any.whl.metadata (8.4 kB)
-Collecting pytz>=2020.1 (from pandas)
-  Using cached pytz-2026.2-py2.py3-none-any.whl.metadata (22 kB)
-Collecting tzdata>=2022.7 (from pandas)
-  Using cached tzdata-2026.2-py2.py3-none-any.whl.metadata (1.4 kB)
-Requirement already satisfied: scipy>=1.6.0 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from scikit-learn) (1.13.1)
-Collecting joblib>=1.2.0 (from scikit-learn)
-  Using cached joblib-1.5.3-py3-none-any.whl.metadata (5.5 kB)
-Collecting threadpoolctl>=3.1.0 (from scikit-learn)
-  Using cached threadpoolctl-3.6.0-py3-none-any.whl.metadata (13 kB)
-Collecting contourpy>=1.0.1 (from matplotlib)
-  Downloading contourpy-1.3.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (5.4 kB)
-Collecting cycler>=0.10 (from matplotlib)
-  Downloading cycler-0.12.1-py3-none-any.whl.metadata (3.8 kB)
-Collecting fonttools>=4.22.0 (from matplotlib)
-  Downloading fonttools-4.60.2-cp39-cp39-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (113 kB)
-Collecting kiwisolver>=1.3.1 (from matplotlib)
-  Downloading kiwisolver-1.4.7-cp39-cp39-manylinux_2_12_x86_64.manylinux2010_x86_64.whl.metadata (6.3 kB)
-Collecting packaging>=20.0 (from matplotlib)
-  Using cached packaging-26.2-py3-none-any.whl.metadata (3.5 kB)
-Requirement already satisfied: pillow>=8 in /home/ganeshiny.sridharan/miniconda3/envs/dgg_sota_torch/lib/python3.9/site-packages (from matplotlib) (11.3.0)
-Collecting pyparsing>=2.3.1 (from matplotlib)
-  Downloading pyparsing-3.3.2-py3-none-any.whl.metadata (5.8 kB)
-Collecting importlib-resources>=3.2.0 (from matplotlib)
-  Downloading importlib_resources-6.5.2-py3-none-any.whl.metadata (3.9 kB)
-Collecting zipp>=3.1.0 (from importlib-resources>=3.2.0->matplotlib)
-  Using cached zipp-3.23.1-py3-none-any.whl.metadata (3.6 kB)
-Collecting six>=1.5 (from python-dateutil>=2.8.2->pandas)
-  Using cached six-1.17.0-py2.py3-none-any.whl.metadata (1.7 kB)
-Using cached fair_esm-2.0.0-py3-none-any.whl (93 kB)
-Using cached biopython-1.85-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (3.2 MB)
-Using cached pandas-2.3.3-cp39-cp39-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (12.8 MB)
-Using cached scikit_learn-1.6.1-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (13.5 MB)
-Using cached h5py-3.14.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (4.6 MB)
-Downloading matplotlib-3.9.4-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (8.3 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.3/8.3 MB 23.1 MB/s  0:00:00
-Downloading seaborn-0.13.2-py3-none-any.whl (294 kB)
-Downloading contourpy-1.3.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (321 kB)
-Downloading cycler-0.12.1-py3-none-any.whl (8.3 kB)
-Downloading fonttools-4.60.2-cp39-cp39-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (4.8 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.8/4.8 MB 24.0 MB/s  0:00:00
-Downloading importlib_resources-6.5.2-py3-none-any.whl (37 kB)
-Using cached joblib-1.5.3-py3-none-any.whl (309 kB)
-Downloading kiwisolver-1.4.7-cp39-cp39-manylinux_2_12_x86_64.manylinux2010_x86_64.whl (1.6 MB)
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.6/1.6 MB 4.9 MB/s  0:00:00
-Using cached packaging-26.2-py3-none-any.whl (100 kB)
-Downloading pyparsing-3.3.2-py3-none-any.whl (122 kB)
-Using cached python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
-Using cached pytz-2026.2-py2.py3-none-any.whl (510 kB)
-Using cached six-1.17.0-py2.py3-none-any.whl (11 kB)
-Using cached threadpoolctl-3.6.0-py3-none-any.whl (18 kB)
-Using cached tzdata-2026.2-py2.py3-none-any.whl (349 kB)
-Using cached zipp-3.23.1-py3-none-any.whl (10 kB)
-Installing collected packages: pytz, fair-esm, zipp, tzdata, threadpoolctl, six, pyparsing, packaging, kiwisolver, joblib, h5py, fonttools, cycler, contourpy, biopython, scikit-learn, python-dateutil, importlib-resources, pandas, matplotlib, seaborn
-
-Successfully installed biopython-1.85 contourpy-1.3.0 cycler-0.12.1 fair-esm-2.0.0 fonttools-4.60.2 h5py-3.14.0 importlib-resources-6.5.2 joblib-1.5.3 kiwisolver-1.4.7 matplotlib-3.9.4 packaging-26.2 pandas-2.3.3 pyparsing-3.3.2 python-dateutil-2.9.0.post0 pytz-2026.2 scikit-learn-1.6.1 seaborn-0.13.2 six-1.17.0 threadpoolctl-3.6.0 tzdata-2026.2 zipp-3.23.1
-========================================================
-  Setup Complete!
-  End time  : Mon Jul  6 20:34:22 MDT 2026
-========================================================

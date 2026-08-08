@@ -1,16 +1,0 @@
-Loading weights:   0%|          | 0/487 [00:00<?, ?it/s]Loading weights: 100%|██████████| 487/487 [00:00<00:00, 27801.80it/s]
-[transformers] [1mBertModel LOAD REPORT[0m from: Rostlab/prot_bert_bfd
-Key                                        | Status     |  | 
--------------------------------------------+------------+--+-
-cls.predictions.decoder.weight             | UNEXPECTED |  | 
-cls.predictions.transform.LayerNorm.bias   | UNEXPECTED |  | 
-cls.predictions.decoder.bias               | UNEXPECTED |  | 
-cls.predictions.bias                       | UNEXPECTED |  | 
-cls.predictions.transform.LayerNorm.weight | UNEXPECTED |  | 
-cls.seq_relationship.weight                | UNEXPECTED |  | 
-cls.predictions.transform.dense.weight     | UNEXPECTED |  | 
-cls.seq_relationship.bias                  | UNEXPECTED |  | 
-cls.predictions.transform.dense.bias       | UNEXPECTED |  | 
-
-Notes:
-- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.

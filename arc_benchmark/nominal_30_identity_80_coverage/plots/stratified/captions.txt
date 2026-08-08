@@ -1,0 +1,19 @@
+DeepGreenGO error bars are mean +/- s.d. over five independent training seeds. The similarity and annotation baselines are deterministic given the split, so they produce a single value with no error bar; the asymmetry reflects the methods, not selective reporting.
+
+stratified_homology_fmax
+Protein-centric Fmax as a function of the maximum sequence identity between each test protein and the locked DeepGreenGO training set, computed by BLAST. Bins are defined on the proteins alone, never on any model's predictions, so no method is favoured by the binning. The "no hit" bin (612 of 754 test proteins) contains proteins with no detectable homolog in that locked training set, where project-trained homology-transfer baselines have nothing to transfer from. For externally pretrained methods, these bins are descriptive and do not measure overlap with each method's original training corpus; they therefore cannot by themselves establish external-training leakage. Bins with fewer than 10 test proteins (40-60%) are shown for completeness but are too small to support a claim; the 40-60% bin contains only 5 proteins. Bin sizes: MF {'no hit': 612, '<30%': 26, '30-40%': 80, '40-60%': 5, '>=60%': 31}; BP {'no hit': 612, '<30%': 26, '30-40%': 80, '40-60%': 5, '>=60%': 31}; CC {'no hit': 612, '<30%': 26, '30-40%': 80, '40-60%': 5, '>=60%': 31}.
+
+stratified_homology_micro_aupr
+Pooled micro-AUPR as a function of the maximum sequence identity between each test protein and the locked DeepGreenGO training set. Unlike Fmax, micro-AUPR evaluates the ranking of protein-term scores without selecting a decision threshold. The identity bins, sample sizes, and external-pretraining caveat are the same as in stratified_homology_fmax; these bins do not measure similarity to each externally pretrained method's own training corpus. Bin sizes: MF {'no hit': 612, '<30%': 26, '30-40%': 80, '40-60%': 5, '>=60%': 31}; BP {'no hit': 612, '<30%': 26, '30-40%': 80, '40-60%': 5, '>=60%': 31}; CC {'no hit': 612, '<30%': 26, '30-40%': 80, '40-60%': 5, '>=60%': 31}.
+
+stratified_ic_auprc
+Term-centric AUPRC as a function of GO term information content, IC = -log2(frequency) measured on the training labels only. Higher IC means a rarer, more informative term. Terms never seen in training have undefined IC and are excluded. Term counts per bin: MF {'<2 bits': 3, '2-4 bits': 16, '4-6 bits': 73, '>=6 bits': 855}; BP {'<2 bits': 3, '2-4 bits': 54, '4-6 bits': 192, '>=6 bits': 1778}; CC {'<2 bits': 9, '2-4 bits': 35, '4-6 bits': 46, '>=6 bits': 188}.
+
+stratified_depth_auprc
+Term-centric AUPRC as a function of GO term depth, the shortest is_a/part_of path from the ontology root. Deeper terms are more specific and harder to predict. Term counts per bin: MF {'1-3': 244, '4-6': 738, '7-9': 70, '>=10': 0}; BP {'1-3': 458, '4-6': 1459, '7-9': 272, '>=10': 4}; CC {'1-3': 172, '4-6': 146, '7-9': 0, '>=10': 0}. Bins empty in every ontology are omitted rather than drawn as gaps.
+
+stratified_ic_weighted_pr
+Information-content-weighted precision-recall curves across a 0.01-0.99 threshold sweep. Each protein-term decision is weighted by the term's information content, so recovering a rare, specific annotation counts for more than recovering a near-universal one. This down-weights the shallow, high-frequency terms that dominate unweighted precision-recall.
+
+stratified_combined (main text)
+Composite of the four analyses above as one figure: (a-c) protein-centric Fmax by max training-set sequence identity; (d-f) term-centric AUPRC by GO term information content; (g-i) term-centric AUPRC by GO term depth from root; (j-l) IC-weighted precision-recall curves. Columns are MF, BP, CC. See the four entries above for the full methodological description of each row; this panel arrangement is provided for the main text, the individual panels above for supplementary reference at larger size.

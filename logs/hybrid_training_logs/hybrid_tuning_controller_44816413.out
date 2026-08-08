@@ -1,9 +1,0 @@
-Mode: tune
-Project: /home/ganeshiny.sridharan/dgg/deep-green-GO
-Data: /home/ganeshiny.sridharan/dgg/deep-green-GO/preprocessing/data_arc_rebuild_2026_07_14
-Logs: /home/ganeshiny.sridharan/dgg/deep-green-GO/logs
-Split: nominal 30% identity / 80% coverage split
-Independent residual-similarity audit: 116/754 test sequences (15.38%).
-Building 7,534 shared ProtBERT graph files on CPU (cached files are reused).
-Loading ProtBERT tokenizer…
-Loading ProtBERT model…

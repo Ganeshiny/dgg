@@ -1,0 +1,13 @@
+method,training_relation,external_training_overlap_status,project_homology_bin_interpretation
+blast,trained/derived only from the locked project split,not applicable beyond the locked split audit,direct similarity to the method's available training/reference set
+blast_max,trained/derived only from the locked project split,not applicable beyond the locked split audit,direct similarity to the method's available training/reference set
+deepfri_sequence,externally pretrained/released model or annotation pipeline,not audited against the method's original training corpus,descriptive only; cannot establish external-training homology leakage
+deepfri_structure,externally pretrained/released model or annotation pipeline,not audited against the method's original training corpus,descriptive only; cannot establish external-training homology leakage
+deepgreengo,trained/derived only from the locked project split,not applicable beyond the locked split audit,direct similarity to the method's available training/reference set
+diamond,trained/derived only from the locked project split,not applicable beyond the locked split audit,direct similarity to the method's available training/reference set
+diamond_max,trained/derived only from the locked project split,not applicable beyond the locked split audit,direct similarity to the method's available training/reference set
+dpfunc,externally pretrained/released model or annotation pipeline,not audited against the method's original training corpus,descriptive only; cannot establish external-training homology leakage
+foldseek,trained/derived only from the locked project split,not applicable beyond the locked split audit,direct similarity to the method's available training/reference set
+foldseek_max,trained/derived only from the locked project split,not applicable beyond the locked split audit,direct similarity to the method's available training/reference set
+heal,externally pretrained/released model or annotation pipeline,not audited against the method's original training corpus,descriptive only; cannot establish external-training homology leakage
+naive,trained/derived only from the locked project split,not applicable beyond the locked split audit,direct similarity to the method's available training/reference set
